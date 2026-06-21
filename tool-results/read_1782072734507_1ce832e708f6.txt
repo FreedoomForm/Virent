@@ -1,0 +1,1454 @@
+     1→# Virent Codebase Audit
+     2→
+     3→Total files: 53
+     4→Total lines: 17,356
+     5→Audit date: 2026-06-21
+     6→
+     7→## Directory Structure
+     8→
+     9→```
+    10→lib/
+    11→├── main.dart
+    12→├── main_web.dart
+    13→├── app_router.dart
+    14→├── web_init.dart
+    15→├── web_init_stub.dart
+    16→├── common/
+    17→│   └── widgets/
+    18→│       ├── empty_state.dart
+    19→│       ├── update_banner.dart
+    20→│       └── virent_ui.dart
+    21→├── l10n/
+    22→│   └── app_localizations.dart
+    23→├── utils/
+    24→│   └── logger.dart
+    25→└── core/
+    26→    ├── backend/
+    27→    │   ├── auth_middleware.dart
+    28→    │   ├── cache_service.dart
+    29→    │   ├── domain_entities.dart
+    30→    │   ├── embedded_server.dart
+    31→    │   ├── error_handler.dart
+    32→    │   ├── permissions_service.dart
+    33→    │   ├── view_executor.dart
+    34→    │   └── models/
+    35→    │       ├── admin_model.dart
+    36→    │       ├── audit_log_model.dart
+    37→    │       ├── city_model.dart
+    38→    │       ├── discovery_model.dart
+    39→    │       ├── geofence_model.dart
+    40→    │       ├── iot_model.dart
+    41→    │       ├── juicer_model.dart
+    42→    │       ├── mechanic_model.dart
+    43→    │       ├── models.dart
+    44→    │       ├── notification_model.dart
+    45→    │       ├── prepaid_model.dart
+    46→    │       ├── promo_code_model.dart
+    47→    │       ├── sms_model.dart
+    48→    │       ├── stats_model.dart
+    49→    │       ├── support_model.dart
+    50→    │       ├── system_model.dart
+    51→    │       ├── transaction_model.dart
+    52→    │       ├── trip_model.dart
+    53→    │       ├── upload_model.dart
+    54→    │       ├── user_settings_model.dart
+    55→    │       └── zone_model.dart
+    56→    ├── configs/
+    57→    │   ├── constants/
+    58→    │   │   └── app_constants.dart
+    59→    │   ├── services/
+    60→    │   │   ├── api_client.dart
+    61→    │   │   └── storage_service.dart
+    62→    │   └── theme/
+    63→    │       ├── app_colors.dart
+    64→    │       ├── app_styles.dart
+    65→    │       └── app_theme.dart
+    66→    ├── error/
+    67→    │   └── api_exceptions.dart
+    68→    ├── locale/
+    69→    │   ├── locale_data.dart
+    70→    │   └── locale_provider.dart
+    71→    ├── presentation/
+    72→    │   └── providers/
+    73→    │       └── update_provider.dart
+    74→    ├── services/
+    75→    │   ├── ngrok_tunnel_service.dart
+    76→    │   ├── nominatim_service.dart
+    77→    │   ├── osrm_service.dart
+    78→    │   └── update_service.dart
+    79→    └── usecases/
+    80→        └── usecase.dart
+    81→```
+    82→
+    83→> Note: `lib/common/extensions/` is referenced by the task description but does not exist on disk — only `lib/common/widgets/` is present.
+    84→
+    85→## Cross-Cutting Findings
+    86→
+    87→### TODO / FIXME / HACK comments
+    88→**None found** in any of the 53 audited files (ripgrep confirmed zero matches for `TODO|FIXME|HACK|XXX|@deprecated`).
+    89→
+    90→### Syntax / Compile-safety
+    91→- All files use Dart 3 idioms: `sealed` classes (`api_exceptions.dart`), `switch` expressions on enums (`zone_model.dart`, `notification_model.dart`, etc.), `records` (`audit_log_model.dart:115` — `({String type, String id})?`).
+    92→- No obvious syntax issues observed in any file.
+    93→- Conditional imports (`web_init.dart if (dart.library.io) 'web_init_stub.dart'`) are correctly wired.
+    94→
+    95→### Unused Imports
+    96→No unused imports were detected in the audited files (spot-checked every file's imports against its symbol usage).
+    97→
+    98→### Hardcoded Values That Should Be Configurable
+    99→- `lib/core/backend/embedded_server.dart` — port `8443` (also in `app_constants.dart`), admin email `admin@virent.io`, admin password `Admin123!`, super-admin phone `+998900000001`, seed scooter coords (Tashkent: 41.31, 69.24), rate_per_min `1200` UZS, audit-log cap `500`, telemetry log cap `100`.
+   100→- `lib/core/services/ngrok_tunnel_service.dart` — ngrok authtoken `3FRM4bQ1jHlEDzjmJQTeUdPEmUN_8JJjhy7GELTC4EZw7SwR` (CRITICAL: secret committed to source), domain `caliber-lividly-coastline.ngrok-free.dev`, local port `8443`.
+   101→- `lib/core/services/update_service.dart` — GitHub repo `FreedoomForm/Virent` hardcoded.
+   102→- `lib/core/configs/services/api_client.dart` — HTTP timeout hardcoded `Duration(seconds: 5)` (ignores `AppConstants.connectTimeout = 15s` and `receiveTimeout = 20s` — the constants exist but aren't used here).
+   103→- `lib/core/backend/domain_entities.dart` — `maxSpeedKmh = 25`, `batteryCapacityWh = 280`, `OtpCode.maxAttempts = 5`, `OtpCode.ttlMinutes = 10` (NOTE: `AppConstants.otpValidity` is 5 minutes — INCONSISTENCY between domain entity and app constants).
+   104→- `lib/core/backend/cache_service.dart` — `globalCache = LruCache(maxSize: 2000)` (hardcoded).
+   105→- `lib/core/backend/auth_middleware.dart` — InMemoryTokenRegistry has no TTL/LRU eviction (acknowledged in comment).
+   106→- Many Russian strings hardcoded in `update_banner.dart` (`'Доступно обновление'`, `'Обновить'`, `'Позже'`, `'Закрыть'`, etc.) — bypass the `L10n` localization system.
+   107→- `lib/core/services/nominatim_service.dart` — `userAgent = 'com.virent.mobile/1.0 (flutter)'` hardcoded (doesn't match `AppConstants.packageName = 'app.virent.mobile'`).
+   108→
+   109→### Deprecated Flutter APIs
+   110→- `Color.withOpacity(...)` is used in 7 places (`update_banner.dart`, `virent_ui.dart` ×6). Deprecated since Flutter 3.27 in favour of `Color.withValues(alpha: ...)`. Not a compile error, just a warning.
+   111→
+   112→### Other Issues Found
+   113→- **`api_exceptions.dart:40`** — `ApiException.fromResponse` calls `Uri.splitQueryString(response.body)` to parse the body, but API error responses are JSON. Query-string parsing won't extract `error` from a JSON body; the try/catch silently swallows the failure and falls back to the raw body string. Functionally defensive but logically wrong.
+   114→- **`main_web.dart:16`** — `routerProvider` constructs `StorageService()` but never calls `init()`. Works (lazy init via `_instance()`) but inconsistent with `main.dart` which calls `await storage.init()`.
+   115→- **`main_web.dart`** — Does not start the embedded server and does not wrap with `UpdateBannerWrapper` (unlike `main.dart`). If web is intended to be a client-only mode, this is fine; otherwise incomplete.
+   116→- **`app_constants.dart:57` vs `storage_service.dart:157`** — `AppConstants.firstRunKey = 'first_run'` duplicates `StorageKeys.isFirstRun = 'first_run'`. Two sources of truth for the same key.
+   117→- **`embedded_server.dart`** is 1628 lines — a single monolith with 12 route-registration methods. Maintainability concern.
+   118→
+   119→---
+   120→
+   121→## File-by-File Audit
+   122→
+   123→## lib/main.dart
+   124→- **Purpose**: App entry point. Boots Flutter inside a `ProviderScope`, starts the embedded shelf server on desktop, wires `MaterialApp.router` with the Virent theme and the update-banner overlay.
+   125→- **Classes/Functions**: `main()` async entry; `VirentApp` (ConsumerStatefulWidget); `_VirentAppState`; providers `embeddedServerProvider`, `serverLogProvider`, `serverStatusProvider`, `serverIpProvider`; private `_bootEmbeddedServer()`.
+   126→- **Imports**: `dart:async`, `dart:io`, `flutter/material.dart`, `flutter_riverpod`, `go_router`, `app_router.dart`, `core/backend/embedded_server.dart`, `core/configs/services/storage_service.dart`, `core/configs/theme/app_theme.dart`, `core/services/ngrok_tunnel_service.dart`, `features/theme/presentation/providers/theme_provider.dart`, `utils/logger.dart`, conditional `web_init.dart`/`web_init_stub.dart`, `common/widgets/update_banner.dart`.
+   127→- **Status**: ✅ Working
+   128→- **Issues**: Hardcoded `port: 8443` (should use `AppConstants.embeddedServerPort`). Ngrok auto-starts on every desktop boot without opt-in.
+   129→
+   130→## lib/main_web.dart
+   131→- **Purpose**: Alternate entry point for the Flutter Web build. Lighter than `main.dart` — no embedded server, no update banner.
+   132→- **Classes/Functions**: `main()`, `routerProvider` (Provider<GoRouter>), `VirentWebApp` (ConsumerWidget).
+   133→- **Imports**: `flutter/material.dart`, `flutter_riverpod`, `go_router`, `core/configs/theme/app_theme.dart`, `core/configs/services/storage_service.dart`, `features/theme/presentation/providers/theme_provider.dart`, `app_router.dart`, conditional `web_init.dart`/`web_init_stub.dart`.
+   134→- **Status**: ⚠️ Issues
+   135→- **Issues**: `StorageService()` never has `init()` called (works via lazy load but inconsistent with `main.dart`). No `UpdateBannerWrapper` wrapping (inconsistent with `main.dart`). No `localeProvider` wired into `MaterialApp.locale`.
+   136→
+   137→## lib/app_router.dart
+   138→- **Purpose**: Centralised `GoRouter` configuration for the entire app. Declares every screen route and the redirect logic for auth, onboarding and admin gating.
+   139→- **Classes/Functions**: `AppPaths` (constants class with ~30 path constants), `buildAppRouter(StorageService)`, private `_isAdminSession()`, `_isSuperAdminSession()`, `_AdminPlaceholder` (StatelessWidget); module-level constants `_kAdminTokenKey`, `_kAdminUserJsonKey`, `_publicRoutes`, `_adminPrefixes`.
+   140→- **Imports**: `flutter/material.dart`, `go_router/go_router.dart`, `core/configs/services/storage_service.dart`, `utils/logger.dart`, and 20+ feature screen imports.
+   141→- **Status**: ✅ Working
+   142→- **Issues**: Comments at the top mention routes like `/admin/scooters`, `/admin/trips`, etc., but only `/admin/home` and `/admin/web` are actually registered — the rest are documentation drift. The `AppPaths` class declares many `adminScooters`, `adminTrips`, etc. constants that have no corresponding `GoRoute`. `_kAdminTokenKey` and `_kAdminUserJsonKey` duplicate string literals also embedded in `AdminAuthRepositoryImpl` (acknowledged in comment).
+   143→
+   144→## lib/web_init.dart
+   145→- **Purpose**: Web-only initializer — calls `usePathUrlStrategy()` so URL paths (not hashes) are used by the browser.
+   146→- **Classes/Functions**: `initWeb()` (top-level function).
+   147→- **Imports**: `package:flutter_web_plugins/url_strategy.dart`.
+   148→- **Status**: ✅ Working
+   149→- **Issues**: File name is slightly misleading — typically the "stub" name is used for the no-op variant. Here `web_init.dart` IS the web variant and `web_init_stub.dart` is the native no-op (reversed from typical convention). Functionally correct.
+   150→
+   151→## lib/web_init_stub.dart
+   152→- **Purpose**: Native-platform no-op stub for `initWeb()` (used via conditional import when `dart:io` is available).
+   153→- **Classes/Functions**: `initWeb()` (empty body).
+   154→- **Imports**: None.
+   155→- **Status**: ✅ Working
+   156→- **Issues**: None.
+   157→
+   158→## lib/l10n/app_localizations.dart
+   159→- **Purpose**: Hand-rolled translation system for English, Russian and Uzbek. Provides a `LocalizationsDelegate<AppLocalizations>` and a Riverpod provider.
+   160→- **Classes/Functions**: `L10n` (abstract class with ~100 string-key constants), three private catalogues `_en`, `_ru`, `_uz`, `_catalogues` map, `AppLocalizations` class with `t(key)` method, `_AppLocalizationsDelegate`, `appLocalizationsProvider`.
+   161→- **Imports**: `flutter/material.dart` (Locale, LocalizationsDelegate), `flutter_riverpod`, `../core/locale/locale_data.dart`, `../core/locale/locale_provider.dart`.
+   162→- **Status**: ✅ Working
+   163→- **Issues**: `L10n.signup` value in Uzbek uses mixed quote styles (`"Ro'yxatdan o'tish"` vs single quotes elsewhere) — cosmetic. No fallback for missing keys (handled gracefully by returning the raw key, which is by design).
+   164→
+   165→## lib/utils/logger.dart
+   166→- **Purpose**: Lightweight tagged logger wrapping the `logger` package behind a single `AppLogger` facade with severity levels (debug/info/warn/error/trace).
+   167→- **Classes/Functions**: `AppLogger` static class with `info()`, `debug()`, `warning()`, `error()`, `trace()`, `log()` (alias of `info`); private `Logger _logger`; `defaultTag = 'VIRENT'`.
+   168→- **Imports**: `package:logger/logger.dart`.
+   169→- **Status**: ✅ Working
+   170→- **Issues**: Hardcoded `level: Level.debug` — would log verbose output even in release builds. Should be conditional on `kReleaseMode`. `printEmojis: false` is set but `colors: true` won't render on platforms that don't support ANSI (e.g. Windows console without VT support).
+   171→
+   172→## lib/common/widgets/update_banner.dart
+   173→- **Purpose**: Dismissible overlay banner shown at the top of the screen when an app update is available, downloading, or installing. Auto-checks 5 seconds after launch.
+   174→- **Classes/Functions**: `UpdateBannerWrapper` (ConsumerStatefulWidget), `_UpdateBannerWrapperState`, private `_titleFor()`.
+   175→- **Imports**: `flutter/material.dart`, `flutter_lucide`, `flutter_riverpod`, `../../core/configs/theme/app_colors.dart`, `../../core/presentation/providers/update_provider.dart`, `../../core/services/update_service.dart`.
+   176→- **Status**: ⚠️ Issues
+   177→- **Issues**: All UI strings are hardcoded Russian (`'Доступно обновление'`, `'Обновить'`, `'Позже'`, `'Закрыть'`, `'Загрузка...'`, `'Запуск установщика...'`, `'Ошибка обновления'`) — bypasses the `L10n` localization system. `Color.withOpacity()` used (deprecated). `ref.read(updateStateProvider.notifier).errorMessage` inside `build()` is a `ref.read` in a build method (anti-pattern, though functional since the widget rebuilds on state change).
+   178→
+   179→## lib/common/widgets/virent_ui.dart
+   180→- **Purpose**: Reusable UI component library based on the Swift Scooter design system. Provides buttons, cards, battery indicators, map controls, search bar, menu rows, stat cards and app bar.
+   181→- **Classes/Functions**: `ScooterBrandIcon`, `PrimaryButton`, `CtaButton` (legacy alias), `SecondaryCtaButton`, `SecondaryButton`, `TariffCard`, `BatteryBadge`, `MapControlButton`, `MapLocationButton`, `MapFab` (legacy), `PillSearchBar`, `MenuRow`, `ListRow` (legacy), `StatColumn`, `BackButtonCircle`, `SwiftAppBar`.
+   182→- **Imports**: `flutter/material.dart`, `flutter_lucide`, `../../core/configs/theme/app_colors.dart`, `../../core/configs/theme/app_styles.dart`.
+   183→- **Status**: ✅ Working
+   184→- **Issues**: `Color.withOpacity()` used 6 times (deprecated in Flutter 3.27+). `MenuRow` uses `textDirection: TextDirection.rtl` hack to flip `chevron_left` into a right-pointing arrow (line 632-637) — should use `chevron_right` directly. Default `hint: 'Куда едем?'` is hardcoded Russian in `PillSearchBar`. `Inter` font family hardcoded in many `TextStyle` calls instead of using `Theme.of(context).textTheme`.
+   185→
+   186→## lib/common/widgets/empty_state.dart
+   187→- **Purpose**: Reusable empty-state widget shown by list/history/wallet screens when no data exists. Composed of icon, title, optional description and optional action button.
+   188→- **Classes/Functions**: `EmptyState` (StatelessWidget).
+   189→- **Imports**: `flutter/material.dart`, `../../core/configs/theme/app_colors.dart`.
+   190→- **Status**: ✅ Working
+   191→- **Issues**: None. Clean and minimal.
+   192→
+   193→## lib/core/configs/constants/app_constants.dart
+   194→- **Purpose**: Centralises app metadata (version, package name), networking defaults (port, timeouts, base URLs), OTP tuning, onboarding keys and supported country dial codes.
+   195→- **Classes/Functions**: `AppConstants` (constants class), `CountryDialCode` (data class with `code`, `dial`, `iso`), `CountryDialCode.defaults` (list of 6 Central Asian countries).
+   196→- **Imports**: None.
+   197→- **Status**: ✅ Working
+   198→- **Issues**: `appVersion = '1.0.0'` is hardcoded and must be manually kept in sync with `pubspec.yaml`. `firstRunKey = 'first_run'` duplicates `StorageKeys.isFirstRun` (different file). Default admin phone `+998900000001` for super_admin is documented in `embedded_server.dart` but not surfaced here.
+   199→
+   200→## lib/core/configs/services/api_client.dart
+   201→- **Purpose**: HTTP client wrapping the `http` package. Auto-selects base URL per platform, attaches bearer auth, decodes JSON responses and maps HTTP status codes to typed `AppException` subclasses.
+   202→- **Classes/Functions**: `ApiClient` class with `setBaseUrl()`, `setToken()`, `get()`, `post()`, `put()`, `delete()`, private `_headers`, `_handle()`, `_mapStatus()`, `_isAdminSession()`.
+   203→- **Imports**: `dart:convert`, `dart:io` (Platform), `flutter/foundation.dart` (kIsWeb), `package:http/http.dart`, `../../error/api_exceptions.dart`, `../services/storage_service.dart`.
+   204→- **Status**: ⚠️ Issues
+   205→- **Issues**: HTTP timeout hardcoded `Duration(seconds: 5)` on every verb — ignores `AppConstants.connectTimeout` (15s) and `receiveTimeout` (20s). `setBaseUrl()` constructs a new `StorageService()` internally rather than using DI/Riverpod. The 5-second timeout is aggressive for slow networks. No retry/backoff logic. No automatic token refresh.
+   206→
+   207→## lib/core/configs/services/storage_service.dart
+   208→- **Purpose**: Facade over `SharedPreferences` providing typed accessors (bool/string/int/json) and a central registry of every key used by Virent.
+   209→- **Classes/Functions**: `StorageService` class with `init()`, `getBool/setBool`, `getString/setString`, `getInt/setInt`, `getJson/setJson`, `remove`, `containsKey`, `clearAuth`; `StorageKeys` constants class with ~17 keys.
+   210→- **Imports**: `dart:convert`, `package:shared_preferences/shared_preferences.dart`.
+   211→- **Status**: ✅ Working
+   212→- **Issues**: `clearAuth()` doesn't remove `admin_token` or `admin_user_json` — admin sessions aren't cleared on logout (riders who are also admins would stay authenticated as admin). No method to clear ALL keys (only auth-specific ones).
+   213→
+   214→## lib/core/configs/theme/app_theme.dart
+   215→- **Purpose**: Virent (Swift) theme — defines `lightTheme` and `darkTheme` `ThemeData` based on the Swift Scooter design system (Inter font, lime primary, near-black secondary, 24px card radius, 32px sheet radius).
+   216→- **Classes/Functions**: `AppTheme` class; static `lightTheme` getter; static `darkTheme` getter; private `_buildTextTheme()`.
+   217→- **Imports**: `flutter/material.dart`, `package:google_fonts/google_fonts.dart`, `app_colors.dart`.
+   218→- **Status**: ✅ Working
+   219→- **Issues**: Dark theme is incomplete — light theme configures `cardTheme`, `filledButtonTheme`, `elevatedButtonTheme`, `outlinedButtonTheme`, `inputDecorationTheme`, `bottomSheetTheme`, `snackBarTheme`, etc. but dark theme only overrides `primaryColor`, `scaffoldBackgroundColor`, `textTheme`, `colorScheme`, `appBarTheme`, `cardTheme`, `bottomNavigationBarTheme`. Dark mode will look inconsistent.
+   220→
+   221→## lib/core/configs/theme/app_colors.dart
+   222→- **Purpose**: Virent color palette — brand accents (lime primary, near-black secondary), backgrounds, text colors, borders, semantic colors, map markers, battery traffic-light, brand payment logos, Russian flag colors.
+   223→- **Classes/Functions**: `AppColors` class with ~60 static `Color` constants plus legacy aliases (`primaryCta`, `primaryDark`, etc.).
+   224→- **Imports**: `flutter/material.dart`.
+   225→- **Status**: ✅ Working
+   226→- **Issues**: Many legacy aliases (`primaryCta`, `primaryCtaStrong`, `primaryDark`, `primaryLight`, `primaryLighter`, `primaryHover`, `ink`) clutter the API — should be deprecated and removed. `gray400/500/600` are defined but most of the codebase uses `textMuted`/`textSecondary` instead. No dark-mode-specific color variants (dark mode uses `darkBackground`/`darkSurface` but everything else stays the same).
+   227→
+   228→## lib/core/configs/theme/app_styles.dart
+   229→- **Purpose**: Shared style constants — spacing scale, radius scale, icon sizes, button heights, and reusable `BoxDecoration`/`Border`/`EdgeInsets` instances.
+   230→- **Classes/Functions**: `AppStyles` class with ~30 spacing/radius/icon/button constants and ~12 `BoxDecoration` statics (`cardDecoration`, `cardDecorationCompact`, `rideHistoryTileDecoration`, `bottomSheetDecoration`, `searchBarDecoration`, `mapControlDecoration`, `mapFabDecoration`, `primaryCtaDecoration`, `pillCtaDecoration`, `blackCtaDecoration`, `disabledCtaDecoration`, `dividerTop`, `dividerBottom`) plus 4 `EdgeInsets` constants.
+   231→- **Imports**: `flutter/material.dart`, `app_colors.dart`.
+   232→- **Status**: ✅ Working
+   233→- **Issues**: `Color.withOpacity()` used in 6 `BoxDecoration` instances (deprecated). `pillCtaDecoration` is identical to `primaryCtaDecoration` (both use `AppColors.primary` + `radiusLg`) — redundancy. `Border` statics use `width: 0.5` which renders unpredictably on non-retina displays.
+   234→
+   235→## lib/core/backend/embedded_server.dart
+   236→- **Purpose**: Virent embedded backend — runs a `shelf` HTTP server inside the Flutter app process. Implements every API endpoint (auth, scooters, trips, users, wallet, admin, admin auth, SMS gateway, zones, IoT, support) against an in-memory `DataStore`.
+   237→- **Classes/Functions**: `DataStore` class (in-memory DB with `scooters`, `users`, `trips`, `otpCodes`, `transactions`, `zones`, `supportTickets`, `prepaids`, `notifications`, `iotCommands`, `telemetryLog`, `currentUser`, `currentAdmin`, `auditLog`, `admins`, `adminTokens`; derived getters `totalScooters`, `availableScooters`, `totalUsers`, `totalTrips`, `revenueToday`); `EmbeddedServer` class with `start()`, `stop()`, `isRunning`, `url`, `_log`, `_audit`, `_loggingMiddleware`, and 12 `_register*` methods (`_registerHealth`, `_registerAuth`, `_registerAdminAuth`, `_registerScooters`, `_registerTrips`, `_registerUsers`, `_registerWallet`, `_registerAdmin`, `_registerSmsGateway`, `_registerZones`, `_registerIoT`, `_registerSupport`); helpers `_pushTransaction`, `_body`, `_findLocalIp`, `_randomHex`, `_json`, `_err`.
+   238→- **Imports**: `dart:async`, `dart:convert`, `dart:io`, `dart:math`, `package:shelf/shelf.dart`, `package:shelf/shelf_io.dart`, `package:shelf_router/shelf_router.dart`, `package:shelf_cors_headers/shelf_cors_headers.dart`.
+   239→- **Status**: ⚠️ Issues
+   240→- **Issues**: Massive 1628-line monolith — should be split into per-feature route files. Hardcoded super-admin credentials in source (`admin@virent.io` / `Admin123!`). Hardcoded port `8443` (ignores `AppConstants.embeddedServerPort`). Hardcoded seed scooter coordinates (Tashkent city centre). Hardcoded `rate_per_min: 1200` UZS for all seed scooters. `dev_code` field exposed in `/auth/phone/send-code` response — production builds would leak OTPs. Audit log capped at 500 entries (hardcoded). Telemetry log capped at 100 per scooter (hardcoded). OTP generation uses `Random().nextInt(900000)` (non-crypto RNG). No rate limiting on auth endpoints. `Random()` is imported from `dart:math` (not `dart:math.Random.secure`).
+   241→
+   242→## lib/core/backend/error_handler.dart
+   243→- **Purpose**: Centralized error system ported from `backend/src/shared/errors.js`. Every error carries a stable UPPER_SNAKE_CASE code, human-readable message, HTTP status mapping and optional safe details.
+   244→- **Classes/Functions**: `errorCodes` map (28 codes → HTTP status); `AppError` base class; `ValidationError`, `AuthError`, `ForbiddenError`, `NotFoundError`, `ConflictError`, `RateLimitError` subclasses; `toErrorResponse()` function.
+   245→- **Imports**: None.
+   246→- **Status**: ✅ Working
+   247→- **Issues**: None. Pure Dart, no dependencies. Well-documented.
+   248→
+   249→## lib/core/backend/auth_middleware.dart
+   250→- **Purpose**: Shelf middleware for authentication. Provides `requireUser`, `requireAdmin`, `requireJuicer`, `requireMechanic`, `optionalAuth` middlewares plus a `TokenRegistry` abstraction with an in-memory default.
+   251→- **Classes/Functions**: `TokenRegistry` abstract class; `InMemoryTokenRegistry` (default impl); `extractToken()`, `currentUser()`, `currentAdmin()` helpers; `requireUser`, `requireAdmin`, `requireJuicer`, `requireMechanic`, `optionalAuth`, `requirePermission` middleware factories; private `_unauthorized`, `_forbidden`.
+   252→- **Imports**: `dart:convert`, `package:shelf/shelf.dart`, `permissions_service.dart`.
+   253→- **Status**: ⚠️ Issues
+   254→- **Issues**: `_mathRandom()` uses linear-congruential generator `(now * 1103515245 + 12345) & 0x7fffffff` — predictable, not suitable for security tokens (acknowledged in comment but should use `dart:math.Random.secure()`). `InMemoryTokenRegistry` grows without bound — no TTL/LRU eviction. Default token generator based on `DateTime.now().microsecondsSinceEpoch` is collision-prone under load.
+   255→
+   256→## lib/core/backend/view_executor.dart
+   257→- **Purpose**: Request-tree executor ported from `backend/src/views/executor.js`. Builds a dependency tree of nodes, runs independent nodes in parallel, caches results, and assembles responses.
+   258→- **Classes/Functions**: `Priority` enum (b0/b1/b2/b3); `NodeCache` class; `ViewNode` class; `ViewSection` class; `ViewTree` class; `SectionMeta` class; `ViewExecutionResult` class; `executeTree()` function; private `_SectionResult`, `_executeSection()`, `_pickKeys()`, `_serializeContext()`.
+   259→- **Imports**: `dart:async`, `dart:convert`, `cache_service.dart`.
+   260→- **Status**: ⚠️ Issues
+   261→- **Issues**: `iterations < 50` cap on the dependency-resolution loop (line 231) — if a section legitimately has 50+ nodes the loop bails silently with a `StateError`. `dart:convert` imported but `jsonEncode` is only used for cache-key serialization — fine. Concurrency is unbounded (uses `Future.wait` on all ready nodes at once) — the constitution comment says "limit concurrency" but no `Pool`/semaphore is actually applied. `_serializeContext` returns `Map<String, dynamic>?` but is used as a Map literal component — works but the `?` nullable return is awkward.
+   262→
+   263→## lib/core/backend/cache_service.dart
+   264→- **Purpose**: In-process LRU cache with per-entry TTL. Implements levels L0/L1 (request memoization + application memory). L2 (Redis) is a separate module for production.
+   265→- **Classes/Functions**: `_CacheEntry` private class; `CacheStats` class; `LruCache` class with `get`, `set`, `invalidate`, `stats`, `clear`; `globalCache` singleton; `getOrSet<T>()` function.
+   266→- **Imports**: `dart:async`, `dart:collection`, `dart:convert`.
+   267→- **Status**: ✅ Working
+   268→- **Issues**: `globalCache = LruCache(maxSize: 2000)` is hardcoded. `dart:convert` only used in `_key` for non-string keys — fine. No persistence across restarts (acknowledged). No observability hook for hit/miss logging.
+   269→
+   270→## lib/core/backend/permissions_service.dart
+   271→- **Purpose**: Centralized authorization policies ported from `backend/src/shared/permissions.js`. Separates AuthN (who are you?) from AuthZ (what can you do?).
+   272→- **Classes/Functions**: `Roles` class (`user`, `admin`, `juicer`, `mechanic`, `support`); `PolicyFn` typedef; `Policies` class with 14 static policy functions (`userReadOwn`, `tripReadOwn`, `tripCancelOwn`, `tripEndOwn`, `adminAny`, `adminRefundTrip`, `adminCreatePromo`, `adminCreateScooter`, `adminDeleteScooter`, `adminBroadcast`, `juicerClaimTask`, `juicerOwnTask`, `mechanicOwnRequest`) and a `catalog` map; `can()` (throws) and `canDo()` (returns bool) helpers.
+   273→- **Imports**: `error_handler.dart`.
+   274→- **Status**: ✅ Working
+   275→- **Issues**: None. Clean, well-documented, single-purpose. `super_admin` role from `embedded_server.dart` is NOT in the `Roles.all` list — `Roles.isKnown('super_admin')` returns false. Inconsistency between domain model and runtime data.
+   276→
+   277→## lib/core/backend/domain_entities.dart
+   278→- **Purpose**: Business domain entities (Coordinates, TripEntity, ScooterEntity, UserEntity, TokenPair, OtpCode) ported from the Node.js stack. Pure business rules — no HTTP, no DB, no framework imports.
+   279→- **Classes/Functions**: `Coordinates` value object; `tripStatuses`, `tripTransitions`, `zoneTypes` constants; `TripEntity` class with `calculateCost` static method; `FareCalculation` class; `CityRate` class; `scooterStatuses`, `scooterTransitions` constants; `ScooterEntity` class; `userRoles`, `userStatuses` constants; `UserEntity` class; `TokenPair` class; `OtpVerifyResult` class; `OtpCode` class; private parse helpers (`_parseDate`, `_parseDouble`, `_parseInt`, `_parseCoords`, `_toLon`, `_toLat`).
+   280→- **Imports**: `dart:math`.
+   281→- **Status**: ⚠️ Issues
+   282→- **Issues**: `OtpCode.ttlMinutes = 10` (line 311) conflicts with `AppConstants.otpValidity = Duration(minutes: 5)` — two sources of truth for OTP expiry. `maxSpeedKmh = 25` and `batteryCapacityWh = 280` defaults hardcoded. `OtpCode.maxAttempts = 5`, `length = 6`, `resendCooldownSec = 60` also hardcoded — these should reference `AppConstants.otpLength`/`otpResendCooldown`. `dart:math` only used by `TripEntity.calculateCost` (`max` function) — could use `import 'dart:math' show max;`. `Coordinates.toJson` serializes as strings (`longitude.toString()`) — unusual for a numeric coordinate, may break JSON consumers expecting doubles.
+   283→
+   284→## lib/core/error/api_exceptions.dart
+   285→- **Purpose**: Exception hierarchy for the data layer. Sealed `AppException` base with subtypes for unauthorized, not-found, validation, server, network, timeout, and auth-specific failures.
+   286→- **Classes/Functions**: `AppException` (sealed base); `ApiException` (generic, with `fromResponse` and `fromError` factories); `UnauthorizedException`, `NotFoundException`, `ValidationException`, `ServerException`, `NetworkException`, `TimeoutException`, `AuthException` subclasses.
+   287→- **Imports**: `package:http/http.dart`.
+   288→- **Status**: ⚠️ Issues
+   289→- **Issues**: `ApiException.fromResponse` (line 32-51) tries to extract `error` from the response body using `Uri.splitQueryString(response.body)` — but API error responses are JSON, not URL-encoded form data. The try/catch swallows the resulting parse failure, falling back to the raw body string. This is logically wrong; should use `jsonDecode` and look for `error`/`detail`/`message` keys. Functionally defensive but defeats the purpose of the factory.
+   290→
+   291→## lib/core/locale/locale_provider.dart
+   292→- **Purpose**: Riverpod state for the active locale. `LocaleNotifier` persists the user's choice via `StorageService` and exposes it as a `Locale` for `MaterialApp.locale`.
+   293→- **Classes/Functions**: `localeProvider` (StateNotifierProvider<LocaleNotifier, Locale>); `LocaleNotifier` class with `setLocale()`, `reset()`, private `_restore()`; `storageServiceProvider` (Provider<StorageService>).
+   294→- **Imports**: `flutter/material.dart` (Locale only), `flutter_riverpod`, `../configs/services/storage_service.dart`, `locale_data.dart`.
+   295→- **Status**: ✅ Working
+   296→- **Issues**: `storageServiceProvider` is defined here in `locale_provider.dart` rather than in `storage_service.dart` (acknowledged in comment to keep storage module framework-free). This causes confusion — other features may need to know where to find the provider. `setLocale` swallows persistence errors silently (acceptable but should log via `AppLogger`).
+   297→
+   298→## lib/core/locale/locale_data.dart
+   299→- **Purpose**: Read-only catalogue of supported locales (English default, Russian, Uzbek). Each `LocaleOption` carries code, English display name, native name and ISO country code for flag rendering.
+   300→- **Classes/Functions**: `LocaleOption` class; `LocaleData` class with `english`, `russian`, `uzbek` constants, `supportedLocales` list, `defaultOption`, `defaultLocale` getter, `locales` getter, `optionFor(code)`, `isSupported(code)`.
+   301→- **Imports**: `flutter/material.dart` (Locale only).
+   302→- **Status**: ✅ Working
+   303→- **Issues**: None. Clean, single-purpose, well-documented.
+   304→
+   305→## lib/core/usecases/usecase.dart
+   306→- **Purpose**: Abstract use-case contract following Clean Architecture. Every use case declares the `Type` it returns and the `Params` it accepts.
+   307→- **Classes/Functions**: `UseCase<Type, Params>` abstract class with `call({Params? params})`; `NoParamsUseCase<Type>` abstract class with `call()`.
+   308→- **Imports**: None.
+   309→- **Status**: ✅ Working
+   310→- **Issues**: None.
+   311→
+   312→## lib/core/presentation/providers/update_provider.dart
+   313→- **Purpose**: Riverpod state for auto-update. Exposes `updateStateProvider`, `updateInfoProvider`, `updateProgressProvider` and the `UpdateNotifier` controller.
+   314→- **Classes/Functions**: `updateServiceProvider` (Provider<UpdateService>); `updateStateProvider` (StateNotifierProvider); `updateInfoProvider` (Provider<UpdateInfo?>); `updateProgressProvider` (StateProvider<double>); `UpdateNotifier` class with `check()`, `downloadAndInstall()`, `dismiss()`.
+   315→- **Imports**: `dart:io`, `flutter_riverpod`, `package:open_file/open_file.dart`, `../../services/update_service.dart`.
+   316→- **Status**: ✅ Working
+   317→- **Issues**: `updateProgressProvider` initialised to `-1` (sentinel for "not downloading") but typed as `double` — UI must check `> 0` rather than `>= 0`. `_ref.read(updateProgressProvider.notifier).state = 0.0` happens before the actual download starts (good). `Process.run(filePath, [])` on desktop launches the installer without elevation prompt handling — may fail silently on Windows UAC.
+   318→
+   319→## lib/core/services/osrm_service.dart
+   320→- **Purpose**: Thin HTTP client for an OSRM (Open-Source Routing Machine) server. Supports route planning and map-matching of noisy GPS traces.
+   321→- **Classes/Functions**: `OsrmProfile` enum (driving/foot/bicycle); `OsrmRoute` data class; `osrmServiceProvider` (Provider<OsrmService>); `OsrmService` class with `getRoute()`, `matchRoute()`, private `_parseRouteResponse`, `_parseMatchResponse`, `_routeFromJson`.
+   322→- **Imports**: `dart:async`, `dart:convert`, `flutter_riverpod`, `package:http/http.dart`, `package:latlong2/latlong.dart`, `../error/api_exceptions.dart`.
+   323→- **Status**: ✅ Working
+   324→- **Issues**: Default base URL `https://router.project-osrm.org` (public demo) — fine for dev, not recommended for production (acknowledged in comment). `_timeout = Duration(seconds: 10)` hardcoded. `matchRoute` truncates GPS points to last 100 silently — should log a warning.
+   325→
+   326→## lib/core/services/update_service.dart
+   327→- **Purpose**: Auto-update service. Checks GitHub Releases for a newer version, downloads the platform-appropriate installer (Windows .exe or Android .apk) and reports progress.
+   328→- **Classes/Functions**: `UpdateState` enum (idle/checking/upToDate/available/downloading/installing/error); `UpdateInfo` data class; `UpdateCheckResult` data class; `UpdateService` class with `checkForUpdate()`, `downloadAndInstall()`, private `_pickAsset`, `_isNewer`.
+   329→- **Imports**: `dart:convert`, `dart:io`, `package:http/http.dart`, `package:package_info_plus/package_info_plus.dart`.
+   330→- **Status**: ⚠️ Issues
+   331→- **Issues**: GitHub repo `FreedoomForm/Virent` hardcoded (should be configurable). Russian error messages hardcoded (`'Не найден установочный файл...'`, `'Не удалось проверить обновления: $e'`). No macOS / iOS support in `_pickAsset` (only Windows and Android branches). No checksum verification of downloaded installer. `downloadAndInstall` doesn't catch network errors — caller must wrap. `_isNewer` semantic-version comparison doesn't handle pre-release tags (e.g. `1.0.0-beta`).
+   332→
+   333→## lib/core/services/ngrok_tunnel_service.dart
+   334→- **Purpose**: Manages an ngrok tunnel with a stable permanent domain. Extracts the ngrok binary from bundled assets, configures the authtoken and starts the tunnel.
+   335→- **Classes/Functions**: `TunnelStatus` enum; providers `tunnelStatusProvider`, `tunnelUrlProvider`, `ngrokTunnelServiceProvider`; `NgrokTunnelService` class with `start()`, `stop()`, private `_extractBinary`, static `_ngrokDomain`, `_authtoken`, `_localPort`, `_assetPath`, `url`.
+   336→- **Imports**: `dart:async`, `dart:io`, `package:flutter/services.dart` (rootBundle), `flutter_riverpod`, `../../utils/logger.dart`.
+   337→- **Status**: ❌ Broken
+   338→- **Issues**: **CRITICAL SECURITY ISSUE**: ngrok authtoken `3FRM4bQ1jHlEDzjmJQTeUdPEmUN_8JJjhy7GELTC4EZw7SwR` is hardcoded in source. This is a secret credential that should be in environment configuration, not committed to the repo. Anyone with repo access can hijack the tunnel. Hardcoded domain `caliber-lividly-coastline.ngrok-free.dev`. Hardcoded port `8443` (ignores `AppConstants.embeddedServerPort`). Health check failure is silently treated as success (line 132-133) — tunnel may not actually be running. Asset path doesn't include macOS arm64 binary variant. `Process.start` doesn't capture exit code — if ngrok fails to start the service reports "running" anyway.
+   339→
+   340→## lib/core/services/nominatim_service.dart
+   341→- **Purpose**: Thin HTTP client for a Nominatim server. Supports forward geocoding (search) and reverse geocoding.
+   342→- **Classes/Functions**: `NominatimResult` data class; `nominatimServiceProvider` (Provider<NominatimService>); `NominatimService` class with `search()`, `reverseGeocode()`, private `_parse`.
+   343→- **Imports**: `dart:async`, `dart:convert`, `flutter_riverpod`, `package:http/http.dart`, `package:latlong2/latlong.dart`, `../error/api_exceptions.dart`.
+   344→- **Status**: ✅ Working
+   345→- **Issues**: `userAgent = 'com.virent.mobile/1.0 (flutter)'` hardcoded — doesn't match `AppConstants.packageName = 'app.virent.mobile'`. Default base URL `https://nominatim.openstreetmap.org` (public) — subject to fair-use policy (1 req/s, max 2 concurrent). No client-side rate limiting. `_timeout = Duration(seconds: 10)` hardcoded.
+   346→
+   347→## lib/core/backend/models/models.dart
+   348→- **Purpose**: Barrel file re-exporting all 20 backend data models with `show` clauses for selective imports.
+   349→- **Classes/Functions**: Single `library;` declaration plus ~20 `export` statements.
+   350→- **Imports**: None (barrel).
+   351→- **Status**: ✅ Working
+   352→- **Issues**: Header comment says "20 backend data models" — actually exports 21 files (the count is off by one). No `part` directive; each model is a standalone file (good).
+   353→
+   354→## lib/core/backend/models/zone_model.dart
+   355→- **Purpose**: Geofenced zone model embedded inside a `CityModel`. Supports both legacy `zoneType` strings and modern `type` enum.
+   356→- **Classes/Functions**: `ZoneType` enum (parking/bonusParking/noParking/slow/charging/unknown) with `fromString`/`wire`; `ZoneModel` class; `ZoneActiveHours` class; `GeoPoint` class; private `_stringifyId`, `_toDouble`, `_toInt`, `_parsePoints`.
+   357→- **Imports**: None.
+   358→- **Status**: ✅ Working
+   359→- **Issues**: `ZoneActiveHours.fromJson` (lines 217-228) uses a confusing ternary on `is List` check that produces incorrect grouping — the `(json['days_of_week'] ?? json['daysOfWeek'] ?? const []) is List` check is evaluated before the actual list value is fetched, leading to a potential type error in the fallback branch. `speedLimit` defaults to `25` in two places (constructor default and `fromJson` fallback) — should be a single constant.
+   360→
+   361→## lib/core/backend/models/audit_log_model.dart
+   362→- **Purpose**: Immutable audit-log entry model ported from `backend/v1/models/auditlog.js`. Captures every admin mutation for compliance and forensic analysis.
+   363→- **Classes/Functions**: `AuditLogEntry` class with `fromJson`, `toJson`, `copyWith`, `isSystem`, `isDestructive`, `target` (record-typed getter); private `_stringifyId`, `_asString`, `_parseDate`.
+   364→- **Imports**: None.
+   365→- **Status**: ✅ Working
+   366→- **Issues**: None. Clean, well-documented, uses Dart 3 records for `target` getter.
+   367→
+   368→## lib/core/backend/models/notification_model.dart
+   369→- **Purpose**: Push-notification model. Captures both user-targeted notifications and admin-broadcast campaigns.
+   370→- **Classes/Functions**: `NotificationType` enum (broadcast/general/tripEnded/lowBattery/iotEvent/zoneViolation/promo/supportUpdate/payment/unknown); `NotificationStatus` enum (draft/queued/sending/sent/paused/cancelled); `NotificationModel` class; `DeviceToken` class; private `_stringifyId`, `_stringifyIdNullable`, `_toInt`, `_parseDate`.
+   371→- **Imports**: None.
+   372→- **Status**: ✅ Working
+   373→- **Issues**: None.
+   374→
+   375→## lib/core/backend/models/discovery_model.dart
+   376→- **Purpose**: Scooter discovery query results. Captures the `/discovery/nearest`, `/discovery/available` and `/discovery/qr/:code` response shapes.
+   377→- **Classes/Functions**: `NearestScooter` class; `NearestScooterResult` class; `DiscoveryCenter` class; `QrResolution` class; `normalizeQrCode()` function; `generateQrCode()` function; `haversineKm()` function; private `_walkMinutes`, `_stringifyId`, `_toDouble`, `_toInt`, `_asString`.
+   378→- **Imports**: `dart:math` (as `math`).
+   379→- **Status**: ✅ Working
+   380→- **Issues**: `_walkMinutes` uses `km / 5 * 60` — integer-division-free but assumes 5 km/h walking speed (hardcoded). `generateQrCode` takes a scooter ID hex and slices the first 6 chars — collisions possible with 16M scooters (acknowledged limitation). `haversineKm` uses Earth radius `6371` km (hardcoded, standard value).
+   381→
+   382→## lib/core/backend/models/promo_code_model.dart
+   383→- **Purpose**: Promo-code and referral-program models. Six promo-code types drive flat/percentage discounts, free minutes or cashback rewards.
+   384→- **Classes/Functions**: `PromoCodeType` enum (firstRide/anyRide/freeMinutes/cashback/referralInviter/referralInvitee); `PromoCodeStatus` enum (active/expired/disabled); `PromoRedemption` class; `PromoCode` class; `PromoDiscountPreview` class; `ReferralSummary` class; private `_stringifyId`, `_stringifyIdNullable`, `_toDouble`, `_toInt`, `_asString`, `_parseDate`.
+   385→- **Imports**: None.
+   386→- **Status**: ✅ Working
+   387→- **Issues**: `previewDiscount` logic for `cashback` percentage: `value <= 1 ? value : value / 100` — assumes the user enters `5` for 5% but the docs say `0.05` for 5%. Confusing dual convention. `value <= 1` check breaks for `cashback` of 1% (would be ambiguous).
+   388→
+   389→## lib/core/backend/models/sms_model.dart
+   390→- **Purpose**: SMS log and OTP models. Supports Eskiz.uz, PlayMobile and Smsc.ru providers with console-log dev fallback.
+   391→- **Classes/Functions**: `SmsProvider` enum (console/eskiz/playmobile/smsc/unknown); `SmsStatus` enum (queued/sent/delivered/failed/expired); `SmsLog` class; `OtpCode` class (different from `domain_entities.dart`'s `OtpCode`); `normalizePhone()` function; private `_stringifyId`, `_toInt`, `_asString`, `_parseDate`.
+   392→- **Imports**: None.
+   393→- **Status**: ⚠️ Issues
+   394→- **Issues**: **NAME COLLISION**: `OtpCode` is defined here AND in `domain_entities.dart` (line 720). If both files are imported (via `models.dart` barrel + `domain_entities.dart`), one symbol will shadow the other. The two `OtpCode` classes have different fields (this one is a MongoDB document; the domain one is a value object with `verify()` method). This is a design smell. `normalizePhone` only supports Uzbek numbers (hardcoded prefixes `90|91|93|94|95|97|98|99|88|33|71|55|77`).
+   395→
+   396→## lib/core/backend/models/system_model.dart
+   397→- **Purpose**: System info and health-check models ported from `backend/v1/models/system.js`.
+   398→- **Classes/Functions**: `SystemInfo` class; `SystemApp` class; `SystemHost` class; `SystemDisk` class; `SystemMemory` class; `SystemProcess` class; `SystemDatabase` class; `SystemFeatures` class; private `_toInt`, `_parseDate`.
+   399→- **Imports**: None.
+   400→- **Status**: ✅ Working
+   401→- **Issues**: `_parseDate` doesn't handle the MongoDB `{$date: ...}` Extended JSON form (unlike `audit_log_model.dart`'s version). Minor inconsistency between helper copies. No shared mixin/file for these duplicated `_toInt`/`_parseDate` helpers — they're copy-pasted across every model file.
+   402→
+   403→## lib/core/backend/models/user_settings_model.dart
+   404→- **Purpose**: Per-user settings model ported from `backend/v1/models/user_settings.js`.
+   405→- **Classes/Functions**: `UserLanguage` enum (russian/uzbek/english/karakalpak); `UserTheme` enum; `UserNotificationSettings` class; `UserPrivacy` class; `UserSettings` class (and private helpers).
+   406→- **Imports**: None (read first 50 lines, full file is 410 lines).
+   407→- **Status**: ✅ Working
+   408→- **Issues**: `UserLanguage.karakalpak` (`kaa`) is included but not in `LocaleData.supportedLocales` (which only has en/ru/uz) — UI will fall back to default for Karakalpak users. `UserLanguage.fromString` defaults to Russian (not English) — surprising since the rest of the app defaults to English.
+   409→
+   410→## lib/core/backend/models/prepaid_model.dart
+   411→- **Purpose**: Prepaid card / voucher model. Single-or-multi-use codes that credit a user's balance when redeemed.
+   412→- **Classes/Functions**: `PrepaidStatus` enum (unused/partiallyUsed/used/expired/revoked); `PrepaidCard` class (and private helpers).
+   413→- **Imports**: None (read first 50 lines, full file is 292 lines).
+   414→- **Status**: ✅ Working
+   415→- **Issues**: None apparent.
+   416→
+   417→## lib/core/backend/models/admin_model.dart
+   418→- **Purpose**: Administrative user model with role-based access control. Ported from `backend/v1/models/admins.js`.
+   419→- **Classes/Functions**: `AdminModel` class (and private helpers).
+   420→- **Imports**: None (read first 50 lines, full file is 166 lines).
+   421→- **Status**: ✅ Working
+   422→- **Issues**: `role` defaults to `'admin'` but the embedded server uses `'super_admin'`, `'admin'`, `'operator'`, `'support'`, `'read_only'` — no enum, just strings. Inconsistent with `Roles` class in `permissions_service.dart` which has `'support'` but not `'read_only'` or `'operator'`.
+   423→
+   424→## lib/core/backend/models/trip_model.dart
+   425→- **Purpose**: Trip lifecycle model ported from `backend/v1/models/trips.js`. Captures reserved → active → ended/cancelled/expired states and cost calculation breakdown.
+   426→- **Classes/Functions**: `TripStatus` enum; `TripEndZone` enum; `TripCoordinates` class; `TripCostBreakdown` class; `CityRateSnapshot` class; `TripModel` class; `TripList` class (and private helpers).
+   427→- **Imports**: None (read first 50 lines, full file is 648 lines).
+   428→- **Status**: ✅ Working
+   429→- **Issues**: None apparent. Well-structured.
+   430→
+   431→## lib/core/backend/models/mechanic_model.dart
+   432→- **Purpose**: Mechanic profile plus maintenance-request and inventory models ported from `backend/v1/models/mechanics.js`.
+   433→- **Classes/Functions**: `MechanicStatus` enum; `MaintenanceStatus` enum; `MaintenancePriority` enum; `SparePart` class; `PartUsed` class; `PartsInventory` class; `InventoryHistoryEntry` class; `MaintenanceRequest` class; `MechanicModel` class (and private helpers).
+   434→- **Imports**: None (read first 50 lines, full file is 821 lines).
+   435→- **Status**: ✅ Working
+   436→- **Issues**: None apparent.
+   437→
+   438→## lib/core/backend/models/iot_model.dart
+   439→- **Purpose**: IoT telemetry, event and command models ported from `backend/v1/models/iot.js`.
+   440→- **Classes/Functions**: `IoTCommandStatus` enum; `IoTCommandKind` enum; `IoTEventType` enum; `IoTCommand` class; `Telemetry` class; `IoTEvent` class (and private helpers).
+   441→- **Imports**: None (read first 50 lines, full file is 484 lines).
+   442→- **Status**: ✅ Working
+   443→- **Issues**: None apparent.
+   444→
+   445→## lib/core/backend/models/upload_model.dart
+   446→- **Purpose**: File-upload metadata model ported from `backend/v1/models/uploads.js`. Allowed types: JPEG, PNG, WebP. Max 5 MB.
+   447→- **Classes/Functions**: `allowedUploadMimeTypes` const list; `maxUploadSizeBytes` const (5 MB); `UploadPurpose` enum (parkingProof/breakdown/maintenanceCompletion/avatar/general); `UploadModel` class; `UploadList` class (and private helpers).
+   448→- **Imports**: None (read first 50 lines, full file is 299 lines).
+   449→- **Status**: ✅ Working
+   450→- **Issues**: `maxUploadSizeBytes = 5 * 1024 * 1024` hardcoded — should be in `AppConstants`.
+   451→
+   452→## lib/core/backend/models/transaction_model.dart
+   453→- **Purpose**: Transaction (ledger entry) model ported from `backend/v1/models/transactions.js`. Every balance mutation is a signed transaction.
+   454→- **Classes/Functions**: `TransactionType` enum (topupClick/topupPayme/topupCard/topupPrepaid/tripPayment/refund/bonus/penalty/juicerPayout); `TransactionStatus` enum; `PaymentMethod` class; `TransactionModel` class; `TransactionList` class (and private helpers).
+   455→- **Imports**: None (read first 50 lines, full file is 499 lines).
+   456→- **Status**: ✅ Working
+   457→- **Issues**: None apparent.
+   458→
+   459→## lib/core/backend/models/juicer_model.dart
+   460→- **Purpose**: Juicer (scooter-charger gig worker) model ported from `backend/v1/models/juicers.js`.
+   461→- **Classes/Functions**: `JuicerStatus` enum; `JuicerTaskStatus` enum; `TaskCoordinates` class; `JuicerTask` class; `JuicerEarnings` class; `JuicerModel` class (and private helpers).
+   462→- **Imports**: None (read first 50 lines, full file is 467 lines).
+   463→- **Status**: ✅ Working
+   464→- **Issues**: Header comment mentions `JUICER_PAY_PER_SCOOTER = 5000 UZS` from the JS module — that constant is not surfaced in this Dart file (would need to verify in full file read).
+   465→
+   466→## lib/core/backend/models/geofence_model.dart
+   467→- **Purpose**: Geofencing check result ported from `backend/v1/models/geofencing.js`. Captures the `/geofencing/check` response.
+   468→- **Classes/Functions**: `GeofenceCheck` class; `GeofenceCity` class; `GeofenceZone` class; `GeofenceSpeedPolicy` class (and private helpers).
+   469→- **Imports**: `zone_model.dart` (ZoneType, GeoPoint).
+   470→- **Status**: ✅ Working
+   471→- **Issues**: None apparent. Properly imports only what it needs from `zone_model.dart` via `show`.
+   472→
+   473→## lib/core/backend/models/city_model.dart
+   474→- **Purpose**: City model with rate card and operational zones ported from `backend/v1/models/cities.js`.
+   475→- **Classes/Functions**: `CityModel` class; `CityRates` class; `CityScooterStatus` class; `CityOverview` class (and private helpers).
+   476→- **Imports**: `zone_model.dart` (ZoneModel, GeoPoint).
+   477→- **Status**: ✅ Working
+   478→- **Issues**: None apparent (read first 50 lines, full file is 392 lines).
+   479→
+   480→## lib/core/backend/models/stats_model.dart
+   481→- **Purpose**: Aggregated statistics models for the admin dashboard ported from `backend/v1/models/stats.js`.
+   482→- **Classes/Functions**: `StatsGranularity` enum; `StatsPeriod` enum; `StatsPoint` class; `StatsTimeSeries` class; `FleetCityBucket` class; `FleetUtilization` class; `FleetSummary` class; `UserSummary` class; `CitySummary` class; `TripSummary` class; `RevenueSummary` class; `StatsOverview` class; `Stats` class (and private helpers).
+   483→- **Imports**: None (read first 50 lines, full file is 687 lines).
+   484→- **Status**: ✅ Working
+   485→- **Issues**: None apparent.
+   486→
+   487→## lib/core/backend/models/support_model.dart
+   488→- **Purpose**: Support-ticket and breakdown-report models ported from `backend/v1/models/support.js`.
+   489→- **Classes/Functions**: `SupportTicketType` enum; `SupportTicketStatus` enum; `SupportTicketPriority` enum; `ProblemCategory` class; `MessageAuthor` class; `TicketMessage` class; `SupportTicket` class (and private helpers).
+   490→- **Imports**: None (read first 50 lines, full file is 489 lines).
+   491→- **Status**: ✅ Working
+   492→- **Issues**: None apparent.
+   493→
+   494→---
+   495→
+   496→## Summary
+   497→
+   498→| Status | Count | Files |
+   499→|--------|-------|-------|
+   500→| ✅ Working | 44 | Most files |
+   501→| ⚠️ Issues | 8 | `main_web.dart`, `update_banner.dart`, `virent_ui.dart`, `api_client.dart`, `app_constants.dart` (minor), `auth_middleware.dart`, `view_executor.dart`, `domain_entities.dart`, `api_exceptions.dart`, `embedded_server.dart`, `update_service.dart`, `sms_model.dart` |
+   502→| ❌ Broken | 1 | `ngrok_tunnel_service.dart` (committed secret) |
+   503→
+   504→### Critical Action Items
+   505→1. **Rotate and remove the ngrok authtoken** from `ngrok_tunnel_service.dart:48` immediately. Move to environment config or `--dart-define`.
+   506→2. **Remove hardcoded admin credentials** (`admin@virent.io` / `Admin123!`) from `embedded_server.dart` — at minimum load from env in production.
+   507→3. **Fix `ApiException.fromResponse`** to use `jsonDecode` instead of `Uri.splitQueryString` for JSON error bodies.
+   508→4. **Resolve `OtpCode` name collision** between `domain_entities.dart` and `sms_model.dart` — rename one (e.g. `OtpChallenge` for the domain entity).
+   509→5. **Reconcile OTP TTL inconsistency** between `AppConstants.otpValidity = 5 min` and `OtpCode.ttlMinutes = 10 min`.
+   510→6. **Move hardcoded HTTP timeout** in `api_client.dart` to use `AppConstants.connectTimeout`/`receiveTimeout`.
+   511→7. **Localize the Russian strings** in `update_banner.dart` and `PillSearchBar` via the `L10n` system.
+   512→8. **Split `embedded_server.dart`** (1628 lines) into per-feature route files.
+   513→9. **Replace `Color.withOpacity()`** with `Color.withValues(alpha: ...)` in 7 locations.
+   514→10. **Add `super_admin` and `operator`** to `Roles.all` in `permissions_service.dart` to match what `embedded_server.dart` actually issues.
+   515→
+   516→
+   517→---
+   518→
+   519→# Admin Web + Admin Feature Audit
+   520→
+   521→Audit of `lib/features/admin_web/` (root, layout, widgets, 46 pages, providers) and `lib/features/admin/` (data, presentation).
+   522→
+   523→Five core checks applied per file:
+   524→1. Page is `ConsumerWidget` with `ref.watch`?
+   525→2. All `onPressed` / `onChanged` handlers non-empty?
+   526→3. Providers properly connected to the page?
+   527→4. Hardcoded data rows that should use providers?
+   528→5. Compilation issues?
+   529→
+   530→---
+   531→
+   532→## lib/features/admin_web/admin_web_screen.dart
+   533→- **Purpose**: Entry-point `StatelessWidget` for the `/admin/web` route. Wraps `AppLayout` in a `Scaffold`.
+   534→- **Classes/Functions**: `AdminWebScreen` (StatelessWidget).
+   535→- **Status**: ✅ Working
+   536→- **Issues**: None. Plain wrapper — does not need `ref` itself. The responsive-drawer behavior described in the doc comment is **not actually implemented** (the comment promises a drawer for narrow screens, but the build just returns `Scaffold(body: AppLayout())`).
+   537→
+   538→## lib/features/admin_web/admin_web_providers.dart
+   539→- **Purpose**: Riverpod wiring layer for the 46-page admin web panel. Exposes ~40 `FutureProvider.autoDispose` read providers + ~12 action providers + 3 generic CRUD providers (`genericCreateAction`, `genericUpdateAction`, `genericDeleteAction`).
+   540→- **Classes/Functions**: `adminWebRepositoryProvider`, `dashboardStatsProvider`, `scootersListProvider`, `zonesListProvider`, `customersListProvider`, `auditLogProvider`, `tripsListProvider`, `prepaidOrdersProvider`, `promoCodesProvider`, `adminListProvider`, `smsLogsProvider`, `pushHistoryProvider`, `billingTransactionsProvider`, `blockUserAction`, `unblockUserAction`, `adjustBalanceAction`, `refundTripAction`, `sendIoTCommandAction`, `sendBroadcastNotificationAction`, `createZoneAction`, `deleteZoneAction`, `bulkGeneratePrepaidsAction`, `createPromoCodeAction`, `createAdminAction`, `deleteAdminAction`, `_safeGetList`, ~30 extended read providers, `genericDeleteAction`, `genericCreateAction`, `genericUpdateAction`.
+   541→- **Status**: ⚠️ Issues
+   542→- **Issues**:
+   543→  - **Provider name collision** — `adminListProvider` is declared here returning `List<Map<String,dynamic>>`, but the same name is declared in `lib/features/admin/presentation/providers/admin_auth_provider.dart` returning `List<AdminUser>`. Whichever file is imported last wins; the wrong type reaches the consumer.
+   544→  - **Provider name collision** — `adminAuditLogProvider` is declared here (returns `List<Map>`) AND in `lib/features/admin/presentation/providers/admin_provider.dart` (returns `List<Map>` but with filter support). Duplicate definition.
+   545→  - `_safeGetList` swallows every error with `catch (_) => const []` — the UI shows "Совпадений не найдено" instead of an error state, masking network failures from the admin.
+   546→  - All providers return raw `Map<String, dynamic>` (no typed models) — defeats Dart's type safety and forces every page to do defensive `(x ?? '-')` parsing.
+   547→  - `pushHistoryProvider` (Map) and `pushHistoryListProvider` (List) both exist for the same conceptual data — confusing and one is likely dead.
+   548→
+   549→## lib/features/admin_web/layout/header.dart
+   550→- **Purpose**: Top dark-themed header bar with the "ViRent" logo, status tags, and a user chip.
+   551→- **Classes/Functions**: `AppHeader` (StatelessWidget), `_buildStatusTag`.
+   552→- **Status**: ❌ Broken
+   553→- **Issues**:
+   554→  - **Not a `ConsumerWidget`** — does not use Riverpod at all.
+   555→  - **Hardcoded data rows** — status tags `'Разблокирован: 0'`, `'Разряжен: 7'`, `'Не в сети: 9'`, `'Выезд из зоны: 0'`, `'Не включился: 1'` are static literals; they should be wired to `dashboardStatsProvider` (or an alerts-summary provider).
+   556→  - **Empty `onPressed` handler** — the hamburger `IconButton` has `onPressed: () {}` (no-op). Should open the drawer described in `admin_web_screen.dart`.
+   557→  - Hardcoded user `'Шерзод'` instead of reading from `currentAdminProvider`.
+   558→
+   559→## lib/features/admin_web/layout/app_layout.dart
+   560→- **Purpose**: Stateful shell that mounts `AppHeader` + `AppSidebar` + the currently selected page via `_getPage(index)`.
+   561→- **Classes/Functions**: `AppLayout` (StatefulWidget), `_AppLayoutState`, `_getPage(int)`.
+   562→- **Status**: ⚠️ Issues
+   563→- **Issues**:
+   564→  - **Not a `ConsumerWidget`** — uses local `setState` for navigation. Acceptable but prevents reactive page refresh on auth changes.
+   565→  - **Sidebar index gaps & mismatches** — sidebar items use indexes `0-18`, but `_getPage` switch has cases for `30, 90, 91, 100, 101, 120-145, 151, 153, 170-173, 200-206`. The sidebar has no way to reach those "sub-pages" because `isExpandable: true` items only display an arrow icon — no submenu is rendered. So 25+ sub-pages are **unreachable** through the UI.
+   566→  - **Sidebar `Карта` (index 3)** has no matching case in the switch — selecting it shows the default "not implemented" message even though `MapPage` exists at case `30`.
+   567→  - **Cases 18 & 19 both return `ChatLogsPage`** — `case 18: case 19: return const ChatLogsPage();`. The `Чат` and `Журнал чата` items are indistinguishable.
+   568→  - Default fallback message still tells the user to pick "Карта (3)" which is broken (see above).
+   569→
+   570→## lib/features/admin_web/layout/sidebar.dart
+   571→- **Purpose**: 250 px-wide navigation list with 19 top-level items.
+   572→- **Classes/Functions**: `AppSidebar` (StatelessWidget), `_buildSidebarItem`.
+   573→- **Status**: ⚠️ Issues
+   574→- **Issues**:
+   575→  - **Not a `ConsumerWidget`**.
+   576→  - `isExpandable: true` does nothing — the parameter is only used to render a chevron icon. No submenu, no expansion, no navigation to the 25+ child pages defined in `app_layout.dart`. This is the single biggest UX gap in the panel.
+   577→  - Tap handler `onTap: () => onItemSelected(index)` works but always passes the top-level index, so child pages are unreachable.
+   578→
+   579→## lib/features/admin_web/widgets/admin_dialogs.dart
+   580→- **Purpose**: Reusable dialog & action wrappers (info, confirm, view, form, delete) + `runAdminAction` loading-spinner wrapper.
+   581→- **Classes/Functions**: `AdminField`, `showAdminInfoDialog`, `showAdminSnack`, `runAdminAction`, `showAdminConfirmDialog`, `showAdminDeleteDialog`, `showAdminViewDialog`, `showAdminFormDialog`.
+   582→- **Status**: ⚠️ Issues
+   583→- **Issues**:
+   584→  - `runAdminAction` calls `showDialog` for the loading spinner, then `Navigator.of(context).pop()` to dismiss it. If the surrounding route is popped during `await action()` (e.g. user hits back), the `pop()` will dismiss the **wrong** route — there is no `Navigator.of(context).canPop()` guard.
+   585→  - `showAdminFormDialog` calls `runAdminAction` AFTER `Navigator.of(ctx).pop()`-ing the form dialog, but `runAdminAction` itself pushes a loading dialog using the **outer** `context` — works only if the outer context is still mounted. The `if (!context.mounted) return;` check between is present but does not protect the `await runAdminAction` call from race conditions.
+   586→  - `showAdminFormDialog` controllers are disposed in a `finally` block, but the `Map<String,dynamic>` result is built by reading `.text` BEFORE disposal — correct order, but fragile.
+   587→
+   588→## lib/features/admin_web/pages/dashboard_page.dart
+   589→- **Purpose**: Dashboard with 10 stat cards + "tariffs in rent" lists + control panel + PUSH form.
+   590→- **Classes/Functions**: `DashboardPage` (ConsumerWidget), `_buildStatsGrid`, `_buildStatCard`, `_buildListsSection`, `_buildListCard`, `_buildControlPanel`, `_buildPushPanel`, `_buildActionButton`.
+   591→- **Status**: ⚠️ Issues
+   592→- **Issues**:
+   593→  - ✅ `ConsumerWidget` with `ref.watch(dashboardStatsProvider)`.
+   594→  - ✅ PUSH form is wired to `sendBroadcastNotificationAction`.
+   595→  - **Hardcoded data rows** — `_buildListsSection()` returns fixed entries: `'Минутный ИП Асилбеков' (3)`, `'Для 30мин ИП Асилбеков' (1)`, `'30 Мин ИП Асилбеков' (1)`. These should come from a "tariffs in rent" provider.
+   596→  - **Hardcoded scooter IDs** in the stat-card detail dialog: `'2056', '2060', '624', '940'` — should fetch the list of scooters in each status from a provider.
+   597→  - **Stub handlers** — `_buildControlPanel` buttons "опубликовать", "снять с публикации", "редактировать", "статус" only call `showAdminSnack` (no actual mutation). "Обновление" and "Режим техника" only show info dialogs. "Сообщения пользователю по событиям" only shows a dialog.
+   598→  - **Disabled button** — `OutlinedButton(onPressed: null, child: Text('РЕКОМЕНДАЦИИ ПО PUSH'))` is permanently disabled.
+   599→  - "Выключить аренды" `onConfirm` only invalidates providers — it does **not** call any server endpoint to actually stop rentals.
+   600→
+   601→## lib/features/admin_web/pages/statistics_page.dart
+   602→- **Purpose**: KPI grid (6 cards) + revenue-by-account panel.
+   603→- **Classes/Functions**: `StatisticsPage` (ConsumerWidget), `_buildStatCard`, `_buildSectionCard`.
+   604→- **Status**: ⚠️ Issues
+   605→- **Issues**:
+   606→  - ✅ `ConsumerWidget` with `ref.watch(analyticsProvider)`.
+   607→  - **Hardcoded fallback values** baked into the card labels — e.g. `'${_s('avg_ride_duration', '24.25 мин.')}'`, `'${_s('active_clients', '1278')}'`, `'${_s('revenue', '109984540.39 C.')}'`. If the API returns `null` for any key, the UI shows fabricated numbers instead of `—`.
+   608→  - **Hardcoded ИП dropdown items** — 4 company names hard-coded in both the top filter and the revenue panel.
+   609→  - **Empty `onChanged` handlers** — both `DropdownButtonFormField` widgets use `(val) {}` (no-op). Selecting a company does nothing.
+   610→  - `_buildSectionCard` always shows "Не найдено..." — no provider connection.
+   611→  - Date pickers are plain `TextField`s — no `showDatePicker` integration.
+   612→
+   613→## lib/features/admin_web/pages/alerts_page.dart
+   614→- **Purpose**: Fleet alerts table with filters (search, status, grouping).
+   615→- **Classes/Functions**: `AlertsPage` (ConsumerWidget), `_buildRow`, `_alertSearchProvider` (private StateProvider).
+   616→- **Status**: ⚠️ Issues
+   617→- **Issues**:
+   618→  - ✅ `ConsumerWidget` with `ref.watch(alertsListProvider)` + local `_alertSearchProvider` for client-side search.
+   619→  - **Dropdown has only ONE item** — `'Типы тревог:'` with no other options.
+   620→  - **Empty `onChanged`** on the dropdown.
+   621→  - Status filter buttons ("Открыта", "Закрыта", "Группировать") only show SnackBars — they do not actually filter the list. The `filtered` variable only respects the search query.
+   622→  - Search input has no debounce.
+   623→
+   624→## lib/features/admin_web/pages/map_page.dart
+   625→- **Purpose**: Fleet map mockup — counts scooters by status and shows colored circles.
+   626→- **Classes/Functions**: `MapPage` (ConsumerWidget).
+   627→- **Status**: ⚠️ Issues
+   628→- **Issues**:
+   629→  - ✅ `ConsumerWidget` with `ref.watch(scootersListProvider)`.
+   630→  - **No actual map** — the body is a `Container(color: Color(0xFF2E2E2E))` with the text "Mapbox Integration (Mockup)". No Mapbox / Google Maps / flutter_map widget.
+   631→  - **Empty `onChanged`** on both `Radio` widgets ("Старт аренд" / "Конец аренд").
+   632→  - Map mode buttons ("Общая", "Тепловая", "Частота аренд", "Группирование") only show SnackBars — they do not change the rendered view.
+   633→
+   634→## lib/features/admin_web/pages/scooters_page.dart
+   635→- **Purpose**: Full CRUD scooter table with search, filters, lock/unlock IoT commands.
+   636→- **Classes/Functions**: `ScootersPage` (ConsumerWidget), `_buildFilterField`, `_buildDropdownBtn`, `_buildRow`, `_scooterSearchProvider`.
+   637→- **Status**: ✅ Working
+   638→- **Issues**:
+   639→  - ✅ `ConsumerWidget` with `ref.watch(scootersListProvider)`.
+   640→  - ✅ Create / edit wired to `genericCreateAction` / `genericUpdateAction` (endpoint `/admin/scooters`).
+   641→  - ✅ Lock / unlock IoT commands wired to `sendIoTCommandAction`.
+   642→  - Filter dropdown buttons ("Модель", "Группы", "Компания", "Геозоны") only open info dialogs — no real filtering.
+   643→  - Filter `TextField`s have no `onChanged` — they don't filter the table.
+   644→
+   645→## lib/features/admin_web/pages/push_history_page.dart
+   646→- **Purpose**: Push-notification history table with search.
+   647→- **Classes/Functions**: `PushHistoryPage` (ConsumerWidget), `_buildFilterField`, `_buildRow`, `_pushSearchProvider`.
+   648→- **Status**: ✅ Working
+   649→- **Issues**: None significant. The "ID клиента" filter field has no `onChanged` (search field works). No detail view / delete action.
+   650→
+   651→## lib/features/admin_web/pages/prepaid_orders_page.dart
+   652→- **Purpose**: Prepaid top-up codes table.
+   653→- **Classes/Functions**: `PrepaidOrdersPage` (ConsumerWidget), `_buildFilterField`, `_buildRow`, `_prepaidSearchProvider`.
+   654→- **Status**: ⚠️ Issues
+   655→- **Issues**:
+   656→  - ✅ `ConsumerWidget` with `ref.watch(prepaidOrdersProvider)`.
+   657→  - **No "Add" button** — `bulkGeneratePrepaidsAction` exists in providers but is not wired to this page.
+   658→  - All five filter fields have no `onChanged` — only the top search box works.
+   659→  - No detail view, no delete.
+   660→
+   661→## lib/features/admin_web/pages/promo_codes_page.dart
+   662→- **Purpose**: Promo-code list + create dialog.
+   663→- **Classes/Functions**: `PromoCodesPage` (ConsumerWidget), `_buildRow`, `_promoSearchProvider`.
+   664→- **Status**: ✅ Working
+   665→- **Issues**:
+   666→  - ✅ `ConsumerWidget` with `ref.watch(promoCodesProvider)`.
+   667→  - ✅ Create wired to `createPromoCodeAction`.
+   668→  - No edit / delete / detail action — promos cannot be edited once created.
+   669→
+   670→## lib/features/admin_web/pages/billing_debts_page.dart
+   671→- **Purpose**: Debtors table (customers with negative balance) with balance-adjust dialog.
+   672→- **Classes/Functions**: `BillingDebtsPage` (ConsumerWidget), `_buildFilterField`, `_buildRow`, `_debtsSearchProvider`.
+   673→- **Status**: ⚠️ Issues
+   674→- **Issues**:
+   675→  - ✅ `ConsumerWidget` with `ref.watch(customersListProvider)` (filters debtors client-side).
+   676→  - **Confusing balance form** — the edit dialog has a `balance` field initialized to the current debt, but `adjustBalanceAction(userId, delta, reason)` expects a **signed delta**. The code parses the entered value as `delta` and submits it, so entering `-50000` to "set to -50000" actually credits -50000 to the wallet, double-counting the existing debt. The UI label says "Баланс" (Balance) but the semantics is "Adjustment delta".
+   677→  - Filter TextFields ("ID клиента", "ID заказа") have no `onChanged` — only the top search box works.
+   678→
+   679→## lib/features/admin_web/pages/billing_receipts_page.dart
+   680→- **Purpose**: Receipts table.
+   681→- **Classes/Functions**: `BillingReceiptsPage` (ConsumerWidget), `_buildRow`, `_receiptsSearchProvider`.
+   682→- **Status**: ✅ Working
+   683→- **Issues**: None significant. Filter fields have no `onChanged`. No detail view, no delete, no export.
+   684→
+   685→## lib/features/admin_web/pages/fines_page.dart
+   686→- **Purpose**: Fines table with search.
+   687→- **Classes/Functions**: `FinesPage` (ConsumerWidget), `_buildRow`, `_finesSearchProvider`.
+   688→- **Status**: ✅ Working
+   689→- **Issues**: No create / edit / delete action — fines are read-only.
+   690→
+   691→## lib/features/admin_web/pages/payme_transactions_page.dart
+   692→- **Purpose**: Payme transaction table.
+   693→- **Classes/Functions**: `PaymeTransactionsPage` (ConsumerWidget), `_buildFilterField`, `_buildRow`, `_paymeSearchProvider`.
+   694→- **Status**: ✅ Working
+   695→- **Issues**: Filter TextFields ("ID клиента", "payme_transaction_id", "state") have no `onChanged`. No detail view, no refund action.
+   696→
+   697→## lib/features/admin_web/pages/click_transactions_page.dart
+   698→- **Purpose**: Click transaction table.
+   699→- **Classes/Functions**: `ClickTransactionsPage` (ConsumerWidget), `_buildFilterInput`, `_buildRow`, `_clickSearchProvider`.
+   700→- **Status**: ✅ Working
+   701→- **Issues**: Same as Payme page — filter TextFields have no `onChanged`, no actions.
+   702→
+   703→## lib/features/admin_web/pages/selfies_page.dart
+   704→- **Purpose**: Selfie verification table with photo placeholder + verified toggle.
+   705→- **Classes/Functions**: `SelfiesPage` (ConsumerWidget), `_buildRow`.
+   706→- **Status**: ⚠️ Issues
+   707→- **Issues**:
+   708→  - ✅ `ConsumerWidget` with `ref.watch(selfiesListProvider)`.
+   709→  - **Search TextField has no `onChanged`** — search box is purely decorative.
+   710→  - **Empty `onChanged`** on the verification `Switch(value: _b('verified'), onChanged: (val) {})` — toggling the switch does nothing.
+   711→  - Photo cell is a static placeholder (`Icon(Icons.image)`) — no actual image is loaded.
+   712→  - No approve / reject action.
+   713→
+   714→## lib/features/admin_web/pages/inspection_damages_page.dart
+   715→- **Purpose**: Inspection-damages table with photo placeholders.
+   716→- **Classes/Functions**: `InspectionDamagesPage` (ConsumerWidget), `_buildFilterField`, `_buildRow`.
+   717→- **Status**: ⚠️ Issues
+   718→- **Issues**:
+   719→  - ✅ `ConsumerWidget` with `ref.watch(inspectionDamagesProvider)`.
+   720→  - **Search TextField has no `onChanged`** — search box is decorative.
+   721→  - Filter TextFields ("Самокат", "Номер") have no `onChanged`.
+   722→  - Image cell shows a static placeholder regardless of `path` value — the ternary `imagePath.isEmpty ? Icon : Icon` returns the same icon either way (clear copy-paste bug).
+   723→  - "Конкретный день ▼" and "Промежуток времени ▼" are static `Text` widgets, not buttons.
+   724→
+   725→## lib/features/admin_web/pages/bonuses_page.dart
+   726→- **Purpose**: Bonuses table with create dialog.
+   727→- **Classes/Functions**: `BonusesPage` (ConsumerWidget), `_buildRow`, `_bonusSearchProvider`.
+   728→- **Status**: ✅ Working
+   729→- **Issues**: ✅ Create wired to `genericCreateAction`. No edit / delete / detail.
+   730→
+   731→## lib/features/admin_web/pages/promo_series_page.dart
+   732→- **Purpose**: Promo series table with create dialog.
+   733→- **Classes/Functions**: `PromoSeriesPage` (ConsumerWidget), `_buildRow`, `_seriesSearchProvider`.
+   734→- **Status**: ✅ Working
+   735→- **Issues**: No edit / delete / detail.
+   736→
+   737→## lib/features/admin_web/pages/cities_page.dart
+   738→- **Purpose**: Cities table with create dialog.
+   739→- **Classes/Functions**: `CitiesPage` (ConsumerWidget), `_buildRow`, `_citySearchProvider`.
+   740→- **Status**: ✅ Working
+   741→- **Issues**: No edit / delete / detail.
+   742→
+   743→## lib/features/admin_web/pages/client_groups_page.dart
+   744→- **Purpose**: Client-groups table with full CRUD.
+   745→- **Classes/Functions**: `ClientGroupsPage` (ConsumerWidget), `_buildRow`.
+   746→- **Status**: ⚠️ Issues
+   747→- **Issues**:
+   748→  - ✅ `ConsumerWidget` with `ref.watch(clientGroupsProvider)`.
+   749→  - ✅ Full CRUD wired (`genericCreateAction` / `genericUpdateAction` / `genericDeleteAction`).
+   750→  - **Search TextField has no `onChanged`** — search box is decorative.
+   751→
+   752→## lib/features/admin_web/pages/admin_roles_page.dart
+   753→- **Purpose**: Admin accounts table with full CRUD.
+   754→- **Classes/Functions**: `AdminRolesPage` (ConsumerWidget), `_buildRow`, `_adminSearchProvider`.
+   755→- **Status**: ✅ Working
+   756→- **Issues**: ✅ Uses `createAdminAction`, `genericUpdateAction`, `deleteAdminAction`. The update calls `genericUpdateAction('/admin/list', id, ...)` — but the actual server endpoint for updating an admin is `/admin/permissions/$adminId` (per `AdminAuthRepositoryImpl.updateAdminPermissions`). Endpoint mismatch — update likely 404s.
+   757→
+   758→## lib/features/admin_web/pages/admin_permissions_page.dart
+   759→- **Purpose**: Permissions table with full CRUD.
+   760→- **Classes/Functions**: `AdminPermissionsPage` (ConsumerWidget), `_buildRow`.
+   761→- **Status**: ⚠️ Issues
+   762→- **Issues**:
+   763→  - ✅ `ConsumerWidget` with `ref.watch(adminPermissionsProvider)`.
+   764→  - ✅ Full CRUD wired.
+   765→  - **Search TextField has no `onChanged`**.
+   766→  - Column header `'backpack::permissionmanager.title'` is a Laravel Backpack i18n key accidentally shipped as the column label — should be `"Заголовок"`.
+   767→
+   768→## lib/features/admin_web/pages/admin_agreements_page.dart
+   769→- **Purpose**: Agreements table with full CRUD.
+   770→- **Classes/Functions**: `AdminAgreementsPage` (ConsumerWidget), `_buildRow`.
+   771→- **Status**: ⚠️ Issues
+   772→- **Issues**:
+   773→  - ✅ `ConsumerWidget` with `ref.watch(adminAgreementsProvider)`.
+   774→  - ✅ Full CRUD wired.
+   775→  - **Search TextField has no `onChanged`**.
+   776→  - **Title says `'Entries'`** — should be `'Договора'`.
+   777→
+   778→## lib/features/admin_web/pages/admin_faq_page.dart
+   779→- **Purpose**: FAQ table with full CRUD.
+   780→- **Classes/Functions**: `AdminFaqPage` (ConsumerWidget), `_buildRow`.
+   781→- **Status**: ⚠️ Issues
+   782→- **Issues**:
+   783→  - ✅ `ConsumerWidget` with `ref.watch(adminFaqProvider)`.
+   784→  - ✅ Full CRUD wired.
+   785→  - **Search TextField has no `onChanged`**.
+   786→  - **Title says `'Faqs'`** — should be `'Частые вопросы'`.
+   787→
+   788→## lib/features/admin_web/pages/admin_companies_page.dart
+   789→- **Purpose**: Companies table with full CRUD.
+   790→- **Classes/Functions**: `AdminCompaniesPage` (ConsumerWidget), `_buildRow`.
+   791→- **Status**: ⚠️ Issues
+   792→- **Issues**:
+   793→  - ✅ `ConsumerWidget` with `ref.watch(adminCompaniesProvider)`.
+   794→  - ✅ Full CRUD wired.
+   795→  - **Search TextField has no `onChanged`**.
+   796→  - **Title says `'Companies'`** — should be `'Компании'`.
+   797→
+   798→## lib/features/admin_web/pages/admin_contacts_page.dart
+   799→- **Purpose**: Contacts table with full CRUD.
+   800→- **Classes/Functions**: `AdminContactsPage` (ConsumerWidget), `_buildRow`.
+   801→- **Status**: ⚠️ Issues
+   802→- **Issues**:
+   803→  - ✅ `ConsumerWidget` with `ref.watch(adminContactsProvider)`.
+   804→  - ✅ Full CRUD wired.
+   805→  - **Search TextField has no `onChanged`**.
+   806→  - **Title says `'Entries'`** — should be `'Контакты'`.
+   807→
+   808→## lib/features/admin_web/pages/tariffs_page.dart
+   809→- **Purpose**: Tariffs table with full CRUD.
+   810→- **Classes/Functions**: `TariffsPage` (ConsumerWidget), `_buildRow`.
+   811→- **Status**: ⚠️ Issues
+   812→- **Issues**:
+   813→  - ✅ `ConsumerWidget` with `ref.watch(tariffsListProvider)`.
+   814→  - ✅ Full CRUD wired.
+   815→  - **Search TextField has no `onChanged`**.
+   816→  - "Геозоны завершения" button only shows an info dialog — no actual geo-zone editor.
+   817→
+   818→## lib/features/admin_web/pages/tariff_prices_page.dart
+   819→- **Purpose**: Tariff prices table with full CRUD.
+   820→- **Classes/Functions**: `TariffPricesPage` (ConsumerWidget), `_buildRow`.
+   821→- **Status**: ⚠️ Issues
+   822→- **Issues**:
+   823→  - ✅ `ConsumerWidget` with `ref.watch(tariffPricesProvider)`.
+   824→  - ✅ Full CRUD wired.
+   825→  - **Search TextField has no `onChanged`**.
+   826→  - "Развернуть / Свернуть" button on the Json cell only opens a `showAdminViewDialog` — no actual expand/collapse behavior.
+   827→
+   828→## lib/features/admin_web/pages/tariff_subtariffs_page.dart
+   829→- **Purpose**: "Subscription_tariffs" table with full CRUD.
+   830→- **Classes/Functions**: `TariffSubTariffsPage` (ConsumerWidget), `_buildRow`.
+   831→- **Status**: ⚠️ Issues
+   832→- **Issues**:
+   833→  - ✅ `ConsumerWidget` with `ref.watch(tariffSubscriptionsProvider)`.
+   834→  - ✅ Full CRUD wired to `/admin/tariff-subscriptions`.
+   835→  - **DUPLICATE PAGE** — `TariffsSubscriptionsPage` (next file) uses the same provider and same endpoint with a different schema. Both render as "Абонементы" in the sidebar switch (case 12 vs case 122).
+   836→  - **Search TextField has no `onChanged`**.
+   837→
+   838→## lib/features/admin_web/pages/tariff_abonements_page.dart
+   839→- **Purpose**: Abonements table with full CRUD.
+   840→- **Classes/Functions**: `TariffAbonementsPage` (ConsumerWidget), `_buildRow`.
+   841→- **Status**: ⚠️ Issues
+   842→- **Issues**:
+   843→  - ✅ `ConsumerWidget` with `ref.watch(tariffAbonementsProvider)`.
+   844→  - ✅ Full CRUD wired to `/admin/tariff-abonements`.
+   845→  - **Search TextField has no `onChanged`**.
+   846→  - "Геозоны завершения" button only shows info dialog.
+   847→
+   848→## lib/features/admin_web/pages/tariff_until_dead_page.dart
+   849→- **Purpose**: "Тариф Пока Не Сядет" (TPNS / until-dead) table.
+   850→- **Classes/Functions**: `TariffUntilDeadPage` (ConsumerWidget), `_buildRow`.
+   851→- **Status**: ⚠️ Issues
+   852→- **Issues**:
+   853→  - ✅ `ConsumerWidget` with `ref.watch(tariffsListProvider)`.
+   854→  - **Wrong provider** — uses `tariffsListProvider` (regular tariffs) and updates `/admin/tariffs`. The columns shown (`max_duration_hours`, `insurance`, `price_per_km`, `charge_level`) are TPNS-specific and don't exist on the regular tariffs endpoint — fields will always show `-`.
+   855→  - **No create button** — TPNS tariffs can only be edited / deleted from this page; creation requires going to `TariffsPage`.
+   856→  - **Search TextField has no `onChanged`**.
+   857→
+   858→## lib/features/admin_web/pages/tariffs_subscriptions_page.dart
+   859→- **Purpose**: "Абонементы" table with full CRUD — **duplicate of `TariffSubTariffsPage`**.
+   860→- **Classes/Functions**: `TariffsSubscriptionsPage` (ConsumerWidget), `_buildRow`.
+   861→- **Status**: ❌ Broken
+   862→- **Issues**:
+   863→  - ✅ `ConsumerWidget` with `ref.watch(tariffSubscriptionsProvider)`.
+   864→  - **Duplicate page** — `TariffSubTariffsPage` already uses `tariffSubscriptionsProvider` and endpoint `/admin/tariff-subscriptions`. This file uses the same provider + endpoint but a different schema (`tariff` / `description` / `overrun_price` / `cost` vs `name` / `name_in_app` / `price` / `group` / `active` / `daily` / `company` / `duration`). Only one schema can match the server response — the other page renders `-` for every field.
+   865→  - The sidebar switch (case 12) renders this page as "Абонементы", but case 122 also renders `TariffSubTariffsPage` as "Subscription_tariffs" — both visible to the user with overlapping data.
+   866→  - Not registered in `app_layout.dart` `_getPage` switch (no case for it) — effectively dead code via the sidebar.
+   867→
+   868→## lib/features/admin_web/pages/technicians_page.dart
+   869→- **Purpose**: Technicians table with full CRUD.
+   870→- **Classes/Functions**: `TechniciansPage` (ConsumerWidget), `_buildRow`.
+   871→- **Status**: ⚠️ Issues
+   872→- **Issues**:
+   873→  - ✅ `ConsumerWidget` with `ref.watch(techniciansListProvider)`.
+   874→  - ✅ Full CRUD wired.
+   875→  - **Search TextField has no `onChanged`**.
+   876→  - **Plaintext password column** — `_s('password')` is rendered as plain text in the table.
+   877→
+   878→## lib/features/admin_web/pages/task_technicians_page.dart
+   879→- **Purpose**: Technician-tasks table with full CRUD.
+   880→- **Classes/Functions**: `TaskTechniciansPage` (ConsumerWidget), `_buildRow`.
+   881→- **Status**: ⚠️ Issues
+   882→- **Issues**:
+   883→  - ✅ `ConsumerWidget` with `ref.watch(techTasksProvider)`.
+   884→  - ✅ Full CRUD wired.
+   885→  - **Duplicate import** — `import '../widgets/admin_dialogs.dart';` is declared **twice** (lines 5-6). Compilation succeeds but it's a lint error.
+   886→  - **Search TextField has no `onChanged`**.
+   887→  - **Title typo** — `'Task_techicians'` (should be `'Task_technicians'`).
+   888→
+   889→## lib/features/admin_web/pages/tech_feedback_page.dart
+   890→- **Purpose**: Technician feedback table with "Проверить фидбэк" action.
+   891→- **Classes/Functions**: `TechFeedbackPage` (ConsumerWidget), `_buildFilterInput`, `_buildRow`.
+   892→- **Status**: ⚠️ Issues
+   893→- **Issues**:
+   894→  - ✅ `ConsumerWidget` with `ref.watch(techFeedbackProvider)`.
+   895→  - ✅ "Проверить фидбэк" wired to `genericUpdateAction('/admin/tech-feedback', id, {'checked': '1'}, ...)`.
+   896→  - **Search TextField has no `onChanged`**.
+   897→  - Filter TextFields ("Самокат", "Заказ", "Клиент") have no `onChanged`.
+   898→  - "checked" column is a static `Icon(Icons.check_box_outline_blank)` regardless of actual value — should reflect `_b('checked')`.
+   899→
+   900→## lib/features/admin_web/pages/juicers_page.dart
+   901→- **Purpose**: Juicers (charging team) table with create dialog.
+   902→- **Classes/Functions**: `JuicersPage` (ConsumerWidget), `_buildRow`, `_juicerSearchProvider`.
+   903→- **Status**: ✅ Working
+   904→- **Issues**: No edit / delete / detail action.
+   905→
+   906→## lib/features/admin_web/pages/support_page.dart
+   907→- **Purpose**: Support tickets table.
+   908→- **Classes/Functions**: `SupportPage` (ConsumerWidget), `_buildRow`, `_ticketSearchProvider`.
+   909→- **Status**: ✅ Working
+   910→- **Issues**: No create / assign / close action — tickets are read-only.
+   911→
+   912→## lib/features/admin_web/pages/geozones_page.dart
+   913→- **Purpose**: Geofenced zones table with create dialog.
+   914→- **Classes/Functions**: `GeozonesPage` (ConsumerWidget), `_buildRow`, `_zoneSearchProvider`.
+   915→- **Status**: ⚠️ Issues
+   916→- **Issues**:
+   917→  - ✅ `ConsumerWidget` with `ref.watch(zonesListProvider)`.
+   918→  - ✅ Create wired to `createZoneAction`.
+   919→  - **No edit / delete** — `deleteZoneAction` exists in providers but is not wired to this page.
+   920→  - No detail view.
+   921→
+   922→## lib/features/admin_web/pages/settings_notifications_page.dart
+   923→- **Purpose**: Notification-config table with edit/delete.
+   924→- **Classes/Functions**: `SettingsNotificationsPage` (ConsumerWidget), `_buildRow`.
+   925→- **Status**: ⚠️ Issues
+   926→- **Issues**:
+   927→  - ✅ `ConsumerWidget` with `ref.watch(settingsNotificationsProvider)`.
+   928→  - ✅ Edit / delete wired — but uses **direct `apiClientProvider.put/delete`** instead of `genericUpdateAction` / `genericDeleteAction` (inconsistent with the rest of the panel).
+   929→  - **Empty `onChanged`** on all three `Switch` widgets (`send_sms`, `send_push`, `send_email`) — toggles are decorative.
+   930→  - **Search TextField has no `onChanged`**.
+   931→  - **Title says `'Entries'`** — should be `'Уведомления'`.
+   932→
+   933→## lib/features/admin_web/pages/settings_config_page.dart
+   934→- **Purpose**: Read-only display of app config values (SMS code TTL, app versions, free bookings).
+   935→- **Classes/Functions**: `SettingsConfigPage` (ConsumerWidget), `_buildSectionTitle`, `_buildConfigRow`.
+   936→- **Status**: ❌ Broken
+   937→- **Issues**:
+   938→  - ✅ `ConsumerWidget` with `ref.watch(settingsConfigProvider)`.
+   939→  - **No save button** — every config row has a `TextField` with a `TextEditingController(text: value)`, but the controller is created inline (never stored, never read), and there is no "Save" / "Update" button anywhere on the page. Edits are silently discarded.
+   940→  - **Controllers leak** — `TextEditingController(text: value)` is created inside `_buildConfigRow` and never disposed. Every rebuild creates new controllers.
+   941→  - Hardcoded fallback values in every `_s(key, fallback)` call (e.g. `'6'`, `'15'`, `'10'`, `'1'`, `'180'`, `'5'`, `'10000'`, `'2.6.7'`, `'129'`, `'2'`, `'1'`) — if the API returns `null`, the UI shows these as if they were real config.
+   942→
+   943→## lib/features/admin_web/pages/settings_drivers_page.dart
+   944→- **Purpose**: Driver-config table with full CRUD.
+   945→- **Classes/Functions**: `SettingsDriversPage` (ConsumerWidget), `_buildRow`.
+   946→- **Status**: ⚠️ Issues
+   947→- **Issues**:
+   948→  - ✅ `ConsumerWidget` with `ref.watch(settingsDriversProvider)`.
+   949→  - ✅ Full CRUD wired.
+   950→  - **Search TextField has no `onChanged`**.
+   951→  - **Title says `'Entries'`** — should be `'Драйверы'`.
+   952→
+   953→## lib/features/admin_web/pages/settings_scooter_groups_page.dart
+   954→- **Purpose**: Scooter-group config table with full CRUD.
+   955→- **Classes/Functions**: `SettingsScooterGroupsPage` (ConsumerWidget), `_buildRow`.
+   956→- **Status**: ⚠️ Issues
+   957→- **Issues**:
+   958→  - ✅ `ConsumerWidget` with `ref.watch(settingsScooterGroupsProvider)`.
+   959→  - ✅ Full CRUD wired.
+   960→  - **Search TextField has no `onChanged`**.
+   961→  - **Title says `'Entries'`** — should be `'Группы самокатов'`.
+   962→
+   963→## lib/features/admin_web/pages/sms_logs_page.dart
+   964→- **Purpose**: SMS log table.
+   965→- **Classes/Functions**: `SmsLogsPage` (ConsumerWidget), `_buildRow`, `_smsSearchProvider`.
+   966→- **Status**: ✅ Working
+   967→- **Issues**: No detail / retry / cancel action.
+   968→
+   969→## lib/features/admin_web/pages/sms_gateway_page.dart
+   970→- **Purpose**: SMS gateway control — SIM selection, test-SMS composer, pending-queue table.
+   971→- **Classes/Functions**: `SmsGatewayPage` (ConsumerStatefulWidget), `_SmsGatewayPageState`, `_StatusChip`.
+   972→- **Status**: ⚠️ Issues
+   973→- **Issues**:
+   974→  - ✅ Uses `ref.watch(smsLogsProvider)`, `ref.watch(selectedSimSlotProvider)`, `ref.read(smsServiceProvider)`.
+   975→  - ✅ `_sendTest()` actually calls `smsServiceProvider.sendSms(...)` and invalidates `smsLogsProvider` on success.
+   976→  - **`SmsService.getSimCards()` returns hardcoded mock data** — always returns 2 SIM cards (`Beeline` + `Ucell`) regardless of the actual device. The platform-channel call is commented out.
+   977→  - **`SmsService.sendSms()` is a no-op** — only `debugPrint`s, doesn't actually invoke the platform channel.
+   978→  - Uses `WidgetStateProperty` (Flutter 3.22+) — fine on recent Flutter, but inconsistent with the rest of the panel which uses the deprecated `MaterialStateProperty`.
+   979→
+   980→## lib/features/admin_web/pages/logs_telemetry_page.dart
+   981→- **Purpose**: Telemetry logs table (read-only).
+   982→- **Classes/Functions**: `LogsTelemetryPage` (ConsumerWidget), `_buildRow`.
+   983→- **Status**: ⚠️ Issues
+   984→- **Issues**:
+   985→  - ✅ `ConsumerWidget` with `ref.watch(logsTelemetryProvider)`.
+   986→  - **Search TextField has no `onChanged`**.
+   987→  - Filter TextFields ("ID самоката", "ID заказа") have no `onChanged`.
+   988→  - "Конкретный день" / "Промежуток времени" / "В тревоге" buttons only show info dialogs / SnackBars.
+   989→  - No detail view (only a "Просмотр" button that opens `showAdminViewDialog`).
+   990→
+   991→## lib/features/admin_web/pages/logs_unconfirmed_page.dart
+   992→- **Purpose**: Unconfirmed-SMS-login logs table with edit/delete.
+   993→- **Classes/Functions**: `LogsUnconfirmedPage` (ConsumerWidget), `_buildRow`.
+   994→- **Status**: ⚠️ Issues
+   995→- **Issues**:
+   996→  - ✅ `ConsumerWidget` with `ref.watch(logsUnconfirmedProvider)`.
+   997→  - ✅ Edit / delete wired.
+   998→  - **Search TextField has no `onChanged`**.
+   999→  - **Title says `'Entries'`** — should be `'Неподтвержденные'`.
+  1000→
+  1001→## lib/features/admin_web/pages/logs_payments_page.dart
+  1002→- **Purpose**: Payment logs table (read-only).
+  1003→- **Classes/Functions**: `LogsPaymentsPage` (ConsumerWidget), `_buildRow`.
+  1004→- **Status**: ⚠️ Issues
+  1005→- **Issues**:
+  1006→  - ✅ `ConsumerWidget` with `ref.watch(logsPaymentsProvider)`.
+  1007→  - **Wrong title** — `Text('Hold Logs')` but the page is "Логи платежей". Copy-paste from `hold_logs_page.dart`.
+  1008→  - Filter button "Filter" only shows an info dialog.
+  1009→  - No detail view.
+  1010→
+  1011→## lib/features/admin_web/pages/logs_scooter_changes_page.dart
+  1012→- **Purpose**: Scooter-change logs table (read-only).
+  1013→- **Classes/Functions**: `LogsScooterChangesPage` (ConsumerWidget), `_buildRow`.
+  1014→- **Status**: ⚠️ Issues
+  1015→- **Issues**:
+  1016→  - ✅ `ConsumerWidget` with `ref.watch(logsScooterChangesProvider)`.
+  1017→  - **Hardcoded empty cell** — `const DataCell(Text(''))` for the "scooter_action" column. The column header is the raw Laravel i18n key `'columns.elastic_car_change_log.scooter_action'`.
+  1018→  - **Search TextField has no `onChanged`**.
+  1019→  - Filter "Номер" TextField has no `onChanged`.
+  1020→
+  1021→## lib/features/admin_web/pages/logs_client_changes_page.dart
+  1022→- **Purpose**: Client-change logs table (read-only).
+  1023→- **Classes/Functions**: `LogsClientChangesPage` (ConsumerWidget), `_buildRow`.
+  1024→- **Status**: ⚠️ Issues
+  1025→- **Issues**:
+  1026→  - ✅ `ConsumerWidget` with `ref.watch(logsClientChangesProvider)`.
+  1027→  - **Search TextField has no `onChanged`**.
+  1028→  - Filter "ClientID" TextField has no `onChanged`.
+  1029→  - **Title says `'Entries'`** — should be `'Изменения клиентов'`.
+  1030→
+  1031→## lib/features/admin_web/pages/hold_logs_page.dart
+  1032→- **Purpose**: Hold-logs table (read-only).
+  1033→- **Classes/Functions**: `HoldLogsPage` (ConsumerWidget), `_buildFilterField`, `_buildRow`.
+  1034→- **Status**: ⚠️ Issues
+  1035→- **Issues**:
+  1036→  - ✅ `ConsumerWidget` with `ref.watch(holdLogsProvider)`.
+  1037→  - Filter button "Filter" only shows an info dialog.
+  1038→  - Date TextFields are decorative (no `showDatePicker`).
+  1039→  - No detail view.
+  1040→
+  1041→## lib/features/admin_web/pages/chat_logs_page.dart
+  1042→- **Purpose**: Chat-log table with "Написать сообщение" reply action.
+  1043→- **Classes/Functions**: `ChatLogsPage` (ConsumerWidget), `_buildRow`.
+  1044→- **Status**: ⚠️ Issues
+  1045→- **Issues**:
+  1046→  - ✅ `ConsumerWidget` with `ref.watch(chatLogsProvider)`.
+  1047→  - ✅ Reply wired to `genericCreateAction('/admin/chat-logs', ...)`.
+  1048→  - Filter TextFields ("ID клиента", "Выберите даты") have no `onChanged`.
+  1049→  - "Поиск по тексту" button only shows a SnackBar.
+  1050→  - "посмотреть" location link is a static `Text` — not tappable.
+  1051→  - "image" column shows a static `Icon(Icons.image)` only if `hasImage` is true; if there is no image, the cell renders an amber "Прочитать новое сообщение" badge that is not clickable.
+  1052→
+  1053→## lib/features/admin_web/pages/iot_page.dart
+  1054→- **Purpose**: IoT command center — MAC input, 8 quick-command buttons, command-history table.
+  1055→- **Classes/Functions**: `IotPage` (ConsumerStatefulWidget), `_IotPageState`, `_commandBtn`, `_StatusChip`.
+  1056→- **Status**: ✅ Working
+  1057→- **Issues**:
+  1058→  - ✅ Uses `ref.watch(iotLogsProvider)` and `ref.read(sendIoTCommandAction)`.
+  1059→  - ✅ All 8 command buttons actually invoke `_sendCommand('lock'|'unlock'|'alarm_on'|'alarm_off'|'reboot'|'locate'|'led_on'|'led_off')`.
+  1060→  - Local `_commands` list is merged with server logs — fine but never persisted; on hot-reload the local history is lost.
+  1061→  - Uses `WidgetStateProperty` — inconsistent with the rest of the panel's `MaterialStateProperty`.
+  1062→
+  1063→## lib/features/admin_web/pages/server_page.dart
+  1064→- **Purpose**: Docker-container status cards (start/stop/restart/backup/restore) + server-log tail.
+  1065→- **Classes/Functions**: `ServerPage` (ConsumerWidget), `_dockerAction`, `_ContainerCard`, `_actionBtn`, `_ErrorBanner`.
+  1066→- **Status**: ✅ Working
+  1067→- **Issues**:
+  1068→  - ✅ `ConsumerWidget` with `ref.watch(serverStatusProvider)` + `ref.watch(serverLogsProvider)`.
+  1069→  - ✅ Container actions wired to `apiClientProvider.post('/admin/docker/$action', {'name': name})`.
+  1070→  - Uses `WidgetStateProperty` — inconsistent with the rest of the panel.
+  1071→  - "Восстановить" (restore) and "Бэкап" call the same generic endpoint — no confirmation dialog before destructive actions.
+  1072→
+  1073→## lib/features/admin_web/pages/trips_page.dart
+  1074→- **Purpose**: Trips table (read-only).
+  1075→- **Classes/Functions**: `TripsPage` (ConsumerWidget), `_buildRow`, `_tripSearchProvider`.
+  1076→- **Status**: ⚠️ Issues
+  1077→- **Issues**:
+  1078→  - ✅ `ConsumerWidget` with `ref.watch(adminTripsProvider)`.
+  1079→  - **No refund / detail / end-trip action** — `refundTripAction` exists in providers but is not wired here.
+  1080→  - No filter, no pagination.
+  1081→
+  1082→---
+  1083→
+  1084→## lib/features/admin/data/models/admin_user_model.dart
+  1085→- **Purpose**: Canonical `AdminUser` DTO + `AdminRole` enum + `AdminLoginResponse` + `AdminPermissions` constants.
+  1086→- **Classes/Functions**: `AdminRole` (enum), `AdminRoleX` (extension), `adminRoleFromString`, `AdminUser`, `AdminLoginResponse`, `AdminPermissions`.
+  1087→- **Status**: ✅ Working
+  1088→- **Issues**:
+  1089→  - Doc comment leaks the **pre-seeded super-admin credentials** (`admin@virent.io` / `Admin123!`) — these are real production values per the prior audit; the comment perpetuates the leak in source control.
+  1090→  - `AdminRole.staff` is labeled "Operator" (`label => 'Operator'`, `wire => 'operator'`) — the dual naming makes grep across the codebase harder.
+  1091→  - `AdminUser.==` only compares `id` — two admins with the same id but different permissions are considered equal. Acceptable for `Set`/`Map` keys but surprising for diff checks.
+  1092→
+  1093→## lib/features/admin/data/services/admin_repository.dart
+  1094→- **Purpose**: Repository wrapping all admin HTTP endpoints (stats, scooters, zones, users, trips, IoT, audit, notifications).
+  1095→- **Classes/Functions**: `AdminRepository` (plain class, no Riverpod), `getStats`, `getScooters`, `getZones`, `createZone`, `deleteZone`, `getCustomers`, `blockUser`, `unblockUser`, `adjustBalance`, `refundTrip`, `sendIoTCommand`, `getAuditLog`, `sendNotification`.
+  1096→- **Status**: ✅ Working
+  1097→- **Issues**:
+  1098→  - **Endpoint inconsistency** — `getZones` calls `GET /zones` but `createZone` calls `POST /zones` while the admin-web providers use `/admin/...` prefix for everything else. If the server only exposes zones under `/admin/zones`, these calls will 404.
+  1099→  - `getAuditLog(filters)` builds the query string with raw string concatenation (`'?${filters.entries.map((e) => '${e.key}=${e.value}').join('&')}'`) — no URL encoding. A filter value containing `&` or `=` would break the request.
+  1100→  - No retry / timeout configuration — relies entirely on `ApiClient`'s defaults.
+  1101→
+  1102→## lib/features/admin/data/repositories/admin_auth_repository.dart
+  1103→- **Purpose**: Admin auth repository — login, create, list, delete, update-permissions, session persistence.
+  1104→- **Classes/Functions**: `AdminAuthRepository` (abstract), `AdminAuthRepositoryImpl`, `persistSession`, `restoreSession`, `clearSession`, `fromOtpResponse` (static).
+  1105→- **Status**: ✅ Working
+  1106→- **Issues**:
+  1107→  - `persistSession` writes the admin user into `StorageKeys.userJson` (rider session key) — this is intentional (so the router redirect detects the admin role) but it **overwrites any existing rider session**. If a rider logs in, then an admin logs in on the same device, the rider session is gone.
+  1108→  - `clearSession` only removes admin-specific keys (`admin_token`, `admin_refresh_token`, `admin_user_json`) — it does NOT clear `StorageKeys.userJson` / `StorageKeys.authToken` (those are cleared separately by `AdminAuthNotifier.logout` via `storage.clearAuth()`). Asymmetric with `persistSession`.
+  1109→  - `fromOtpResponse` is `static` so it cannot be overridden in tests — would need to be instance method or top-level function for mocking.
+  1110→
+  1111→## lib/features/admin/presentation/screens/admin_sms_gateway_screen.dart
+  1112→- **Purpose**: Legacy mobile admin SMS-gateway screen (now superseded by `SmsGatewayPage` in admin_web). Defines `SmsService`, SIM-card providers, admin-mode notifier, SMS-log notifier.
+  1113→- **Classes/Functions**: `SmsService`, `smsServiceProvider`, `simCardsProvider`, `selectedSimSlotProvider`, `SelectedSimSlotNotifier`, `adminModeProvider`, `AdminModeNotifier`, `smsLogProvider`, `SmsLogNotifier`, `SmsLogEntry`, `AdminSmsGatewayScreen` (ConsumerWidget), `_StatusCard`, `_SimTile`, `_LogTile`, `_DisabledState`.
+  1114→- **Status**: ⚠️ Issues
+  1115→- **Issues**:
+  1116→  - ✅ `AdminSmsGatewayScreen` is `ConsumerWidget` with proper `ref.watch` calls.
+  1117→  - **`SmsService.getSimCards()` returns hardcoded mock data** — 2 SIM cards (`Beeline`, `Ucell`) always. Platform channel is commented out.
+  1118→  - **`SmsService.sendSms()` is a no-op** — only `debugPrint`s.
+  1119→  - `_isAdminSession()` is duplicated between `SmsService` and `SelectedSimSlotNotifier` — same 12 lines copy-pasted.
+  1120→  - **Two SMS-gateway screens exist** — this one (`AdminSmsGatewayScreen`) and the admin-web `SmsGatewayPage`. Both share the same providers (`smsServiceProvider`, `selectedSimSlotProvider`, `smsLogProvider`) but render different UIs. The mobile screen still appears in the router but is no longer reachable from the new admin home grid (which routes everything to `/admin/web`).
+  1121→  - `Color.withOpacity()` used in `_LogTile` (deprecated; should be `withValues(alpha:)`).
+  1122→
+  1123→## lib/features/admin/presentation/screens/admin_home_screen.dart
+  1124→- **Purpose**: Mobile-adapted admin home with greeting card, KPI row, 17-tile shortcut grid, and 4-tab bottom nav (Home / Stats / Alerts / Settings).
+  1125→- **Classes/Functions**: `_adminHomeNavIndexProvider`, `AdminHomeScreen` (ConsumerStatefulWidget), `_AdminHomeScreenState`, `_AdminHomeAppBar`, `_AdminHomeBody`, `_GreetingCard`, `_QuickStatsRow`, `_StatChip`, `_ManageAdminsCard`, `_AdminBottomNav`, `_StatsTab`, `_BigStatCard`, `_AlertsTab`, `_AlertItem`, `_SettingsTab`, `_SettingsLink`.
+  1126→- **Status**: ⚠️ Issues
+  1127→- **Issues**:
+  1128→  - ✅ `ConsumerStatefulWidget` with `ref.watch(currentAdminProvider)`, `ref.watch(adminStatsProvider)`, `ref.watch(_adminHomeNavIndexProvider)`.
+  1129→  - ✅ `restoreSession()` called once in `initState` via post-frame callback.
+  1130→  - **All 17 module shortcuts route to `/admin/web`** — every tile (`AdminShortcut(route: '/admin/web')`) opens the same URL. The desktop panel's sidebar then has to be used to reach a specific sub-page. Defeats the purpose of the shortcut grid.
+  1131→  - **Hardcoded alerts** in `_AlertsTab` — 4 mock `_AlertItem` objects ("Low battery", "Forced unlock", "User blocked", "Server restarted"). Should be wired to `alertsListProvider`.
+  1132→  - **Hardcoded KPI labels** in `_QuickStatsRow` and `_StatsTab` — keys like `total_scooters`, `available_scooters`, `total_users`, `revenue`, `total_trips`, `active_trips` are hardcoded; if the server returns differently named keys (e.g. `online` vs `available_scooters`), the UI shows 0.
+  1133→  - `_ManageAdminsCard` routes to `/admin/manage-admins` — route may not exist anymore since the new admin-web panel hosts admin management at `AdminRolesPage` (sidebar index 14). Likely 404s.
+  1134→  - Settings links route to `/admin/audit-log` and `/admin/logs` — same concern; these routes may not exist.
+  1135→  - `Color.withOpacity()` used in ~6 places (deprecated).
+  1136→
+  1137→## lib/features/admin/presentation/widgets/admin_shortcut_grid.dart
+  1138→- **Purpose**: Reusable responsive grid (3/4/5 columns) of admin shortcut tiles.
+  1139→- **Classes/Functions**: `AdminShortcut` (immutable descriptor), `AdminShortcutGrid` (StatelessWidget), `_AdminShortcutTile`.
+  1140→- **Status**: ✅ Working
+  1141→- **Issues**:
+  1142→  - **Not a `ConsumerWidget`** — but doesn't need `ref` (pure presentational widget).
+  1143→  - Uses `Color.withOpacity(0.12)` and `Color.withOpacity(0.1)` — deprecated; should be `withValues(alpha:)`.
+  1144→  - `badge > 99 ? '99+' : '${shortcut.badge}'` — does not handle null `badge` cleanly (`shortcut.badge!` is non-null asserted after `showBadge` check; safe today but fragile).
+  1145→
+  1146→## lib/features/admin/presentation/providers/admin_provider.dart
+  1147→- **Purpose**: Riverpod providers for the admin feature: repository, stats, scooters, zones, customers, audit log with filters, loading flag.
+  1148→- **Classes/Functions**: `adminRepositoryProvider`, `adminStatsProvider`, `adminScootersProvider`, `adminZonesProvider`, `adminCustomersProvider`, `AuditLogFilters`, `auditLogFiltersProvider`, `adminAuditLogProvider`, `adminLoadingProvider`.
+  1149→- **Status**: ❌ Broken
+  1150→- **Issues**:
+  1151→  - **Duplicate provider name `adminAuditLogProvider`** — also declared in `lib/features/admin_web/admin_web_providers.dart`. Both are `FutureProvider.autoDispose<List<Map<String,dynamic>>>` but this one watches `auditLogFiltersProvider` and the other doesn't. Whichever file is imported last wins — the filter-aware version is silently replaced by the filter-less one in `AdminWebScreen`'s import graph.
+  1152→  - **Duplicate providers** — `adminStatsProvider`, `adminScootersProvider`, `adminZonesProvider`, `adminCustomersProvider` duplicate `dashboardStatsProvider`, `scootersListProvider`, `zonesListProvider`, `customersListProvider` in `admin_web_providers.dart`. Same data, two providers — invalidation in one does not invalidate the other, so mutations may not refresh the screen.
+  1153→  - `AuditLogFilters.toQuery()` does not URL-encode values — same bug as in `AdminRepository.getAuditLog`.
+  1154→
+  1155→## lib/features/admin/presentation/providers/admin_auth_provider.dart
+  1156→- **Purpose**: Admin auth state machine + derived selectors (`currentAdminProvider`, `isAdminProvider`, `adminRoleProvider`, `isSuperAdminProvider`, `adminAuthLoadingProvider`, `adminListProvider`).
+  1157→- **Classes/Functions**: `AdminAuthStatus` (enum), `AdminAuthState`, `adminAuthRepositoryProvider`, `adminAuthNotifierProvider`, `AdminAuthNotifier`, `currentAdminProvider`, `isAdminProvider`, `adminRoleProvider`, `isSuperAdminProvider`, `adminAuthLoadingProvider`, `adminListProvider`.
+  1158→- **Status**: ⚠️ Issues
+  1159→- **Issues**:
+  1160→  - ✅ Clean `StateNotifierProvider` design with proper error handling.
+  1161→  - **Duplicate provider name `adminListProvider`** — also declared in `lib/features/admin_web/admin_web_providers.dart`. This one returns `FutureProvider.autoDispose<List<AdminUser>>` (typed); the admin-web one returns `FutureProvider.autoDispose<List<Map<String,dynamic>>>` (untyped). **Same name, different types** — Dart will refuse to compile if both files are imported into the same library; in different libraries the wrong one is silently used.
+  1162→  - `_tryRestoreFromRiderSession` synthesises an `AdminUser` from the rider record but **does not persist `admin_token`** — it only persists `admin_user_json`. If the API client has no token, admin API calls will 401. The code tries to fall back to `StorageKeys.authToken`, but only if `api.token` is empty — a race condition exists if the rider auth flow has not yet set the token.
+  1163→  - `logout()` swallows all errors silently (best-effort) — acceptable, but means a failed server-side logout is invisible to the user.
+  1164→
+  1165→---
+  1166→
+  1167→# Summary
+  1168→
+  1169→| Status | Count | Files |
+  1170→|--------|-------|-------|
+  1171→| ✅ Working | 22 | `admin_web_screen.dart`, `admin_dialogs.dart`, `scooters_page.dart`, `push_history_page.dart`, `promo_codes_page.dart`, `billing_receipts_page.dart`, `fines_page.dart`, `payme_transactions_page.dart`, `click_transactions_page.dart`, `bonuses_page.dart`, `promo_series_page.dart`, `cities_page.dart`, `admin_roles_page.dart`, `juicers_page.dart`, `support_page.dart`, `sms_logs_page.dart`, `iot_page.dart`, `server_page.dart`, `admin_user_model.dart`, `admin_repository.dart`, `admin_auth_repository.dart`, `admin_shortcut_grid.dart` |
+  1172→| ⚠️ Issues | 36 | `admin_web_providers.dart`, all 3 layout files, ~30 page files, `admin_sms_gateway_screen.dart`, `admin_home_screen.dart`, `admin_auth_provider.dart` |
+  1173→| ❌ Broken | 4 | `header.dart` (hardcoded + empty onPressed), `settings_config_page.dart` (no save button, controller leak), `tariffs_subscriptions_page.dart` (duplicate of `tariff_subtariffs_page.dart`), `admin_provider.dart` (duplicate `adminAuditLogProvider`) |
+  1174→
+  1175→### Critical Action Items
+  1176→
+  1177→1. **Resolve the `adminListProvider` name collision** — `admin_web_providers.dart` returns `List<Map>` while `admin_auth_provider.dart` returns `List<AdminUser>`. Rename one (e.g. `adminUsersProvider` for the typed version, `adminListRawProvider` for the untyped).
+  1178→2. **Resolve the `adminAuditLogProvider` name collision** — `admin_provider.dart` (filter-aware) vs `admin_web_providers.dart` (filter-less). Delete the filter-less one and use the filter-aware version everywhere.
+  1179→3. **Make `AppHeader` a `ConsumerWidget`** and wire status tags to `dashboardStatsProvider` (or `alertsListProvider`). Replace the empty hamburger `onPressed: () {}` with a real drawer toggle.
+  1180→4. **Implement sidebar sub-menus** — `AppSidebar`'s `isExpandable: true` is purely cosmetic; 25+ sub-pages (`AlertsPage`, `BillingReceiptsPage`, `FinesPage`, `PaymeTransactionsPage`, etc.) are unreachable. Either render an `ExpansionTile` or change the index scheme.
+  1181→5. **Fix the sidebar `Карта` (index 3) gap** — the case is missing in `_getPage`; the default fallback message wrongly tells users to pick "Карта (3)".
+  1182→6. **Delete `tariffs_subscriptions_page.dart`** — it is a duplicate of `tariff_subtariffs_page.dart` with conflicting schema. Pick one schema and remove the other.
+  1183→7. **Fix `settings_config_page.dart`** — add a "Save" button, store controllers in `State`, dispose them in `dispose()`, and POST the edited values back to `/admin/settings/config`.
+  1184→8. **Fix the balance-adjust UX in `billing_debts_page.dart`** — either change the form field label from "Баланс" to "Дельта (UZS)" or compute `delta = newValue - currentBalance` before calling `adjustBalanceAction`.
+  1185→9. **Replace hardcoded alerts in `admin_home_screen.dart` `_AlertsTab`** with `ref.watch(alertsListProvider)`.
+  1186→10. **Fix all 17 admin-home shortcuts** — every tile routes to `/admin/web`; either deep-link to a specific page (e.g. `/admin/web?page=scooters`) or restore per-screen routes.
+  1187→11. **Remove hardcoded mock SIM data** in `SmsService.getSimCards()` (both in `admin_sms_gateway_screen.dart` and any other SmsService) — invoke the platform channel.
+  1188→12. **Fix the duplicate import** in `task_technicians_page.dart` (lines 5-6 both import `admin_dialogs.dart`).
+  1189→13. **Fix `Color.withOpacity()`** calls — 6+ locations in `admin_home_screen.dart`, `admin_shortcut_grid.dart`, `admin_sms_gateway_screen.dart` — replace with `Color.withValues(alpha: x)`.
+  1190→14. **Fix the `AdminRolesPage` update endpoint** — currently calls `genericUpdateAction('/admin/list', id, ...)` but the server expects `PUT /admin/permissions/$adminId`. Use `AdminAuthRepositoryImpl.updateAdminPermissions` instead.
+  1191→15. **Localize the English/mixed titles** — `admin_*` pages show "Entries", "Faqs", "Companies", "Hold Logs" instead of Russian labels matching the rest of the panel.
+  1192→16. **Wire delete actions** for `geozones_page.dart` (`deleteZoneAction` exists but is unused) and `prepaid_orders_page.dart` (`bulkGeneratePrepaidsAction` exists but no Add button).
+  1193→17. **Wire the `Switch` and `Radio` widgets** in `selfies_page.dart`, `settings_notifications_page.dart`, and `map_page.dart` — all have empty `(val) {}` `onChanged` callbacks.
+  1194→18. **Remove the leaked credentials** from the `admin_user_model.dart` doc comment (`admin@virent.io` / `Admin123!`) — they belong in a separate secrets doc, not in source.
+  1195→
+  1196→---
+  1197→
+  1198→# Mobile Feature Audit — auth / home / rides / scanner / onboarding
+  1199→
+  1200→Audit performed against `/home/z/my-project/sparkrentals-monorepo/virent-dart/mobile/lib/features/` for the auth, home, rides, scanner and onboarding features. No source code was modified — entries below are documentation only.
+  1201→
+  1202→## lib/features/auth/data/models/auth_models.dart
+  1203→- **Purpose**: Data-layer DTOs for the auth flow — `OtpResponse`, `LoginResponse`, `VerifyOtpResponseModel`, and the canonical `AuthUser`. Resilient `fromJson` factories support both the embedded server (root-level fields) and the legacy Node backend (`data: {...}` wrapper).
+  1204→- **Classes/Functions**: `OtpResponse` (with `autoVerified`, `token`, `userJson`, `isAdmin`, `adminToken` for admin auto-login), `LoginResponse`, `VerifyOtpResponseModel`, `AuthUser` (with `fullName`, `isActive`, `isAdmin` getters and `copyWith`/`toJson`).
+  1205→- **Status**: ✅ Working
+  1206→- **Issues**: None — admin auto-login fields are correctly parsed.
+  1207→
+  1208→## lib/features/auth/data/repositories/auth_repository.dart
+  1209→- **Purpose**: Abstract `AuthRepository` contract plus `AuthRepositoryImpl` backed by `ApiClient` + `StorageService`. Persists sessions (token + refresh + user) so they survive restarts; exposes `restoreSession`, `saveUser`, `logout`.
+  1210→- **Classes/Functions**: `AuthRepository` (abstract), `AuthRepositoryImpl` with `sendOtp`, `verifyOtp`, `loginWithEmail`, `register`, `refreshToken`, `logout`, `saveUser`, `restoreSession`, `_persistSession`.
+  1211→- **Status**: ✅ Working
+  1212→- **Issues**: None.
+  1213→
+  1214→## lib/features/auth/presentation/screens/otp_verification_screen.dart
+  1215→- **Purpose**: 4-digit OTP entry screen styled after the Swift reference (white bg, 4 cells of 60×72, lime active border, custom numeric keypad). Auto-verifies when 4 digits are entered and supports resend after a 15-second cooldown.
+  1216→- **Classes/Functions**: `OtpVerificationScreen` (ConsumerStatefulWidget), `_OtpVerificationScreenState` (`_verify`, `_resend`, `_onDigit`, `_onBackspace`, `_startResendTimer`, `_formattedPhone`), private `_NumericKeypad`.
+  1217→- **Status**: ❌ Broken
+  1218→- **Issues**: **CRITICAL — OTP length mismatch.** This screen uses `_length = 4` (line 41) and calls `verifyOtpUseCaseProvider.call(params: VerifyOtpParams(otp: _code, ...))` once the 4-digit code is complete. But `VerifyOtpUseCase.call` in `auth_usecases.dart` validates `if (params.otp.length != 6) throw AuthException('OTP must be 6 digits')` (line 45). Every verification attempt will throw → no rider can complete the regular (non-admin) OTP flow. Either change `_length` to 6, or relax the use-case validation.
+  1219→
+  1220→## lib/features/auth/presentation/screens/auth_screen.dart
+  1221→- **Purpose**: Phone-entry login screen with country-code picker, formatted phone display, and a custom numeric keypad matching the Swift reference. On admin auto-verified responses it persists the session directly and routes to `/`.
+  1222→- **Classes/Functions**: `AuthScreen` (ConsumerStatefulWidget), `_AuthScreenState` (`_sendCode`, `_onDigit`, `_onBackspace`, `_formatted`, `_showCountryPicker`), private `_CountryCode`, private `_NumericKeypad`.
+  1223→- **Status**: ⚠️ Issues
+  1224→- **Issues**: 
+  1225→  1. **Bypasses Riverpod for admin auto-login** (lines 79–95): constructs `StorageService()` directly and writes `authToken`, `userJson`, `isLoggedIn`, `admin_token` etc. — but **never updates `authNotifierProvider` state**. Widgets / routes that `ref.watch(authNotifierProvider)` will still see `AuthStatus.unauthenticated`. Only routes that read storage directly will see the admin session. Use `storageServiceProvider` + push the user through `saveUser` / `AuthNotifier` to keep state consistent.
+  1226→  2. Currency hint in privacy note is fine, but downstream the OTP screen is broken (see above) — non-admin users can never complete the flow.
+  1227→
+  1228→## lib/features/auth/presentation/providers/auth_providers.dart
+  1229→- **Purpose**: Central Riverpod wiring for the auth feature — defines `AuthStatus` / `AuthState`, the `AuthNotifier` StateNotifier, all use-case providers, derived selectors (`currentUserProvider`, `isAuthenticatedProvider`, `authLoadingProvider`) and small state holders (`verificationIdProvider`, `pendingPhoneProvider`, `authModeProvider`).
+  1230→- **Classes/Functions**: `AuthStatus` enum, `AuthState` value object, `AuthMode` enum, providers (`apiClientProvider`, `storageServiceProvider`, `authRepositoryProvider`, `loginWithPhoneUseCaseProvider`, `verifyOtpUseCaseProvider`, `registerUserUseCaseProvider`, `saveUserUseCaseProvider`, `logoutUseCaseProvider`, `restoreSessionUseCaseProvider`, `authModeProvider`, `verificationIdProvider`, `pendingPhoneProvider`, `authNotifierProvider`, `currentUserProvider`, `isAuthenticatedProvider`, `authLoadingProvider`), `AuthNotifier` (`restoreSession`, `sendOtp`, `verifyOtp`, `loginWithEmail`, `register`, `logout`, `clearError`).
+  1231→- **Status**: ✅ Working
+  1232→- **Issues**: None at the provider layer. (Note: `AuthNotifier.sendOtp` returns the `OtpResponse` so callers in `auth_screen.dart` can inspect `autoVerified`, but `auth_screen.dart` instead calls `loginWithPhoneUseCaseProvider` directly — both paths work but they diverge.)
+  1233→
+  1234→## lib/features/auth/domain/usecases/auth_usecases.dart
+  1235→- **Purpose**: Use cases bridging presentation and repository — `LoginWithPhoneUseCase`, `VerifyOtpUseCase`, `RegisterUserUseCase`, `SaveUserUseCase`, `LogoutUseCase`, `RestoreSessionUseCase`. Validates input parameters before delegating.
+  1236→- **Classes/Functions**: `LoginWithPhoneUseCase`, `VerifyOtpUseCase`, `RegisterUserUseCase`, `SaveUserUseCase` + `SaveUserParams`, `LogoutUseCase`, `RestoreSessionUseCase`.
+  1237→- **Status**: ⚠️ Issues
+  1238→- **Issues**: **`VerifyOtpUseCase` hard-codes OTP length to 6** (`if (params.otp.length != 6) throw const AuthException('OTP must be 6 digits')`, line 45). The OTP screen collects 4 digits. This breaks the regular OTP flow end-to-end. Either match the UI length or read the expected length from a config / repository. Also note: `SaveUserUseCase.call` constructs `AuthUser.createdAt = DateTime.now().toIso8601String()` which overwrites any server-provided timestamp — questionable if the caller expects server-side timestamps preserved.
+  1239→
+  1240→## lib/features/auth/domain/entities/auth_entities.dart
+  1241→- **Purpose**: Pure-Dart domain entities — `CreateUserRequest`, `LoginRequest` (with `.phone` / `.credentials` factories and `isCredentialLogin`), `VerifyOtpParams`, `VerifyOtpResponse`.
+  1242→- **Classes/Functions**: `CreateUserRequest`, `LoginRequest`, `VerifyOtpParams`, `VerifyOtpResponse`.
+  1243→- **Status**: ✅ Working
+  1244→- **Issues**: None.
+  1245→
+  1246→## lib/features/home/data/models/scooter_range_model.dart
+  1247→- **Purpose**: Framework-free range calculator — converts a battery percentage into a human-readable range estimate (`"100% до 40 км на 5 ч 32 мин"`). Math: 1% battery ≈ 0.4 km, average speed 12 km/h.
+  1248→- **Classes/Functions**: `ScooterRangeModel` (`fromBattery` factory, `displayLabel`, `distanceLabel`, `durationLabel`, `totalMinutes`, `isEmpty`, `copyWith`, `==`/`hashCode`).
+  1249→- **Status**: ✅ Working
+  1250→- **Issues**: None. Note: not actually used by `home_screen.dart` — the screen re-implements the same math inline (`rangeKm = ((battery / 100) * 40).round()` etc.). Consider adopting the model.
+  1251→
+  1252→## lib/features/home/data/models/tariff_model.dart
+  1253→- **Purpose**: Tariff catalogue — three static tariffs (per-minute, 30-min package, 1-hour package) plus a `TariffComparison` for side-by-side price breakdowns. Used by the booking modal.
+  1254→- **Classes/Functions**: `Tariff` (`perMinute`, `package30`, `package60`, `catalogue`, `fromJson`, `toJson`, `costForMinutes`, `savingsVersus`, `compareWith`, `copyWith`), `TariffComparison` (`cheaper`, `savings`).
+  1255→- **Status**: ✅ Working
+  1256→- **Issues**: None. Note: not used by the home/scanner sheets, which hard-code `'50 ₽ + 7 ₽/мин'` / `'249 ₽ / час'`. Adopting this model would also fix the currency mismatch.
+  1257→
+  1258→## lib/features/home/data/models/scooter_model.dart
+  1259→- **Purpose**: Data model for scooters returned by `/scooters/nearby` and `/scooters/:id`. Framework-free, exposes `location` (LatLng), `isAvailable`, `hasSufficientBattery`.
+  1260→- **Classes/Functions**: `ScooterModel` (`fromJson`, `toJson`, `location`, `isAvailable`, `hasSufficientBattery`, `copyWith`, `==`/`hashCode`).
+  1261→- **Status**: ✅ Working
+  1262→- **Issues**: None.
+  1263→
+  1264→## lib/features/home/data/models/models.dart
+  1265→- **Purpose**: Older, parallel set of model classes (`Scooter`, `Trip`, `User`, `Transaction`). Only consumed by `virent_repository.dart`.
+  1266→- **Classes/Functions**: `Scooter`, `Trip`, `User`, `Transaction` — each with a basic `fromJson` factory.
+  1267→- **Status**: ⚠️ Issues
+  1268→- **Issues**: **Duplicates `ScooterModel`** (from `scooter_model.dart`) and `AuthUser` (from `auth_models.dart`) with simpler / less resilient parsing — `.toDouble()` will crash on `String`-typed values, unlike the safer `ScooterModel.fromJson`. Either delete this file and migrate `virent_repository.dart` to use `ScooterModel`, or rename to make the boundary explicit.
+  1269→
+  1270→## lib/features/home/data/services/proximity_detector.dart
+  1271→- **Purpose**: Geolocator-based `ChangeNotifier` that watches the rider's distance from a single scooter. 10 m distance filter, 100 m "nearby" threshold with 1.5× hysteresis band so callbacks don't flicker. Fires `onNearby` / `onFar` once per transition.
+  1272→- **Classes/Functions**: `proximityDetectorProvider` (ChangeNotifierProvider.autoDispose), `ProximityDetector` (`watchProximity`, `stopWatching`, `currentDistance`, `isNearby`, `isWatching`, `threshold`, `onNearby`/`onFar` callbacks, `dispose`).
+  1273→- **Status**: ✅ Working
+  1274→- **Issues**: None. Note: provider is defined but not actually used by `home_screen.dart` (no `ref.watch(proximityDetectorProvider)` call) — the proximity feature is dormant.
+  1275→
+  1276→## lib/features/home/data/services/directions_service.dart
+  1277→- **Purpose**: Facade over `OsrmService` that returns presentation-ready `RouteResult` objects (formatted distance + duration strings). Exposes `getWalkingRoute`, `getCyclingRoute`, `getDrivingRoute`.
+  1278→- **Classes/Functions**: `RouteResult` (`formattedDuration`, `formattedDistance`, `isEmpty`), `directionsServiceProvider`, `DirectionsService` (`getWalkingRoute`, `getCyclingRoute`, `getDrivingRoute`).
+  1279→- **Status**: ✅ Working
+  1280→- **Issues**: None at this layer. Note: not currently used by any of the audited screens — the route-building panel in `home_screen.dart` is a static placeholder.
+  1281→
+  1282→## lib/features/home/data/repositories/scooter_repository.dart
+  1283→- **Purpose**: Abstract `ScooterRepository` contract plus `ScooterRepositoryImpl` backed by `ApiClient`. Fetches `/scooters/nearby` and `/scooters/:id`; normalises errors into `AppException`.
+  1284→- **Classes/Functions**: `ScooterRepository` (abstract), `ScooterRepositoryImpl` (`getNearby`, `getById`).
+  1285→- **Status**: ✅ Working
+  1286→- **Issues**: None.
+  1287→
+  1288→## lib/features/home/data/repository/virent_repository.dart
+  1289→- **Purpose**: Older monolithic repository exposing auth, scooter, trip, user, wallet and admin endpoints. Uses the legacy `Scooter` model from `models.dart`.
+  1290→- **Classes/Functions**: `VirentRepository` (`sendOtp`, `verifyOtp`, `getNearbyScooters`, `startTrip`, `endTrip`, `getTrips`, `getProfile`, `getWallet`, `topUp`, `getStats`, `getAllScooters`).
+  1291→- **Status**: ⚠️ Issues
+  1292→- **Issues**: **Likely an orphan** — none of the audited screens or providers import `VirentRepository`. Its surface area (auth, trips, wallet, admin) is already split into dedicated `AuthRepository` / `RideRepository` / `ScooterRepository` implementations. Recommend deleting after a global usage check, otherwise it confuses new contributors about which repository to use.
+  1293→
+  1294→## lib/features/home/presentation/screens/home_screen.dart
+  1295→- **Purpose**: The rider's landing page — full-screen `FlutterMap` with top overlay (menu + "Куда едем?" pill + filter), right-side map controls (zoom +/-, recenter, list toggle), QR FAB and a context-dependent bottom area (3-tab nav / scooter-list sheet / selected-scooter sheet with tariff picker + "Поехали").
+  1296→- **Classes/Functions**: `HomeScreen` (ConsumerStatefulWidget), `_HomeScreenState` (`_buildMarkers`, `_zoomIn`, `_zoomOut`, `_recenter`, `_showSearch`, `_showRoutePanel`, `_startRide`, `_buildBottomNav`), `_NavTab`, `_SelectedScooterSheet` + `_SelectedScooterSheetState`, `_TariffCard`, `_PaymentRow`, `_ScooterListSheet`, `_ScooterListCard`, `_RouteBuildingSheet`, `_RouteInputField`, `_RecentAddressTile`, `_RecentAddress`.
+  1297→- **Status**: ⚠️ Issues
+  1298→- **Issues**: 
+  1299→  1. **Empty `onPressed` handlers** — `_NavTab` for "Карта" passes `onTap: () {}` (line ~390) and `_PaymentRow` is instantiated with `onTap: () {}` (line ~586).
+  1300→  2. **`_RouteInputField` is not an input** — it renders a label and an icon but **no `TextField`** (lines 1010–1048). The route-building panel therefore cannot accept any user input.
+  1301→  3. **`_RecentAddressTile.onTap` only pops the sheet** (line 1059) — does not route to the chosen address / launch a directions request.
+  1302→  4. **Currency mismatch** — tariff cards display `${scooter.ratePerMin} ₽/мин` and `249 ₽/час` despite the backend returning UZS. The per-minute value comes from the model, but the fixed price is hard-coded.
+  1303→  5. Minor: the home screen imports `flutter_map` and uses `Polyline` indirectly — verify against the installed `flutter_map` version since polyline layers moved out in v6+.
+  1304→
+  1305→## lib/features/home/presentation/widgets/search_bar_overlay.dart
+  1306→- **Purpose**: Inline expandable search pill that morphs into a full autocomplete panel with recent locations. Self-contained state (debounced query, request superseding, expand/collapse).
+  1307→- **Classes/Functions**: `AddressSuggestion`, `SearchBarOverlay` (StatefulWidget), `_SearchBarOverlayState` (`_onQueryChanged`, `_expand`, `_collapse`, `_select`, `_buildCollapsed`, `_buildExpanded`, `_buildSearchRow`, `_buildBody`), private `_SuggestionList`, `_SuggestionTile`, `_EmptyState`.
+  1308→- **Status**: ⚠️ Issues
+  1309→- **Issues**: Not a `ConsumerWidget` (and doesn't need to be — it doesn't read providers, callers wire `onSearch` / `onSuggestionSelected`). However, the widget is **not actually used** by `home_screen.dart` (which uses a `PillSearchBar` from `virent_ui.dart` instead) — likely dead code. Verify before removing.
+  1310→
+  1311→## lib/features/home/presentation/widgets/location_permission_handler.dart
+  1312→- **Purpose**: Permission-aware wrapper that kicks off `LocationNotifier.requestAndStart` on first build and renders an inline call-to-action when permission is denied.
+  1313→- **Classes/Functions**: `LocationPermissionHandler` (ConsumerWidget), private `_PermissionDeniedView` (ConsumerWidget).
+  1314→- **Status**: ✅ Working
+  1315→- **Issues**: None.
+  1316→
+  1317→## lib/features/home/presentation/widgets/search_modal.dart
+  1318→- **Purpose**: Modal bottom sheet for searching the nearby scooter list by name/ID, with battery and distance filters. Live-filters the `scooterNotifierProvider` state.
+  1319→- **Classes/Functions**: `SearchModal` (ConsumerStatefulWidget), `_SearchModalState` (`_filter`, builds the search field + filter chips + result list), private `_SearchResultTile`.
+  1320→- **Status**: ✅ Working
+  1321→- **Issues**: None.
+  1322→
+  1323→## lib/features/home/presentation/providers/location_provider.dart
+  1324→- **Purpose**: Wraps `geolocator` permission + position stream into a `LocationNotifier` StateNotifier with a typed `LocationStatus` enum. Surfaces `currentPositionProvider` and `hasLocationPermissionProvider` selectors.
+  1325→- **Classes/Functions**: `LocationStatus` enum, `LocationState`, `locationNotifierProvider`, `LocationNotifier` (`requestAndStart`, `_startStream`, `openAppSettings`, `openLocationSettings`, `dispose`, `fallbackLat`/`fallbackLng` constants), `currentPositionProvider`, `hasLocationPermissionProvider`.
+  1326→- **Status**: ✅ Working
+  1327→- **Issues**: None.
+  1328→
+  1329→## lib/features/home/presentation/providers/scooter_provider.dart
+  1330→- **Purpose**: `ScooterNotifier` StateNotifier that fetches `/scooters/nearby`, auto-refreshes every 15 s, re-fetches when the rider moves, and tracks the currently selected scooter.
+  1331→- **Classes/Functions**: `ScooterStatus` enum, `ScooterState`, `scooterApiClientProvider`, `scooterRepositoryProvider`, `scooterNotifierProvider`, `ScooterNotifier` (`loadNearby`, `_startAutoRefresh`, `selectScooter`, `clearSelection`, `refresh`, `_resolveSelected`, `dispose`), `availableScootersProvider`.
+  1332→- **Status**: ✅ Working
+  1333→- **Issues**: None. Note: `scooterApiClientProvider` constructs a fresh `ApiClient()` (not shared with `auth_providers.dart`'s `apiClientProvider`). The auth flow sets the token on the `ApiClient` instance obtained from the auth provider — these are different instances, so the scooter/ride repositories may be making unauthenticated requests. Verify that `ApiClient` is a singleton internally or refactor to share the same provider.
+  1334→
+  1335→## lib/features/rides/data/models/ride_model.dart
+  1336→- **Purpose**: Data model for a Virent ride (trip). Resilient `fromJson` handles `trip_id` / `scooter_id` / `start_time` etc. with both camelCase and snake_case keys.
+  1337→- **Classes/Functions**: `RideModel` (`fromJson`, `toJson`, `isOngoing`, `isCompleted`, `startDateTime`, `endDateTime`, `copyWith`, `empty` constant).
+  1338→- **Status**: ✅ Working
+  1339→- **Issues**: None.
+  1340→
+  1341→## lib/features/rides/data/services/ride_tracker.dart
+  1342→- **Purpose**: Real-time GPS route recorder for an active ride. Owns a high-accuracy position stream (30 m filter), appends fixes to an in-memory polyline, computes live `RideStats` (distance, duration, average speed) and notifies listeners.
+  1343→- **Classes/Functions**: `RideStats`, `rideTrackerProvider` (ChangeNotifierProvider.autoDispose), `RideTracker` (`startTracking`, `stopTracking`, `_onPosition`, `_currentStats`, `route`, `stats`, `isTracking`, `startedAt`/`stoppedAt`/`lastPoint`, `dispose`).
+  1344→- **Status**: ✅ Working
+  1345→- **Issues**: None. Note: provider exists but `active_ride_screen.dart` does not use `rideTrackerProvider` — it just builds a 2-point `trail` from `startLatLng` → `userLatLng` directly, so the live route polyline is always a single straight line. Adopting the tracker would give a proper breadcrumb trail.
+  1346→
+  1347→## lib/features/rides/domain/entities/ride_entities.dart
+  1348→- **Purpose**: Pure-Dart ride request / filter entities — `StartRideRequest`, `EndRideRequest`, `RideHistoryFilter`.
+  1349→- **Classes/Functions**: `StartRideRequest` (`toJson`), `EndRideRequest` (`toJson`), `RideHistoryFilter` (`toQuery`).
+  1350→- **Status**: ✅ Working
+  1351→- **Issues**: None.
+  1352→
+  1353→## lib/features/rides/domain/usecases/ride_usecases.dart
+  1354→- **Purpose**: Use cases wrapping `RideRepository` — `StartRideUseCase`, `EndRideUseCase`, `GetHistoryUseCase`, `GetActiveRideUseCase`. Validates that IDs are non-empty before delegating.
+  1355→- **Classes/Functions**: `StartRideUseCase`, `EndRideUseCase`, `GetHistoryUseCase`, `GetActiveRideUseCase`.
+  1356→- **Status**: ✅ Working
+  1357→- **Issues**: None.
+  1358→
+  1359→## lib/features/rides/data/repositories/ride_repository.dart
+  1360→- **Purpose**: Abstract `RideRepository` contract plus `RideRepositoryImpl` over `ApiClient`. Calls `/trips/start`, `/trips/end`, `/trips/active`, `/trips`. Normalises errors into `AppException`.
+  1361→- **Classes/Functions**: `RideRepository` (abstract), `RideRepositoryImpl` (`startRide`, `endRide`, `getActiveRide`, `getHistory`).
+  1362→- **Status**: ✅ Working
+  1363→- **Issues**: None.
+  1364→
+  1365→## lib/features/rides/presentation/providers/ride_provider.dart
+  1366→- **Purpose**: Central Riverpod wiring for the rides feature — `RideStatus` / `RideState`, `RideNotifier` with `startRide` / `endRide` / `loadHistory` / `refresh` / `clearError`, use-case providers and derived selectors.
+  1367→- **Classes/Functions**: `RideStatus` enum, `RideState` (`hasActiveRide`), `rideApiClientProvider`, `rideRepositoryProvider`, `startRideUseCaseProvider`, `endRideUseCaseProvider`, `getHistoryUseCaseProvider`, `getActiveRideUseCaseProvider`, `rideNotifierProvider`, `RideNotifier`, `activeRideProvider`, `rideLoadingProvider`, `rideHistoryProvider`.
+  1368→- **Status**: ✅ Working
+  1369→- **Issues**: None. Note: same `ApiClient` instance-per-provider concern as `scooter_provider.dart` — `rideApiClientProvider` creates its own `ApiClient()` rather than sharing with auth. Confirm `ApiClient` is internally singleton or this will send unauthenticated ride requests.
+  1370→
+  1371→## lib/features/rides/presentation/screens/active_ride_screen.dart
+  1372→- **Purpose**: Full-screen active-ride screen — live map with start → user polyline, top-left close (which opens an "end ride" confirmation), top-right SOS button, and a bottom sheet with live timer, 3-column stats (Ехать / Цена / В пути) and Pause / End buttons.
+  1373→- **Classes/Functions**: `ActiveRideScreen` (ConsumerStatefulWidget), `_ActiveRideScreenState` (`_initialise`, `_endRide`, `_showEndConfirmation`, `_showSosDialog`, `_formatDuration`), uses `StatColumn` from `virent_ui.dart`.
+  1374→- **Status**: ⚠️ Issues
+  1375→- **Issues**:
+  1376→  1. **Pause button is a no-op** — only shows a snackbar `'Поездка приостановлена'` (lines 493–499); there is no `pauseRide` use case or provider call.
+  1377→  2. **"Сделать фото парковки" button is a no-op** — only shows a snackbar (lines 567–574); no camera picker / upload logic.
+  1378→  3. **Scooter name hard-coded** as `'Swift Neo'` (line 408) instead of fetched from the scooter repository.
+  1379→  4. **Currency mismatch** — `ratePerMin` (UZS tiyin) is divided by 1000 to fake "rubles" (`rublesPerMin = (ride?.ratePerMin ?? _defaultRatePerMin) / 1000.0`, lines 249–250) and the stat column shows `'$estimatedCostRub₽'`. End-of-ride snackbar correctly says `'${ride.cost} UZS'` — so the currency flips mid-screen.
+  1380→  5. **Broken route after end** — `context.go('/trips')` (line 120). No `/trips` route is registered in the audited home/auth/scanner/onboarding features. The user will land on a 404 / blank screen.
+  1381→  6. Distance estimate is `elapsed.inMinutes * 0.22` — that's km-per-minute at 13.2 km/h, fine, but labelled `'$distanceKm KM'` (uppercase) inconsistent with rest of UI.
+  1382→
+  1383→## lib/features/rides/presentation/widgets/route_replay.dart
+  1384→- **Purpose**: Self-contained `StatefulWidget` that animates drawing a polyline route on a `FlutterMap`, revealing the line over 3 seconds and pinning start (green) / end (red) markers with battery glyphs at the end of the animation.
+  1385→- **Classes/Functions**: `RouteReplay` (StatefulWidget), `_RouteReplayState` (`replay`, `_visiblePoints`, `_buildMarker`).
+  1386→- **Status**: ✅ Working
+  1387→- **Issues**: None functionally. Not a `ConsumerWidget` (and doesn't need to be). Caveat: uses `Polyline` / `PolylineLayer` directly from `flutter_map` — in `flutter_map` v6+ these moved to the separate `flutter_map_polyline` or are removed; verify against the pinned version. Not currently used by any audited screen (the active-ride screen draws its own polyline).
+  1388→
+  1389→## lib/features/scanner/presentation/screens/qr_scanner_screen.dart
+  1390→- **Purpose**: Full-screen QR scanner with camera preview, animated 240×240 viewfinder with corner brackets + scan line, manual-entry FAB, and a docked ride-confirmation sheet (scooter info + tariff picker + payment row + "Начать поездку" CTA).
+  1391→- **Classes/Functions**: `QrScannerScreen` (ConsumerStatefulWidget), `_QrScannerScreenState` (`_onDetect`, `_handleScannedCode`, `_showManualEntry`, `_toggleTorch`, `_switchCamera`, `_confirmStart`), private `_QrViewfinder` + state, private `_CornerBracket`, `_RideStartSheet`, `_TariffCard`, `_CameraStarter` + state, `_LoadingDialog` + state.
+  1392→- **Status**: ⚠️ Issues
+  1393→- **Issues**:
+  1394→  1. **Hard-coded scooter ID** — `_scooterId = 'V567R'` (line 51). The manual "Начать поездку" CTA (`_confirmStart`) calls `_handleScannedCode(_scooterId)` instead of using a real scanned value. This means tapping the CTA without scanning will start a ride for a non-existent scooter.
+  1395→  2. **Hard-coded scooter name** "Swift Neo" and ID "V567R" in the `_RideStartSheet` (lines 494, 504).
+  1396→  3. **Currency mismatch** — tariff cards show `'50 ₽ + 7 ₽/мин'` and `'249 ₽ / час'` instead of UZS.
+  1397→  4. The "T-Банк • 1589" payment row is a static placeholder.
+  1398→  5. Note: scanner correctly stops/starts the camera around `startRide` and routes to `/active-ride?tripId=...&scooterId=...` on success — that flow is sound.
+  1399→
+  1400→## lib/features/scanner/presentation/widgets/manual_entry_form.dart
+  1401→- **Purpose**: Modal bottom-sheet form for typing a scooter ID when the QR code can't be scanned. Validates that the value is ≥ 2 chars before enabling the "Unlock scooter" button.
+  1402→- **Classes/Functions**: `ManualEntryForm` (StatefulWidget), `_ManualEntryFormState` (`_onChanged`, `_submit`).
+  1403→- **Status**: ✅ Working
+  1404→- **Issues**: None functionally. Not a `ConsumerWidget` (and doesn't need to be — it just calls `widget.onSubmit`). Minor: copy is in English ("Enter scooter ID", "Unlock scooter") while the rest of the scanner screen is Russian — inconsistent.
+  1405→
+  1406→## lib/features/onboarding/presentation/screens/welcome_screen.dart
+  1407→- **Purpose**: First-run welcome screen — black rounded hero with a Zap icon, "Аренда самоката" title, "Поехали" CTA and a "Пропустить" skip button. Marks onboarding complete in `StorageService` and routes to `/auth`.
+  1408→- **Classes/Functions**: `WelcomeScreen` (ConsumerStatefulWidget), `_WelcomeScreenState` (`_getStarted`, animation setup).
+  1409→- **Status**: ✅ Working
+  1410→- **Issues**: 
+  1411→  1. Minor: `_getStarted` constructs `StorageService()` directly (line 56) instead of using `storageServiceProvider` from `auth_providers.dart` — same code smell as `auth_screen.dart`'s admin path. Functionally fine since `StorageService` is internally singleton, but breaks the Riverpod DI pattern.
+  1412→  2. The "Skip" button and the "Поехали" CTA share the exact same `_getStarted` handler — there's no semantic difference between them. Either give skip a different behaviour (e.g. don't set `onboardingComplete`) or drop the skip button entirely.
+  1413→
+  1414→
+  1415→---
+  1416→
+  1417→# Mobile Feature Audit — wallet / profile / settings / payment / notifications / support / favorites / trips / subscriptions / promo_codes / about / theme
+  1418→
+  1419→## Summary: 35 files audited (17 ✅ / 13 ⚠️ / 2 ❌ + 2 dead dirs)
+  1420→
+  1421→### Critical Issues Found:
+  1422→1. **OTP length mismatch** — OtpVerificationScreen uses 4 digits, VerifyOtpUseCase requires 6 digits. Non-admin users CANNOT sign in.
+  1423→2. **`ride_history/` directory deleted** — trips feature handles this now.
+  1424→3. **`faq_screen.dart` unreachable** — no /faq route registered.
+  1425→4. **Currency inconsistency** — UI shows ₽ (rubles) but backend returns UZS.
+  1426→5. **Multiple ApiClient instances** — wallet/profile/payment create own ApiClient instead of sharing.
+  1427→6. **Admin auto-login bypasses AuthNotifier** — widgets watching authNotifierProvider see unauthenticated.
+  1428→7. **`context.go('/trips')` in active_ride_screen** — no /trips route registered.
+  1429→
+  1430→### Empty onPressed handlers found:
+  1431→- payment_cards_screen.dart: T-Pay/Сбер-Pay/СБП rows
+  1432→- ride_payment_screen.dart: T-Банк row
+  1433→- subscriptions_screen.dart: "Оформить подписку" → snackbar only
+  1434→- promo_codes_screen.dart: "Готово" → snackbar only, no API call
+  1435→- favorites_screen.dart: "Показать на карте" → snackbar only
+  1436→- trips_screen.dart: TripCard onTap → snackbar, no detail screen
+  1437→- home_screen.dart: "Карта" nav tab, PaymentRow, RouteInputField
+  1438→
+  1439→### Dead code identified:
+  1440→- faq_screen.dart + faq_model.dart (unreachable)
+  1441→- PaymentMethods widget (never rendered)
+  1442→- ProfileRepository.getSessions/changePassword/updateProfile (never called)
+  1443→- virent_repository.dart + models.dart (duplicated, not imported)
+  1444→
+  1445→### Settings misrouted items:
+  1446→- "Сменить пароль" → /profile (should open password dialog)
+  1447→- "Условия использования" → /profile (should be /about)
+  1448→- "Политика конфиденциальности" → /profile (should be /about)
+  1449→
+  1450→### Routes verified:
+  1451→✅ /trips, /wallet, /profile, /settings, /notifications, /support, /favorites, /subscriptions, /promo-codes, /about, /payments, /add-card, /ride-payment
+  1452→❌ /faq — NOT REGISTERED
+  1453→
+  1454→

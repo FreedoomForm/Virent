@@ -1,0 +1,402 @@
+   400→   400→- **Status**: ✅ Working
+   401→   401→- **Issues**: `_parseDate` doesn't handle the MongoDB `{$date: ...}` Extended JSON form (unlike `audit_log_model.dart`'s version). Minor inconsistency between helper copies. No shared mixin/file for these duplicated `_toInt`/`_parseDate` helpers — they're copy-pasted across every model file.
+   402→   402→
+   403→   403→## lib/core/backend/models/user_settings_model.dart
+   404→   404→- **Purpose**: Per-user settings model ported from `backend/v1/models/user_settings.js`.
+   405→   405→- **Classes/Functions**: `UserLanguage` enum (russian/uzbek/english/karakalpak); `UserTheme` enum; `UserNotificationSettings` class; `UserPrivacy` class; `UserSettings` class (and private helpers).
+   406→   406→- **Imports**: None (read first 50 lines, full file is 410 lines).
+   407→   407→- **Status**: ✅ Working
+   408→   408→- **Issues**: `UserLanguage.karakalpak` (`kaa`) is included but not in `LocaleData.supportedLocales` (which only has en/ru/uz) — UI will fall back to default for Karakalpak users. `UserLanguage.fromString` defaults to Russian (not English) — surprising since the rest of the app defaults to English.
+   409→   409→
+   410→   410→## lib/core/backend/models/prepaid_model.dart
+   411→   411→- **Purpose**: Prepaid card / voucher model. Single-or-multi-use codes that credit a user's balance when redeemed.
+   412→   412→- **Classes/Functions**: `PrepaidStatus` enum (unused/partiallyUsed/used/expired/revoked); `PrepaidCard` class (and private helpers).
+   413→   413→- **Imports**: None (read first 50 lines, full file is 292 lines).
+   414→   414→- **Status**: ✅ Working
+   415→   415→- **Issues**: None apparent.
+   416→   416→
+   417→   417→## lib/core/backend/models/admin_model.dart
+   418→   418→- **Purpose**: Administrative user model with role-based access control. Ported from `backend/v1/models/admins.js`.
+   419→   419→- **Classes/Functions**: `AdminModel` class (and private helpers).
+   420→   420→- **Imports**: None (read first 50 lines, full file is 166 lines).
+   421→   421→- **Status**: ✅ Working
+   422→   422→- **Issues**: `role` defaults to `'admin'` but the embedded server uses `'super_admin'`, `'admin'`, `'operator'`, `'support'`, `'read_only'` — no enum, just strings. Inconsistent with `Roles` class in `permissions_service.dart` which has `'support'` but not `'read_only'` or `'operator'`.
+   423→   423→
+   424→   424→## lib/core/backend/models/trip_model.dart
+   425→   425→- **Purpose**: Trip lifecycle model ported from `backend/v1/models/trips.js`. Captures reserved → active → ended/cancelled/expired states and cost calculation breakdown.
+   426→   426→- **Classes/Functions**: `TripStatus` enum; `TripEndZone` enum; `TripCoordinates` class; `TripCostBreakdown` class; `CityRateSnapshot` class; `TripModel` class; `TripList` class (and private helpers).
+   427→   427→- **Imports**: None (read first 50 lines, full file is 648 lines).
+   428→   428→- **Status**: ✅ Working
+   429→   429→- **Issues**: None apparent. Well-structured.
+   430→   430→
+   431→   431→## lib/core/backend/models/mechanic_model.dart
+   432→   432→- **Purpose**: Mechanic profile plus maintenance-request and inventory models ported from `backend/v1/models/mechanics.js`.
+   433→   433→- **Classes/Functions**: `MechanicStatus` enum; `MaintenanceStatus` enum; `MaintenancePriority` enum; `SparePart` class; `PartUsed` class; `PartsInventory` class; `InventoryHistoryEntry` class; `MaintenanceRequest` class; `MechanicModel` class (and private helpers).
+   434→   434→- **Imports**: None (read first 50 lines, full file is 821 lines).
+   435→   435→- **Status**: ✅ Working
+   436→   436→- **Issues**: None apparent.
+   437→   437→
+   438→   438→## lib/core/backend/models/iot_model.dart
+   439→   439→- **Purpose**: IoT telemetry, event and command models ported from `backend/v1/models/iot.js`.
+   440→   440→- **Classes/Functions**: `IoTCommandStatus` enum; `IoTCommandKind` enum; `IoTEventType` enum; `IoTCommand` class; `Telemetry` class; `IoTEvent` class (and private helpers).
+   441→   441→- **Imports**: None (read first 50 lines, full file is 484 lines).
+   442→   442→- **Status**: ✅ Working
+   443→   443→- **Issues**: None apparent.
+   444→   444→
+   445→   445→## lib/core/backend/models/upload_model.dart
+   446→   446→- **Purpose**: File-upload metadata model ported from `backend/v1/models/uploads.js`. Allowed types: JPEG, PNG, WebP. Max 5 MB.
+   447→   447→- **Classes/Functions**: `allowedUploadMimeTypes` const list; `maxUploadSizeBytes` const (5 MB); `UploadPurpose` enum (parkingProof/breakdown/maintenanceCompletion/avatar/general); `UploadModel` class; `UploadList` class (and private helpers).
+   448→   448→- **Imports**: None (read first 50 lines, full file is 299 lines).
+   449→   449→- **Status**: ✅ Working
+   450→   450→- **Issues**: `maxUploadSizeBytes = 5 * 1024 * 1024` hardcoded — should be in `AppConstants`.
+   451→   451→
+   452→   452→## lib/core/backend/models/transaction_model.dart
+   453→   453→- **Purpose**: Transaction (ledger entry) model ported from `backend/v1/models/transactions.js`. Every balance mutation is a signed transaction.
+   454→   454→- **Classes/Functions**: `TransactionType` enum (topupClick/topupPayme/topupCard/topupPrepaid/tripPayment/refund/bonus/penalty/juicerPayout); `TransactionStatus` enum; `PaymentMethod` class; `TransactionModel` class; `TransactionList` class (and private helpers).
+   455→   455→- **Imports**: None (read first 50 lines, full file is 499 lines).
+   456→   456→- **Status**: ✅ Working
+   457→   457→- **Issues**: None apparent.
+   458→   458→
+   459→   459→## lib/core/backend/models/juicer_model.dart
+   460→   460→- **Purpose**: Juicer (scooter-charger gig worker) model ported from `backend/v1/models/juicers.js`.
+   461→   461→- **Classes/Functions**: `JuicerStatus` enum; `JuicerTaskStatus` enum; `TaskCoordinates` class; `JuicerTask` class; `JuicerEarnings` class; `JuicerModel` class (and private helpers).
+   462→   462→- **Imports**: None (read first 50 lines, full file is 467 lines).
+   463→   463→- **Status**: ✅ Working
+   464→   464→- **Issues**: Header comment mentions `JUICER_PAY_PER_SCOOTER = 5000 UZS` from the JS module — that constant is not surfaced in this Dart file (would need to verify in full file read).
+   465→   465→
+   466→   466→## lib/core/backend/models/geofence_model.dart
+   467→   467→- **Purpose**: Geofencing check result ported from `backend/v1/models/geofencing.js`. Captures the `/geofencing/check` response.
+   468→   468→- **Classes/Functions**: `GeofenceCheck` class; `GeofenceCity` class; `GeofenceZone` class; `GeofenceSpeedPolicy` class (and private helpers).
+   469→   469→- **Imports**: `zone_model.dart` (ZoneType, GeoPoint).
+   470→   470→- **Status**: ✅ Working
+   471→   471→- **Issues**: None apparent. Properly imports only what it needs from `zone_model.dart` via `show`.
+   472→   472→
+   473→   473→## lib/core/backend/models/city_model.dart
+   474→   474→- **Purpose**: City model with rate card and operational zones ported from `backend/v1/models/cities.js`.
+   475→   475→- **Classes/Functions**: `CityModel` class; `CityRates` class; `CityScooterStatus` class; `CityOverview` class (and private helpers).
+   476→   476→- **Imports**: `zone_model.dart` (ZoneModel, GeoPoint).
+   477→   477→- **Status**: ✅ Working
+   478→   478→- **Issues**: None apparent (read first 50 lines, full file is 392 lines).
+   479→   479→
+   480→   480→## lib/core/backend/models/stats_model.dart
+   481→   481→- **Purpose**: Aggregated statistics models for the admin dashboard ported from `backend/v1/models/stats.js`.
+   482→   482→- **Classes/Functions**: `StatsGranularity` enum; `StatsPeriod` enum; `StatsPoint` class; `StatsTimeSeries` class; `FleetCityBucket` class; `FleetUtilization` class; `FleetSummary` class; `UserSummary` class; `CitySummary` class; `TripSummary` class; `RevenueSummary` class; `StatsOverview` class; `Stats` class (and private helpers).
+   483→   483→- **Imports**: None (read first 50 lines, full file is 687 lines).
+   484→   484→- **Status**: ✅ Working
+   485→   485→- **Issues**: None apparent.
+   486→   486→
+   487→   487→## lib/core/backend/models/support_model.dart
+   488→   488→- **Purpose**: Support-ticket and breakdown-report models ported from `backend/v1/models/support.js`.
+   489→   489→- **Classes/Functions**: `SupportTicketType` enum; `SupportTicketStatus` enum; `SupportTicketPriority` enum; `ProblemCategory` class; `MessageAuthor` class; `TicketMessage` class; `SupportTicket` class (and private helpers).
+   490→   490→- **Imports**: None (read first 50 lines, full file is 489 lines).
+   491→   491→- **Status**: ✅ Working
+   492→   492→- **Issues**: None apparent.
+   493→   493→
+   494→   494→---
+   495→   495→
+   496→   496→## Summary
+   497→   497→
+   498→   498→| Status | Count | Files |
+   499→   499→|--------|-------|-------|
+   500→   500→| ✅ Working | 44 | Most files |
+   501→   501→| ⚠️ Issues | 8 | `main_web.dart`, `update_banner.dart`, `virent_ui.dart`, `api_client.dart`, `app_constants.dart` (minor), `auth_middleware.dart`, `view_executor.dart`, `domain_entities.dart`, `api_exceptions.dart`, `embedded_server.dart`, `update_service.dart`, `sms_model.dart` |
+   502→   502→| ❌ Broken | 1 | `ngrok_tunnel_service.dart` (committed secret) |
+   503→   503→
+   504→   504→### Critical Action Items
+   505→   505→1. **Rotate and remove the ngrok authtoken** from `ngrok_tunnel_service.dart:48` immediately. Move to environment config or `--dart-define`.
+   506→   506→2. **Remove hardcoded admin credentials** (`admin@virent.io` / `Admin123!`) from `embedded_server.dart` — at minimum load from env in production.
+   507→   507→3. **Fix `ApiException.fromResponse`** to use `jsonDecode` instead of `Uri.splitQueryString` for JSON error bodies.
+   508→   508→4. **Resolve `OtpCode` name collision** between `domain_entities.dart` and `sms_model.dart` — rename one (e.g. `OtpChallenge` for the domain entity).
+   509→   509→5. **Reconcile OTP TTL inconsistency** between `AppConstants.otpValidity = 5 min` and `OtpCode.ttlMinutes = 10 min`.
+   510→   510→6. **Move hardcoded HTTP timeout** in `api_client.dart` to use `AppConstants.connectTimeout`/`receiveTimeout`.
+   511→   511→7. **Localize the Russian strings** in `update_banner.dart` and `PillSearchBar` via the `L10n` system.
+   512→   512→8. **Split `embedded_server.dart`** (1628 lines) into per-feature route files.
+   513→   513→9. **Replace `Color.withOpacity()`** with `Color.withValues(alpha: ...)` in 7 locations.
+   514→   514→10. **Add `super_admin` and `operator`** to `Roles.all` in `permissions_service.dart` to match what `embedded_server.dart` actually issues.
+   515→   515→
+   516→   516→
+   517→   517→---
+   518→   518→
+   519→   519→# Admin Web + Admin Feature Audit
+   520→   520→
+   521→   521→Audit of `lib/features/admin_web/` (root, layout, widgets, 46 pages, providers) and `lib/features/admin/` (data, presentation).
+   522→   522→
+   523→   523→Five core checks applied per file:
+   524→   524→1. Page is `ConsumerWidget` with `ref.watch`?
+   525→   525→2. All `onPressed` / `onChanged` handlers non-empty?
+   526→   526→3. Providers properly connected to the page?
+   527→   527→4. Hardcoded data rows that should use providers?
+   528→   528→5. Compilation issues?
+   529→   529→
+   530→   530→---
+   531→   531→
+   532→   532→## lib/features/admin_web/admin_web_screen.dart
+   533→   533→- **Purpose**: Entry-point `StatelessWidget` for the `/admin/web` route. Wraps `AppLayout` in a `Scaffold`.
+   534→   534→- **Classes/Functions**: `AdminWebScreen` (StatelessWidget).
+   535→   535→- **Status**: ✅ Working
+   536→   536→- **Issues**: None. Plain wrapper — does not need `ref` itself. The responsive-drawer behavior described in the doc comment is **not actually implemented** (the comment promises a drawer for narrow screens, but the build just returns `Scaffold(body: AppLayout())`).
+   537→   537→
+   538→   538→## lib/features/admin_web/admin_web_providers.dart
+   539→   539→- **Purpose**: Riverpod wiring layer for the 46-page admin web panel. Exposes ~40 `FutureProvider.autoDispose` read providers + ~12 action providers + 3 generic CRUD providers (`genericCreateAction`, `genericUpdateAction`, `genericDeleteAction`).
+   540→   540→- **Classes/Functions**: `adminWebRepositoryProvider`, `dashboardStatsProvider`, `scootersListProvider`, `zonesListProvider`, `customersListProvider`, `auditLogProvider`, `tripsListProvider`, `prepaidOrdersProvider`, `promoCodesProvider`, `adminListProvider`, `smsLogsProvider`, `pushHistoryProvider`, `billingTransactionsProvider`, `blockUserAction`, `unblockUserAction`, `adjustBalanceAction`, `refundTripAction`, `sendIoTCommandAction`, `sendBroadcastNotificationAction`, `createZoneAction`, `deleteZoneAction`, `bulkGeneratePrepaidsAction`, `createPromoCodeAction`, `createAdminAction`, `deleteAdminAction`, `_safeGetList`, ~30 extended read providers, `genericDeleteAction`, `genericCreateAction`, `genericUpdateAction`.
+   541→   541→- **Status**: ⚠️ Issues
+   542→   542→- **Issues**:
+   543→   543→  - **Provider name collision** — `adminListProvider` is declared here returning `List<Map<String,dynamic>>`, but the same name is declared in `lib/features/admin/presentation/providers/admin_auth_provider.dart` returning `List<AdminUser>`. Whichever file is imported last wins; the wrong type reaches the consumer.
+   544→   544→  - **Provider name collision** — `adminAuditLogProvider` is declared here (returns `List<Map>`) AND in `lib/features/admin/presentation/providers/admin_provider.dart` (returns `List<Map>` but with filter support). Duplicate definition.
+   545→   545→  - `_safeGetList` swallows every error with `catch (_) => const []` — the UI shows "Совпадений не найдено" instead of an error state, masking network failures from the admin.
+   546→   546→  - All providers return raw `Map<String, dynamic>` (no typed models) — defeats Dart's type safety and forces every page to do defensive `(x ?? '-')` parsing.
+   547→   547→  - `pushHistoryProvider` (Map) and `pushHistoryListProvider` (List) both exist for the same conceptual data — confusing and one is likely dead.
+   548→   548→
+   549→   549→## lib/features/admin_web/layout/header.dart
+   550→   550→- **Purpose**: Top dark-themed header bar with the "ViRent" logo, status tags, and a user chip.
+   551→   551→- **Classes/Functions**: `AppHeader` (StatelessWidget), `_buildStatusTag`.
+   552→   552→- **Status**: ❌ Broken
+   553→   553→- **Issues**:
+   554→   554→  - **Not a `ConsumerWidget`** — does not use Riverpod at all.
+   555→   555→  - **Hardcoded data rows** — status tags `'Разблокирован: 0'`, `'Разряжен: 7'`, `'Не в сети: 9'`, `'Выезд из зоны: 0'`, `'Не включился: 1'` are static literals; they should be wired to `dashboardStatsProvider` (or an alerts-summary provider).
+   556→   556→  - **Empty `onPressed` handler** — the hamburger `IconButton` has `onPressed: () {}` (no-op). Should open the drawer described in `admin_web_screen.dart`.
+   557→   557→  - Hardcoded user `'Шерзод'` instead of reading from `currentAdminProvider`.
+   558→   558→
+   559→   559→## lib/features/admin_web/layout/app_layout.dart
+   560→   560→- **Purpose**: Stateful shell that mounts `AppHeader` + `AppSidebar` + the currently selected page via `_getPage(index)`.
+   561→   561→- **Classes/Functions**: `AppLayout` (StatefulWidget), `_AppLayoutState`, `_getPage(int)`.
+   562→   562→- **Status**: ⚠️ Issues
+   563→   563→- **Issues**:
+   564→   564→  - **Not a `ConsumerWidget`** — uses local `setState` for navigation. Acceptable but prevents reactive page refresh on auth changes.
+   565→   565→  - **Sidebar index gaps & mismatches** — sidebar items use indexes `0-18`, but `_getPage` switch has cases for `30, 90, 91, 100, 101, 120-145, 151, 153, 170-173, 200-206`. The sidebar has no way to reach those "sub-pages" because `isExpandable: true` items only display an arrow icon — no submenu is rendered. So 25+ sub-pages are **unreachable** through the UI.
+   566→   566→  - **Sidebar `Карта` (index 3)** has no matching case in the switch — selecting it shows the default "not implemented" message even though `MapPage` exists at case `30`.
+   567→   567→  - **Cases 18 & 19 both return `ChatLogsPage`** — `case 18: case 19: return const ChatLogsPage();`. The `Чат` and `Журнал чата` items are indistinguishable.
+   568→   568→  - Default fallback message still tells the user to pick "Карта (3)" which is broken (see above).
+   569→   569→
+   570→   570→## lib/features/admin_web/layout/sidebar.dart
+   571→   571→- **Purpose**: 250 px-wide navigation list with 19 top-level items.
+   572→   572→- **Classes/Functions**: `AppSidebar` (StatelessWidget), `_buildSidebarItem`.
+   573→   573→- **Status**: ⚠️ Issues
+   574→   574→- **Issues**:
+   575→   575→  - **Not a `ConsumerWidget`**.
+   576→   576→  - `isExpandable: true` does nothing — the parameter is only used to render a chevron icon. No submenu, no expansion, no navigation to the 25+ child pages defined in `app_layout.dart`. This is the single biggest UX gap in the panel.
+   577→   577→  - Tap handler `onTap: () => onItemSelected(index)` works but always passes the top-level index, so child pages are unreachable.
+   578→   578→
+   579→   579→## lib/features/admin_web/widgets/admin_dialogs.dart
+   580→   580→- **Purpose**: Reusable dialog & action wrappers (info, confirm, view, form, delete) + `runAdminAction` loading-spinner wrapper.
+   581→   581→- **Classes/Functions**: `AdminField`, `showAdminInfoDialog`, `showAdminSnack`, `runAdminAction`, `showAdminConfirmDialog`, `showAdminDeleteDialog`, `showAdminViewDialog`, `showAdminFormDialog`.
+   582→   582→- **Status**: ⚠️ Issues
+   583→   583→- **Issues**:
+   584→   584→  - `runAdminAction` calls `showDialog` for the loading spinner, then `Navigator.of(context).pop()` to dismiss it. If the surrounding route is popped during `await action()` (e.g. user hits back), the `pop()` will dismiss the **wrong** route — there is no `Navigator.of(context).canPop()` guard.
+   585→   585→  - `showAdminFormDialog` calls `runAdminAction` AFTER `Navigator.of(ctx).pop()`-ing the form dialog, but `runAdminAction` itself pushes a loading dialog using the **outer** `context` — works only if the outer context is still mounted. The `if (!context.mounted) return;` check between is present but does not protect the `await runAdminAction` call from race conditions.
+   586→   586→  - `showAdminFormDialog` controllers are disposed in a `finally` block, but the `Map<String,dynamic>` result is built by reading `.text` BEFORE disposal — correct order, but fragile.
+   587→   587→
+   588→   588→## lib/features/admin_web/pages/dashboard_page.dart
+   589→   589→- **Purpose**: Dashboard with 10 stat cards + "tariffs in rent" lists + control panel + PUSH form.
+   590→   590→- **Classes/Functions**: `DashboardPage` (ConsumerWidget), `_buildStatsGrid`, `_buildStatCard`, `_buildListsSection`, `_buildListCard`, `_buildControlPanel`, `_buildPushPanel`, `_buildActionButton`.
+   591→   591→- **Status**: ⚠️ Issues
+   592→   592→- **Issues**:
+   593→   593→  - ✅ `ConsumerWidget` with `ref.watch(dashboardStatsProvider)`.
+   594→   594→  - ✅ PUSH form is wired to `sendBroadcastNotificationAction`.
+   595→   595→  - **Hardcoded data rows** — `_buildListsSection()` returns fixed entries: `'Минутный ИП Асилбеков' (3)`, `'Для 30мин ИП Асилбеков' (1)`, `'30 Мин ИП Асилбеков' (1)`. These should come from a "tariffs in rent" provider.
+   596→   596→  - **Hardcoded scooter IDs** in the stat-card detail dialog: `'2056', '2060', '624', '940'` — should fetch the list of scooters in each status from a provider.
+   597→   597→  - **Stub handlers** — `_buildControlPanel` buttons "опубликовать", "снять с публикации", "редактировать", "статус" only call `showAdminSnack` (no actual mutation). "Обновление" and "Режим техника" only show info dialogs. "Сообщения пользователю по событиям" only shows a dialog.
+   598→   598→  - **Disabled button** — `OutlinedButton(onPressed: null, child: Text('РЕКОМЕНДАЦИИ ПО PUSH'))` is permanently disabled.
+   599→   599→  - "Выключить аренды" `onConfirm` only invalidates providers — it does **not** call any server endpoint to actually stop rentals.
+   600→   600→
+   601→   601→## lib/features/admin_web/pages/statistics_page.dart
+   602→   602→- **Purpose**: KPI grid (6 cards) + revenue-by-account panel.
+   603→   603→- **Classes/Functions**: `StatisticsPage` (ConsumerWidget), `_buildStatCard`, `_buildSectionCard`.
+   604→   604→- **Status**: ⚠️ Issues
+   605→   605→- **Issues**:
+   606→   606→  - ✅ `ConsumerWidget` with `ref.watch(analyticsProvider)`.
+   607→   607→  - **Hardcoded fallback values** baked into the card labels — e.g. `'${_s('avg_ride_duration', '24.25 мин.')}'`, `'${_s('active_clients', '1278')}'`, `'${_s('revenue', '109984540.39 C.')}'`. If the API returns `null` for any key, the UI shows fabricated numbers instead of `—`.
+   608→   608→  - **Hardcoded ИП dropdown items** — 4 company names hard-coded in both the top filter and the revenue panel.
+   609→   609→  - **Empty `onChanged` handlers** — both `DropdownButtonFormField` widgets use `(val) {}` (no-op). Selecting a company does nothing.
+   610→   610→  - `_buildSectionCard` always shows "Не найдено..." — no provider connection.
+   611→   611→  - Date pickers are plain `TextField`s — no `showDatePicker` integration.
+   612→   612→
+   613→   613→## lib/features/admin_web/pages/alerts_page.dart
+   614→   614→- **Purpose**: Fleet alerts table with filters (search, status, grouping).
+   615→   615→- **Classes/Functions**: `AlertsPage` (ConsumerWidget), `_buildRow`, `_alertSearchProvider` (private StateProvider).
+   616→   616→- **Status**: ⚠️ Issues
+   617→   617→- **Issues**:
+   618→   618→  - ✅ `ConsumerWidget` with `ref.watch(alertsListProvider)` + local `_alertSearchProvider` for client-side search.
+   619→   619→  - **Dropdown has only ONE item** — `'Типы тревог:'` with no other options.
+   620→   620→  - **Empty `onChanged`** on the dropdown.
+   621→   621→  - Status filter buttons ("Открыта", "Закрыта", "Группировать") only show SnackBars — they do not actually filter the list. The `filtered` variable only respects the search query.
+   622→   622→  - Search input has no debounce.
+   623→   623→
+   624→   624→## lib/features/admin_web/pages/map_page.dart
+   625→   625→- **Purpose**: Fleet map mockup — counts scooters by status and shows colored circles.
+   626→   626→- **Classes/Functions**: `MapPage` (ConsumerWidget).
+   627→   627→- **Status**: ⚠️ Issues
+   628→   628→- **Issues**:
+   629→   629→  - ✅ `ConsumerWidget` with `ref.watch(scootersListProvider)`.
+   630→   630→  - **No actual map** — the body is a `Container(color: Color(0xFF2E2E2E))` with the text "Mapbox Integration (Mockup)". No Mapbox / Google Maps / flutter_map widget.
+   631→   631→  - **Empty `onChanged`** on both `Radio` widgets ("Старт аренд" / "Конец аренд").
+   632→   632→  - Map mode buttons ("Общая", "Тепловая", "Частота аренд", "Группирование") only show SnackBars — they do not change the rendered view.
+   633→   633→
+   634→   634→## lib/features/admin_web/pages/scooters_page.dart
+   635→   635→- **Purpose**: Full CRUD scooter table with search, filters, lock/unlock IoT commands.
+   636→   636→- **Classes/Functions**: `ScootersPage` (ConsumerWidget), `_buildFilterField`, `_buildDropdownBtn`, `_buildRow`, `_scooterSearchProvider`.
+   637→   637→- **Status**: ✅ Working
+   638→   638→- **Issues**:
+   639→   639→  - ✅ `ConsumerWidget` with `ref.watch(scootersListProvider)`.
+   640→   640→  - ✅ Create / edit wired to `genericCreateAction` / `genericUpdateAction` (endpoint `/admin/scooters`).
+   641→   641→  - ✅ Lock / unlock IoT commands wired to `sendIoTCommandAction`.
+   642→   642→  - Filter dropdown buttons ("Модель", "Группы", "Компания", "Геозоны") only open info dialogs — no real filtering.
+   643→   643→  - Filter `TextField`s have no `onChanged` — they don't filter the table.
+   644→   644→
+   645→   645→## lib/features/admin_web/pages/push_history_page.dart
+   646→   646→- **Purpose**: Push-notification history table with search.
+   647→   647→- **Classes/Functions**: `PushHistoryPage` (ConsumerWidget), `_buildFilterField`, `_buildRow`, `_pushSearchProvider`.
+   648→   648→- **Status**: ✅ Working
+   649→   649→- **Issues**: None significant. The "ID клиента" filter field has no `onChanged` (search field works). No detail view / delete action.
+   650→   650→
+   651→   651→## lib/features/admin_web/pages/prepaid_orders_page.dart
+   652→   652→- **Purpose**: Prepaid top-up codes table.
+   653→   653→- **Classes/Functions**: `PrepaidOrdersPage` (ConsumerWidget), `_buildFilterField`, `_buildRow`, `_prepaidSearchProvider`.
+   654→   654→- **Status**: ⚠️ Issues
+   655→   655→- **Issues**:
+   656→   656→  - ✅ `ConsumerWidget` with `ref.watch(prepaidOrdersProvider)`.
+   657→   657→  - **No "Add" button** — `bulkGeneratePrepaidsAction` exists in providers but is not wired to this page.
+   658→   658→  - All five filter fields have no `onChanged` — only the top search box works.
+   659→   659→  - No detail view, no delete.
+   660→   660→
+   661→   661→## lib/features/admin_web/pages/promo_codes_page.dart
+   662→   662→- **Purpose**: Promo-code list + create dialog.
+   663→   663→- **Classes/Functions**: `PromoCodesPage` (ConsumerWidget), `_buildRow`, `_promoSearchProvider`.
+   664→   664→- **Status**: ✅ Working
+   665→   665→- **Issues**:
+   666→   666→  - ✅ `ConsumerWidget` with `ref.watch(promoCodesProvider)`.
+   667→   667→  - ✅ Create wired to `createPromoCodeAction`.
+   668→   668→  - No edit / delete / detail action — promos cannot be edited once created.
+   669→   669→
+   670→   670→## lib/features/admin_web/pages/billing_debts_page.dart
+   671→   671→- **Purpose**: Debtors table (customers with negative balance) with balance-adjust dialog.
+   672→   672→- **Classes/Functions**: `BillingDebtsPage` (ConsumerWidget), `_buildFilterField`, `_buildRow`, `_debtsSearchProvider`.
+   673→   673→- **Status**: ⚠️ Issues
+   674→   674→- **Issues**:
+   675→   675→  - ✅ `ConsumerWidget` with `ref.watch(customersListProvider)` (filters debtors client-side).
+   676→   676→  - **Confusing balance form** — the edit dialog has a `balance` field initialized to the current debt, but `adjustBalanceAction(userId, delta, reason)` expects a **signed delta**. The code parses the entered value as `delta` and submits it, so entering `-50000` to "set to -50000" actually credits -50000 to the wallet, double-counting the existing debt. The UI label says "Баланс" (Balance) but the semantics is "Adjustment delta".
+   677→   677→  - Filter TextFields ("ID клиента", "ID заказа") have no `onChanged` — only the top search box works.
+   678→   678→
+   679→   679→## lib/features/admin_web/pages/billing_receipts_page.dart
+   680→   680→- **Purpose**: Receipts table.
+   681→   681→- **Classes/Functions**: `BillingReceiptsPage` (ConsumerWidget), `_buildRow`, `_receiptsSearchProvider`.
+   682→   682→- **Status**: ✅ Working
+   683→   683→- **Issues**: None significant. Filter fields have no `onChanged`. No detail view, no delete, no export.
+   684→   684→
+   685→   685→## lib/features/admin_web/pages/fines_page.dart
+   686→   686→- **Purpose**: Fines table with search.
+   687→   687→- **Classes/Functions**: `FinesPage` (ConsumerWidget), `_buildRow`, `_finesSearchProvider`.
+   688→   688→- **Status**: ✅ Working
+   689→   689→- **Issues**: No create / edit / delete action — fines are read-only.
+   690→   690→
+   691→   691→## lib/features/admin_web/pages/payme_transactions_page.dart
+   692→   692→- **Purpose**: Payme transaction table.
+   693→   693→- **Classes/Functions**: `PaymeTransactionsPage` (ConsumerWidget), `_buildFilterField`, `_buildRow`, `_paymeSearchProvider`.
+   694→   694→- **Status**: ✅ Working
+   695→   695→- **Issues**: Filter TextFields ("ID клиента", "payme_transaction_id", "state") have no `onChanged`. No detail view, no refund action.
+   696→   696→
+   697→   697→## lib/features/admin_web/pages/click_transactions_page.dart
+   698→   698→- **Purpose**: Click transaction table.
+   699→   699→- **Classes/Functions**: `ClickTransactionsPage` (ConsumerWidget), `_buildFilterInput`, `_buildRow`, `_clickSearchProvider`.
+   700→   700→- **Status**: ✅ Working
+   701→   701→- **Issues**: Same as Payme page — filter TextFields have no `onChanged`, no actions.
+   702→   702→
+   703→   703→## lib/features/admin_web/pages/selfies_page.dart
+   704→   704→- **Purpose**: Selfie verification table with photo placeholder + verified toggle.
+   705→   705→- **Classes/Functions**: `SelfiesPage` (ConsumerWidget), `_buildRow`.
+   706→   706→- **Status**: ⚠️ Issues
+   707→   707→- **Issues**:
+   708→   708→  - ✅ `ConsumerWidget` with `ref.watch(selfiesListProvider)`.
+   709→   709→  - **Search TextField has no `onChanged`** — search box is purely decorative.
+   710→   710→  - **Empty `onChanged`** on the verification `Switch(value: _b('verified'), onChanged: (val) {})` — toggling the switch does nothing.
+   711→   711→  - Photo cell is a static placeholder (`Icon(Icons.image)`) — no actual image is loaded.
+   712→   712→  - No approve / reject action.
+   713→   713→
+   714→   714→## lib/features/admin_web/pages/inspection_damages_page.dart
+   715→   715→- **Purpose**: Inspection-damages table with photo placeholders.
+   716→   716→- **Classes/Functions**: `InspectionDamagesPage` (ConsumerWidget), `_buildFilterField`, `_buildRow`.
+   717→   717→- **Status**: ⚠️ Issues
+   718→   718→- **Issues**:
+   719→   719→  - ✅ `ConsumerWidget` with `ref.watch(inspectionDamagesProvider)`.
+   720→   720→  - **Search TextField has no `onChanged`** — search box is decorative.
+   721→   721→  - Filter TextFields ("Самокат", "Номер") have no `onChanged`.
+   722→   722→  - Image cell shows a static placeholder regardless of `path` value — the ternary `imagePath.isEmpty ? Icon : Icon` returns the same icon either way (clear copy-paste bug).
+   723→   723→  - "Конкретный день ▼" and "Промежуток времени ▼" are static `Text` widgets, not buttons.
+   724→   724→
+   725→   725→## lib/features/admin_web/pages/bonuses_page.dart
+   726→   726→- **Purpose**: Bonuses table with create dialog.
+   727→   727→- **Classes/Functions**: `BonusesPage` (ConsumerWidget), `_buildRow`, `_bonusSearchProvider`.
+   728→   728→- **Status**: ✅ Working
+   729→   729→- **Issues**: ✅ Create wired to `genericCreateAction`. No edit / delete / detail.
+   730→   730→
+   731→   731→## lib/features/admin_web/pages/promo_series_page.dart
+   732→   732→- **Purpose**: Promo series table with create dialog.
+   733→   733→- **Classes/Functions**: `PromoSeriesPage` (ConsumerWidget), `_buildRow`, `_seriesSearchProvider`.
+   734→   734→- **Status**: ✅ Working
+   735→   735→- **Issues**: No edit / delete / detail.
+   736→   736→
+   737→   737→## lib/features/admin_web/pages/cities_page.dart
+   738→   738→- **Purpose**: Cities table with create dialog.
+   739→   739→- **Classes/Functions**: `CitiesPage` (ConsumerWidget), `_buildRow`, `_citySearchProvider`.
+   740→   740→- **Status**: ✅ Working
+   741→   741→- **Issues**: No edit / delete / detail.
+   742→   742→
+   743→   743→## lib/features/admin_web/pages/client_groups_page.dart
+   744→   744→- **Purpose**: Client-groups table with full CRUD.
+   745→   745→- **Classes/Functions**: `ClientGroupsPage` (ConsumerWidget), `_buildRow`.
+   746→   746→- **Status**: ⚠️ Issues
+   747→   747→- **Issues**:
+   748→   748→  - ✅ `ConsumerWidget` with `ref.watch(clientGroupsProvider)`.
+   749→   749→  - ✅ Full CRUD wired (`genericCreateAction` / `genericUpdateAction` / `genericDeleteAction`).
+   750→   750→  - **Search TextField has no `onChanged`** — search box is decorative.
+   751→   751→
+   752→   752→## lib/features/admin_web/pages/admin_roles_page.dart
+   753→   753→- **Purpose**: Admin accounts table with full CRUD.
+   754→   754→- **Classes/Functions**: `AdminRolesPage` (ConsumerWidget), `_buildRow`, `_adminSearchProvider`.
+   755→   755→- **Status**: ✅ Working
+   756→   756→- **Issues**: ✅ Uses `createAdminAction`, `genericUpdateAction`, `deleteAdminAction`. The update calls `genericUpdateAction('/admin/list', id, ...)` — but the actual server endpoint for updating an admin is `/admin/permissions/$adminId` (per `AdminAuthRepositoryImpl.updateAdminPermissions`). Endpoint mismatch — update likely 404s.
+   757→   757→
+   758→   758→## lib/features/admin_web/pages/admin_permissions_page.dart
+   759→   759→- **Purpose**: Permissions table with full CRUD.
+   760→   760→- **Classes/Functions**: `AdminPermissionsPage` (ConsumerWidget), `_buildRow`.
+   761→   761→- **Status**: ⚠️ Issues
+   762→   762→- **Issues**:
+   763→   763→  - ✅ `ConsumerWidget` with `ref.watch(adminPermissionsProvider)`.
+   764→   764→  - ✅ Full CRUD wired.
+   765→   765→  - **Search TextField has no `onChanged`**.
+   766→   766→  - Column header `'backpack::permissionmanager.title'` is a Laravel Backpack i18n key accidentally shipped as the column label — should be `"Заголовок"`.
+   767→   767→
+   768→   768→## lib/features/admin_web/pages/admin_agreements_page.dart
+   769→   769→- **Purpose**: Agreements table with full CRUD.
+   770→   770→- **Classes/Functions**: `AdminAgreementsPage` (ConsumerWidget), `_buildRow`.
+   771→   771→- **Status**: ⚠️ Issues
+   772→   772→- **Issues**:
+   773→   773→  - ✅ `ConsumerWidget` with `ref.watch(adminAgreementsProvider)`.
+   774→   774→  - ✅ Full CRUD wired.
+   775→   775→  - **Search TextField has no `onChanged`**.
+   776→   776→  - **Title says `'Entries'`** — should be `'Договора'`.
+   777→   777→
+   778→   778→## lib/features/admin_web/pages/admin_faq_page.dart
+   779→   779→- **Purpose**: FAQ table with full CRUD.
+   780→   780→- **Classes/Functions**: `AdminFaqPage` (ConsumerWidget), `_buildRow`.
+   781→   781→- **Status**: ⚠️ Issues
+   782→   782→- **Issues**:
+   783→   783→  - ✅ `ConsumerWidget` with `ref.watch(adminFaqProvider)`.
+   784→   784→  - ✅ Full CRUD wired.
+   785→   785→  - **Search TextField has no `onChanged`**.
+   786→   786→  - **Title says `'Faqs'`** — should be `'Частые вопросы'`.
+   787→   787→
+   788→   788→## lib/features/admin_web/pages/admin_companies_page.dart
+   789→   789→- **Purpose**: Companies table with full CRUD.
+   790→   790→- **Classes/Functions**: `AdminCompaniesPage` (ConsumerWidget), `_buildRow`.
+   791→   791→- **Status**: ⚠️ Issues
+   792→   792→- **Issues**:
+   793→   793→  - ✅ `ConsumerWidget` with `ref.watch(adminCompaniesProvider)`.
+   794→   794→  - ✅ Full CRUD wired.
+   795→   795→  - **Search TextField has no `onChanged`**.
+   796→   796→  - **Title says `'Companies'`** — should be `'Компании'`.
+   797→   797→
+   798→   798→## lib/features/admin_web/pages/admin_contacts_page.dart
+   799→   799→- **Purpose**: Contacts table with full CRUD.
+
+[showing lines 400-799 of 1454; use offset=800 with limit to continue reading]
