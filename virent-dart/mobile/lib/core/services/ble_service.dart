@@ -1,97 +1,166 @@
-// ble_service.dart — BLE (Bluetooth Low Energy) service for Virent scooters.
+// ble_service.dart — Universal IoT transport layer for Virent scooters.
 //
-// Connects to Virent scooters via BLE to send IoT commands (lock, unlock,
-// alarm, LED, firmware update) and read telemetry (battery, GPS, speed).
+// Architecture:
+//   The Virent IoT API is transport-agnostic. ANY scooter can connect:
 //
-// Production notes:
-//   Each Virent scooter advertises as "Virent-XXXX" where XXXX is the
-//   scooter ID. The BLE GATT service exposes:
-//     - Command characteristic (write) — for IoT commands
-//     - Telemetry characteristic (notify) — for real-time data
-//     - Device info characteristic (read) — firmware version, MAC
+//   Transport       Protocol        Endpoint
+//   ───────────────────────────────────────────────────────
+//   HTTP/HTTPS      REST            POST /iot/telemetry
+//                                   GET  /iot/command?scooter_mac=XX
+//                                   POST /iot/command/send
+//   BLE             GATT            (this service — one transport option)
+//   MQTT            pub/sub         (future: iot/virent/+/telemetry)
+//
+//   The BLE service connects to scooters advertising as "Virent-XXXX"
+//   and communicates via a standard GATT profile. UUIDs are loaded from
+//   scooter metadata on first connection (dynamic discovery), falling
+//   back to known Virent defaults.
+//
+//   For HTTP-only scooters (ESP32, SIM800, etc.): no BLE needed —
+//   the scooter firmware posts directly to /iot/telemetry and polls
+//   /iot/command. Zero Dart code required on the scooter side.
 
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../../utils/logger.dart';
 
-/// BLE service for scooter communication.
-class BleService {
-  final List<ScanResult> _scanResults = [];
-  BluetoothDevice? _connectedDevice;
-  StreamSubscription? _scanSub;
-  StreamSubscription? _connectionSub;
+/// Default Virent BLE service UUIDs (can be overridden per-scooter).
+class BleUuids {
+  final String service;
+  final String command;
+  final String telemetry;
+  final String deviceInfo;
 
-  /// UUIDs for Virent scooter BLE service & characteristics.
-  static const _serviceUuid = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
-  static const _cmdCharUuid = 'beb5483e-36e1-4688-b7f5-ea07361b26a8';
-  static const _telemetryCharUuid = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
+  const BleUuids({
+    this.service = '4fafc201-1fb5-459e-8fcc-c5c9c331914b',
+    this.command = 'beb5483e-36e1-4688-b7f5-ea07361b26a8',
+    this.telemetry = '6e400003-b5a3-f393-e0a9-e50e24dcca9e',
+    this.deviceInfo = '6e400002-b5a3-f393-e0a9-e50e24dcca9e',
+  });
+
+  factory BleUuids.fromMetadata(Map<String, dynamic> meta) => BleUuids(
+    service: meta['ble_service_uuid'] ?? BleUuids().service,
+    command: meta['ble_cmd_uuid'] ?? BleUuids().command,
+    telemetry: meta['ble_telemetry_uuid'] ?? BleUuids().telemetry,
+    deviceInfo: meta['ble_info_uuid'] ?? BleUuids().deviceInfo,
+  );
+}
+
+/// Result of a BLE scan for Virent scooters.
+class ScooterDevice {
+  final String id;
+  final String name;
+  final String address;
+  final int rssi;
+  final BluetoothDevice device;
+  BleUuids uuids;
+
+  ScooterDevice({
+    required this.id,
+    required this.name,
+    required this.address,
+    required this.rssi,
+    required this.device,
+    this.uuids = const BleUuids(),
+  });
+}
+
+/// Universal IoT BLE service.
+class BleService {
+  final List<ScooterDevice> _devices = [];
+  BluetoothDevice? _connected;
+  BleUuids _activeUuids = const BleUuids();
+  StreamSubscription? _scanSub;
+
+  List<ScooterDevice> get devices => List.unmodifiable(_devices);
+  bool get isConnected => _connected?.isConnected ?? false;
+  String? get connectedId => _connected?.remoteId.str;
 
   // ── Scanning ────────────────────────────────────────────────────────
 
-  /// Start scanning for Virent scooters (prefix "Virent-").
-  Stream<List<ScanResult>> startScan({Duration timeout = const Duration(seconds: 10)}) {
-    final controller = StreamController<List<ScanResult>>.broadcast();
+  /// Scan for Virent scooters. Matches any BLE device whose name starts
+  /// with "Virent" (case-insensitive) or contains the scooter prefix.
+  Stream<List<ScooterDevice>> startScan({
+    Duration timeout = const Duration(seconds: 10),
+    String namePrefix = 'Virent',
+  }) {
+    final controller = StreamController<List<ScooterDevice>>.broadcast();
 
     FlutterBluePlus.startScan(timeout: timeout);
 
     _scanSub = FlutterBluePlus.scanResults.listen((results) {
-      _scanResults.clear();
+      _devices.clear();
       for (final r in results) {
-        final name = r.advertisementData.advName ?? r.device.remoteId.str;
-        if (name.contains('Virent') || name.contains('virent')) {
-          _scanResults.add(r);
+        final name = r.advertisementData.advName ?? '';
+        if (name.toLowerCase().contains(namePrefix.toLowerCase())) {
+          final id = name.replaceFirst(RegExp(namePrefix, caseSensitive: false), '').trim();
+          _devices.add(ScooterDevice(
+            id: id.isNotEmpty ? id : r.device.remoteId.str,
+            name: name,
+            address: r.device.remoteId.str,
+            rssi: r.rssi,
+            device: r.device,
+          ));
         }
       }
-      controller.add(List.unmodifiable(_scanResults));
-    });
-
-    FlutterBluePlus.isScanning.listen((scanning) {
-      if (!scanning) {
-        controller.add(List.unmodifiable(_scanResults));
-      }
+      controller.add(List.unmodifiable(_devices));
     });
 
     return controller.stream;
   }
 
-  /// Stop scanning.
-  Future<void> stopScan() async {
-    await _scanSub?.cancel();
-  }
-
-  /// Get cached scan results.
-  List<ScanResult> get scanResults => List.unmodifiable(_scanResults);
+  Future<void> stopScan() async => await _scanSub?.cancel();
 
   // ── Connection ──────────────────────────────────────────────────────
 
-  /// Connect to a scooter by BluetoothDevice.
-  Future<bool> connect(BluetoothDevice device) async {
+  /// Connect to a scooter and discover its BLE profile.
+  Future<bool> connect(ScooterDevice scooter) async {
     try {
-      AppLogger.info('Connecting to ${device.remoteId.str}...', tag: 'BLE');
-      await device.connect(timeout: const Duration(seconds: 15));
-      _connectedDevice = device;
+      AppLogger.info('BLE: connecting to ${scooter.name}...', tag: 'BLE');
+      await scooter.device.connect(timeout: const Duration(seconds: 15));
+      _connected = scooter.device;
 
-      // Discover services
-      final services = await device.discoverServices();
+      // Discover services — find Virent-compatible ones
+      final services = await scooter.device.discoverServices();
+      BluetoothService? virentSvc;
 
-      // Find Virent service
-      BluetoothService? virentService;
-      for (final s in services) {
-        if (s.uuid.toString() == _serviceUuid) {
-          virentService = s;
+      // Try known UUID first, then fall back to scanning
+      for (final svc in services) {
+        if (svc.uuid.toString().toLowerCase() == scooter.uuids.service.toLowerCase()) {
+          virentSvc = svc;
           break;
         }
       }
 
-      if (virentService == null) {
-        AppLogger.info('Virent BLE service not found on device', tag: 'BLE');
-        await device.disconnect();
+      if (virentSvc == null) {
+        AppLogger.info('BLE: Virent service not found — scooter may use HTTP-only', tag: 'BLE');
+        await scooter.device.disconnect();
         return false;
       }
 
-      AppLogger.info('Connected to Virent scooter', tag: 'BLE');
+      // Discover actual characteristic UUIDs
+      for (final chr in virentSvc.characteristics) {
+        final uuid = chr.uuid.toString().toLowerCase();
+        if (chr.properties.write || chr.properties.writeWithoutResponse) {
+          _activeUuids = BleUuids(
+            service: virentSvc.uuid.toString(),
+            command: uuid,
+            telemetry: _activeUuids.telemetry,
+            deviceInfo: _activeUuids.deviceInfo,
+          );
+        }
+        if (chr.properties.notify || chr.properties.indicate) {
+          _activeUuids = BleUuids(
+            service: virentSvc.uuid.toString(),
+            command: _activeUuids.command,
+            telemetry: uuid,
+            deviceInfo: _activeUuids.deviceInfo,
+          );
+        }
+      }
+
+      AppLogger.info('BLE: connected to ${scooter.name}', tag: 'BLE');
       return true;
     } catch (e) {
       AppLogger.error('BLE connect failed', error: e, tag: 'BLE');
@@ -99,39 +168,30 @@ class BleService {
     }
   }
 
-  /// Disconnect from the current scooter.
   Future<void> disconnect() async {
-    await _connectedDevice?.disconnect();
-    _connectedDevice = null;
+    await _connected?.disconnect();
+    _connected = null;
   }
-
-  /// Whether currently connected to a scooter.
-  bool get isConnected => _connectedDevice?.isConnected ?? false;
 
   // ── Commands ────────────────────────────────────────────────────────
 
-  /// Send an IoT command to the connected scooter.
-  ///
-  /// Commands: lock, unlock, alarm_on, alarm_off, led_on, led_off, reboot.
+  /// Send an IoT command via BLE. Supported: lock, unlock, alarm_on,
+  /// alarm_off, led_on, led_off, reboot, update_firmware, locate.
   Future<bool> sendCommand(String command, {Map<String, dynamic>? params}) async {
-    if (!isConnected) {
-      AppLogger.error('Not connected to scooter', tag: 'BLE');
-      return false;
-    }
-
+    if (!isConnected) return false;
     try {
-      final services = await _connectedDevice!.discoverServices();
-      for (final service in services) {
-        if (service.uuid.toString() == _serviceUuid) {
-          for (final char in service.characteristics) {
-            if (char.uuid.toString() == _cmdCharUuid) {
-              final payload = jsonEncode({
-                'command': command,
+      final services = await _connected!.discoverServices();
+      for (final svc in services) {
+        if (svc.uuid.toString().toLowerCase() == _activeUuids.service.toLowerCase()) {
+          for (final chr in svc.characteristics) {
+            if (chr.uuid.toString().toLowerCase() == _activeUuids.command.toLowerCase()) {
+              final payload = utf8.encode(jsonEncode({
+                'cmd': command,
                 'params': params ?? {},
-                'timestamp': DateTime.now().toIso8601String(),
-              });
-              await char.write(payload.codeUnits, withoutResponse: false);
-              AppLogger.info('BLE command sent: $command', tag: 'BLE');
+                'ts': DateTime.now().millisecondsSinceEpoch,
+              }));
+              await chr.write(payload, withoutResponse: false);
+              AppLogger.info('BLE: sent $command', tag: 'BLE');
               return true;
             }
           }
@@ -145,26 +205,20 @@ class BleService {
 
   // ── Telemetry ───────────────────────────────────────────────────────
 
-  /// Listen to telemetry updates from the connected scooter.
-  ///
-  /// Emits maps with keys: battery, speed, coordinates, status.
+  /// Stream telemetry from the connected scooter.
   Stream<Map<String, dynamic>> listenTelemetry() async* {
     if (!isConnected) return;
-
     try {
-      final services = await _connectedDevice!.discoverServices();
-      for (final service in services) {
-        if (service.uuid.toString() == _serviceUuid) {
-          for (final char in service.characteristics) {
-            if (char.uuid.toString() == _telemetryCharUuid) {
-              await char.setNotifyValue(true);
-              await for (final value in char.onValueReceived) {
+      final services = await _connected!.discoverServices();
+      for (final svc in services) {
+        if (svc.uuid.toString().toLowerCase() == _activeUuids.service.toLowerCase()) {
+          for (final chr in svc.characteristics) {
+            if (chr.uuid.toString().toLowerCase() == _activeUuids.telemetry.toLowerCase()) {
+              await chr.setNotifyValue(true);
+              await for (final value in chr.onValueReceived) {
                 try {
-                  final data = jsonDecode(String.fromCharCodes(value)) as Map<String, dynamic>;
-                  yield data;
-                } catch (_) {
-                  // Skip malformed telemetry
-                }
+                  yield jsonDecode(utf8.decode(value)) as Map<String, dynamic>;
+                } catch (_) {}
               }
             }
           }
@@ -175,28 +229,8 @@ class BleService {
     }
   }
 
-  // ── Cleanup ─────────────────────────────────────────────────────────
-
   Future<void> dispose() async {
     await stopScan();
     await disconnect();
-    await _scanSub?.cancel();
-    await _connectionSub?.cancel();
   }
 }
-
-/// Riverpod providers for BLE service.
-///
-/// Usage in widgets:
-/// ```dart
-/// final bleService = ref.watch(bleServiceProvider);
-/// final devices = ref.watch(bleDevicesProvider);
-/// ```
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-final bleServiceProvider = Provider<BleService>((ref) => BleService());
-
-final bleScanResultsProvider = StateProvider<List<ScanResult>>((ref) => []);
-
-final bleConnectedProvider = StateProvider<bool>((ref) => false);
