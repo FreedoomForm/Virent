@@ -68,7 +68,7 @@ class _MapPageState extends ConsumerState<MapPage> {
               maxZoom: 18,
             ),
             children: [
-              localTileLayer(),
+              cachedTileLayer(),
               MarkerLayer(
                 markers: [
                   Marker(
