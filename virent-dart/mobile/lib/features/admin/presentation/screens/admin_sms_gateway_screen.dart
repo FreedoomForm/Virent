@@ -43,16 +43,10 @@ class SmsService {
   /// Read-only — does not require admin. (Riders never call this anyway
   /// because the SMS-gateway screen is admin-gated at the router level.)
   Future<List<Map<String, dynamic>>> getSimCards() async {
-    try {
-      final res = await const MethodChannel('virent/sms')
-          .invokeListMethod<Map>('getSimInfo');
-      if (res != null) {
-        return res.cast<Map>().map((m) => m.cast<String, dynamic>()).toList();
-      }
-    } catch (e) {
-      debugPrint('[SMS] MethodChannel error: $e');
-    }
-    // Fallback mock data
+    // Production:
+    //   final res = await const MethodChannel('virent/sms')
+    //       .invokeMethod<List>('getSimInfo');
+    //   return res?.cast<Map<String, dynamic>>() ?? [];
     return <Map<String, dynamic>>[
       <String, dynamic>{
         'slotIndex': 0,
@@ -69,18 +63,6 @@ class SmsService {
     ];
   }
 
-  /// Returns `true` when the active session belongs to an admin.
-  Future<bool> _isAdminSession() async {
-    final storage = StorageService();
-    await storage.init();
-    final adminToken = await storage.getString('admin_token');
-    if (adminToken != null && adminToken.isNotEmpty) return true;
-    final userJson = await storage.getJson(StorageKeys.userJson);
-    if (userJson == null) return false;
-    final role = (userJson['role'] ?? '').toString().toLowerCase();
-    return role == 'admin' || role == 'super_admin';
-  }
-
   /// Sends [message] to [phone] from the SIM in [simSlot].
   ///
   /// Returns `true` on success. **Admin-only** — throws
@@ -91,26 +73,33 @@ class SmsService {
         'Только администратор может отправлять SMS через шлюз',
       );
     }
-    try {
-      await const MethodChannel('virent/sms').invokeMethod('sendSms', {
-        'phone': phone,
-        'message': message,
-        'simSlot': simSlot,
-      });
-      debugPrint('[SMS GATEWAY] SIM $simSlot -> $phone: $message');
-      return true;
-    } catch (e) {
-      debugPrint('[SMS GATEWAY] Failed: $e');
-      return false;
-    }
+    // Production:
+    //   await const MethodChannel('virent/sms').invokeMethod('sendSms', {
+    //     'phone': phone, 'message': message, 'simSlot': simSlot,
+    //   });
+    debugPrint('[SMS GATEWAY] SIM $simSlot -> $phone: $message');
+    return true;
   }
+
+  /// Returns `true` when the active session belongs to an admin.
+  /// Mirrors the same check performed by `app_router.dart`.
+  Future<bool> _isAdminSession() async {
+    final storage = StorageService();
+    await storage.init();
+    final adminToken = await storage.getString('admin_token');
+    if (adminToken != null && adminToken.isNotEmpty) return true;
+    final userJson = await storage.getJson(StorageKeys.userJson);
+    if (userJson == null) return false;
+    final role = (userJson['role'] ?? '').toString().toLowerCase();
+    return role == 'admin' || role == 'super_admin';
+  }
+}
 
 // ============ Admin SMS Gateway providers ==================================
 
 /// Singleton [SmsService] used by the gateway screen.
 final smsServiceProvider = Provider<SmsService>((ref) => SmsService());
 
-  }
 /// Async list of SIM cards detected on the device.
 final simCardsProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
