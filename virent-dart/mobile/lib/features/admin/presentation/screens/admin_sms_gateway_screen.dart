@@ -98,6 +98,7 @@ class SmsService {
 /// Singleton [SmsService] used by the gateway screen.
 final smsServiceProvider = Provider<SmsService>((ref) => SmsService());
 
+  }
 /// Async list of SIM cards detected on the device.
 final simCardsProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
