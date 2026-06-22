@@ -58,6 +58,33 @@ class _ActiveRideScreenState extends ConsumerState<ActiveRideScreen> {
     });
   }
 
+  Future<void> _togglePause(BuildContext context) async {
+    final ride = ref.read(rideNotifierProvider).currentRide;
+    if (ride == null) return;
+    final isPaused = ride.status == 'paused';
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.post('/trips/pause', {
+        'trip_id': ride.id,
+        'resume': isPaused,
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(isPaused ? 'Поездка возобновлена' : 'Поездка приостановлена'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ошибка: $e'), behavior: SnackBarBehavior.floating),
+        );
+      }
+    }
+  }
+
   void _showSosDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -204,6 +231,33 @@ class _ActiveRideScreenState extends ConsumerState<ActiveRideScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _togglePause(BuildContext context) async {
+    final ride = ref.read(rideNotifierProvider).currentRide;
+    if (ride == null) return;
+    final isPaused = ride.status == 'paused';
+    try {
+      final client = ref.read(apiClientProvider);
+      await client.post('/trips/pause', {
+        'trip_id': ride.id,
+        'resume': isPaused,
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(isPaused ? 'Поездка возобновлена' : 'Поездка приостановлена'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ошибка: $e'), behavior: SnackBarBehavior.floating),
+        );
+      }
+    }
   }
 
   void _showSosDialog() {
@@ -554,14 +608,7 @@ class _ActiveRideScreenState extends ConsumerState<ActiveRideScreen> {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(
                                     AppStyles.radiusSm),
-                                onTap: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Поездка приостановлена'),
-                                      behavior: SnackBarBehavior.floating,
-                                    ),
-                                  );
-                                },
+                                onTap: () => _togglePause(context),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(
