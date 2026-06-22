@@ -7,6 +7,8 @@ import '../pages/map_page.dart';
 import '../pages/billing_debts_page.dart';
 import '../pages/admin_roles_page.dart';
 import '../pages/scooters_page.dart';
+import '../pages/scooter_detail_page.dart';
+import '../pages/bulk_prepaid_page.dart';
 import '../pages/push_history_page.dart';
 import '../pages/push_composer_page.dart';
 import '../pages/payme_transactions_page.dart';
@@ -120,6 +122,8 @@ class _AppLayoutState extends State<AppLayout> {
         return const PushComposerPage();
       case 6: // Заказы (Предоплаченные)
         return const PrepaidOrdersPage();
+      case 60: // Генератор предоплаченных карт
+        return const BulkPrepaidPage();
       case 7: // Селфи
         return const SelfiesPage();
       case 8: // Осмотр (Damages)
@@ -166,6 +170,8 @@ class _AppLayoutState extends State<AppLayout> {
         return const TechniciansPage();
       case 151: // Техники (Задачи)
         return const TaskTechniciansPage();
+      case 1332: // Самокаты — деталь (телеметрия)
+        return const ScooterDetailPage();
       case 153: // Техники (Фидбек)
         return const TechFeedbackPage();
       case 17: // Настройки (Группы Клиентов)
