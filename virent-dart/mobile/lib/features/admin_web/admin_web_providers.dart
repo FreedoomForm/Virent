@@ -132,7 +132,7 @@ final smsLogsProvider =
   final api = ref.read(apiClientProvider);
   try {
     final data = await api.get('/sms/pending');
-    final list = data['queue'] as List? ?? data['messages'] as List? ?? [];
+    final list = data['pending'] as List? ?? [];
     return list.cast<Map<String, dynamic>>();
   } catch (_) {
     return const [];

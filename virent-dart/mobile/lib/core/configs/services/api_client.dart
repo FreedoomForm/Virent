@@ -30,7 +30,7 @@ class ApiClient {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       return 'http://localhost:8443'; // desktop: embedded server
     }
-    return 'http://10.0.2.2:8443'; // mobile: Android emulator -> host PC
+    return 'https://caliber-lividly-coastline.ngrok-free.dev'; // mobile: ngrok tunnel
   }
 
   /// Update the base URL (used by mobile to connect to a specific PC).
@@ -72,6 +72,7 @@ class ApiClient {
   String? get token => _token;
 
   Map<String, String> get _headers => {
+        'ngrok-skip-browser-warning': 'true',
         'Content-Type': 'application/json',
         if (_token != null) 'Authorization': 'Bearer $_token',
       };
