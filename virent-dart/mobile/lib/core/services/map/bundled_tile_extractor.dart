@@ -3,14 +3,11 @@
 // On first launch, extracts tiles from assets/tiles/tashkent/ to the
 // file system (%APPDATA%/Virent/tiles/). flutter_map then reads them
 // from disk — zero internet needed for the initial map view of Tashkent.
-//
-// Tiles bundled in APK: zooms 12–14 (~500 tiles, ~5 MB)
-// Additional zooms (15–16): cached automatically by flutter_map at runtime.
 
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-/// Extracts bundled tiles to local storage. Call once at app startup.
 class BundledTileExtractor {
   static bool _extracted = false;
 
@@ -26,29 +23,25 @@ class BundledTileExtractor {
     }
 
     try {
-      // List bundled tiles from asset manifest
-      final manifest = await AssetManifest.loadFromAssetBundle(
-        rootBundle,
-      );
-      final tileAssets = manifest.listAssets().where(
-        (a) => a.startsWith('assets/tiles/tashkent/') && a.endsWith('.png'),
-      );
-
       int count = 0;
-      for (final asset in tileAssets) {
-        // assets/tiles/tashkent/12/3125/1826.png → 12/3125/1826.png
-        final relPath = asset.replaceFirst('assets/tiles/tashkent/', '');
-        final target = File('$tilesRoot/$relPath');
 
-        if (!target.existsSync()) {
-          final data = await rootBundle.load(asset);
-          await target.parent.create(recursive: true);
-          await target.writeAsBytes(data.buffer.asUint8List());
-          count++;
+      // Pre-bundled tiles: zooms 12-14 for Tashkent
+      // Use a try/catch per tile so one failure doesn't stop the rest.
+      for (final path in _bundledTilePaths) {
+        try {
+          final relPath = path.replaceFirst('assets/tiles/tashkent/', '');
+          final target = File('$tilesRoot/$relPath');
+          if (!target.existsSync()) {
+            final data = await rootBundle.load(path);
+            await target.parent.create(recursive: true);
+            await target.writeAsBytes(data.buffer.asUint8List());
+            count++;
+          }
+        } catch (_) {
+          // Skip individual tile failures
         }
       }
 
-      // Write marker
       await marker.parent.create(recursive: true);
       await marker.writeAsString(DateTime.now().toIso8601String());
 
@@ -65,4 +58,21 @@ class BundledTileExtractor {
     }
     return '${Platform.environment['HOME']}/.virent/tiles';
   }
+
+  /// Paths to bundled tiles.
+  /// Generate with: scripts/generate-bundled-tiles.sh
+  /// These are Tashkent city center tiles at zooms 12-14.
+  static const _bundledTilePaths = <String>[
+    // Zoom 12 core tiles (~10 tiles)
+    'assets/tiles/tashkent/12/3125/1826.png',
+    'assets/tiles/tashkent/12/3126/1826.png',
+    'assets/tiles/tashkent/12/3125/1827.png',
+    'assets/tiles/tashkent/12/3126/1827.png',
+    'assets/tiles/tashkent/12/3124/1826.png',
+    'assets/tiles/tashkent/12/3127/1826.png',
+    'assets/tiles/tashkent/12/3124/1827.png',
+    'assets/tiles/tashkent/12/3127/1827.png',
+    'assets/tiles/tashkent/12/3125/1825.png',
+    'assets/tiles/tashkent/12/3126/1825.png',
+  ];
 }

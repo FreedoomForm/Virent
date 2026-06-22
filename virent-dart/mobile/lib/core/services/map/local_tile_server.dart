@@ -15,9 +15,9 @@ import 'package:latlong2/latlong.dart';
 /// Path where flutter_map caches tiles.
 String get tilesDir {
   if (Platform.isWindows) {
-    return '${Platform.environ['APPDATA']}/Virent/tiles';
+    return '${Platform.environment['APPDATA']}/Virent/tiles';
   }
-  return '${Platform.environ['HOME']!}/.virent/tiles';
+  return '${Platform.environment['HOME']!}/.virent/tiles';
 }
 
 /// Standard tile layer for all map screens.
