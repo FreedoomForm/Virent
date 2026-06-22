@@ -11,6 +11,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../../core/services/map/local_tile_server.dart';
 import '../../../../core/services/map/tile_cache_service.dart';
+import '../admin_web_providers.dart';
 import '../widgets/admin_dialogs.dart';
 
 class MapPage extends ConsumerStatefulWidget {
@@ -69,17 +70,7 @@ class _MapPageState extends ConsumerState<MapPage> {
             ),
             children: [
               cachedTileLayer(),
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    point: _tashkentCenter,
-                    width: 40,
-                    height: 40,
-                    child: const Icon(Icons.location_on,
-                        color: Colors.red, size: 40),
-                  ),
-                ],
-              ),
+              _ScooterMarkersLayer(),
             ],
           ),
         ),
@@ -118,6 +109,49 @@ class _MapPageState extends ConsumerState<MapPage> {
           setState(() {});
           showAdminSnack(context, 'Кеш карты очищен');
         }
+      },
+    );
+  }
+}
+
+/// Layer that reads scooter positions from the server and displays markers.
+class _ScooterMarkersLayer extends ConsumerWidget {
+  const _ScooterMarkersLayer();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scootersAsync = ref.watch(scootersListProvider);
+    return scootersAsync.when(
+      loading: () => const MarkerLayer(markers: []),
+      error: (_, __) => const MarkerLayer(markers: []),
+      data: (scooters) {
+        final markers = <Marker>[];
+        for (final s in scooters) {
+          final lat = double.tryParse((s['lat'] ?? s['latitude'] ?? '').toString());
+          final lng = double.tryParse((s['lng'] ?? s['longitude'] ?? '').toString());
+          if (lat == null || lng == null) continue;
+          final battery = int.tryParse((s['battery'] ?? s['battery_level'] ?? '0').toString()) ?? 0;
+          final status = (s['status'] ?? s['state'] ?? 'idle').toString();
+          final color = status == 'rented' || status == 'in_use'
+              ? Colors.red
+              : battery < 20
+                  ? Colors.orange
+                  : Colors.green;
+          markers.add(Marker(
+            point: LatLng(lat, lng),
+            width: 80,
+            height: 40,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.electric_scooter, color: color, size: 20),
+                Text(battery < 100 ? '\u0024battery%' : '',
+                    style: const TextStyle(fontSize: 9, color: Colors.black87)),
+              ],
+            ),
+          ));
+        }
+        return MarkerLayer(markers: markers);
       },
     );
   }
