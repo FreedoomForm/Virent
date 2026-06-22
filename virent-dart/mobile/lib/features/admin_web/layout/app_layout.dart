@@ -47,6 +47,7 @@ import '../pages/tariff_prices_page.dart';
 import '../pages/tariff_abonements_page.dart';
 import '../pages/tariff_subtariffs_page.dart';
 import '../pages/tariff_until_dead_page.dart';
+import '../pages/tariffs_subscriptions_page.dart';
 import '../pages/iot_page.dart';
 import '../pages/server_page.dart';
 import '../pages/sms_gateway_page.dart';
@@ -137,6 +138,8 @@ class _AppLayoutState extends State<AppLayout> {
         return const TariffPricesPage();
       case 122: // Тарифы -> Тариф подписка
         return const TariffSubTariffsPage();
+      case 124: // Тарифы -> Абонементы (подписки)
+        return const TariffsSubscriptionsPage();
       case 123: // Тарифы -> Тариф пока не сядет
         return const TariffUntilDeadPage();
       case 13: // Логи

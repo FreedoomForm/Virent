@@ -1,8 +1,4 @@
-name: Build Mobile Apps
-
-# Builds the Flutter mobile app for Android (.apk + .aab) and Windows (.exe).
-# Triggered manually via the Actions tab "Run workflow" button or on every
-# push to main / version tag.
+name: Build Virent
 
 on:
   push:
@@ -10,207 +6,91 @@ on:
     paths: ['virent-dart/**', '.github/workflows/build-apps.yml']
     tags: ['v*']
   workflow_dispatch:
-    inputs:
-      build_android:
-        description: 'Build Android (.apk + .aab)'
-        type: boolean
-        default: true
-      build_windows:
-        description: 'Build Windows (.exe / .msix)'
-        type: boolean
-        default: true
 
 jobs:
-  # ---------------------------------------------------------------------------
-  # Android build — produces APK (debug + release) and AAB (Play Store).
-  # ---------------------------------------------------------------------------
   build-android:
-    name: Build Android
+    name: Android APK
     runs-on: ubuntu-latest
-    if: >-
-      github.event_name == 'push' ||
-      github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.build_android == 'true'
     defaults:
       run:
         working-directory: virent-dart/mobile
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: '3.44.2'
           cache: true
-
-      - name: Get dependencies
-        run: flutter pub get
-
-      - name: Verify Flutter install
-        run: flutter doctor -v
-
-      - name: Accept Android licenses
-        run: yes | flutter doctor --android-licenses || true
-
-      - name: Create Android platform files (always fresh)
-        run: |
+      - run: flutter pub get
+      - run: flutter doctor -v
+      - run: yes | flutter doctor --android-licenses || true
+      - run: |
           rm -rf android
           flutter create --platforms=android --project-name virent_mobile .
-          # Flutter 3.44 uses Built-in Kotlin — auto-generates MainActivity
-          # No need to manually create it (causes Redeclaration otherwise)
-
-      - name: Build APK (debug)
-        run: flutter build apk --debug --no-tree-shake-icons
-
-      - name: Build APK (release)
-        run: flutter build apk --release --no-tree-shake-icons
-
-      - name: Build AAB (release, for Play Store)
-        run: flutter build appbundle --release --no-tree-shake-icons
-
-      - name: Upload APK artifacts
-        uses: actions/upload-artifact@v4
+      - run: flutter build apk --release --no-tree-shake-icons
+      - uses: actions/upload-artifact@v4
         with:
           name: virent-android-apk
-          path: |
-            virent-dart/mobile/build/app/outputs/flutter-apk/*.apk
-          if-no-files-found: error
+          path: virent-dart/mobile/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
 
-      - name: Upload AAB artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: virent-android-aab
-          path: |
-            virent-dart/mobile/build/app/outputs/bundle/release/*.aab
-          if-no-files-found: error
-          retention-days: 30
-
-  # ---------------------------------------------------------------------------
-  # Windows build — produces a self-contained .exe in build/windows/x64/runner.
-  # ---------------------------------------------------------------------------
   build-windows:
-    name: Build Windows
+    name: VirentSetup
     runs-on: windows-latest
-    if: >-
-      github.event_name == 'push' ||
-      github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.build_windows == 'true'
     defaults:
       run:
         working-directory: virent-dart/mobile
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: '3.44.2'
           cache: true
-
-      - name: Get dependencies
-        run: flutter pub get
-
-      - name: Verify Flutter install
-        run: flutter doctor -v
-
-      - name: Enable Windows desktop
-        run: flutter config --enable-windows-desktop
-
-      - name: Download ngrok binary (bundled in app)
+      - run: flutter pub get
+      - run: flutter doctor -v
+      - run: flutter config --enable-windows-desktop
+      - name: Download ngrok
         shell: pwsh
         run: |
-          # Download ngrok for Windows and place it in assets/bin/
-          # so it gets bundled into the Flutter app. At runtime the
-          # app extracts ngrok from assets and starts a tunnel with
-          # a STABLE domain: caliber-lividly-coastline.ngrok-free.dev
           New-Item -ItemType Directory -Force -Path assets\bin
-          $url = "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip"
-          Write-Host "Downloading ngrok from $url"
-          Invoke-WebRequest -Uri $url -OutFile ngrok.zip
+          Invoke-WebRequest -Uri "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip" -OutFile ngrok.zip
           Expand-Archive -Path ngrok.zip -DestinationPath assets\bin -Force
           Remove-Item ngrok.zip
-          Rename-Item -Path assets\bin\ngrok.exe -NewName ngrok.exe -Force
-          $size = (Get-Item assets\bin\ngrok.exe).Length / 1MB
-          Write-Host "Downloaded ngrok.exe ($([math]::Round($size,1)) MB)"
-
-      - name: Add Windows platform files (if missing)
+      - name: Add Windows platform files
         shell: pwsh
         run: |
           if (-not (Test-Path windows)) {
             flutter create --platforms=windows --project-name virent_mobile .
           }
-
-      - name: Build Windows (release)
-        run: flutter build windows --release --no-tree-shake-icons
-
-      - name: Compile installer with Inno Setup
+      - run: flutter build windows --release --no-tree-shake-icons
+      - name: Compile VirentSetup.exe
         shell: pwsh
         run: |
-          # Inno Setup is pre-installed on windows-latest runners.
-          # If not found, install via Chocolatey.
           $iscc = Get-Command iscc -ErrorAction SilentlyContinue
-          if (-not $iscc) {
-            choco install innosetup -y --no-progress
-          }
-          # Compile the installer — bundles all release files into
-          # a single VirentSetup.exe with Start Menu shortcuts,
-          # desktop shortcut, and an uninstaller.
-          # The script's default ReleaseDir is "..\build\windows\x64\runner\Release"
-          # (relative to the .iss file in installer/).
+          if (-not $iscc) { choco install innosetup -y --no-progress }
           iscc installer\virent.iss
-          Write-Host "Created VirentSetup.exe"
-          dir installer\Output\VirentSetup.exe
-
-      - name: Zip the build output (portable version)
-        shell: pwsh
-        run: |
-          $src = "build\windows\x64\runner\Release"
-          if (Test-Path $src) {
-            Compress-Archive -Path "$src\*" -DestinationPath "virent-windows-portable.zip" -Force
-            Write-Host "Created virent-windows-portable.zip"
-          } else {
-            Write-Error "Release dir not found: $src"
-            exit 1
-          }
-
-      - name: Upload installer
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: VirentSetup
-          path: |
-            virent-dart/mobile/installer/Output/VirentSetup.exe
-          if-no-files-found: error
+          path: virent-dart/mobile/installer/Output/VirentSetup.exe
           retention-days: 30
 
-      - name: Upload portable zip
-        uses: actions/upload-artifact@v4
-        with:
-          name: virent-windows-portable
-          path: |
-            virent-dart/mobile/virent-windows-portable.zip
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Create GitHub Release (on tag push)
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
+  release:
+    name: GitHub Release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-android, build-windows]
+    steps:
+      - uses: actions/download-artifact@v4
+      - run: ls -R
+      - uses: softprops/action-gh-release@v2
         with:
           files: |
-            virent-dart/mobile/installer/Output/VirentSetup.exe
-            virent-dart/mobile/build/app/outputs/flutter-apk/app-release.apk
+            virent-android-apk/app-release.apk
+            VirentSetup/VirentSetup.exe
           generate_release_notes: true
-          draft: false
-          prerelease: false
