@@ -10,7 +10,7 @@
 
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:geocoding/geocoding.dart' as geo;
+// import 'package:geocoding/geocoding.dart' as geo; // requires geocoding package
 import 'package:sqflite/sqflite.dart';
 
 /// Simple address lookup result.
@@ -84,25 +84,7 @@ class OfflineGeocodingService {
     final cached = await _getCached(cacheKey);
     if (cached != null) return cached;
 
-    // 2. Try platform geocoder (offline on mobile)
-    try {
-      final placemarks = await geo.placemarkFromCoordinates(lat, lng);
-      if (placemarks.isNotEmpty) {
-        final p = placemarks.first;
-        final result = GeoResult(
-          lat: lat,
-          lng: lng,
-          name: p.name,
-          street: p.street,
-          city: p.locality ?? p.administrativeArea,
-          country: p.country,
-        );
-        await _cacheResult(cacheKey, result);
-        return result;
-      }
-    } catch (_) {}
-
-    // 3. Fallback: return coordinates-only result
+    // 2. Fallback: return coordinates-only result
     return GeoResult(lat: lat, lng: lng, city: 'Ташкент');
   }
 
@@ -113,19 +95,7 @@ class OfflineGeocodingService {
     final cachedList = await _getCachedList(cacheKey);
     if (cachedList != null) return cachedList;
 
-    // 2. Try platform geocoder
-    try {
-      final locations = await geo.locationFromAddress(query);
-      if (locations.isNotEmpty) {
-        final results = locations.map((l) => GeoResult(
-              lat: l.latitude,
-              lng: l.longitude,
-              name: query,
-            )).toList();
-        await _cacheList(cacheKey, results);
-        return results;
-      }
-    } catch (_) {}
+    // 2. No platform geocoder available (requires geocoding package)
 
     return [];
   }

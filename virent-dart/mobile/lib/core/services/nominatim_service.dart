@@ -19,7 +19,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geocoding/geocoding.dart' as geo;
+// import 'package:geocoding/geocoding.dart' as geo;
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
@@ -107,8 +107,8 @@ class NominatimService {
   /// Per-request timeout.
   static const Duration _timeout = Duration(seconds: 10);
 
-  /// Offline-first forward geocode. Tries platform geocoder (offline on
-  /// mobile), falls back to online Nominatim.
+  /// Offline-first forward geocode. Falls back to online Nominatim.
+  /// Platform geocoder available when geocoding package is added.
   Future<List<NominatimResult>> searchOfflineFirst(
     String query, {
     int limit = 5,
@@ -117,21 +117,7 @@ class NominatimService {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return const <NominatimResult>[];
 
-    // 1. Try platform geocoder (works offline on Android/iOS)
-    try {
-      final locations = await geo.locationFromAddress(trimmed);
-      if (locations.isNotEmpty) {
-        return locations.take(limit).map((l) => NominatimResult(
-          lat: l.latitude,
-          lng: l.longitude,
-          displayName: trimmed,
-        )).toList();
-      }
-    } catch (_) {
-      // Platform geocoder unavailable — fall through to Nominatim.
-    }
-
-    // 2. Fall back to online Nominatim
+    // Direct to online Nominatim (platform geocoder requires geocoding pkg)
     return search(trimmed, limit: limit, countryCode: countryCode);
   }
 
@@ -181,31 +167,14 @@ class NominatimService {
         .toList(growable: false);
   }
 
-  /// Offline-first reverse geocode. Tries platform geocoder first,
-  /// falls back to online Nominatim.
+  /// Offline-first reverse geocode. Falls back to online Nominatim.
+  /// Platform geocoder available when geocoding package is added.
   Future<String> reverseGeocodeOfflineFirst(
     double lat,
     double lng, {
     String language = 'en',
   }) async {
-    // 1. Try platform geocoder (offline)
-    try {
-      final placemarks = await geo.placemarkFromCoordinates(lat, lng);
-      if (placemarks.isNotEmpty) {
-        final p = placemarks.first;
-        final parts = <String>[
-          if (p.street?.isNotEmpty == true) p.street!,
-          if (p.locality?.isNotEmpty == true) p.locality!,
-          if (p.country?.isNotEmpty == true) p.country!,
-        ];
-        final result = parts.join(', ');
-        if (result.isNotEmpty) return result;
-      }
-    } catch (_) {
-      // Fall through to Nominatim.
-    }
-
-    // 2. Fall back to online Nominatim
+    // Direct to online Nominatim (platform geocoder requires geocoding pkg)
     return reverseGeocode(lat, lng, language: language);
   }
 

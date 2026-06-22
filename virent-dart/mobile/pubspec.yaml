@@ -38,7 +38,6 @@ dependencies:
 
   # Location
   geolocator: ^11.0.0
-  geocoding: ^2.0.0
   flutter_blue_plus: ^1.32.0
 
   # Utils
