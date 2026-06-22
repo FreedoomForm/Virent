@@ -79,13 +79,6 @@ class SmsService {
         'Только администратор может отправлять SMS через шлюз',
       );
     }
-    // Production:
-    //   await const MethodChannel('virent/sms').invokeMethod('sendSms', {
-    //     'phone': phone, 'message': message, 'simSlot': simSlot,
-    //   });
-    debugPrint('[SMS GATEWAY] SIM $simSlot -> $phone: $message');
-    return true;
-  }
     try {
       await const MethodChannel('virent/sms').invokeMethod('sendSms', {
         'phone': phone,
@@ -98,15 +91,7 @@ class SmsService {
       debugPrint('[SMS GATEWAY] Failed: $e');
       return false;
     }
-    await storage.init();
-    final adminToken = await storage.getString('admin_token');
-    if (adminToken != null && adminToken.isNotEmpty) return true;
-    final userJson = await storage.getJson(StorageKeys.userJson);
-    if (userJson == null) return false;
-    final role = (userJson['role'] ?? '').toString().toLowerCase();
-    return role == 'admin' || role == 'super_admin';
   }
-}
 
 // ============ Admin SMS Gateway providers ==================================
 
