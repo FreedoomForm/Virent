@@ -656,7 +656,7 @@ class EmbeddedServer {
           'trips': data.trips.length,
           'zones': data.zones.length,
           'notifications': data.notifications.length,
-          'audit_logs': data.auditLogs.length,
+          'audit_logs': data.auditLog.length,
         },
         'uptime': DateTime.now().toIso8601String(),
       });
@@ -1169,7 +1169,7 @@ class EmbeddedServer {
       });
 
       // Log audit
-      data.auditLogs.add({
+      data.auditLog.add({
         'id': 'audit_${DateTime.now().millisecondsSinceEpoch}',
         'actor': trip['user_id'],
         'action': 'sos_triggered',
