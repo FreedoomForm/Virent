@@ -661,7 +661,7 @@ class EmbeddedServer {
         },
         'uptime': DateTime.now().toIso8601String(),
       });
-    }));
+    });
 
     // POST /admin/backup — trigger a database sync (write all in-memory data to SQLite).
     router.post('/admin/backup', (Request req) async {
@@ -673,7 +673,7 @@ class EmbeddedServer {
         'message': 'Данные синхронизированы с SQLite',
         'timestamp': DateTime.now().toIso8601String(),
       });
-    }));
+    });
   }
 
   void _registerAuth(Router router) {

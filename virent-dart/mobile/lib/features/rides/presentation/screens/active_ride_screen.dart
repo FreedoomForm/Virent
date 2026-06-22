@@ -59,11 +59,12 @@ class _ActiveRideScreenState extends ConsumerState<ActiveRideScreen> {
   }
 
   Future<void> _togglePause(BuildContext context) async {
-    final ride = ref.read(rideNotifierProvider).currentRide;
+    final rideState = ref.read(rideNotifierProvider);
+    final ride = rideState.activeRide;
     if (ride == null) return;
     final isPaused = ride.status == 'paused';
     try {
-      await ref.read(apiClientProvider).post('/trips/pause', {
+      await ref.read(rideApiClientProvider).post('/trips/pause', {
         'trip_id': ride.id,
         'resume': isPaused,
       });
