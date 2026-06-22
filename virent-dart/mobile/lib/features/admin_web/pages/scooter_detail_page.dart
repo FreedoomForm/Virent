@@ -43,9 +43,9 @@ class ScooterDetailPage extends ConsumerWidget {
         final qr = (s['qr_code'] ?? s['gosnomer'] ?? '-').toString();
 
         // Fetch telemetry from server (empty if not yet loaded)
-        final telemetryLogs = ref.watch(telemetryLogProvider);
-        final telemetry = telemetryLogs is AsyncData
-            ? telemetryLogs.value
+        final logs = ref.watch(logsTelemetryProvider);
+        final telemetry = logs is AsyncData
+            ? logs.value
                 .where((l) => (l['scooter_id'] ?? l['mac'] ?? '').toString() == id)
                 .take(20)
                 .map((l) => <String, String>{
