@@ -25,6 +25,7 @@ import '../pages/settings_scooter_groups_page.dart';
 import '../pages/bonuses_page.dart';
 import '../pages/fines_page.dart';
 import '../pages/geozones_page.dart';
+import '../pages/zone_editor_page.dart';
 import '../pages/settings_drivers_page.dart';
 import '../pages/chat_logs_page.dart';
 import '../pages/statistics_page.dart';
@@ -180,8 +181,8 @@ class _AppLayoutState extends State<AppLayout> {
         return const AdminCompaniesPage();
       case 147: // Администратор (Контакты)
         return const AdminContactsPage();
-      case 16: // Геозоны
-        return const GeozonesPage();
+      case 16: // Геозоны — редактор полигонов на карте
+        return const ZoneEditorPage();
       case 170: // Настройки (Уведомления)
         return const SettingsNotificationsPage();
       case 171: // Настройки (Конфиг)

@@ -1605,6 +1605,28 @@ class EmbeddedServer {
     // GET /zones — list every geofence zone.
     router.get('/zones', (_) => _json({'zones': data.zones}));
 
+    // POST /zones/create — create a geozone with polygon coordinates.
+    router.post('/zones/create', (Request req) async {
+      final body = await _body(req);
+      final name = body['name'] as String? ?? 'Untitled Zone';
+      final type = body['type'] as String? ?? 'parking';
+      final coords = body['coordinates'] as List?;
+      if (coords == null || coords.isEmpty) {
+        return _err('coordinates required (min 3 points)');
+      }
+      final id = 'zone_${DateTime.now().millisecondsSinceEpoch}';
+      final zone = <String, dynamic>{
+        'id': id,
+        'name': name,
+        'type': type,
+        'coordinates': coords,
+        'created_at': DateTime.now().toIso8601String(),
+      };
+      data.zones.add(zone);
+      _log('[ZONE] Created $name ($type) with ${coords.length} points');
+      return _json({'success': true, 'zone': zone});
+    });
+
     // POST /zones — create a new zone.
     router.post('/zones', (Request req) async {
       final body = await _body(req);
