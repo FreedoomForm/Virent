@@ -21,6 +21,8 @@ import 'core/backend/embedded_server.dart';
 import 'core/configs/services/storage_service.dart';
 import 'core/configs/theme/app_theme.dart';
 import 'core/services/ngrok_tunnel_service.dart';
+import 'core/services/local_network_service.dart';
+import 'core/configs/constants.dart';
 import 'core/services/map/bundled_tile_extractor.dart';
 import 'core/services/map/bundled_tile_extractor.dart';
 import 'core/database/virent_database.dart';
@@ -122,10 +124,27 @@ class _VirentAppState extends ConsumerState<VirentApp> {
       final url = server.url;
       AppLogger.info('Embedded server listening on $url', tag: 'SERVER');
 
+      // Discover local IP for direct LAN access.
+      final localUrl = await LocalNetworkService.instance.discoverLocalIp();
+
       // Start ngrok tunnel with STABLE domain for remote access.
-      // URL: https://caliber-lividly-coastline.ngrok-free.dev
-      // ngrok binary is bundled in assets/bin/ — no installation needed.
-      await ref.read(ngrokTunnelServiceProvider).start();
+      final ngrok = ref.read(ngrokTunnelServiceProvider);
+      await ngrok.start();
+
+      // Write the best available endpoint to the config file.
+      // Priority: ngrok URL > local IP. The phone picks up this config.
+      final endpoint = ngrok.url; // https://caliber-lividly-coastline.ngrok-free.dev
+      final config = <String, String>{
+        'api_url': endpoint,
+        'local_url': localUrl ?? '',
+        'status': ref.read(tunnelStatusProvider).name,
+      };
+      try {
+        final configFile = File('${server.data.virentDir}/endpoint.json');
+        await configFile.writeAsString(
+            '{"api_url":"$endpoint","local_url":"${localUrl ?? ''}","ngrok_domain":"${NgrokTunnelService.ngrokDomain}","port":8443}');
+      } catch (_) {}
+      AppLogger.info('Endpoint saved: $endpoint (local: $localUrl)', tag: 'SERVER');
     } catch (e, st) {
       ref.read(serverStatusProvider.notifier).state = 'error: $e';
       AppLogger.error('Embedded server failed to start',

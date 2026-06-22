@@ -47,6 +47,7 @@ class NgrokTunnelService {
   static String get _ngrokDomain =>
       Platform.environment['NGROK_DOMAIN'] ??
       'caliber-lividly-coastline.ngrok-free.dev';
+  static String get ngrokDomain => _ngrokDomain;
   static String get _authtoken =>
       Platform.environment['NGROK_AUTHTOKEN'] ?? '3FRM4bQ1jHlEDzjmJQTeUdPEmUN_8JJjhy7GELTC4EZw7SwR';
 
