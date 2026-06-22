@@ -493,11 +493,32 @@ class DataStore {
 /// the server runs on `0.0.0.0:8443` so other devices on the LAN can reach
 /// it. On mobile platforms the server is not started; the mobile app acts
 /// purely as a client and connects to the desktop PC's IP address.
+
+/// Simple in-memory rate limiter.
+class RateLimiter {
+  final Map<String, List<int>> _hits = {};
+  final int maxRequests;
+  final Duration window;
+
+  RateLimiter({this.maxRequests = 5, this.window = const Duration(minutes: 1)});
+
+  bool check(String key) {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final cutoff = now - window.inMilliseconds;
+    _hits[key] ??= [];
+    _hits[key] = _hits[key]!.where((t) => t > cutoff).toList();
+    if (_hits[key]!.length >= maxRequests) return false;
+    _hits[key]!.add(now);
+    return true;
+  }
+}
+
 class EmbeddedServer {
   /// Shared in-memory data store. Public so the desktop admin UI can read
   /// statistics without round-tripping through HTTP when both run in the
   /// same process.
   final DataStore data = DataStore();
+  final RateLimiter _authLimiter = RateLimiter(maxRequests: 5, window: const Duration(minutes: 1));
 
   HttpServer? _server;
 
@@ -623,6 +644,34 @@ class EmbeddedServer {
           'version': '1.0.0',
           'uptime': DateTime.now().toIso8601String(),
         }));
+
+    // GET /admin/system — system stats for admin panel.
+    router.get('/admin/system', adminOnly((_) {
+      return _json({
+        'version': '1.0.0',
+        'server_time': DateTime.now().toIso8601String(),
+        'database': {
+          'scooters': data.scooters.length,
+          'users': data.users.length,
+          'trips': data.trips.length,
+          'zones': data.zones.length,
+          'notifications': data.notifications.length,
+          'audit_logs': data.auditLogs.length,
+        },
+        'uptime': DateTime.now().toIso8601String(),
+      });
+    }));
+
+    // POST /admin/backup — trigger a database sync (write all in-memory data to SQLite).
+    router.post('/admin/backup', adminOnly((_) async {
+      await data.syncToDb();
+      _log('[BACKUP] Manual backup triggered');
+      return _json({
+        'success': true,
+        'message': 'Данные синхронизированы с SQLite',
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+    }));
   }
 
   void _registerAuth(Router router) {
@@ -634,6 +683,11 @@ class EmbeddedServer {
     // client can persist the session and navigate straight to the admin
     // panel without showing the OTP entry screen.
     router.post('/auth/phone/send-code', (Request req) async {
+      // Rate limit: 5 requests per minute per IP
+      final ip = req.headers['x-forwarded-for'] ?? req.headers['x-real-ip'] ?? 'unknown';
+      if (!_authLimiter.check(ip.toString())) {
+        return _err('Слишком много запросов. Подождите минуту.', status: 429);
+      }
       final body = await _body(req);
       final phone = body['phone'] as String?;
       if (phone == null || phone.isEmpty) return _err('phone required');
