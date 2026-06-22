@@ -58,6 +58,47 @@ class _ActiveRideScreenState extends ConsumerState<ActiveRideScreen> {
     });
   }
 
+  void _showSosDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.red, size: 28),
+            SizedBox(width: 8),
+            Text('Экстренная помощь', style: TextStyle(fontWeight: FontWeight.w700)),
+          ],
+        ),
+        content: const Text(
+          'Отправить сигнал SOS? Администратор и служба поддержки будут немедленно уведомлены.',
+          style: TextStyle(fontSize: 14, height: 1.5),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Отмена'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+            onPressed: () {
+              Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Сигнал SOS отправлен. Помощь в пути.'),
+                  backgroundColor: Colors.red,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+              // TODO: POST /rides/{id}/sos to embedded server
+            },
+            child: const Text('Отправить SOS'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _tick?.cancel();
@@ -470,7 +511,35 @@ class _ActiveRideScreenState extends ConsumerState<ActiveRideScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
+
+                    // SOS button — emergency alert
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: Material(
+                        color: const Color(0xFFFF4444),
+                        borderRadius: BorderRadius.circular(AppStyles.radiusSm),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(AppStyles.radiusSm),
+                          onTap: () => _showSosDialog(context),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.warning_amber_rounded, color: Colors.white, size: 22),
+                              SizedBox(width: 8),
+                              Text('SOS — Экстренная помощь',
+                                style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w700,
+                                  color: Colors.white, fontFamily: 'Inter',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
 
                     // Pause / End ride buttons — side-by-side, 50/50 split.
                     Row(

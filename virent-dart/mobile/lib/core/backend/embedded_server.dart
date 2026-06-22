@@ -1067,6 +1067,68 @@ class EmbeddedServer {
       return _json({'success': true, 'trip': trip});
     });
 
+    // POST /trips/pause — pause/resume an active ride.
+    router.post('/trips/pause', (Request req) async {
+      final body = await _body(req);
+      final tripId = body['trip_id'] as String?;
+      final resume = body['resume'] as bool? ?? false;
+      if (tripId == null) return _err('trip_id required');
+      final trip = data.trips[tripId];
+      if (trip == null) return _err('Trip not found', status: 404);
+      if (resume) {
+        trip['status'] = 'active';
+        trip['paused_at'] = null;
+      } else {
+        trip['status'] = 'paused';
+        trip['paused_at'] = DateTime.now().toIso8601String();
+      }
+      _log('[TRIP] ${resume ? "Resumed" : "Paused"} $tripId');
+      return _json({'success': true, 'trip': trip});
+    });
+
+    // POST /trips/sos — emergency SOS signal during an active ride.
+    router.post('/trips/sos', (Request req) async {
+      final body = await _body(req);
+      final tripId = body['trip_id'] as String?;
+      final lat = body['lat'];
+      final lng = body['lng'];
+      if (tripId == null) return _err('trip_id required');
+      final trip = data.trips[tripId];
+      if (trip == null) return _err('Trip not found', status: 404);
+
+      trip['sos_triggered'] = true;
+      trip['sos_time'] = DateTime.now().toIso8601String();
+      if (lat != null) trip['sos_lat'] = lat;
+      if (lng != null) trip['sos_lng'] = lng;
+
+      // Create urgent notification for admins
+      final nid = (data.notifications.length + 1).toString();
+      data.notifications.add({
+        'id': nid,
+        'type': 'sos',
+        'title': 'SOS! Экстренный сигнал',
+        'body': 'Пользователь ${trip['user_id']} отправил SOS из поездки $tripId. '
+            'Координаты: $lat, $lng',
+        'for_admin': true,
+        'read': false,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+
+      // Log audit
+      data.auditLogs.add({
+        'id': 'audit_${DateTime.now().millisecondsSinceEpoch}',
+        'actor': trip['user_id'],
+        'action': 'sos_triggered',
+        'entity': 'trip',
+        'entity_id': tripId,
+        'details': {'lat': lat, 'lng': lng},
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+
+      _log('[SOS] Emergency signal from trip $tripId at ($lat, $lng)');
+      return _json({'success': true, 'message': 'SOS signal sent. Help is on the way.'});
+    });
+
     // GET /trips/active — the current user's active trip, if any.
     router.get('/trips/active', (_) {
       final userId = data.currentUser?['id'];
