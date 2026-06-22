@@ -467,9 +467,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     setState(() => _serverUrl = trimmed);
     await StorageService().setString('server_url', trimmed);
-    ApiClient._cachedBaseUrl = trimmed; // update running client
+    ApiClient().setBaseUrl(trimmed);
     try {
-      ApiClient._cachedBaseUrl = trimmed;
+      ApiClient().setBaseUrl(trimmed);
       await StorageService().setString('server_url', trimmed);
     } catch (e) {
       if (mounted) {
