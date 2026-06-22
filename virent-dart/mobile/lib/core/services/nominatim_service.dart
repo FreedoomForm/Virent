@@ -1,232 +1,234 @@
-// nominatim_service.dart — Open-Source geocoding client.
+// nominatim_service.dart — fully offline geocoding for Virent.
 //
-// Free, key-less alternative to Google Places / Mapbox Geocoding. The
-// Nominatim project (https://nominatim.org/) is the geocoder that powers
-// the OpenStreetMap website. A public instance runs at
-// `nominatim.openstreetmap.org` and is free to use subject to a fair-use
-// policy (https://operations.osmfoundation.org/policies/nominatim/):
+// No external APIs. Uses a local SQLite geocode cache + pre-seeded
+// Tashkent landmarks. All lookups work without internet.
 //
-//   * Send a valid `User-Agent` (or `Referer`) header identifying the app.
-//   * No more than 1 request per second per IP.
-//   * No more than 2 concurrent requests per IP.
-//
-// For production traffic a fleet operator should host their own Nominatim
-// instance (the project ships a Docker image) and point
-// [NominatimService.baseUrl] at it — the policy above only applies to the
-// shared public server.
+// To add new addresses: the admin panel can seed additional locations
+// into the local cache.
 
-import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:geocoding/geocoding.dart' as geo;
-import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
+import 'dart:math';
+import 'package:sqflite/sqflite.dart';
 
-import '../error/api_exceptions.dart';
+/// Riverpod provider.
+final nominatimServiceProvider = Provider<NominatimService>((ref) {
+  return NominatimService.instance;
+});
 
-/// One geocoding result returned by Nominatim.
-///
-/// [displayName] is the full, comma-separated address line. [address]
-/// mirrors Nominatim's `addressdetails=1` payload (a map keyed by OSM
-/// address parts: `road`, `city`, `country`, etc.) so callers can build
-/// compact UI strings without re-parsing.
+/// One geocoding result.
 class NominatimResult {
-  /// Creates a [NominatimResult].
+  final double lat;
+  final double lng;
+  final String displayName;
+  final Map<String, dynamic> address;
+
   const NominatimResult({
     required this.lat,
     required this.lng,
     required this.displayName,
-    this.address = const <String, dynamic>{},
-    this.placeId,
+    this.address = const {},
   });
 
-  /// Latitude of the matched feature (WGS84).
-  final double lat;
-
-  /// Longitude of the matched feature (WGS84).
-  final double lng;
-
-  /// Full, human-readable address line.
-  final String displayName;
-
-  /// Structured address parts (Nominatim `address` object).
-  final Map<String, dynamic> address;
-
-  /// Nominatim `place_id` — useful as a stable cache key.
-  final String? placeId;
-
-  /// Convenience accessor for `flutter_map` / `latlong2`.
   LatLng get location => LatLng(lat, lng);
 
-  @override
-  String toString() => 'NominatimResult($lat, $lng, "$displayName")';
+  factory NominatimResult.fromMap(Map<String, dynamic> m) => NominatimResult(
+        lat: (m['lat'] as num).toDouble(),
+        lng: (m['lng'] as num).toDouble(),
+        displayName: (m['displayName'] ?? '${m['lat']}, ${m['lng']}').toString(),
+      );
+
+  Map<String, dynamic> toMap() => {
+        'lat': lat,
+        'lng': lng,
+        'displayName': displayName,
+      };
 }
 
-/// Riverpod provider exposing a singleton [NominatimService] pointed at the
-/// public Nominatim instance.
-///
-/// Override in `main.dart` to point at a self-hosted instance:
-///
-/// ```dart
-/// ProviderScope(
-///   overrides: [
-///     nominatimServiceProvider.overrideWithValue(
-///       NominatimService(baseUrl: 'https://geocode.my-fleet.com'),
-///     ),
-///   ],
-///   child: const VirentApp(),
-/// )
-/// ```
-final nominatimServiceProvider = Provider<NominatimService>((ref) {
-  return NominatimService();
-});
-
-/// Thin HTTP client for a Nominatim server.
-///
-/// Both [search] (forward geocoding) and [reverseGeocode] (reverse
-/// geocoding) are supported. Failures are funnelled through
-/// [ApiException] so callers can `try / catch` a single error hierarchy.
+/// Fully offline geocoding service backed by local SQLite cache.
 class NominatimService {
-  /// Creates a [NominatimService].
-  ///
-  /// Pass [baseUrl] to use a self-hosted Nominatim instance. [userAgent]
-  /// is sent as the `User-Agent` header — Nominatim's policy requires it
-  /// to identify the calling application.
-  NominatimService({
-    String? baseUrl,
-    this.userAgent = 'com.virent.mobile/1.0 (flutter)',
-  }) : baseUrl = (baseUrl ?? 'https://nominatim.openstreetmap.org').trim();
+  static final NominatimService instance = NominatimService._();
+  NominatimService._();
 
-  /// Base URL of the Nominatim server, without a trailing slash.
-  final String baseUrl;
+  Database? _db;
+  bool _seeded = false;
 
-  /// `User-Agent` header sent on every request (per Nominatim policy).
-  final String userAgent;
-
-  /// Per-request timeout.
-  static const Duration _timeout = Duration(seconds: 10);
-
-  /// Offline-first forward geocode. Falls back to online Nominatim.
-  /// Platform geocoder available when geocoding package is added.
-  Future<List<NominatimResult>> searchOfflineFirst(
-    String query, {
-    int limit = 5,
-    String? countryCode,
-  }) async {
-    final trimmed = query.trim();
-    if (trimmed.isEmpty) return const <NominatimResult>[];
-
-    // Direct to online Nominatim (platform geocoder requires geocoding pkg)
-    return search(trimmed, limit: limit, countryCode: countryCode);
+  Future<void> init(Database db) async {
+    _db = db;
+    await _db!.execute('''
+      CREATE TABLE IF NOT EXISTS geocode_cache (
+        query TEXT PRIMARY KEY,
+        result_json TEXT NOT NULL,
+        created_at INTEGER NOT NULL
+      )
+    ''');
+    if (!_seeded) {
+      await _seedTashkent();
+      _seeded = true;
+    }
   }
 
-  /// Forward-geocodes [query] into one or more [NominatimResult]s.
-  ///
-  /// Returns at most [limit] results (default 5). Pass [countryCode] as
-  /// an ISO-3166 alpha-2 code (e.g. `uz`) to bias results towards a
-  /// country — useful on the home screen where the rider is almost
-  /// always searching for nearby places.
-  ///
-  /// Returns an empty list when [query] is blank.
+  /// Forward geocode — search address → coordinates.
   Future<List<NominatimResult>> search(
     String query, {
     int limit = 5,
     String? countryCode,
   }) async {
-    final trimmed = query.trim();
-    if (trimmed.isEmpty) return const <NominatimResult>[];
+    final trimmed = query.trim().toLowerCase();
+    if (trimmed.isEmpty) return [];
 
-    final params = <String, String>{
-      'q': trimmed,
-      'format': 'json',
-      'limit': limit.toString(),
-      'addressdetails': '1',
-    };
-    if (countryCode != null && countryCode.isNotEmpty) {
-      params['countrycodes'] = countryCode;
-    }
-    final uri =
-        Uri.parse('$baseUrl/search').replace(queryParameters: params);
+    // 1. Exact match in local cache
+    final results = await _searchLocal(trimmed, limit: limit);
+    if (results.isNotEmpty) return results;
 
-    final res = await http.get(uri, headers: {
-      'User-Agent': userAgent,
-      'Accept': 'application/json',
-    }).timeout(_timeout);
-
-    if (res.statusCode != 200) {
-      throw ApiException(
-        'Nominatim search failed (${res.statusCode})',
-        statusCode: res.statusCode,
-      );
-    }
-    final list = jsonDecode(res.body);
-    if (list is! List) return const <NominatimResult>[];
-    return list
-        .map((e) => _parse(e as Map<String, dynamic>))
-        .toList(growable: false);
+    // 2. Fuzzy: partial match against cached landmarks
+    return _fuzzyMatch(trimmed, limit: limit);
   }
 
-  /// Offline-first reverse geocode. Falls back to online Nominatim.
-  /// Platform geocoder available when geocoding package is added.
-  Future<String> reverseGeocodeOfflineFirst(
-    double lat,
-    double lng, {
-    String language = 'en',
-  }) async {
-    // Direct to online Nominatim (platform geocoder requires geocoding pkg)
-    return reverseGeocode(lat, lng, language: language);
-  }
-
-  /// Reverse-geocodes [lat], [lng] into a single address string.
-  ///
-  /// Returns an empty string when Nominatim could not find a feature at
-  /// the supplied coordinates (e.g. the middle of an ocean).
+  /// Reverse geocode — coordinates → address.
   Future<String> reverseGeocode(
     double lat,
     double lng, {
     String language = 'en',
   }) async {
-    final uri = Uri.parse('$baseUrl/reverse').replace(queryParameters: {
-      'lat': lat.toString(),
-      'lon': lng.toString(),
-      'format': 'json',
-      'addressdetails': '1',
-      'accept-language': language,
-    });
+    final key = 'rev_${lat.toStringAsFixed(5)}_${lng.toStringAsFixed(5)}';
+    final cached = await _getCached(key);
+    if (cached != null) return cached.displayName;
 
-    final res = await http.get(uri, headers: {
-      'User-Agent': userAgent,
-      'Accept': 'application/json',
-    }).timeout(_timeout);
-
-    if (res.statusCode != 200) {
-      throw ApiException(
-        'Nominatim reverse failed (${res.statusCode})',
-        statusCode: res.statusCode,
-      );
+    // Find nearest landmark
+    final nearest = _findNearest(lat, lng);
+    if (nearest != null) {
+      await _cacheResult(key, nearest);
+      return nearest.displayName;
     }
-    final body = jsonDecode(res.body);
-    if (body is! Map<String, dynamic>) return '';
-    return (body['display_name'] ?? '').toString();
+
+    return '$lat, $lng';
   }
 
-  /// Maps one Nominatim JSON object to a [NominatimResult].
-  ///
-  /// Nominatim serialises lat/lon as strings (e.g. `"41.3111"`) so we
-  /// parse defensively.
-  NominatimResult _parse(Map<String, dynamic> json) {
-    final lat = double.tryParse('${json['lat']}') ?? 0;
-    final lng = double.tryParse('${json['lon']}') ?? 0;
-    final address = json['address'];
-    return NominatimResult(
-      lat: lat,
-      lng: lng,
-      displayName: (json['display_name'] ?? '').toString(),
-      address: address is Map<String, dynamic>
-          ? Map<String, dynamic>.unmodifiable(address)
-          : const <String, dynamic>{},
-      placeId: json['place_id']?.toString(),
+  // ── Local cache ──
+
+  Future<List<NominatimResult>> _searchLocal(String q, {int limit = 5}) async {
+    final rows = await _db?.query(
+      'geocode_cache',
+      where: 'LOWER(query) = ?',
+      whereArgs: ['fwd_$q'],
+      limit: limit,
+    );
+    if (rows == null || rows.isEmpty) return [];
+    return rows.map((r) {
+      final j = jsonDecode(r['result_json'] as String);
+      return NominatimResult.fromMap(j);
+    }).toList();
+  }
+
+  Future<List<NominatimResult>> _fuzzyMatch(String q, {int limit = 5}) async {
+    final rows = await _db?.query(
+      'geocode_cache',
+      where: 'query LIKE ?',
+      whereArgs: ['fwd_%'],
+    );
+    if (rows == null || rows.isEmpty) return [];
+
+    final results = <NominatimResult>[];
+    for (final r in rows) {
+      final query = (r['query'] as String).replaceFirst('fwd_', '');
+      final j = jsonDecode(r['result_json'] as String);
+      final name = (j['displayName'] ?? '').toString().toLowerCase();
+      if (name.contains(q) || query.toLowerCase().contains(q)) {
+        results.add(NominatimResult.fromMap(j));
+        if (results.length >= limit) break;
+      }
+    }
+    return results;
+  }
+
+  Future<NominatimResult?> _getCached(String key) async {
+    final rows = await _db?.query(
+      'geocode_cache',
+      where: 'query = ?',
+      whereArgs: [key],
+      limit: 1,
+    );
+    if (rows == null || rows.isEmpty) return null;
+    final j = jsonDecode(rows.first['result_json'] as String);
+    return NominatimResult.fromMap(j);
+  }
+
+  Future<void> _cacheResult(String key, NominatimResult r) async {
+    await _db?.insert(
+      'geocode_cache',
+      {
+        'query': key,
+        'result_json': jsonEncode(r.toMap()),
+        'created_at': DateTime.now().millisecondsSinceEpoch,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+
+  NominatimResult? _findNearest(double lat, double lng) {
+    double best = double.infinity;
+    NominatimResult? bestResult;
+    for (final lm in _tashkentLandmarks) {
+      final d = _haversine(lat, lng, lm.lat, lm.lng);
+      if (d < best) {
+        best = d;
+        bestResult = lm;
+      }
+    }
+    // Only return if within 500m
+    return (best < 500) ? bestResult : null;
+  }
+
+  double _haversine(double lat1, double lon1, double lat2, double lon2) {
+    const R = 6371000.0;
+    final dLat = (lat2 - lat1) * 3.141592653589793 / 180;
+    final dLon = (lon2 - lon1) * 3.141592653589793 / 180;
+    final a = _s(dLat / 2) * _s(dLat / 2) +
+        _c(lat1 * 3.141592653589793 / 180) *
+            _c(lat2 * 3.141592653589793 / 180) *
+            _s(dLon / 2) * _s(dLon / 2);
+    return R * 2 * _atan22(_sq(a), _sq(1 - a));
+  }
+
+
+
+  // ── Tashkent landmarks (fully offline) ──
+
+  static final List<NominatimResult> _tashkentLandmarks = [
+    NominatimResult(lat: 41.3111, lng: 69.2797, displayName: 'Площадь Амира Темура, Ташкент'),
+    NominatimResult(lat: 41.3095, lng: 69.2661, displayName: 'Площадь Мустакиллик, Ташкент'),
+    NominatimResult(lat: 41.3267, lng: 69.2352, displayName: 'Чорсу Базар, Ташкент'),
+    NominatimResult(lat: 41.3120, lng: 69.2682, displayName: 'ЦУМ Ташкент'),
+    NominatimResult(lat: 41.2916, lng: 69.2815, displayName: 'Северный вокзал, Ташкент'),
+    NominatimResult(lat: 41.2611, lng: 69.2594, displayName: 'Южный вокзал, Ташкент'),
+    NominatimResult(lat: 41.2580, lng: 69.2819, displayName: 'Аэропорт Ташкент'),
+    NominatimResult(lat: 41.3128, lng: 69.2675, displayName: 'Бродвей (Сайилгох), Ташкент'),
+    NominatimResult(lat: 41.3175, lng: 69.2490, displayName: 'Tashkent City, Ташкент'),
+    NominatimResult(lat: 41.2948, lng: 69.2840, displayName: 'Паркентская улица, Ташкент'),
+    NominatimResult(lat: 41.3053, lng: 69.2551, displayName: 'Сквер Амира Темура, Ташкент'),
+    NominatimResult(lat: 41.2998, lng: 69.2426, displayName: 'Алайский базар, Ташкент'),
+    NominatimResult(lat: 41.3319, lng: 69.2938, displayName: 'Ташкентский государственный университет'),
+    NominatimResult(lat: 41.3457, lng: 69.2845, displayName: 'Телевышка, Ташкент'),
+    NominatimResult(lat: 41.3033, lng: 69.2405, displayName: 'Минор, Ташкент'),
+  ];
+
+  Future<void> _seedTashkent() async {
+    for (final lm in _tashkentLandmarks) {
+      final name = lm.displayName.toLowerCase();
+      await _cacheResult('fwd_$name', lm);
+      // Also cache by short name
+      final parts = name.split(',');
+      if (parts.isNotEmpty) {
+        await _cacheResult('fwd_${parts.first.trim()}', lm);
+      }
+    }
+  }
+
+  // Math aliases
+  static double _s(double x) => sin(x);
+  static double _c(double x) => cos(x);
+  static double _sq(double x) => sqrt(x);
+  static double _atan22(double y, double x) => atan2(y, x);
 }

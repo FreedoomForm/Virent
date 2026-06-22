@@ -1,16 +1,15 @@
-// map_page.dart — Admin: Map & Offline Tiles Manager
+// map_page.dart — Admin: Local Tile Manager + Map
 //
-// Fully local admin panel page for:
-//   1. Viewing the live map (scooter positions)
-//   2. Downloading tiles for offline use (Tashkent area)
-//   3. Clearing the tile cache
+// Fully offline. Shows the local map. Admin can check tile cache status
+// and clear it. Tiles are downloaded once via flutter_map's automatic
+// caching when online — after that, the map works forever offline.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../../core/services/map/offline_geocoding_service.dart';
+import '../../../../core/services/map/local_tile_server.dart';
 import '../../../../core/services/map/tile_cache_service.dart';
 import '../widgets/admin_dialogs.dart';
 
@@ -24,10 +23,6 @@ class MapPage extends ConsumerStatefulWidget {
 class _MapPageState extends ConsumerState<MapPage> {
   final MapController _mapController = MapController();
   static const _tashkentCenter = LatLng(41.3111, 69.2406);
-  bool _downloading = false;
-  double _downloadProgress = 0;
-  int _downloaded = 0;
-  int _total = 0;
 
   @override
   void dispose() {
@@ -37,6 +32,10 @@ class _MapPageState extends ConsumerState<MapPage> {
 
   @override
   Widget build(BuildContext context) {
+    final downloader = LocalTileDownloader.instance;
+    final tileCount = downloader.countLocalTiles();
+    final tileSizeMb = (downloader.localTilesSize() / (1024 * 1024)).toStringAsFixed(1);
+
     return Column(
       children: [
         // ── Top controls bar ──
@@ -45,68 +44,31 @@ class _MapPageState extends ConsumerState<MapPage> {
           color: Colors.white,
           child: Row(
             children: [
-              const Text('🗺️ Карта Ташкента',
+              const Text('🗺️ Карта Ташкента (локально)',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
               const Spacer(),
-              // Download tiles button
-              ElevatedButton.icon(
-                onPressed: _downloading ? null : _startDownload,
-                icon: _downloading
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.download, size: 16),
-                label: Text(_downloading
-                    ? 'Загрузка ${(_downloadProgress * 100).toInt()}%'
-                    : 'Скачать карту'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1A1A2E),
-                  foregroundColor: Colors.white,
-                ),
-              ),
-              const SizedBox(width: 8),
               // Clear cache button
               OutlinedButton.icon(
-                onPressed: _confirmClearCache,
+                onPressed: () => _confirmClearCache(downloader),
                 icon: const Icon(Icons.delete_outline, size: 16),
-                label: const Text('Очистить'),
-              ),
-              const SizedBox(width: 8),
-              // Geocode seed button
-              OutlinedButton.icon(
-                onPressed: _seedGeocode,
-                icon: const Icon(Icons.location_city, size: 16),
-                label: const Text('Ориентиры'),
+                label: Text('$tileCount тайлов • $tileSizeMb MB'),
               ),
             ],
           ),
         ),
 
-        // ── Download progress bar ──
-        if (_downloading)
-          LinearProgressIndicator(
-            value: _downloadProgress > 0 ? _downloadProgress : null,
-            minHeight: 4,
-            backgroundColor: Colors.grey[200],
-            valueColor:
-                const AlwaysStoppedAnimation<Color>(Color(0xFF1A1A2E)),
-          ),
-
         // ── Map ──
         Expanded(
           child: FlutterMap(
             mapController: _mapController,
-            options: MapOptions(
+            options: const MapOptions(
               initialCenter: _tashkentCenter,
               initialZoom: 13,
               minZoom: 3,
               maxZoom: 18,
             ),
             children: [
-              cachedTileLayer(),
-              // Tashkent center marker
+              localTileLayer(),
               MarkerLayer(
                 markers: [
                   Marker(
@@ -130,11 +92,13 @@ class _MapPageState extends ConsumerState<MapPage> {
             children: [
               const Icon(Icons.info_outline, size: 16, color: Colors.grey),
               const SizedBox(width: 8),
-              Text(
-                _downloading
-                    ? 'Сохранено: $_downloaded / $_total тайлов'
-                    : 'Карта кешируется автоматически. Скачайте для оффлайн-режима.',
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              Expanded(
+                child: Text(
+                  tileCount > 0
+                      ? 'Локально: $tileCount тайлов ($tileSizeMb MB). Карта работает без интернета.'
+                      : 'Тайлы не загружены. Откройте карту при интернете — flutter_map закеширует автоматически.',
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
               ),
             ],
           ),
@@ -143,48 +107,18 @@ class _MapPageState extends ConsumerState<MapPage> {
     );
   }
 
-  void _startDownload() async {
-    setState(() {
-      _downloading = true;
-      _downloadProgress = 0;
-      _downloaded = 0;
-    });
-
-    final manager = OfflineTileManager.instance;
-    await manager.downloadTashkentArea(
-      minZoom: 12,
-      maxZoom: 16,
-    );
-
-    if (mounted) {
-      setState(() {
-        _downloading = false;
-        _downloadProgress = 1.0;
-        _downloaded = manager.downloadedTiles;
-        _total = manager.totalTiles;
-      });
-      showAdminSnack(context, 'Карта сохранена: ${manager.downloadedTiles} тайлов');
-    }
-  }
-
-  void _confirmClearCache() {
+  void _confirmClearCache(LocalTileDownloader downloader) {
     showAdminConfirmDialog(
       context,
-      title: 'Очистить кеш карты',
-      message: 'Удалить все сохранённые тайлы? Карта будет загружаться заново.',
+      title: 'Очистить локальный кеш карты',
+      message: 'Удалить все сохранённые тайлы? Без интернета карта станет тёмной.',
       onConfirm: () async {
-        // flutter_map manages its own cache — tiles re-download on next use
+        downloader.clearAll();
         if (mounted) {
+          setState(() {});
           showAdminSnack(context, 'Кеш карты очищен');
         }
       },
     );
-  }
-
-  void _seedGeocode() async {
-    await OfflineGeocodingService.instance.seedTashkentLandmarks();
-    if (mounted) {
-      showAdminSnack(context, '10 ориентиров Ташкента сохранено локально');
-    }
   }
 }
