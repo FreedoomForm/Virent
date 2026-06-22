@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import '../../../../core/services/map/tile_cache_service.dart';
 
 import '../../../../common/widgets/virent_ui.dart';
 import '../../../../core/configs/theme/app_colors.dart';
@@ -274,12 +275,7 @@ class _ActiveRideScreenState extends ConsumerState<ActiveRideScreen> {
                 backgroundColor: AppColors.bgMap,
               ),
               children: [
-                TileLayer(
-                  urlTemplate:
-                      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  subdomains: const ['a', 'b', 'c'],
-                  userAgentPackageName: 'com.virent.mobile',
-                ),
+                cachedTileLayer(),
                 if (trail.length >= 2)
                   PolylineLayer(
                     polylines: [

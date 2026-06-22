@@ -19,6 +19,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
@@ -106,6 +107,34 @@ class NominatimService {
   /// Per-request timeout.
   static const Duration _timeout = Duration(seconds: 10);
 
+  /// Offline-first forward geocode. Tries platform geocoder (offline on
+  /// mobile), falls back to online Nominatim.
+  Future<List<NominatimResult>> searchOfflineFirst(
+    String query, {
+    int limit = 5,
+    String? countryCode,
+  }) async {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return const <NominatimResult>[];
+
+    // 1. Try platform geocoder (works offline on Android/iOS)
+    try {
+      final locations = await geo.locationFromAddress(trimmed);
+      if (locations.isNotEmpty) {
+        return locations.take(limit).map((l) => NominatimResult(
+          lat: l.latitude,
+          lng: l.longitude,
+          displayName: trimmed,
+        )).toList();
+      }
+    } catch (_) {
+      // Platform geocoder unavailable — fall through to Nominatim.
+    }
+
+    // 2. Fall back to online Nominatim
+    return search(trimmed, limit: limit, countryCode: countryCode);
+  }
+
   /// Forward-geocodes [query] into one or more [NominatimResult]s.
   ///
   /// Returns at most [limit] results (default 5). Pass [countryCode] as
@@ -150,6 +179,34 @@ class NominatimService {
     return list
         .map((e) => _parse(e as Map<String, dynamic>))
         .toList(growable: false);
+  }
+
+  /// Offline-first reverse geocode. Tries platform geocoder first,
+  /// falls back to online Nominatim.
+  Future<String> reverseGeocodeOfflineFirst(
+    double lat,
+    double lng, {
+    String language = 'en',
+  }) async {
+    // 1. Try platform geocoder (offline)
+    try {
+      final placemarks = await geo.placemarkFromCoordinates(lat, lng);
+      if (placemarks.isNotEmpty) {
+        final p = placemarks.first;
+        final parts = <String>[
+          if (p.street?.isNotEmpty == true) p.street!,
+          if (p.locality?.isNotEmpty == true) p.locality!,
+          if (p.country?.isNotEmpty == true) p.country!,
+        ];
+        final result = parts.join(', ');
+        if (result.isNotEmpty) return result;
+      }
+    } catch (_) {
+      // Fall through to Nominatim.
+    }
+
+    // 2. Fall back to online Nominatim
+    return reverseGeocode(lat, lng, language: language);
   }
 
   /// Reverse-geocodes [lat], [lng] into a single address string.

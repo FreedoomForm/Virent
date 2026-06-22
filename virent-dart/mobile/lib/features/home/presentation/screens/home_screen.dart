@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../common/widgets/virent_ui.dart';
+import '../../../../core/services/map/tile_cache_service.dart';
 import '../../../../core/configs/theme/app_colors.dart';
 import '../../../../core/configs/theme/app_styles.dart';
 import '../../../rides/presentation/providers/ride_provider.dart';
@@ -94,12 +95,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       .clearSelection(),
                 ),
                 children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    subdomains: const ['a', 'b', 'c'],
-                    userAgentPackageName: 'com.virent.mobile',
-                  ),
+                  // Offline-first tile layer — flutter_map caches tiles
+                  // automatically on disk. Pre-download via admin panel.
+                  cachedTileLayer(),
                   MarkerLayer(
                     markers: _buildMarkers(scooterState, userPosition),
                   ),
