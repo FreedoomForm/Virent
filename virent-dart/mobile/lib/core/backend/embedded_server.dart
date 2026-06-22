@@ -65,6 +65,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import '../database/virent_database.dart';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:shelf/shelf.dart';
@@ -348,6 +350,139 @@ class DataStore {
       (json['adminTokens'] as Map).forEach((k, v) { adminTokens[k.toString()] = Map<String, dynamic>.from(v); });
     }
     return count;
+  }
+
+  /// Directory for Virent app data (database, logs).
+  String get virentDir {
+    // On desktop, use a fixed location; on mobile, use app support dir.
+    if (Platform.isWindows) {
+      return '${Platform.environment['APPDATA']}\\Virent';
+    } else if (Platform.isLinux || Platform.isMacOS) {
+      return '${Platform.environment['HOME']}/.virent';
+    }
+    return '';
+  }
+
+  /// Load all data from SQLite into in-memory maps.
+  Future<void> loadFromDb() async {
+    final db = VirentDatabase.db;
+
+    // Scooters
+    final scRows = await db.query('scooters');
+    for (final row in scRows) {
+      final s = Map<String, dynamic>.from(row);
+      if (!scooters.any((x) => x['id'] == s['id'])) {
+        scooters.add(s);
+      }
+    }
+
+    // Users
+    final uRows = await db.query('users');
+    for (final row in uRows) {
+      users[row['phone'] as String] = Map<String, dynamic>.from(row);
+    }
+
+    // Trips
+    final tRows = await db.query('trips');
+    for (final row in tRows) {
+      trips[row['id'] as String] = Map<String, dynamic>.from(row);
+    }
+
+    // Zones
+    final zRows = await db.query('zones');
+    zones.clear();
+    for (final row in zRows) {
+      zones.add(Map<String, dynamic>.from(row));
+    }
+
+    // Admins
+    final aRows = await db.query('admins');
+    admins.clear();
+    for (final row in aRows) {
+      admins.add(Map<String, dynamic>.from(row));
+    }
+
+    // Prepaids
+    final pRows = await db.query('prepaids');
+    prepaids.clear();
+    for (final row in pRows) {
+      prepaids.add(Map<String, dynamic>.from(row));
+    }
+
+    // IoT commands
+    final iRows = await db.query('iot_commands');
+    iotCommands.clear();
+    for (final row in iRows) {
+      iotCommands[row['id'] as String] = Map<String, dynamic>.from(row);
+    }
+
+    // Transactions
+    final txRows = await db.query('transactions');
+    transactions.clear();
+    for (final row in txRows) {
+      final uid = row['user_id'] as String;
+      transactions.putIfAbsent(uid, () => []).add(Map<String, dynamic>.from(row));
+    }
+
+    // Notifications
+    final nRows = await db.query('notifications');
+    notifications.clear();
+    for (final row in nRows) {
+      notifications.add(Map<String, dynamic>.from(row));
+    }
+
+    // Audit log
+    final alRows = await db.query('audit_log', orderBy: 'timestamp DESC', limit: 500);
+    auditLog.clear();
+    for (final row in alRows) {
+      auditLog.add(Map<String, dynamic>.from(row));
+    }
+  }
+
+  /// Sync in-memory maps to SQLite (write-through).
+  Future<void> syncToDb() async {
+    final db = VirentDatabase.db;
+    final batch = db.batch();
+
+    // Scooters — delete all, re-insert
+    batch.delete('scooters');
+    for (final s in scooters) {
+      batch.insert('scooters', Map<String, dynamic>.from(s)..remove('distance'),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+
+    // Users
+    for (final u in users.values) {
+      batch.insert('users', Map<String, dynamic>.from(u),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+
+    // Trips
+    for (final t in trips.values) {
+      batch.insert('trips', Map<String, dynamic>.from(t),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+
+    // Zones
+    batch.delete('zones');
+    for (final z in zones) {
+      batch.insert('zones', Map<String, dynamic>.from(z),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+
+    // Admins
+    batch.delete('admins');
+    for (final a in admins) {
+      final copy = Map<String, dynamic>.from(a);
+      if (copy['permissions'] is List) {
+        copy['permissions'] = jsonEncode(copy['permissions']);
+      }
+      batch.insert('admins', copy, conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+
+    // OTP codes (transient — don't persist)
+
+    await batch.commit(noResult: true);
   }
 }
 

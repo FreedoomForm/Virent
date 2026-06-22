@@ -21,7 +21,7 @@ import 'core/backend/embedded_server.dart';
 import 'core/configs/services/storage_service.dart';
 import 'core/configs/theme/app_theme.dart';
 import 'core/services/ngrok_tunnel_service.dart';
-import 'core/database/persistent_store.dart';
+import 'core/database/virent_database.dart';
 import 'features/theme/presentation/providers/theme_provider.dart';
 import 'utils/logger.dart';
 import 'web_init.dart' if (dart.library.io) 'web_init_stub.dart';
@@ -39,7 +39,7 @@ final serverStatusProvider = StateProvider<String>((ref) => 'stopped');
 
 /// The IP address mobile clients should use to reach this PC, or `null`
 /// when running on mobile / before the server has started.
-final persistentStoreProvider = Provider<PersistentStore>((ref) => PersistentStore());
+
 
 final serverIpProvider = StateProvider<String?>((ref) => null);
 
@@ -87,8 +87,6 @@ class _VirentAppState extends ConsumerState<VirentApp> {
 
     ref.read(serverStatusProvider.notifier).state = 'starting';
 
-    // ── Restore persisted data ──────────────────────────────────────
-    final persistentStore = ref.read(persistentStoreProvider);
     final server = EmbeddedServer(
       port: 8443,
       onLog: (msg) {
@@ -104,17 +102,15 @@ class _VirentAppState extends ConsumerState<VirentApp> {
     try {
       await server.start();
 
-      // Restore persisted state (survives restarts)
-      final saved = await persistentStore.init();
-      if (saved != null) {
-        server.data.fromJson(saved);
-        AppLogger.info('Restored persisted data', tag: 'SERVER');
-      }
-      persistentStore.attach(server.data);
+      // ── SQLite persistence ────────────────────────────────────────
+      final dbPath = '${server.data.virentDir}/virent.db';
+      await VirentDatabase.init(dbPath);
+      await server.data.loadFromDb();
+      AppLogger.info('Loaded from SQLite', tag: 'SERVER');
 
-      // Periodic auto-save every 10 seconds
-      Timer.periodic(const Duration(seconds: 10), (_) {
-        persistentStore.markDirty();
+      // Sync to SQLite every 30 seconds
+      Timer.periodic(const Duration(seconds: 30), (_) async {
+        await server.data.syncToDb();
       });
 
       ref.read(embeddedServerProvider.notifier).state = server;
