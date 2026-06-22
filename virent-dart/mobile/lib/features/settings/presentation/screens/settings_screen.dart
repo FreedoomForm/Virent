@@ -466,9 +466,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (trimmed.isEmpty || trimmed == _serverUrl) return;
 
     setState(() => _serverUrl = trimmed);
-    await StorageService().setString(StorageKeys.serverUrl, trimmed);
+    await StorageService().setString('server_url', trimmed);
+    ApiClient._cachedBaseUrl = trimmed; // update running client
     try {
-      await ApiClient().setBaseUrl(trimmed);
+      ApiClient._cachedBaseUrl = trimmed;
+      await StorageService().setString('server_url', trimmed);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

@@ -30,6 +30,8 @@ class ApiClient {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       return 'http://localhost:8443'; // desktop: embedded server
     }
+    // Try saved endpoint first, then ngrok, then common LAN IPs.
+    // The user can override at Settings → Server Endpoint.
     return 'https://caliber-lividly-coastline.ngrok-free.dev'; // mobile: ngrok tunnel
   }
 
