@@ -75,7 +75,7 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
               ),
               TextButton.icon(
                 onPressed: () async {
-                  await showDeleteConfirmDialog(context, 'абонемент $tariff');
+                  await showAdminDeleteDialog(context, name: 'абонемент $tariff', onDelete: () async {});
                 },
                 icon: const Icon(Icons.delete, size: 14),
                 label: const Text('Удалить'),

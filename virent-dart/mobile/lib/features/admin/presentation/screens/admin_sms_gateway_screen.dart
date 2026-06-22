@@ -69,6 +69,18 @@ class SmsService {
     ];
   }
 
+  /// Returns `true` when the active session belongs to an admin.
+  Future<bool> _isAdminSession() async {
+    final storage = StorageService();
+    await storage.init();
+    final adminToken = await storage.getString('admin_token');
+    if (adminToken != null && adminToken.isNotEmpty) return true;
+    final userJson = await storage.getJson(StorageKeys.userJson);
+    if (userJson == null) return false;
+    final role = (userJson['role'] ?? '').toString().toLowerCase();
+    return role == 'admin' || role == 'super_admin';
+  }
+
   /// Sends [message] to [phone] from the SIM in [simSlot].
   ///
   /// Returns `true` on success. **Admin-only** — throws
