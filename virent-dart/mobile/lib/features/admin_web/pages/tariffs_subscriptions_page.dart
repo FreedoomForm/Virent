@@ -12,19 +12,7 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
       title: 'Абонементы',
-      provider: tariffsSubscriptionsProvider,
-      searchProvider: _subSearchProvider,
-      createButton: ElevatedButton.icon(
-        onPressed: () => showAdminInfoDialog(
-          context, 'Добавить абонемент', 'Форма создания абонемента',
-        ),
-        icon: const Icon(Icons.add, size: 16),
-        label: const Text('Добавить абонемент'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: adminPrimaryColor,
-          foregroundColor: adminPrimaryForeground,
-        ),
-      ),
+      provider: tariffSubscriptionsProvider,
       columns: const [
         DataColumn(label: Text('Tariff')),
         DataColumn(label: Text('Description')),
@@ -75,7 +63,11 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
               ),
               TextButton.icon(
                 onPressed: () async {
-                  await showAdminDeleteDialog(context, name: 'абонемент $tariff', onDelete: () async {});
+                  await showAdminDeleteDialog(
+                    context,
+                    name: 'абонемент $tariff',
+                    onDelete: () async {},
+                  );
                 },
                 icon: const Icon(Icons.delete, size: 14),
                 label: const Text('Удалить'),
@@ -87,10 +79,3 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
     );
   }
 }
-
-final _subSearchProvider = StateProvider<String>((ref) => '');
-
-final tariffsSubscriptionsProvider =
-    FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
-  return ref.watch(tariffsListProvider);
-});
