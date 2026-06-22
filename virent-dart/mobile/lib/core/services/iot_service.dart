@@ -379,47 +379,5 @@ class IotHub {
   }
 }
 
-/// BLE transport implementation for IoT commands.
-class BleIotTransport extends IotTransport {
-  BleIotTransport();
-
-  @override
-  Future<IotCommandResult> sendCommand({
-    required String scooterId,
-    required String command,
-    Map<String, dynamic>? params,
-  }) async {
-    try {
-      // Use flutter_blue_plus to connect and send command
-      // BLE Service UUID: 0000ff00-0000-1000-8000-00805f9b34fb
-      // Characteristic UUID: 0000ff01-0000-1000-8000-00805f9b34fb
-      debugPrint('[BLE] Command $command → scooter $scooterId');
-      // flutter_blue_plus connection + write goes here
-      return IotCommandResult(success: true, response: 'ble_queued');
-    } catch (e) {
-      return IotCommandResult(success: false, error: e.toString());
-    }
-  }
-}
-
-/// MQTT transport stub for IoT commands.
-class MqttIotTransport extends IotTransport {
-  MqttIotTransport({this.broker = 'localhost', this.port = 1883});
-  final String broker;
-  final int port;
-
-  @override
-  Future<IotCommandResult> sendCommand({
-    required String scooterId,
-    required String command,
-    Map<String, dynamic>? params,
-  }) async {
-    try {
-      debugPrint('[MQTT] Command $command → scooter/$scooterId @ $broker:$port');
-      // mqtt_client publish goes here
-      return IotCommandResult(success: true, response: 'mqtt_queued');
-    } catch (e) {
-      return IotCommandResult(success: false, error: e.toString());
-    }
-  }
-}
+// Transports are in iot_transports.dart.
+import 'iot_transports.dart' show createTransport, IotTransport, IotCommandResult;
