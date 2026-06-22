@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,7 +23,6 @@ import 'core/configs/services/storage_service.dart';
 import 'core/configs/theme/app_theme.dart';
 import 'core/services/ngrok_tunnel_service.dart';
 import 'core/services/local_network_service.dart';
-import 'core/configs/constants.dart';
 import 'core/services/map/bundled_tile_extractor.dart';
 import 'core/services/map/bundled_tile_extractor.dart';
 import 'core/database/virent_database.dart';
@@ -133,12 +133,8 @@ class _VirentAppState extends ConsumerState<VirentApp> {
 
       // Write the best available endpoint to the config file.
       // Priority: ngrok URL > local IP. The phone picks up this config.
-      final endpoint = ngrok.url; // https://caliber-lividly-coastline.ngrok-free.dev
-      final config = <String, String>{
-        'api_url': endpoint,
-        'local_url': localUrl ?? '',
-        'status': ref.read(tunnelStatusProvider).name,
-      };
+      final endpoint = NgrokTunnelService.url; // https://caliber-lividly-coastline.ngrok-free.dev
+      
       try {
         final configFile = File('${server.data.virentDir}/endpoint.json');
         await configFile.writeAsString(
