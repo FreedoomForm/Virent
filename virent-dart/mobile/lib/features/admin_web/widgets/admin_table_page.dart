@@ -21,7 +21,7 @@ const Color adminPrimaryForeground = Colors.white;
 
 /// Default card shape for admin table cards.
 final ShapeBorder adminCardShape = RoundedRectangleBorder(
-  borderRadius: BorderRadius.circular(4),
+  borderRadius: BorderRadius.circular(12),
   side: BorderSide(color: Colors.grey.shade300),
 );
 

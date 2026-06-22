@@ -54,6 +54,8 @@ class VirentDatabase {
         battery INTEGER DEFAULT 100,
         status TEXT DEFAULT 'available',
         rate_per_min INTEGER DEFAULT 1200,
+        transport TEXT DEFAULT 'http',
+        transport_config TEXT DEFAULT '{}',
         last_seen TEXT,
         created_at TEXT DEFAULT (datetime('now'))
       )
