@@ -462,3 +462,39 @@
 - [ ] CI для последних коммитов (ждём)
 - [ ] Квитанция поездки (PDF)
 - [ ] End-to-end тест
+
+---
+
+## Прогресс 2026-06-23 (сессия 5)
+
+### ✅ Сделано:
+
+**Админ-панель — максимально улучшена:**
+- [x] 📊 Дашборд: сводка дохода + утилизация флота (прогресс-бар)
+- [x] 📢 Push-композер: заголовок/тело/сегменты/тест-отправка
+- [x] 📎 CSV экспорт (в буфер обмена, Excel-совместимый)
+- [x] 🛴 ScooterDetailPage: телеметрия (20 записей) + команды
+- [x] 🎫 BulkPrepaidPage: генератор N карт с префиксом/номиналом/сроком
+- [x] 🗺️ ZoneEditorPage: полигоны на карте (тап=вершина)
+- [x] 🔒 Block/unblock users + audit log
+- [x] 📡 MQTT пакет (mqtt_client ^10.0.0)
+- [x] 📡 BLE транспорт (BleIotTransport)
+- [x] 📡 MQTT транспорт (MqttIotTransport)
+
+**Карта:**
+- [x] Предустановленные тайлы для EXE и APK (assets/tiles/)
+- [x] BundledTileExtractor (Windows + Android)
+- [x] Локальный OSRM + Haversine fallback
+- [x] 0 внешних сервисов
+
+**Безопасность + инфра:**
+- [x] Rate limiting (5 req/min на auth)
+- [x] POST /admin/backup (sync to SQLite)
+- [x] GET /admin/system (статистика БД)
+- [x] POST /trips/sos + аудит
+- [x] POST /trips/pause
+
+### ⬜ Осталось:
+- [ ] CI для последних коммитов (ждём)
+- [ ] End-to-end тест всей цепочки
+- [ ] Туториал при первом запуске
