@@ -21,6 +21,8 @@ import 'core/backend/embedded_server.dart';
 import 'core/configs/services/storage_service.dart';
 import 'core/configs/theme/app_theme.dart';
 import 'core/services/ngrok_tunnel_service.dart';
+import 'core/services/map/bundled_tile_extractor.dart';
+import 'core/services/map/bundled_tile_extractor.dart';
 import 'core/database/virent_database.dart';
 import 'features/theme/presentation/providers/theme_provider.dart';
 import 'utils/logger.dart';
@@ -46,6 +48,8 @@ final serverIpProvider = StateProvider<String?>((ref) => null);
 /// Entry point. Runs the app inside a [ProviderScope].
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Extract pre-bundled Tashkent tiles from APK assets (non-blocking)
+  BundledTileExtractor.extractIfNeeded();
   initWeb(); // Enable path URL strategy on web (no-op on mobile/desktop).
   final storage = StorageService();
   await storage.init();
