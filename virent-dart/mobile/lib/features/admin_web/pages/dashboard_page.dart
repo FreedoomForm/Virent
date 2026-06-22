@@ -1,5 +1,6 @@
 import '../widgets/admin_table_page.dart' show adminPrimaryColor, adminPrimaryForeground;
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
@@ -89,9 +90,113 @@ class DashboardPage extends ConsumerWidget {
             _buildStatCard(context, 'Онлайн', '${_n('online_total')}', const Color(0xFF2ECC71)),
             _buildStatCard(context, 'Не онлайн', '${_n('offline_total')}', const Color(0xFFD9534F)),
           ],
+          // ── Revenue chart ──
+          const SizedBox(height: 16),
+          _buildRevenueChart(context, stats),
         );
       },
     );
+  }
+
+  Widget _buildRevenueChart(BuildContext context, Map<String, dynamic> stats) {
+    final revenue = (stats['revenue'] ?? stats['revenue_today'] ?? 0) is num
+        ? (stats['revenue'] as num).toDouble()
+        : 0.0;
+    final trips = (stats['trips'] ?? stats['trips_count'] ?? stats['total_trips'] ?? 0) is num
+        ? (stats['trips'] as num).toInt()
+        : 0;
+    final scooters = (stats['scooters'] ?? stats['scooters_total'] ?? stats['total'] ?? 0) is num
+        ? (stats['scooters'] as num).toInt()
+        : 0;
+    final users = (stats['users'] ?? stats['users_total'] ?? stats['total_users'] ?? 0) is num
+        ? (stats['users'] as num).toInt()
+        : 0;
+    final utilization = scooters > 0 ? ((stats['online'] ?? 0) is num
+        ? ((stats['online'] as num).toInt() / scooters * 100).round()
+        : 0) : 0;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('📊 Сводка', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 16),
+          // Revenue row
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Доход сегодня', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                    const SizedBox(height: 4),
+                    Text('${revenue.toInt().toString()} сум',
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Color(0xFF16A085))),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Поездок', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                    const SizedBox(height: 4),
+                    Text('$trips', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Utilization bar
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Флот на линии', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                  Text('$utilization% ($scooters самокатов)',
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: utilization / 100,
+                  minHeight: 8,
+                  backgroundColor: const Color(0xFFE5E7EB),
+                  valueColor: const AlwaysStoppedAnimation(Color(0xFF2ECC71)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // Users row
+          Row(children: [
+            _miniStat('👤', 'Пользователи', '$users'),
+            const SizedBox(width: 16),
+            _miniStat('🛴', 'Самокаты', '${(stats['online'] ?? stats['online_total'] ?? 0) is num ? (stats['online'] as num).toInt() : 0} онлайн'),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _miniStat(String emoji, String label, String value) {
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      Text(emoji, style: const TextStyle(fontSize: 14)),
+      const SizedBox(width: 4),
+      Text('$label: ', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+      Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+    ]);
   }
 
   Widget _buildStatCard(BuildContext context, String title, String value, Color bgColor) {

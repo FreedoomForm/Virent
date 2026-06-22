@@ -8,6 +8,7 @@ import '../pages/billing_debts_page.dart';
 import '../pages/admin_roles_page.dart';
 import '../pages/scooters_page.dart';
 import '../pages/push_history_page.dart';
+import '../pages/push_composer_page.dart';
 import '../pages/payme_transactions_page.dart';
 import '../pages/promo_codes_page.dart';
 import '../pages/hold_logs_page.dart';
@@ -115,6 +116,8 @@ class _AppLayoutState extends State<AppLayout> {
         return const ScootersPage();
       case 5: // Клиенты (история push)
         return const PushHistoryPage();
+      case 1620: // Push — композер
+        return const PushComposerPage();
       case 6: // Заказы (Предоплаченные)
         return const PrepaidOrdersPage();
       case 7: // Селфи
