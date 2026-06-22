@@ -36,7 +36,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/configs/services/api_client.dart';
-import '../auth/presentation/providers/auth_providers.dart' show apiClientProvider;
+export '../auth/presentation/providers/auth_providers.dart' show apiClientProvider;
 import '../admin/data/services/admin_repository.dart';
 
 /// Singleton [AdminRepository] shared by every admin-web page.

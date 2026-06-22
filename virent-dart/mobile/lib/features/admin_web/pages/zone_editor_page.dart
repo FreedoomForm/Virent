@@ -13,6 +13,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../../core/services/map/tile_cache_service.dart';
 import '../admin_web_providers.dart';
+import '../../auth/presentation/providers/auth_providers.dart' show apiClientProvider;
 import '../widgets/admin_dialogs.dart';
 
 class ZoneEditorPage extends ConsumerStatefulWidget {

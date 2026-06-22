@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
+import '../../auth/presentation/providers/auth_providers.dart' show apiClientProvider;
 import '../widgets/admin_dialogs.dart';
 
 class PushComposerPage extends ConsumerStatefulWidget {
