@@ -646,7 +646,8 @@ class EmbeddedServer {
         }));
 
     // GET /admin/system — system stats for admin panel.
-    router.get('/admin/system', adminOnly((_) {
+    router.get('/admin/system', (Request req) {
+      if (_requireAdmin(req) == null) return _err('Admin access required', status: 403);
       return _json({
         'version': '1.0.0',
         'server_time': DateTime.now().toIso8601String(),
@@ -663,7 +664,8 @@ class EmbeddedServer {
     }));
 
     // POST /admin/backup — trigger a database sync (write all in-memory data to SQLite).
-    router.post('/admin/backup', adminOnly((_) async {
+    router.post('/admin/backup', (Request req) async {
+      if (_requireAdmin(req) == null) return _err('Admin access required', status: 403);
       await data.syncToDb();
       _log('[BACKUP] Manual backup triggered');
       return _json({
