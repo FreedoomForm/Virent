@@ -263,6 +263,92 @@ class DataStore {
   int get revenueToday => trips.values
       .where((t) => t['status'] == 'completed')
       .fold<int>(0, (sum, t) => sum + ((t['cost'] ?? 0) as num).toInt());
+
+  /// Serializes the entire store to a JSON-compatible map.
+  Map<String, dynamic> toJson() => {
+    'scooters': scooters,
+    'users': Map<String, dynamic>.from(users),
+    'trips': Map<String, dynamic>.from(trips),
+    'otpCodes': Map<String, dynamic>.from(otpCodes),
+    'transactions': transactions.map((k, v) => MapEntry(k, v)),
+    'zones': zones,
+    'supportTickets': Map<String, dynamic>.from(supportTickets),
+    'prepaids': prepaids,
+    'notifications': notifications,
+    'iotCommands': Map<String, dynamic>.from(iotCommands),
+    'telemetryLog': telemetryLog.map((k, v) => MapEntry(k, List<Map>.from(v))),
+    'admins': admins,
+    'auditLog': auditLog,
+    'adminTokens': Map<String, dynamic>.from(adminTokens),
+    'version': 1,
+  };
+
+  /// Restores the store from a previously-saved JSON map.
+  /// Returns the count of restored items for logging.
+  int fromJson(Map<String, dynamic> json) {
+    int count = 0;
+    if (json['scooters'] is List) {
+      scooters.clear();
+      for (final s in json['scooters']) { scooters.add(Map<String, dynamic>.from(s)); count++; }
+    }
+    if (json['users'] is Map) {
+      users.clear();
+      (json['users'] as Map).forEach((k, v) { users[k.toString()] = Map<String, dynamic>.from(v); count++; });
+    }
+    if (json['trips'] is Map) {
+      trips.clear();
+      (json['trips'] as Map).forEach((k, v) { trips[k.toString()] = Map<String, dynamic>.from(v); count++; });
+    }
+    if (json['otpCodes'] is Map) {
+      otpCodes.clear();
+      (json['otpCodes'] as Map).forEach((k, v) { otpCodes[k.toString()] = v.toString(); });
+    }
+    if (json['transactions'] is Map) {
+      transactions.clear();
+      (json['transactions'] as Map).forEach((k, v) {
+        transactions[k.toString()] = (v as List).map((e) => Map<String, dynamic>.from(e)).toList();
+      });
+    }
+    if (json['zones'] is List) {
+      zones.clear();
+      for (final z in json['zones']) { zones.add(Map<String, dynamic>.from(z)); }
+    }
+    if (json['supportTickets'] is Map) {
+      supportTickets.clear();
+      (json['supportTickets'] as Map).forEach((k, v) { supportTickets[k.toString()] = Map<String, dynamic>.from(v); });
+    }
+    if (json['prepaids'] is List) {
+      prepaids.clear();
+      for (final p in json['prepaids']) { prepaids.add(Map<String, dynamic>.from(p)); }
+    }
+    if (json['notifications'] is List) {
+      notifications.clear();
+      for (final n in json['notifications']) { notifications.add(Map<String, dynamic>.from(n)); }
+    }
+    if (json['iotCommands'] is Map) {
+      iotCommands.clear();
+      (json['iotCommands'] as Map).forEach((k, v) { iotCommands[k.toString()] = Map<String, dynamic>.from(v); });
+    }
+    if (json['telemetryLog'] is Map) {
+      telemetryLog.clear();
+      (json['telemetryLog'] as Map).forEach((k, v) {
+        telemetryLog[k.toString()] = (v as List).map((e) => Map<String, dynamic>.from(e)).toList();
+      });
+    }
+    if (json['admins'] is List) {
+      admins.clear();
+      for (final a in json['admins']) { admins.add(Map<String, dynamic>.from(a)); }
+    }
+    if (json['auditLog'] is List) {
+      auditLog.clear();
+      for (final e in json['auditLog']) { auditLog.add(Map<String, dynamic>.from(e)); }
+    }
+    if (json['adminTokens'] is Map) {
+      adminTokens.clear();
+      (json['adminTokens'] as Map).forEach((k, v) { adminTokens[k.toString()] = Map<String, dynamic>.from(v); });
+    }
+    return count;
+  }
 }
 
 /// Embedded Virent backend server.

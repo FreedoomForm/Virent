@@ -21,6 +21,7 @@ import 'core/backend/embedded_server.dart';
 import 'core/configs/services/storage_service.dart';
 import 'core/configs/theme/app_theme.dart';
 import 'core/services/ngrok_tunnel_service.dart';
+import 'core/database/persistent_store.dart';
 import 'features/theme/presentation/providers/theme_provider.dart';
 import 'utils/logger.dart';
 import 'web_init.dart' if (dart.library.io) 'web_init_stub.dart';
@@ -38,6 +39,8 @@ final serverStatusProvider = StateProvider<String>((ref) => 'stopped');
 
 /// The IP address mobile clients should use to reach this PC, or `null`
 /// when running on mobile / before the server has started.
+final persistentStoreProvider = Provider<PersistentStore>((ref) => PersistentStore());
+
 final serverIpProvider = StateProvider<String?>((ref) => null);
 
 /// Entry point. Runs the app inside a [ProviderScope].
@@ -83,6 +86,9 @@ class _VirentAppState extends ConsumerState<VirentApp> {
     }
 
     ref.read(serverStatusProvider.notifier).state = 'starting';
+
+    // ── Restore persisted data ──────────────────────────────────────
+    final persistentStore = ref.read(persistentStoreProvider);
     final server = EmbeddedServer(
       port: 8443,
       onLog: (msg) {
@@ -97,6 +103,20 @@ class _VirentAppState extends ConsumerState<VirentApp> {
     );
     try {
       await server.start();
+
+      // Restore persisted state (survives restarts)
+      final saved = await persistentStore.init();
+      if (saved != null) {
+        server.data.fromJson(saved);
+        AppLogger.info('Restored persisted data', tag: 'SERVER');
+      }
+      persistentStore.attach(server.data);
+
+      // Periodic auto-save every 10 seconds
+      Timer.periodic(const Duration(seconds: 10), (_) {
+        persistentStore.markDirty();
+      });
+
       ref.read(embeddedServerProvider.notifier).state = server;
       ref.read(serverStatusProvider.notifier).state = 'running';
       final url = server.url;
