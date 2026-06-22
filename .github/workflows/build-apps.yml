@@ -30,7 +30,10 @@ jobs:
       - run: yes | flutter doctor --android-licenses || true
       - run: |
           rm -rf android
+          rm -rf android
           flutter create --platforms=android --project-name virent_mobile .
+          # Apply custom Android files (SMS gateway, permissions)
+          cp -r android_custom/* android/
       - run: flutter build apk --release --no-tree-shake-icons
       - uses: actions/upload-artifact@v4
         with:

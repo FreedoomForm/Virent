@@ -16,6 +16,7 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/configs/services/storage_service.dart';
@@ -42,10 +43,16 @@ class SmsService {
   /// Read-only — does not require admin. (Riders never call this anyway
   /// because the SMS-gateway screen is admin-gated at the router level.)
   Future<List<Map<String, dynamic>>> getSimCards() async {
-    // Production:
-    //   final res = await const MethodChannel('virent/sms')
-    //       .invokeMethod<List>('getSimInfo');
-    //   return res?.cast<Map<String, dynamic>>() ?? [];
+    try {
+      final res = await const MethodChannel('virent/sms')
+          .invokeListMethod<Map>('getSimInfo');
+      if (res != null) {
+        return res.cast<Map>().map((m) => m.cast<String, dynamic>()).toList();
+      }
+    } catch (e) {
+      debugPrint('[SMS] MethodChannel error: $e');
+    }
+    // Fallback mock data
     return <Map<String, dynamic>>[
       <String, dynamic>{
         'slotIndex': 0,
@@ -79,11 +86,18 @@ class SmsService {
     debugPrint('[SMS GATEWAY] SIM $simSlot -> $phone: $message');
     return true;
   }
-
-  /// Returns `true` when the active session belongs to an admin.
-  /// Mirrors the same check performed by `app_router.dart`.
-  Future<bool> _isAdminSession() async {
-    final storage = StorageService();
+    try {
+      await const MethodChannel('virent/sms').invokeMethod('sendSms', {
+        'phone': phone,
+        'message': message,
+        'simSlot': simSlot,
+      });
+      debugPrint('[SMS GATEWAY] SIM $simSlot -> $phone: $message');
+      return true;
+    } catch (e) {
+      debugPrint('[SMS GATEWAY] Failed: $e');
+      return false;
+    }
     await storage.init();
     final adminToken = await storage.getString('admin_token');
     if (adminToken != null && adminToken.isNotEmpty) return true;
