@@ -1,2 +1,80 @@
-skills/
+# ============================================
+# Virent Project - .gitignore
+# ============================================
+
+# --- General ---
 node_modules/
+build/
+dist/
+.DS_Store
+*.pem
+*.log
+npm-debug.*
+
+# --- Next.js (admin dashboard) ---
+/.next/
+/out/
+*.tsbuildinfo
+next-env.d.ts
+
+# --- Environment & Secrets ---
+.env*
+!.env.example
+*.keystore
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+secrets/
+.google-service-account.json
+
+# --- Backend ---
+backend/uploads/
+backend/logs/
+backend/public/uploads/
+
+# --- Mobile (Flutter / Expo) ---
+.expo/
+.expo-shared/
+mobile/.expo/
+mobile/android/
+mobile/ios/
+mobile/web-build/
+virent-dart/mobile/android/
+virent-dart/mobile/ios/
+virent-dart/mobile/web-build/
+
+# --- Build outputs ---
+*.apk
+*.aab
+*.ipa
+
+# --- Infrastructure ---
+infra/mongodb-data/
+infra/nginx/logs/
+infra/mosquitto/data/
+infra/mosquitto/log/
+infra/backups/
+
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Misc ---
+/coverage
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+.vercel
+local-*
+.claude
+.z-ai-config
+/skills/
+prompt

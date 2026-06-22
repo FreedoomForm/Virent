@@ -1,0 +1,67 @@
+# Run backend tests
+name: Tests
+
+on:
+  push:
+    branches: [main, master]
+    paths: ['backend/**']
+  pull_request:
+    branches: [main, master]
+    paths: ['backend/**']
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })' --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DBURI: mongodb://localhost:27017
+      JWT_SECRET: test-secret
+      JWT_REFRESH_SECRET: test-refresh-secret
+      COOKIE_KEY: test-cookie-key
+      API_TOKEN: '["test-key-admin","test-key-mobile","test-key-web"]'
+      REACT_APP_ADMIN_API_KEY: test-key-admin
+      REACT_APP_USER_MOBILE_API_KEY: test-key-mobile
+      REACT_APP_USER_WEBB_API_KEY: test-key-web
+      NODE_ENV: test
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🟢 Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 📦 Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: 🗄️ Wait for MongoDB
+        run: |
+          for i in {1..30}; do
+            if mongosh --eval "db.runCommand({ ping: 1 })" >/dev/null 2>&1; then
+              echo "MongoDB ready"
+              break
+            fi
+            sleep 1
+          done
+
+      - name: 🧪 Run tests
+        run: bash scripts/run-all-tests.sh

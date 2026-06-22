@@ -1,0 +1,43 @@
+accessPattern: audit_log.append
+owner: shared/audit
+type: write
+
+priority: D3   # heavy/rare — async, separate from main OLTP flow when possible
+
+params:
+  actor_user_id: uuid
+  actor_role: text
+  action: text
+  target_type: text
+  target_id: text
+  before: jsonb
+  after: jsonb
+  ip_address: text
+  user_agent: text
+
+insert:
+  - id = gen_random_uuid()
+  - organization_id = current_org
+  - actor_user_id
+  - actor_role
+  - action
+  - target_type
+  - target_id
+  - before
+  - after
+  - ip_address
+  - user_agent
+  - created_at = now()
+  - retention_expires = now() + interval '365 days'
+
+budget:
+  p95Ms: 50    # audit should be fast to not block main op
+  maxRowsScanned: 1   # INSERT only
+
+notes:
+  - Per constitution §20: audit log is APPEND-ONLY (no UPDATE/DELETE)
+  - Per constitution §24: partition by month for large audit tables
+  - Per constitution §19 (Outbox): if audit triggers downstream effects, use outbox pattern
+  - retention_expires auto-expires old entries (DB TTL index or pg_partman)
+  - Always write audit log AFTER main transaction commit (or as part of same transaction)
+  - For multi-tenant: include organization_id in every audit row

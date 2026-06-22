@@ -1,0 +1,49 @@
+accessPattern: support_tickets.listByUser
+owner: modules/support
+endpoint: GET /api/v1/support
+
+priority: D1
+
+params:
+  userId: uuid (from JWT)
+  status: optional enum(open, in_progress, resolved, closed)
+  limit: int (default 20, max 100)
+  offset: int (default 0)
+
+select:
+  - id
+  - type
+  - subject
+  - status
+  - priority
+  - problem_category
+  - created_at
+  - updated_at
+  - assigned_to
+  - resolved_at
+
+filters:
+  - user_id = :userId
+  - status = :status (optional)
+
+sort:
+  - created_at DESC
+  - id DESC
+
+index:
+  name: idx_tickets_user_created
+  columns:
+    - user_id
+    - created_at DESC
+
+budget:
+  p95Ms: 50
+  maxRowsReturned: 100
+  maxRowsScanned: 200
+  maxPayloadKb: 30
+  cacheTtlSec: 0
+
+notes:
+  - User can only see their own tickets (RLS / tenant filter)
+  - Includes status filter for "open only" view
+  - Count of unread messages can be added via subquery or denormalized field

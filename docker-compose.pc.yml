@@ -1,0 +1,175 @@
+# ============================================================
+# Virent — Docker Compose for LOCAL PC deployment ($0/мес)
+# ============================================================
+#
+# Запуск: docker-compose -f docker-compose.pc.yml up -d
+# Остановка: docker-compose -f docker-compose.pc.yml down
+#
+# Требования к ПК:
+#   - Docker + Docker Compose installed
+#   - 8GB+ RAM (4GB для контейнеров, 4GB для системы)
+#   - 50GB+ свободного места
+#   - Стабильный интернет 10+ Mbps
+#
+# Доступ:
+#   - API:        http://localhost:8393/v1/
+#   - Webb-Client: http://localhost:3000/
+#   - Admin:      http://localhost:1337/
+#   - MongoDB:    localhost:27017 (только локально!)
+#   - MQTT:       localhost:1883
+#   - Health:     http://localhost:8393/health
+# ============================================================
+
+version: '3.9'
+
+services:
+  # ============================================================
+  # MongoDB — база данных (персональные данные в РУз)
+  # ============================================================
+  mongodb:
+    image: mongo:7
+    container_name: virent-mongodb
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-virent}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS:-virent_secret_2024}
+      MONGO_INITDB_DATABASE: spark-rentals
+    command: >
+      mongod 
+      --auth 
+      --bind_ip_all 
+      --wiredTigerCacheSizeGB 1
+      --slowOpThresholdMs 100
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - virent-net
+
+  # ============================================================
+  # REST API — backend
+  # ============================================================
+  rest-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: virent-api
+    restart: unless-stopped
+    ports:
+      - "8393:8393"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DBURI: mongodb://${MONGO_USER:-virent}:${MONGO_PASS:-virent_secret_2024}@mongodb:27017/spark-rentals?authSource=admin
+      REST_API_PORT: 8393
+      JWT_SECRET: ${JWT_SECRET:-change-this-to-random-secret}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change-this-too}
+      COOKIE_KEY: ${COOKIE_KEY:-change-cookie-key}
+      API_TOKEN: '["admin_api_key_for_dashboard_2024","mobile_api_key_for_app_2024","8c5cfe9194754709dfc16c613b39ea6a"]'
+      REACT_APP_ADMIN_API_KEY: admin_api_key_for_dashboard_2024
+      REACT_APP_USER_MOBILE_API_KEY: mobile_api_key_for_app_2024
+      REACT_APP_USER_WEBB_API_KEY: 8c5cfe9194754709dfc16c613b39ea6a
+      SMS_PROVIDER: ${SMS_PROVIDER:-console}
+      UPLOAD_DIR: /app/uploads
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8393}
+    volumes:
+      - uploads:/app/uploads
+      - ./logs/api:/app/logs
+    networks:
+      - virent-net
+
+  # ============================================================
+  # Webb-Client — пользовательский веб-сайт
+  # ============================================================
+  webb-client:
+    build:
+      context: ./frontend/webb-client
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_WEBB_CLIENT_API_URL: ${API_URL:-http://localhost:8393/v1}
+        REACT_APP_WEBB_CLIENT_API: 8c5cfe9194754709dfc16c613b39ea6a
+        REACT_APP_GOOGLE_LOGIN_API_URL: ${API_URL:-http://localhost:8393/v1}/auth/login/google
+    container_name: virent-web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - rest-api
+    networks:
+      - virent-net
+
+  # ============================================================
+  # Admin Dashboard — админ-панель
+  # ============================================================
+  admin-dashboard:
+    build:
+      context: ./frontend/admin-dashboard
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${API_URL:-http://localhost:8393/v1}
+        REACT_APP_REST_API_KEY: admin_api_key_for_dashboard_2024
+    container_name: virent-admin
+    restart: unless-stopped
+    ports:
+      - "1337:80"
+    depends_on:
+      - rest-api
+    networks:
+      - virent-net
+
+  # ============================================================
+  # Mosquitto — MQTT broker для самокатов
+  # ============================================================
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: virent-mqtt
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./infra/mosquitto/config:/mosquitto/config
+      - mqtt-data:/mosquitto/data
+      - mqtt-log:/mosquitto/log
+    networks:
+      - virent-net
+
+  # ============================================================
+  # Mongo Express — веб-интерфейс для MongoDB (опционально)
+  # ============================================================
+  mongo-express:
+    image: mongo-express:latest
+    container_name: virent-mongo-express
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USER:-virent}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASS:-virent_secret_2024}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_USER:-virent}:${MONGO_PASS:-virent_secret_2024}@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASS:-admin123}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    profiles:
+      - debug
+    networks:
+      - virent-net
+
+volumes:
+  mongo-data:
+  uploads:
+  mqtt-data:
+  mqtt-log:
+
+networks:
+  virent-net:
+    driver: bridge

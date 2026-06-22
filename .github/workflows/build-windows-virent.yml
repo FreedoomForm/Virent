@@ -1,0 +1,154 @@
+name: Build Virent Windows .exe (C++ / WebView2)
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+    paths:
+      - 'desktop-app/**'
+      - '.github/workflows/build-windows-virent.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build VirentControlCenter.exe
+    runs-on: windows-2022
+    defaults:
+      run:
+        working-directory: desktop-app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: '3.28.3'
+
+      - name: Configure CMake (Visual Studio 17 2022)
+        # Download WebView2 SDK first — FetchContent's nuget URL is unreliable.
+        # We download the .nupkg directly with curl, extract it, and pass the
+        # paths to CMake via -D flags.
+        shell: pwsh
+        run: |
+          # Download WebView2 SDK .nupkg
+          $webview2Version = "1.0.2792.45"
+          $url = "https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2/$webview2Version"
+          $nupkgPath = "webview2.nupkg.zip"
+          Write-Host "Downloading WebView2 SDK v$webview2Version from $url"
+          Invoke-WebRequest -Uri $url -OutFile $nupkgPath -MaximumRedirection 10
+          Write-Host "Downloaded: $([math]::Round((Get-Item $nupkgPath).Length / 1MB, 2)) MB"
+
+          # Extract it
+          $extractPath = "webview2-sdk"
+          New-Item -ItemType Directory -Path $extractPath -Force
+          Expand-Archive -Path $nupkgPath -DestinationPath $extractPath -Force
+          Write-Host "Extracted to: $extractPath"
+          Get-ChildItem $extractPath -Recurse -Filter "WebView2.h" | Format-Table FullName
+
+          # Verify structure
+          $includeDir = "$extractPath/build/native/include"
+          $libDir = "$extractPath/build/native/x64"
+          if (-not (Test-Path "$includeDir/WebView2.h")) {
+            throw "WebView2.h not found at $includeDir"
+          }
+          Write-Host "WebView2 include dir: $includeDir"
+          Write-Host "WebView2 lib dir: $libDir"
+
+          # Save paths as env vars for the build step
+          "WEBVIEW2_INCLUDE_DIR=$includeDir" >> $env:GITHUB_ENV
+          "WEBVIEW2_LIB_DIR=$libDir" >> $env:GITHUB_ENV
+
+          # Configure CMake (skip FetchContent by setting the dirs)
+          mkdir -p build
+          cmake -B build -G "Visual Studio 17 2022" -A x64 `
+            -DWEBVIEW2_INCLUDE_DIR="$includeDir" `
+            -DWEBVIEW2_LIB_DIR="$libDir" `
+            -DWEBVIEW2_LOADER_DLL="$libDir/WebView2Loader.dll"
+
+      - name: Build Release
+        run: cmake --build build --config Release --parallel 4
+
+      - name: Find built .exe
+        id: find_exe
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem -Path build -Recurse -Filter "VirentControlCenter.exe" | Select-Object -First 1
+          if ($exe) {
+            Write-Host "Found: $($exe.FullName)"
+            Write-Host "Size: $([math]::Round($exe.Length / 1MB, 2)) MB"
+            # Copy .exe, WebView2Loader.dll, and web-ui/ to a staging folder
+            $staging = "virent-windows"
+            New-Item -ItemType Directory -Path $staging -Force
+            Copy-Item $exe.FullName -Destination "$staging/VirentControlCenter.exe"
+            # Find WebView2Loader.dll
+            $dll = Get-ChildItem -Path build -Recurse -Filter "WebView2Loader.dll" | Select-Object -First 1
+            if ($dll) { Copy-Item $dll.FullName -Destination $staging }
+            # Copy web-ui
+            Copy-Item -Path web-ui -Destination $staging -Recurse
+            "exe_path=$($exe.FullName)" >> $env:GITHUB_OUTPUT
+            "exe_size=$($exe.Length)" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Host "VirentControlCenter.exe not found"
+            "exe_found=false" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Zip staging folder
+        if: steps.find_exe.outputs.exe_path
+        shell: pwsh
+        run: |
+          Compress-Archive -Path virent-windows -DestinationPath virent-windows.zip
+          Write-Host "Zip size: $([math]::Round((Get-Item virent-windows.zip).Length / 1MB, 2)) MB"
+
+      - name: Upload .zip as artifact
+        if: steps.find_exe.outputs.exe_path
+        uses: actions/upload-artifact@v4
+        with:
+          name: virent-windows-exe
+          path: desktop-app/virent-windows.zip
+          retention-days: 90
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: virent-build-logs
+          path: |
+            desktop-app/build/CMakeCache.txt
+            desktop-app/build/CMakeFiles/CMakeOutput.log
+            desktop-app/build/CMakeFiles/CMakeError.log
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Upload to GitHub Release (on tags)
+        if: startsWith(github.ref, 'refs/tags/v') && steps.find_exe.outputs.exe_path
+        uses: softprops/action-gh-release@v2
+        with:
+          files: desktop-app/virent-windows.zip
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        if: always()
+        shell: pwsh
+        run: |
+          "## Virent Windows Build Result" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          if ("${{ steps.find_exe.outputs.exe_path }}") {
+            $sizeMb = [math]::Round([int64]"${{ steps.find_exe.outputs.exe_size }}" / 1MB, 2)
+            "Status: SUCCESS" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+            ".exe size: $sizeMb MB" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+            "Architecture: x64" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+            "Runtime: WebView2 (preinstalled on Win11, downloadable for Win10)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          } else {
+            "Status: FAILED — check build logs artifact" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          }

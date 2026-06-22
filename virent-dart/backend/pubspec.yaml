@@ -1,0 +1,19 @@
+name: virent_backend
+description: Virent Dart backend — shelf + MongoDB
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  shelf: ^1.4.0
+  shelf_router: ^1.1.0
+  shelf_cors_headers: ^0.1.0
+  mongo_dart: ^0.10.0
+  dart_jsonwebtoken: ^2.14.0
+  crypto: ^3.0.0
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^4.0.0

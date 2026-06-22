@@ -1,0 +1,82 @@
+# Build APK via Expo EAS Build (cloud)
+#
+# Alternative to build-apk.yml — uses Expo's cloud build service.
+# Faster (no Android SDK setup) but requires Expo account.
+#
+# Required secrets:
+#   EXPO_TOKEN — get from https://expo.dev/accounts/[user]/settings/access-tokens
+#   Add as repo secret: Settings → Secrets and variables → Actions → New secret
+#
+# Per Design System §22: documented alternative build path.
+
+name: Build APK via EAS (Cloud)
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Build profile (preview / production)'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - preview
+          - production
+  push:
+    tags:
+      - 'v*'
+    paths: ['mobile/**']
+
+jobs:
+  build:
+    name: EAS Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    defaults:
+      run:
+        working-directory: mobile
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🟢 Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: 📦 Install EAS CLI
+        run: npm install -g eas-cli
+
+      - name: 📦 Install dependencies
+        run: npm ci || npm install --no-audit --no-fund
+
+      - name: 🔐 Verify EXPO_TOKEN
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error::EXPO_TOKEN secret is not set. Get it from https://expo.dev/accounts/[you]/settings/access-tokens"
+            exit 1
+          fi
+          echo "EXPO_TOKEN is set"
+
+      - name: 🏗️ Build APK via EAS
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          PROFILE="${{ github.event.inputs.profile || 'preview' }}"
+          echo "Building with profile: $PROFILE"
+          eas build --platform android --profile $PROFILE --non-interactive --no-wait
+
+      - name: ℹ️ Build submitted
+        run: |
+          echo "## EAS Build Submitted" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Build is running on Expo's cloud. Check progress at:" >> $GITHUB_STEP_SUMMARY
+          echo "https://expo.dev/accounts/[your-account]/projects/SparkRentals-Mobile-App/builds" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Once complete, you'll get a download link for the APK." >> $GITHUB_STEP_SUMMARY

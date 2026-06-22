@@ -1,0 +1,62 @@
+name: virent_mobile
+description: "Virent — E-Scooter Rental App. Flutter mobile + desktop client with an embedded shelf backend."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # UI
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.0.0
+  flutter_lucide: ^1.0.0
+
+  # Navigation
+  go_router: ^14.0.0
+
+  # State Management
+  flutter_riverpod: ^2.4.10
+
+  # HTTP
+  http: ^1.2.0
+
+  # Storage
+  shared_preferences: ^2.2.2
+
+  # Maps
+  flutter_map: ^7.0.0
+  latlong2: ^0.9.1
+
+  # QR Scanner
+  mobile_scanner: ^5.0.0
+
+  # Location
+  geolocator: ^11.0.0
+
+  # Utils
+  intl: ^0.20.2
+  logger: ^2.0.0
+  package_info_plus: ^8.0.0
+  open_file: ^3.5.0
+
+  # Embedded backend (shelf server runs inside the app on desktop)
+  shelf: ^1.4.0
+  shelf_router: ^1.1.0
+  shelf_cors_headers: ^0.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env
+    - assets/bin/

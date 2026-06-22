@@ -1,0 +1,185 @@
+# SparkRentals — Full Stack Docker Compose
+#
+# Per Backend Design System §22: documentation for deployment
+# Per Database Design System §35: backup/restore infrastructure
+#
+# Services:
+#   - mongodb: primary datastore
+#   - rest-api: backend API (port 8393)
+#   - webb-client: user web app (port 3000)
+#   - admin-dashboard: admin web app (port 1337)
+#   - mosquitto: MQTT broker for IoT/scooter telemetry
+#   - nginx: reverse proxy + TLS termination (port 80/443)
+#
+# Usage:
+#   docker-compose up -d                    # start all
+#   docker-compose up -d --build            # rebuild images
+#   docker-compose logs -f rest-api         # follow logs
+#   docker-compose down                     # stop all
+#   docker-compose down -v                  # stop + delete volumes
+
+version: '3.9'
+
+services:
+  # ============================================================
+  # MongoDB — primary datastore
+  # ============================================================
+  mongodb:
+    image: mongo:7
+    container_name: sparkrentals-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+      - ./backups/mongodb:/backups
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-sparkrentals}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-changeme}
+      MONGO_INITDB_DATABASE: spark-rentals
+    command: mongod --auth --bind_ip_all
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sparkrentals
+
+  # ============================================================
+  # REST API — backend
+  # ============================================================
+  rest-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sparkrentals-rest-api
+    restart: unless-stopped
+    ports:
+      - "8393:8393"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DBURI: mongodb://sparkrentals:changeme@mongodb:27017/spark-rentals?authSource=admin
+      REST_API_PORT: 8393
+      JWT_SECRET: ${JWT_SECRET:-change-this-in-production}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change-this-too}
+      COOKIE_KEY: ${COOKIE_KEY:-change-cookie-key}
+      API_TOKEN: '["admin_api_key_for_dashboard_2024","mobile_api_key_for_app_2024","8c5cfe9194754709dfc16c613b39ea6a"]'
+      REACT_APP_ADMIN_API_KEY: admin_api_key_for_dashboard_2024
+      REACT_APP_USER_MOBILE_API_KEY: mobile_api_key_for_app_2024
+      REACT_APP_USER_WEBB_API_KEY: 8c5cfe9194754709dfc16c613b39ea6a
+      SMS_PROVIDER: ${SMS_PROVIDER:-console}
+      ESKIZ_EMAIL: ${ESKIZ_EMAIL:-}
+      ESKIZ_PASSWORD: ${ESKIZ_PASSWORD:-}
+      CLICK_MERCHANT_ID: ${CLICK_MERCHANT_ID:-}
+      CLICK_SERVICE_ID: ${CLICK_SERVICE_ID:-}
+      CLICK_SECRET_KEY: ${CLICK_SECRET_KEY:-}
+      PAYME_MERCHANT_ID: ${PAYME_MERCHANT_ID:-}
+      PAYME_KEY: ${PAYME_KEY:-}
+      FCM_SERVER_KEY: ${FCM_SERVER_KEY:-}
+      APNS_CERT_PATH: ${APNS_CERT_PATH:-}
+      UPLOAD_DIR: /app/uploads
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8393}
+    volumes:
+      - uploads:/app/uploads
+      - ./logs/rest-api:/app/logs
+    networks:
+      - sparkrentals
+
+  # ============================================================
+  # Webb Client — user web app
+  # ============================================================
+  webb-client:
+    build:
+      context: ./frontend/webb-client
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_WEBB_CLIENT_API_URL: ${API_PUBLIC_URL:-http://localhost:8393/v1}
+        REACT_APP_WEBB_CLIENT_API: 8c5cfe9194754709dfc16c613b39ea6a
+        REACT_APP_GOOGLE_LOGIN_API_URL: ${API_PUBLIC_URL:-http://localhost:8393/v1}/auth/login/google
+    container_name: sparkrentals-webb-client
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - rest-api
+    networks:
+      - sparkrentals
+
+  # ============================================================
+  # Admin Dashboard
+  # ============================================================
+  admin-dashboard:
+    build:
+      context: ./frontend/admin-dashboard
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${API_PUBLIC_URL:-http://localhost:8393/v1}
+        REACT_APP_REST_API_KEY: admin_api_key_for_dashboard_2024
+    container_name: sparkrentals-admin-dashboard
+    restart: unless-stopped
+    ports:
+      - "1337:80"
+    depends_on:
+      - rest-api
+    networks:
+      - sparkrentals
+
+  # ============================================================
+  # Mosquitto — MQTT broker for scooter telemetry
+  # ============================================================
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: sparkrentals-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    networks:
+      - sparkrentals
+
+  # ============================================================
+  # Nginx — reverse proxy (optional, for production)
+  # ============================================================
+  nginx:
+    image: nginx:alpine
+    container_name: sparkrentals-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - rest-api
+      - webb-client
+      - admin-dashboard
+    profiles:
+      - production
+    networks:
+      - sparkrentals
+
+# ============================================================
+# Volumes
+# ============================================================
+volumes:
+  mongodb-data:
+    driver: local
+  uploads:
+    driver: local
+
+# ============================================================
+# Networks
+# ============================================================
+networks:
+  sparkrentals:
+    driver: bridge

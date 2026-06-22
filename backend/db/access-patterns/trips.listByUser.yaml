@@ -1,0 +1,54 @@
+accessPattern: trips.listByUser
+owner: modules/trips
+endpoint: GET /api/v1/trips/history
+view: GET /api/v1/views/trip-detail (B2 fallback section)
+
+priority: D1   # frequent data — appears on user's history page
+
+params:
+  userId: uuid (from JWT)
+  status: optional string
+  cursor: optional string    # cursor-based pagination
+  limit:
+    default: 25
+    max: 100
+  sort: string   # default: -created_at
+
+select:
+  - id
+  - status
+  - start_time
+  - end_time
+  - duration_min
+  - cost_cents
+  - end_zone_type
+  - scooter_id
+
+filters:
+  - user_id = :userId
+  - status = :status (optional)
+  - deleted_at IS NULL
+
+sort:
+  - created_at DESC
+  - id DESC
+
+index:
+  name: idx_trips_user_created
+  columns:
+    - user_id
+    - created_at DESC
+    - id DESC
+
+budget:
+  p95Ms: 80
+  maxRowsReturned: 100
+  maxRowsScanned: 500
+  maxPayloadKb: 50
+  cacheTtlSec: 0    # personal data, don't cache
+
+notes:
+  - Per constitution §13.4: cursor pagination preferred over offset for large lists
+  - Per constitution §15: personal data — never cache cross-user
+  - DTO: TripListItem (not Detail) — only list-relevant fields
+  - When user paginates deep, cursor stays efficient (no OFFSET scanning)
