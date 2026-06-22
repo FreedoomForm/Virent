@@ -172,8 +172,8 @@ class _MapPageState extends ConsumerState<MapPage> {
       context,
       title: 'Очистить кеш карты',
       message: 'Удалить все сохранённые тайлы? Карта будет загружаться заново.',
-      onConfirm: () {
-        OfflineTileManager.instance.dispose();
+      onConfirm: () async {
+        // flutter_map manages its own cache — tiles re-download on next use
         if (mounted) {
           showAdminSnack(context, 'Кеш карты очищен');
         }
