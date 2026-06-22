@@ -37,3 +37,33 @@ Future<void> exportCsv(
     );
   }
 }
+
+/// Export button widget for admin tables.
+class ExportCsvButton extends StatelessWidget {
+  const ExportCsvButton({
+    super.key,
+    required this.data,
+    required this.filename,
+    this.columns,
+    this.label = 'CSV',
+  });
+
+  final List<Map<String, dynamic>> data;
+  final String filename;
+  final List<String>? columns;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: () => exportCsv(context, data, filename, columns: columns),
+      icon: const Icon(Icons.download, size: 14),
+      label: Text(label, style: const TextStyle(fontSize: 12)),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: Colors.grey[700],
+        side: BorderSide(color: Colors.grey[300]!),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
+    );
+  }
+}

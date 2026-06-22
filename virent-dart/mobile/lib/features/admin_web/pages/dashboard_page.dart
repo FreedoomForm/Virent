@@ -90,9 +90,13 @@ class DashboardPage extends ConsumerWidget {
             _buildStatCard(context, 'Онлайн', '${_n('online_total')}', const Color(0xFF2ECC71)),
             _buildStatCard(context, 'Не онлайн', '${_n('offline_total')}', const Color(0xFFD9534F)),
           ],
-          // ── Revenue chart ──
-          const SizedBox(height: 16),
-          _buildRevenueChart(context, stats),
+        );
+        // ── Revenue chart ──
+        return Column(
+          children: [
+            const SizedBox(height: 16),
+            _buildRevenueChart(context, stats),
+          ],
         );
       },
     );
