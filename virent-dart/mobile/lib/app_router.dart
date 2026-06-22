@@ -229,17 +229,17 @@ GoRouter buildAppRouter(StorageService storage) {
       if (isLoggedIn && (location == AppPaths.welcome ||
           location == AppPaths.auth)) {
         final isAdmin = await _isAdminSession(storage);
-        return isAdmin ? AppPaths.adminHome : AppPaths.home;
+        return isAdmin ? AppPaths.adminWeb : AppPaths.home;
       }
 
       // Authenticated admin hitting the rider home — send them to admin home.
       if (isLoggedIn && location == AppPaths.home) {
         final isAdmin = await _isAdminSession(storage);
-        if (isAdmin) return AppPaths.adminHome;
+        if (isAdmin) return AppPaths.adminWeb;
       }
 
       // Authenticated rider trying to access an admin route — deny.
-      if (isLoggedIn && isAdminRoute && location != AppPaths.adminHome) {
+      if (isLoggedIn && isAdminRoute && location != AppPaths.adminWeb) {
         final isAdmin = await _isAdminSession(storage);
         if (!isAdmin) {
           AppLogger.info(
@@ -254,7 +254,7 @@ GoRouter buildAppRouter(StorageService storage) {
             AppLogger.info(
                 'Non-super-admin tried to access manage-admins — redirecting',
                 tag: 'ROUTER');
-            return AppPaths.adminHome;
+            return AppPaths.adminWeb;
           }
         }
       }
@@ -363,7 +363,7 @@ GoRouter buildAppRouter(StorageService storage) {
       // ---- Admin (shared by desktop + mobile) ---------------------------
       GoRoute(
         path: AppPaths.adminHome,
-        builder: (_, __) => const AdminHomeScreen(),
+        redirect: (_, __) => AppPaths.adminWeb,
       ),
 
       // ---- Admin web panel (desktop-style layout) ----------------------

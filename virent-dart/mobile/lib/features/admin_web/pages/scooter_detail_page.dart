@@ -42,8 +42,19 @@ class ScooterDetailPage extends ConsumerWidget {
         final locked = s['locked'] == true || s['is_locked'] == true;
         final qr = (s['qr_code'] ?? s['gosnomer'] ?? '-').toString();
 
-        // Mock telemetry for demo
-        final telemetry = _mockTelemetry();
+        // Fetch telemetry from server (empty if not yet loaded)
+        final telemetryLogs = ref.watch(telemetryLogProvider);
+        final telemetry = telemetryLogs is AsyncData
+            ? telemetryLogs.value
+                .where((l) => (l['scooter_id'] ?? l['mac'] ?? '').toString() == id)
+                .take(20)
+                .map((l) => <String, String>{
+                  'time': (l['created_at'] ?? l['timestamp'] ?? '-').toString(),
+                  'battery': (l['battery'] ?? l['battery_level'] ?? '-').toString(),
+                  'speed': (l['speed'] ?? '0').toString(),
+                  'status': (l['status'] ?? 'idle').toString(),
+                }).toList()
+            : <Map<String, String>>[];
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(24),
