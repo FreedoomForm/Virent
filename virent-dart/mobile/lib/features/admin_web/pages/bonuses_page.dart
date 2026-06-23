@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_table_page.dart';
-import '../widgets/admin_dialogs.dart';
 
 class BonusesPage extends ConsumerWidget {
   const BonusesPage({super.key});
@@ -13,72 +12,36 @@ class BonusesPage extends ConsumerWidget {
     return AdminTablePage(
       title: 'Бонусы',
       provider: bonusesListProvider,
-      searchProvider: _bonusSearchProvider,
-      createButton: Row(
-        children: [
-          ElevatedButton.icon(
-            onPressed: () => showAdminFormDialog(
-              context,
-              title: 'Добавить бонус',
-              fields: const [
-                AdminField(key: 'name', label: 'Название'),
-                AdminField(key: 'sum', label: 'Сумма'),
-                AdminField(key: 'user_id', label: 'ID пользователя'),
-                AdminField(key: 'type', label: 'Тип'),
-              ],
-              onSubmit: (values) async {
-                await ref.read(genericCreateAction)(
-                  '/admin/bonuses',
-                  values,
-                  bonusesListProvider,
-                );
-              },
-            ),
-            icon: const Icon(Icons.add, size: 16),
-            label: const Text('Добавить бонусы'),
-            style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-          ),
-          const SizedBox(width: 16),
-          SizedBox(
-            width: 150,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'ID клиента'),
-            ),
-          ),
-          const SizedBox(width: 8),
-          ElevatedButton(
-            onPressed: () => showAdminInfoDialog(context, 'Компания', 'Выберите компанию для фильтрации'),
-            style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-            child: const Text('Компания ▼'),
-          ),
-        ],
-      ),
+      searchProvider: _bonusesSearchProvider,
+      searchMatcher: (b, query) {
+        final id = (b['id'] ?? '').toString().toLowerCase();
+        final client = (b['client_id'] ?? b['client'] ?? '').toString().toLowerCase();
+        final comment = (b['comment'] ?? '').toString().toLowerCase();
+        return id.contains(query) || client.contains(query) || comment.contains(query);
+      },
       columns: const [
         DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Название')),
-        DataColumn(label: Text('Сумма')),
-        DataColumn(label: Text('Пользователь')),
-        DataColumn(label: Text('Тип')),
-        DataColumn(label: Text('Дата')),
+        DataColumn(label: Text('Client')),
+        DataColumn(label: Text('Bonus sum')),
+        DataColumn(label: Text('Who added')),
+        DataColumn(label: Text('Create time')),
+        DataColumn(label: Text('Comment')),
+        DataColumn(label: Text('Company')),
       ],
       buildRow: (b) {
-        final id = (b['id'] ?? '-').toString();
-        final name = (b['name'] ?? b['comment'] ?? b['title'] ?? '-').toString();
-        final sum = (b['sum'] ?? b['amount'] ?? b['bonus_sum'] ?? '-').toString();
-        final user = (b['user_id'] ?? b['client_id'] ?? b['client_name'] ?? '-').toString();
-        final type = (b['type'] ?? b['bonus_type'] ?? '-').toString();
-        final date = (b['created_at'] ?? b['create_time'] ?? b['date'] ?? '-').toString();
+        String _s(String key) => (b[key] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(id)),
-          DataCell(Text(name)),
-          DataCell(Text(sum)),
-          DataCell(Text(user, style: adminLinkStyle)),
-          DataCell(Text(type)),
-          DataCell(Text(date)),
+          DataCell(Text(_s('id'))),
+          DataCell(Text(_s('client_id'), style: adminLinkStyle)),
+          DataCell(Text(_s('bonus_sum') == '-' ? _s('sum') : _s('bonus_sum'))),
+          DataCell(Text(_s('who_added') == '-' ? _s('added_by') : _s('who_added'))),
+          DataCell(Text(_s('create_time') == '-' ? _s('created_at') : _s('create_time'))),
+          DataCell(Text(_s('comment'))),
+          DataCell(Text(_s('company_id') == '-' ? _s('company') : _s('company_id'))),
         ]);
       },
     );
   }
 }
 
-final _bonusSearchProvider = StateProvider<String>((ref) => '');
+final _bonusesSearchProvider = StateProvider<String>((ref) => '');

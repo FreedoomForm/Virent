@@ -13,59 +13,47 @@ class ClickTransactionsPage extends ConsumerWidget {
       title: 'Транзакции CLICK',
       provider: clickTransactionsProvider,
       searchProvider: _clickSearchProvider,
-      filters: Row(
-        children: [
-          SizedBox(
-            width: 150,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'merchant_trans_id'),
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 150,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'click_trans_id'),
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 150,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'status'),
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 150,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'error'),
-            ),
-          ),
-        ],
-      ),
+      searchMatcher: (t, query) {
+        final id = (t['id'] ?? '').toString().toLowerCase();
+        final trans = (t['click_trans_id'] ?? t['click_paydoc_id'] ?? '').toString().toLowerCase();
+        final merchant = (t['merchant_trans_id'] ?? '').toString().toLowerCase();
+        return id.contains(query) || trans.contains(query) || merchant.contains(query);
+      },
       columns: const [
         DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Пользователь')),
-        DataColumn(label: Text('ID транзакции')),
-        DataColumn(label: Text('Сумма')),
-        DataColumn(label: Text('Дата')),
-        DataColumn(label: Text('Статус')),
+        DataColumn(label: Text('Click trans')),
+        DataColumn(label: Text('Click paydoc')),
+        DataColumn(label: Text('Merchant trans')),
+        DataColumn(label: Text('Merchant prepare')),
+        DataColumn(label: Text('Merchant confirm')),
+        DataColumn(label: Text('Amount')),
+        DataColumn(label: Text('Action')),
+        DataColumn(label: Text('Status')),
+        DataColumn(label: Text('Error')),
+        DataColumn(label: Text('Error note')),
+        DataColumn(label: Text('Sign time')),
+        DataColumn(label: Text('Created')),
+        DataColumn(label: Text('Updated')),
+        DataColumn(label: Text('Действия')),
       ],
       buildRow: (t) {
-        final id = (t['id'] ?? '-').toString();
-        final user = (t['user_id'] ?? t['client_id'] ?? t['merchant_trans_id'] ?? '-').toString();
-        final txId = (t['click_trans_id'] ?? t['transaction_id'] ?? '-').toString();
-        final amount = (t['amount'] ?? t['sum'] ?? '-').toString();
-        final date = (t['created_at'] ?? t['sign_time'] ?? t['date'] ?? '-').toString();
-        final status = (t['status'] ?? t['action'] ?? t['state'] ?? '-').toString();
+        String _s(String key) => (t[key] ?? '').toString();
         return DataRow(cells: [
-          DataCell(Text(id)),
-          DataCell(Text(user, style: adminLinkStyle)),
-          DataCell(Text(txId)),
-          DataCell(Text(amount)),
-          DataCell(Text(date)),
-          DataCell(Text(status)),
+          DataCell(Text(_s('id'))),
+          DataCell(Text(_s('click_trans_id'))),
+          DataCell(Text(_s('click_paydoc_id'))),
+          DataCell(Text(_s('merchant_trans_id'))),
+          DataCell(Text(_s('merchant_prepare_id'))),
+          DataCell(Text(_s('merchant_confirm_id'))),
+          DataCell(Text(_s('amount'))),
+          DataCell(Text(_s('action'))),
+          DataCell(Text(_s('status'))),
+          DataCell(Text(_s('error'))),
+          DataCell(Text(_s('error_note'))),
+          DataCell(Text(_s('sign_time'))),
+          DataCell(Text(_s('created_at'))),
+          DataCell(Text(_s('updated_at'))),
+          DataCell(Text(_s('status') == 'HOLD' ? 'Подтвердить холд' : '')),
         ]);
       },
     );

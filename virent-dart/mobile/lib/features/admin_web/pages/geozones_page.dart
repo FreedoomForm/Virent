@@ -16,8 +16,7 @@ class GeozonesPage extends ConsumerWidget {
       searchProvider: _zoneSearchProvider,
       searchMatcher: (z, query) {
         final name = (z['name'] ?? z['title'] ?? '').toString().toLowerCase();
-        final city = (z['city'] ?? z['city_name'] ?? '').toString().toLowerCase();
-        return name.contains(query) || city.contains(query);
+        return name.contains(query);
       },
       createButton: ElevatedButton.icon(
         onPressed: () => showAdminFormDialog(
@@ -25,9 +24,12 @@ class GeozonesPage extends ConsumerWidget {
           title: 'Добавить геозону',
           fields: const [
             AdminField(key: 'name', label: 'Название'),
-            AdminField(key: 'type', label: 'Тип'),
-            AdminField(key: 'speed_limit', label: 'Скорость'),
-            AdminField(key: 'city', label: 'Город'),
+            AdminField(key: 'fill_color', label: 'Заполнение (hex)'),
+            AdminField(key: 'stroke_color', label: 'Обводка (hex)'),
+            AdminField(key: 'groups', label: 'Группы'),
+            AdminField(key: 'fill_opacity', label: 'кэф.проз.геозоны'),
+            AdminField(key: 'stroke_opacity', label: 'кэф.ярк.обводки'),
+            AdminField(key: 'commands', label: 'Команды'),
           ],
           onSubmit: (values) async {
             await ref.read(createZoneAction)(values);
@@ -40,25 +42,54 @@ class GeozonesPage extends ConsumerWidget {
       columns: const [
         DataColumn(label: Text('ID')),
         DataColumn(label: Text('Название')),
-        DataColumn(label: Text('Тип')),
-        DataColumn(label: Text('Скорость')),
-        DataColumn(label: Text('Город')),
-        DataColumn(label: Text('Самокатов')),
+        DataColumn(label: Text('Заполнение')),
+        DataColumn(label: Text('Обводка')),
+        DataColumn(label: Text('Группы')),
+        DataColumn(label: Text('кэф.проз.геозоны')),
+        DataColumn(label: Text('кэф.ярк.обводки')),
+        DataColumn(label: Text('Команды')),
+        DataColumn(label: Text('Зона Разрешенного...')),
+        DataColumn(label: Text('Зона Завершения...')),
+        DataColumn(label: Text('Действия')),
       ],
       buildRow: (z) {
-        final id = (z['id'] ?? '-').toString();
-        final name = (z['name'] ?? z['title'] ?? '-').toString();
-        final type = (z['type'] ?? z['zone_type'] ?? '-').toString();
-        final speed = (z['speed_limit'] ?? z['speed'] ?? z['max_speed'] ?? '-').toString();
-        final city = (z['city'] ?? z['city_name'] ?? z['city_id'] ?? '-').toString();
-        final scootersCount = (z['scooters_count'] ?? z['scooter_count'] ?? z['count'] ?? 0).toString();
+        String _s(String key) => (z[key] ?? '-').toString();
+        bool _b(String key) {
+          final v = z[key];
+          if (v == null) return false;
+          if (v is bool) return v;
+          final s = v.toString().toLowerCase();
+          return s == '1' || s == 'true' || s == 'yes';
+        }
+        final id = _s('id');
+        final name = _s('name') == '-' ? _s('title') : _s('name');
+        final fill = _s('fill_color') == '-' ? '#cc62dc' : _s('fill_color');
+        final stroke = _s('stroke_color') == '-' ? '#1bffca' : _s('stroke_color');
+        final groups = _s('groups');
+        final alpha = _s('fill_opacity');
+        final beta = _s('stroke_opacity');
+        final cmds = _s('commands');
+        final allowed = _b('allowed_zone');
+        final finish = _b('finish_zone');
         return DataRow(cells: [
           DataCell(Text(id)),
           DataCell(Text(name, style: adminLinkStyle)),
-          DataCell(Text(type)),
-          DataCell(Text(speed)),
-          DataCell(Text(city)),
-          DataCell(Text(scootersCount)),
+          DataCell(Text(fill)),
+          DataCell(Text(stroke)),
+          DataCell(Text(groups == '-' ? '-' : groups)),
+          DataCell(Text(alpha == '-' ? '30 %' : alpha)),
+          DataCell(Text(beta == '-' ? '30 %' : beta)),
+          DataCell(Text(cmds)),
+          DataCell(Icon(allowed ? Icons.check_box : Icons.check_box_outline_blank, color: allowed ? Colors.green : Colors.red)),
+          DataCell(Icon(finish ? Icons.check_box : Icons.check_box_outline_blank, color: finish ? Colors.green : Colors.red)),
+          DataCell(Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+            ],
+          )),
         ]);
       },
     );

@@ -13,64 +13,37 @@ class PaymeTransactionsPage extends ConsumerWidget {
       title: 'Транзакции Payme',
       provider: paymeTransactionsProvider,
       searchProvider: _paymeSearchProvider,
-      filters: Row(
-        children: [
-          SizedBox(
-            width: 150,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'ID клиента'),
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 200,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'payme_transaction_id'),
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 150,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'state'),
-            ),
-          ),
-        ],
-      ),
+      searchMatcher: (t, query) {
+        final id = (t['id'] ?? '').toString().toLowerCase();
+        final trans = (t['payme_transaction'] ?? t['payme_time'] ?? '').toString().toLowerCase();
+        final merchant = (t['merchant_transaction'] ?? '').toString().toLowerCase();
+        final phone = (t['phone'] ?? '').toString().toLowerCase();
+        return id.contains(query) || trans.contains(query) || merchant.contains(query) || phone.contains(query);
+      },
       columns: const [
         DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Пользователь')),
-        DataColumn(label: Text('ID транзакции')),
-        DataColumn(label: Text('Сумма')),
-        DataColumn(label: Text('Дата')),
-        DataColumn(label: Text('Статус')),
+        DataColumn(label: Text('Payme transaction')),
+        DataColumn(label: Text('Merchant transaction')),
+        DataColumn(label: Text('payme_time (UTC ms)')),
+        DataColumn(label: Text('state description')),
+        DataColumn(label: Text('Amount')),
+        DataColumn(label: Text('Phone')),
+        DataColumn(label: Text('Действия')),
       ],
       buildRow: (t) {
-        final id = (t['id'] ?? '-').toString();
-        final user = (t['user_id'] ?? t['client_id'] ?? t['phone'] ?? '-').toString();
-        final txId = (t['transaction_id'] ?? t['payme_transaction_id'] ?? t['payme_trans_id'] ?? '-').toString();
-        final amount = (t['amount'] ?? t['sum'] ?? '-').toString();
-        final date = (t['created_at'] ?? t['payme_time'] ?? t['date'] ?? '-').toString();
-        final status = (t['status'] ?? t['state'] ?? t['state_description'] ?? '-').toString();
-        final stLower = status.toLowerCase();
-        Color stateColor = Colors.blue;
-        if (stLower.contains('успеш') || stLower.contains('success') || stLower.contains('оплач') || stLower == '2') {
-          stateColor = Colors.green;
-        } else if (stLower.contains('отмен') || stLower.contains('cancel') || stLower == '-2') {
-          stateColor = Colors.red;
-        } else if (stLower.contains('ожид') || stLower.contains('pending') || stLower == '1') {
-          stateColor = Colors.orange;
-        }
+        String _s(String key) => (t[key] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(id)),
-          DataCell(Text(user, style: adminLinkStyle)),
-          DataCell(Text(txId)),
-          DataCell(Text(amount)),
-          DataCell(Text(date)),
-          DataCell(Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: stateColor, borderRadius: BorderRadius.circular(4)),
-            child: Text(status, style: const TextStyle(color: Colors.white, fontSize: 10)),
+          DataCell(Text(_s('id'))),
+          DataCell(Text(_s('payme_transaction'))),
+          DataCell(Text(_s('merchant_transaction'))),
+          DataCell(Text(_s('payme_time'))),
+          DataCell(Text(_s('state_description'))),
+          DataCell(Text(_s('amount'))),
+          DataCell(Text(_s('phone'))),
+          DataCell(TextButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.edit, size: 14),
+            label: const Text('Редактировать'),
           )),
         ]);
       },

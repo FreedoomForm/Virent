@@ -12,13 +12,11 @@ class AdminRolesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
       title: 'Роли',
-      provider: adminListProvider,
-      searchProvider: _adminSearchProvider,
-      searchMatcher: (a, query) {
-        final name = (a['name'] ?? a['full_name'] ?? '').toString().toLowerCase();
-        final email = (a['email'] ?? '').toString().toLowerCase();
-        final role = (a['role'] ?? '').toString().toLowerCase();
-        return name.contains(query) || email.contains(query) || role.contains(query);
+      provider: adminRolesProvider,
+      searchProvider: _rolesSearchProvider,
+      searchMatcher: (r, query) {
+        final name = (r['name'] ?? r['title'] ?? '').toString().toLowerCase();
+        return name.contains(query);
       },
       createButton: ElevatedButton.icon(
         onPressed: () => showAdminFormDialog(
@@ -26,12 +24,14 @@ class AdminRolesPage extends ConsumerWidget {
           title: 'Добавить роль',
           fields: const [
             AdminField(key: 'name', label: 'Имя'),
-            AdminField(key: 'email', label: 'Email'),
-            AdminField(key: 'role', label: 'Роль', hint: 'admin / super_admin / ...'),
-            AdminField(key: 'password', label: 'Пароль', obscure: true),
+            AdminField(key: 'permissions', label: 'Разрешения', multiline: true),
           ],
           onSubmit: (values) async {
-            await ref.read(createAdminAction)(values);
+            await ref.read(genericCreateAction)(
+              '/admin/roles',
+              values,
+              adminRolesProvider,
+            );
           },
         ),
         icon: const Icon(Icons.add, size: 16),
@@ -39,56 +39,22 @@ class AdminRolesPage extends ConsumerWidget {
         style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
       ),
       columns: const [
-        DataColumn(label: Text('ID')),
         DataColumn(label: Text('Имя')),
-        DataColumn(label: Text('Email')),
-        DataColumn(label: Text('Роль')),
-        DataColumn(label: Text('Последняя активность')),
+        DataColumn(label: Text('Разрешения')),
         DataColumn(label: Text('Действия')),
       ],
-      buildRow: (a) {
-        final id = (a['id'] ?? '-').toString();
-        final name = (a['name'] ?? a['full_name'] ?? '-').toString();
-        final email = (a['email'] ?? '-').toString();
-        final role = (a['role'] ?? a['role_name'] ?? '-').toString();
-        final lastActive = (a['last_activity'] ?? a['last_active'] ?? a['updated_at'] ?? '-').toString();
+      buildRow: (r) {
+        String _s(String key) => (r[key] ?? '-').toString();
+        final name = _s('name') == '-' ? _s('title') : _s('name');
+        final permissions = _s('permissions');
         return DataRow(cells: [
-          DataCell(Text(id)),
-          DataCell(Text(name, style: const TextStyle(fontWeight: FontWeight.bold))),
-          DataCell(Text(email)),
-          DataCell(Text(role)),
-          DataCell(Text(lastActive)),
+          DataCell(Text(name, style: adminLinkStyle)),
+          DataCell(Text(permissions)),
           DataCell(Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              TextButton.icon(
-                onPressed: () => showAdminFormDialog(
-                  context,
-                  title: 'Редактировать админа #$id',
-                  isEdit: true,
-                  fields: [
-                    AdminField(key: 'name', label: 'Имя', initial: name),
-                    AdminField(key: 'email', label: 'Email', initial: email),
-                    AdminField(key: 'role', label: 'Роль', initial: role),
-                    AdminField(key: 'password', label: 'Новый пароль (необязательно)', obscure: true),
-                  ],
-                  onSubmit: (values) async {
-                    await ref.read(genericUpdateAction)('/admin/list', id, values, adminListProvider);
-                  },
-                ),
-                icon: const Icon(Icons.edit, size: 14),
-                label: const Text('Редактировать'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminDeleteDialog(
-                  context,
-                  name: name,
-                  onDelete: () async {
-                    await ref.read(deleteAdminAction)(id);
-                  },
-                ),
-                icon: const Icon(Icons.delete, size: 14, color: Colors.red),
-                label: const Text('Удалить', style: TextStyle(color: Colors.red)),
-              ),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
             ],
           )),
         ]);
@@ -97,4 +63,4 @@ class AdminRolesPage extends ConsumerWidget {
   }
 }
 
-final _adminSearchProvider = StateProvider<String>((ref) => '');
+final _rolesSearchProvider = StateProvider<String>((ref) => '');

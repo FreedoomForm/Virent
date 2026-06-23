@@ -11,43 +11,45 @@ class PushHistoryPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
       title: 'История Push',
-      provider: pushHistoryListProvider,
+      provider: pushHistoryProvider,
       searchProvider: _pushSearchProvider,
-      filters: Row(
-        children: [
-          SizedBox(
-            width: 150,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'ID клиента'),
-            ),
-          ),
-        ],
-      ),
+      searchMatcher: (p, query) {
+        final id = (p['id'] ?? '').toString().toLowerCase();
+        final text = (p['text'] ?? p['body'] ?? '').toString().toLowerCase();
+        final client = (p['client_id'] ?? '').toString().toLowerCase();
+        return id.contains(query) || text.contains(query) || client.contains(query);
+      },
       columns: const [
         DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Заголовок')),
-        DataColumn(label: Text('Сообщение')),
-        DataColumn(label: Text('Аудитория')),
-        DataColumn(label: Text('Доставлено')),
-        DataColumn(label: Text('Открыто')),
-        DataColumn(label: Text('Время')),
+        DataColumn(label: Text('Client')),
+        DataColumn(label: Text('Text')),
+        DataColumn(label: Text('Is read')),
+        DataColumn(label: Text('Deleted')),
+        DataColumn(label: Text('Created')),
+        DataColumn(label: Text('Действия')),
       ],
       buildRow: (p) {
-        final id = (p['id'] ?? '-').toString();
-        final title = (p['title'] ?? p['heading'] ?? '-').toString();
-        final message = (p['body'] ?? p['message'] ?? p['text'] ?? '-').toString();
-        final audience = (p['audience'] ?? p['client_id'] ?? 'all').toString();
-        final delivered = (p['delivered'] ?? p['delivered_count'] ?? 0).toString();
-        final opened = (p['opened'] ?? p['opened_count'] ?? p['is_read'] ?? 0).toString();
-        final time = (p['created_at'] ?? p['time'] ?? p['date'] ?? '-').toString();
+        String _s(String key) => (p[key] ?? '-').toString();
+        bool _b(String key) {
+          final v = p[key];
+          if (v == null) return false;
+          if (v is bool) return v;
+          return v.toString().toLowerCase() == '1' || v.toString().toLowerCase() == 'true';
+        }
         return DataRow(cells: [
-          DataCell(Text(id)),
-          DataCell(Text(title, style: adminLinkStyle)),
-          DataCell(Text(message)),
-          DataCell(Text(audience)),
-          DataCell(Text(delivered)),
-          DataCell(Text(opened)),
-          DataCell(Text(time)),
+          DataCell(Text(_s('id'))),
+          DataCell(Text(_s('client_id'), style: adminLinkStyle)),
+          DataCell(Text(_s('text') == '-' ? _s('body') : _s('text'))),
+          DataCell(Icon(_b('is_read') ? Icons.check : Icons.close, color: _b('is_read') ? Colors.green : Colors.red)),
+          DataCell(Text(_b('deleted') ? 'Да' : 'Нет')),
+          DataCell(Text(_s('created_at') == '-' ? _s('created') : _s('created_at'))),
+          DataCell(Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+            ],
+          )),
         ]);
       },
     );

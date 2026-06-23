@@ -13,69 +13,45 @@ class PrepaidOrdersPage extends ConsumerWidget {
       title: 'Предоплаченные Заказы',
       provider: prepaidOrdersProvider,
       searchProvider: _prepaidSearchProvider,
-      filters: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            SizedBox(
-              width: 120,
-              child: TextField(
-                decoration: adminFilterDecoration(hint: 'ID клиента'),
-              ),
-            ),
-            const SizedBox(width: 8),
-            SizedBox(
-              width: 120,
-              child: TextField(
-                decoration: adminFilterDecoration(hint: 'car_id'),
-              ),
-            ),
-            const SizedBox(width: 8),
-            SizedBox(
-              width: 120,
-              child: TextField(
-                decoration: adminFilterDecoration(hint: 'status'),
-              ),
-            ),
-            const SizedBox(width: 8),
-            SizedBox(
-              width: 200,
-              child: TextField(
-                decoration: adminFilterDecoration(hint: 'transaction_id'),
-              ),
-            ),
-            const SizedBox(width: 8),
-            SizedBox(
-              width: 120,
-              child: TextField(
-                decoration: adminFilterDecoration(hint: 'order_id'),
-              ),
-            ),
-          ],
-        ),
-      ),
+      searchMatcher: (o, query) {
+        final id = (o['id'] ?? '').toString().toLowerCase();
+        final token = (o['redis_token'] ?? o['token'] ?? '').toString().toLowerCase();
+        final client = (o['client_id'] ?? '').toString().toLowerCase();
+        return id.contains(query) || token.contains(query) || client.contains(query);
+      },
       columns: const [
         DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Код')),
-        DataColumn(label: Text('Сумма')),
-        DataColumn(label: Text('Использован')),
-        DataColumn(label: Text('Кем')),
-        DataColumn(label: Text('Когда')),
+        DataColumn(label: Text('Redis token')),
+        DataColumn(label: Text('Car')),
+        DataColumn(label: Text('Client')),
+        DataColumn(label: Text('Company')),
+        DataColumn(label: Text('Abonement')),
+        DataColumn(label: Text('Amount')),
+        DataColumn(label: Text('Status')),
+        DataColumn(label: Text('Created')),
+        DataColumn(label: Text('Type')),
+        DataColumn(label: Text('Действия')),
       ],
       buildRow: (o) {
-        final id = (o['id'] ?? '-').toString();
-        final code = (o['code'] ?? o['redis_token'] ?? o['token'] ?? '-').toString();
-        final amount = (o['amount'] ?? o['sum'] ?? '-').toString();
-        final used = (o['used'] ?? o['is_used'] ?? false).toString() == 'true' ? 'Да' : 'Нет';
-        final who = (o['used_by'] ?? o['client_id'] ?? '-').toString();
-        final when = (o['used_at'] ?? o['created_at'] ?? o['date'] ?? '-').toString();
+        String _s(String key) => (o[key] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(id)),
-          DataCell(Text(code, style: adminLinkStyle)),
-          DataCell(Text(amount)),
-          DataCell(Text(used)),
-          DataCell(Text(who)),
-          DataCell(Text(when)),
+          DataCell(Text(_s('id'))),
+          DataCell(Text(_s('redis_token') == '-' ? _s('token') : _s('redis_token'))),
+          DataCell(Text(_s('car_id') == '-' ? _s('car') : _s('car_id'))),
+          DataCell(Text(_s('client_id') == '-' ? _s('client') : _s('client_id'), style: adminLinkStyle)),
+          DataCell(Text(_s('company_id') == '-' ? _s('company') : _s('company_id'))),
+          DataCell(Text(_s('abonement_id') == '-' ? _s('abonement') : _s('abonement_id'))),
+          DataCell(Text(_s('amount'))),
+          DataCell(Text(_s('status'))),
+          DataCell(Text(_s('created_at') == '-' ? _s('created') : _s('created_at'))),
+          DataCell(Text(_s('type'))),
+          DataCell(Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+            ],
+          )),
         ]);
       },
     );

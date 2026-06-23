@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_table_page.dart';
-import '../widgets/admin_dialogs.dart';
 
 class PromoCodesPage extends ConsumerWidget {
   const PromoCodesPage({super.key});
@@ -12,57 +11,47 @@ class PromoCodesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
       title: 'Промокоды',
-      provider: promoCodesProvider,
+      provider: promoCodesListProvider,
       searchProvider: _promoSearchProvider,
       searchMatcher: (p, query) {
+        final id = (p['id'] ?? '').toString().toLowerCase();
         final code = (p['code'] ?? '').toString().toLowerCase();
-        final group = (p['group'] ?? p['promocode_group'] ?? '').toString().toLowerCase();
-        return code.contains(query) || group.contains(query);
+        final group = (p['promocode_group'] ?? p['group'] ?? '').toString().toLowerCase();
+        return id.contains(query) || code.contains(query) || group.contains(query);
       },
-      createButton: ElevatedButton.icon(
-        onPressed: () => showAdminFormDialog(
-          context,
-          title: 'Добавить промокод',
-          fields: const [
-            AdminField(key: 'code', label: 'Код'),
-            AdminField(key: 'discount', label: 'Скидка'),
-            AdminField(key: 'type', label: 'Тип', hint: 'fixed / percent'),
-            AdminField(key: 'usage_limit', label: 'Лимит использований', initial: '1'),
-            AdminField(key: 'expires_at', label: 'Истекает', hint: 'YYYY-MM-DD'),
-          ],
-          onSubmit: (values) async {
-            await ref.read(createPromoCodeAction)(values);
-          },
-        ),
-        icon: const Icon(Icons.add, size: 16),
-        label: const Text('Добавить Промокод'),
-        style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-      ),
       columns: const [
-        DataColumn(label: Text('Код')),
-        DataColumn(label: Text('Скидка')),
-        DataColumn(label: Text('Тип')),
-        DataColumn(label: Text('Использовано')),
-        DataColumn(label: Text('Лимит')),
-        DataColumn(label: Text('Истекает')),
-        DataColumn(label: Text('Статус')),
+        DataColumn(label: Text('Id')),
+        DataColumn(label: Text('Code')),
+        DataColumn(label: Text('Bonus gift')),
+        DataColumn(label: Text('Usage remains')),
+        DataColumn(label: Text('Promocode group')),
+        DataColumn(label: Text('Group active')),
+        DataColumn(label: Text('Expires')),
+        DataColumn(label: Text('Действия')),
       ],
       buildRow: (p) {
-        final code = (p['code'] ?? '-').toString();
-        final discount = (p['discount'] ?? p['bonus_gift'] ?? p['bonus'] ?? '-').toString();
-        final type = (p['type'] ?? p['discount_type'] ?? 'fixed').toString();
-        final used = (p['used_count'] ?? p['usage_count'] ?? 0).toString();
-        final limit = (p['limit'] ?? p['usage_limit'] ?? p['max_usage'] ?? 1).toString();
-        final expires = (p['expires_at'] ?? p['expires'] ?? '-').toString();
-        final isActive = (p['is_active'] ?? p['active'] ?? true) == true;
+        String _s(String key) => (p[key] ?? '-').toString();
+        bool _b(String key) {
+          final v = p[key];
+          if (v == null) return false;
+          if (v is bool) return v;
+          return v.toString().toLowerCase() == '1' || v.toString().toLowerCase() == 'true';
+        }
         return DataRow(cells: [
-          DataCell(Text(code, style: adminLinkStyle)),
-          DataCell(Text(discount)),
-          DataCell(Text(type)),
-          DataCell(Text(used)),
-          DataCell(Text(limit)),
-          DataCell(Text(expires)),
-          DataCell(Icon(isActive ? Icons.check_box : Icons.check_box_outline_blank, color: isActive ? Colors.green : Colors.grey)),
+          DataCell(Text(_s('id'))),
+          DataCell(Text(_s('code'))),
+          DataCell(Text(_s('bonus_gift') == '-' ? _s('discount') : _s('bonus_gift'))),
+          DataCell(Text(_s('usage_remains') == '-' ? _s('usage_limit') : _s('usage_remains'))),
+          DataCell(Text(_s('promocode_group') == '-' ? _s('group') : _s('promocode_group'))),
+          DataCell(Icon(_b('group_active') ? Icons.check : Icons.close, color: _b('group_active') ? Colors.green : Colors.red)),
+          DataCell(Text(_s('expires_at') == '-' ? _s('expires') : _s('expires_at'))),
+          DataCell(Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+            ],
+          )),
         ]);
       },
     );

@@ -13,6 +13,13 @@ class BillingReceiptsPage extends ConsumerWidget {
       title: 'Чеки',
       provider: billingReceiptsProvider,
       searchProvider: _receiptsSearchProvider,
+      searchMatcher: (r, query) {
+        final id = (r['id'] ?? '').toString().toLowerCase();
+        final check = (r['check'] ?? r['provider'] ?? '').toString().toLowerCase();
+        final bill = (r['bill'] ?? r['bill_id'] ?? '').toString().toLowerCase();
+        final client = (r['client_id'] ?? r['client'] ?? '').toString().toLowerCase();
+        return id.contains(query) || check.contains(query) || bill.contains(query) || client.contains(query);
+      },
       filters: Row(
         children: [
           SizedBox(
@@ -32,26 +39,36 @@ class BillingReceiptsPage extends ConsumerWidget {
       ),
       columns: const [
         DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Пользователь')),
-        DataColumn(label: Text('Поездка')),
-        DataColumn(label: Text('Сумма')),
-        DataColumn(label: Text('Дата')),
-        DataColumn(label: Text('Статус')),
+        DataColumn(label: Text('Чек')),
+        DataColumn(label: Text('Bill')),
+        DataColumn(label: Text('Status')),
+        DataColumn(label: Text('Client')),
+        DataColumn(label: Text('Amount')),
+        DataColumn(label: Text('Created')),
+        DataColumn(label: Text('Company')),
+        DataColumn(label: Text('Sendable')),
       ],
       buildRow: (r) {
-        final id = (r['id'] ?? '-').toString();
-        final user = (r['user_id'] ?? r['client_id'] ?? r['user'] ?? '-').toString();
-        final trip = (r['trip_id'] ?? r['order_id'] ?? r['bill_id'] ?? '-').toString();
-        final amount = (r['amount'] ?? r['sum'] ?? '-').toString();
-        final date = (r['created_at'] ?? r['created'] ?? r['date'] ?? '-').toString();
-        final status = (r['status'] ?? r['state'] ?? '-').toString();
+        String _s(String key) => (r[key] ?? '-').toString();
+        final id = _s('id');
+        final check = _s('check') == '-' ? 'CLICK' : _s('check');
+        final bill = _s('bill_id') == '-' ? _s('bill') : _s('bill_id');
+        final status = _s('status') == '-' ? 'SUCCESS' : _s('status');
+        final client = _s('client_id');
+        final amount = _s('amount');
+        final created = _s('created_at') == '-' ? _s('created') : _s('created_at');
+        final company = _s('company_id');
+        final sendable = _s('sendable');
         return DataRow(cells: [
           DataCell(Text(id)),
-          DataCell(Text(user, style: adminLinkStyle)),
-          DataCell(Text(trip)),
-          DataCell(Text(amount)),
-          DataCell(Text(date)),
+          DataCell(Text(check, style: adminLinkStyle)),
+          DataCell(Text(bill)),
           DataCell(Text(status)),
+          DataCell(Text(client, style: adminLinkStyle)),
+          DataCell(Text(amount)),
+          DataCell(Text(created)),
+          DataCell(Text(company)),
+          DataCell(Text(sendable == '-' ? 'Нет' : sendable)),
         ]);
       },
     );
