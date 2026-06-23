@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AdminCompaniesPage extends StatelessWidget {
-  const AdminCompaniesPage({super.key});
+class TarirovPage extends StatelessWidget {
+  const TarirovPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +20,16 @@ class AdminCompaniesPage extends StatelessWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Companies', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 7 из 7 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                        Text('Показано 0 до 0 из 0 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ],
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
-                      label: const Text('Добавить company', style: TextStyle(fontSize: 11, color: Colors.white)),
+                      label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF7B68EE),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -69,24 +69,19 @@ class AdminCompaniesPage extends StatelessWidget {
                   child: const Row(
                     children: [
                       SizedBox(width: 100, child: Text('Id', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Name', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 200, child: Text('Cp pub', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 250, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Json', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Volume', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Cruising range', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Cruising time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                     ],
                   ),
                 ),
                 const Divider(height: 1),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      _companyRow('12', 'ViRent', '1002'),
-                      _companyRow('16', 'ИП Асилбеков Шерзод', '1746'),
-                      _companyRow('18', 'Virent Motion Samarqand', '1295'),
-                      _companyRow('19', 'VV-LAND', '1409'),
-                      _companyRow('22', 'ИП Асилбекова Нигора', ''),
-                      _companyRow('23', 'ИП Раматбоев Озод', ''),
-                      _companyRow('24', 'ИП Руфатова Зухра', ''),
-                    ],
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 24),
+                  child: const Center(
+                    child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)),
                   ),
                 ),
                 const Divider(height: 1),
@@ -96,40 +91,15 @@ class AdminCompaniesPage extends StatelessWidget {
                   child: const Row(
                     children: [
                       SizedBox(width: 100, child: Text('Id', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Name', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 200, child: Text('Cp pub', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 250, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Json', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Volume', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Cruising range', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Cruising time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                     ],
                   ),
                 ),
                 const Divider(height: 1),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _companyRow(String id, String name, String cpPub) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(width: 100, child: Text(id, style: const TextStyle(fontSize: 11))),
-          Expanded(child: Text(name, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 200, child: Text(cpPub, style: const TextStyle(fontSize: 11))),
-          SizedBox(
-            width: 250,
-            child: Row(
-              children: [
-                InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.visibility, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
-                const SizedBox(width: 12),
-                InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.edit, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
-                const SizedBox(width: 12),
-                InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.delete, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
               ],
             ),
           ),

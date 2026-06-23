@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AdminRolesPage extends StatelessWidget {
-  const AdminRolesPage({super.key});
+class DriversPage extends StatelessWidget {
+  const DriversPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +20,16 @@ class AdminRolesPage extends StatelessWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Роли', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 8 из 8 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                        Text('Показано 1 до 4 из 4 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ],
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
-                      label: const Text('Добавить роль', style: TextStyle(fontSize: 11, color: Colors.white)),
+                      label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF7B68EE),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -68,8 +68,9 @@ class AdminRolesPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: const Row(
                     children: [
-                      SizedBox(width: 100, child: Text('Имя', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Разрешения', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      SizedBox(width: 100, child: Text('Id', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Description', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Type', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                     ],
                   ),
@@ -78,14 +79,10 @@ class AdminRolesPage extends StatelessWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _roleRow('Админ', 'send command to device, send push, admin/*, ignore companies, admin/delete_client_card*'),
-                      _roleRow('Техник', 'send command to device, admin/alert*, admin/map*, admin/damage*, admin/damagephoto*, admin/preview/*, admin/techview*, admin/car, admin/car/*'),
-                      _roleRow('Партнер', 'send command to device, send push, admin/alert*, admin/map*, admin/bill*, admin/order*, admin/inspect*, admin/selfie*, admin/damage*, admin/damagephoto*, admin/bonus*, admin/transaction*, admin/activity_log*, admin/unconfirmed_client*, admin/dot*, admin/preview/*, admin/car, admin/car/*, admin/client, admin/client/*, admin/stats'),
-                      _roleRow('Оператор', 'send command to device, send push, admin/alert*, admin/map*, admin/bill*, admin/fine*, admin/order*, admin/inspect*, admin/damage*, admin/damagephoto*, admin/bonus*, admin/transaction*, admin/car_log*, admin/activity_log*, admin/client_login_attempt*, admin/unconfirmed_client*, admin/clientselfie*, admin/preview/*, admin/car, admin/car/*, admin...'),
-                      _roleRow('Helper', 'admin/map*, admin/preview/*, admin/car'),
-                      _roleRow('Техник', 'admin/alert*, admin/map*, admin/damage*, admin/damagephoto*'),
-                      _roleRow('Оператор', 'send push, admin/alert*, admin/map*, admin/bill*, admin/fine*, admin/order*, admin/inspect*, admin/selfie*, admin/damage*, admin/damagephoto*, admin/bonus*, admin/transaction*, admin/car_log*, admin/activity_log*, admin/client_login_attempt*'),
-                      _roleRow('Бехзод', '*, send command to device, send push, pay all debts, restart java, delete_tariff, delete_abonement, pay_all_debt_button, Raider, admin/getHoldLogs, admin/clientStatus, startmessage'),
+                      _driverRow('7', 'Ninebot', 'FLESPI'),
+                      _driverRow('10', 'OKAI 400', 'FLESPI'),
+                      _driverRow('11', 'ecu200', 'gospi'),
+                      _driverRow('12', 'ecu201', 'gospi'),
                     ],
                   ),
                 ),
@@ -95,8 +92,9 @@ class AdminRolesPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: const Row(
                     children: [
-                      SizedBox(width: 100, child: Text('Имя', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Разрешения', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      SizedBox(width: 100, child: Text('Id', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Description', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Type', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                     ],
                   ),
@@ -110,19 +108,22 @@ class AdminRolesPage extends StatelessWidget {
     );
   }
 
-  Widget _roleRow(String name, String permissions) {
+  Widget _driverRow(String id, String desc, String type) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 100, child: Text(name, style: const TextStyle(fontSize: 11))),
-          Expanded(child: Text(permissions, style: const TextStyle(fontSize: 11))),
+          SizedBox(width: 100, child: Text(id, style: const TextStyle(fontSize: 11))),
+          Expanded(child: Text(desc, style: const TextStyle(fontSize: 11))),
+          Expanded(child: Text(type, style: const TextStyle(fontSize: 11))),
           SizedBox(
             width: 200,
             child: Row(
               children: [
+                InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.visibility, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
+                const SizedBox(width: 12),
                 InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.edit, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
                 const SizedBox(width: 12),
                 InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.delete, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),

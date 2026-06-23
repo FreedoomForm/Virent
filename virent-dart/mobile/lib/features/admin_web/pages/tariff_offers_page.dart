@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class TariffPricesPage extends StatelessWidget {
-  const TariffPricesPage({super.key});
+class TariffOffersPage extends StatelessWidget {
+  const TariffOffersPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +20,16 @@ class TariffPricesPage extends StatelessWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Цены', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        Text('Тарифы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 9 из 9 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                        Text('Показано 1 до 20 из 23 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ],
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
-                      label: const Text('Добавить цены', style: TextStyle(fontSize: 11, color: Colors.white)),
+                      label: const Text('Добавить тариф', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF7B68EE),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -65,9 +65,9 @@ class TariffPricesPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: const Row(
                     children: [
-                      SizedBox(width: 300, child: Text('Наименование', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 300, child: Text('Json', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 150, child: Text('Time unit', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      SizedBox(width: 300, child: Text('Название в админке', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      SizedBox(width: 300, child: Text('Название в мобильном приложении', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      SizedBox(width: 150, child: Text('Hold', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                     ],
                   ),
@@ -76,15 +76,24 @@ class TariffPricesPage extends StatelessWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _priceRow('ViRent Ташкент', '60'),
-                      _priceRow('ViRent Самарканд', '60'),
-                      _priceRow('ViRent Motion', '60'),
-                      _priceRow('ИП Асилбеков', '60'),
-                      _priceRow('Минутный Ташкент Е600 самокаты', '60'),
-                      _priceRow('тест', '60'),
-                      _priceRow('Асилбекова Нигора', '60'),
-                      _priceRow('Раматбоев Озод', '60'),
-                      _priceRow('Руфатова Зухра', '60'),
+                      _tariffRow('Минутный ViRent Ташкент', 'Minute', '500000 Тийны'),
+                      _tariffRow('Минутный ИП Асилбеков', 'Minute', '500000 Тийны'),
+                      _tariffRow('TEST', 'test', '100000 Тийны'),
+                      _tariffRow('для 30мин ViRent Ташкент', 'Минутный', '500000 Тийны'),
+                      _tariffRow('для 60мин ViRent Ташкент', 'минутный', '500000 Тийны'),
+                      _tariffRow('Для 30мин ИП Асилбеков', 'Минутный', '500000 Тийны'),
+                      _tariffRow('Для 60мин ИП Асилбеков', 'Hour', '500000 Тийны'),
+                      _tariffRow('Минутный 600-самокаты', 'Минутный', '500000 Тийны'),
+                      _tariffRow('тест', 'тест', '500000 Тийны'),
+                      _tariffRow('для 10 минут', '10 Минут', '500000 Тийны'),
+                      _tariffRow('для абонементов 600', 'Минутный', '500000 Тийны'),
+                      _tariffRow('Минутный ИП Асилбекова Нигора', 'Minute', '500000 Тийны'),
+                      _tariffRow('Минутный ИП Pахматбоев Озод', 'Minute', '500000 Тийны'),
+                      _tariffRow('Минутный ИП Руфатова Зухра', 'Minute', '500000 Тийны'),
+                      _tariffRow('Для 20мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
+                      _tariffRow('для 30мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
+                      _tariffRow('для 60мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
+                      _tariffRow('Для 20мин ИП Pахматбоев О', 'Минутный', '500000 Тийны'),
                     ],
                   ),
                 ),
@@ -96,29 +105,21 @@ class TariffPricesPage extends StatelessWidget {
     );
   }
 
-  Widget _priceRow(String name, String timeUnit) {
+  Widget _tariffRow(String adminName, String appName, String hold) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
       child: Row(
         children: [
-          SizedBox(width: 300, child: Text(name, style: const TextStyle(fontSize: 11))),
-          SizedBox(
-            width: 300,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(color: const Color(0xFF3498DB), borderRadius: BorderRadius.circular(3)),
-                child: const Text('Развернуть / Свернуть', style: TextStyle(fontSize: 10, color: Colors.white)),
-              ),
-            ),
-          ),
-          SizedBox(width: 150, child: Text(timeUnit, style: const TextStyle(fontSize: 11))),
+          SizedBox(width: 300, child: Text(adminName, style: const TextStyle(fontSize: 11))),
+          SizedBox(width: 300, child: Text(appName, style: const TextStyle(fontSize: 11, color: Color(0xFF7B68EE)))),
+          SizedBox(width: 150, child: Text(hold, style: const TextStyle(fontSize: 11))),
           Expanded(
             child: Row(
               children: [
                 InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.visibility, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
+                const SizedBox(width: 12),
+                InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.map, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Геозоны завершения', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
                 const SizedBox(width: 12),
                 InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.edit, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
                 const SizedBox(width: 12),

@@ -1,140 +1,170 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../admin_web_providers.dart';
-
-class AlertsPage extends ConsumerWidget {
+class AlertsPage extends StatelessWidget {
   const AlertsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final asyncItems = ref.watch(alertsListProvider);
-
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Тревоги', style: TextStyle(fontSize: 24)),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              SizedBox(
-                width: 150,
-                child: TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Text('Самокат', style: TextStyle(color: Colors.grey, height: 2.2)),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Тревоги', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                const SizedBox(height: 12),
+                // Filters
+                Row(
+                  children: [
+                    const Text('Самокат', style: TextStyle(fontSize: 12, color: Color(0xFF666666))),
+                    const SizedBox(width: 6),
+                    SizedBox(
+                      width: 120,
+                      height: 32,
+                      child: TextField(
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                        ),
+                        style: const TextStyle(fontSize: 12),
+                      ),
                     ),
-                    isDense: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 200,
-                child: DropdownButtonFormField<String>(
-                  value: 'Типы тревог:',
-                  decoration: InputDecoration(
-                    isDense: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
-                  ),
-                  items: const [
-                    DropdownMenuItem(value: 'Типы тревог:', child: Text('Типы тревог:')),
+                    const SizedBox(width: 4),
+                    InkWell(onTap: () {}, child: Icon(Icons.close, size: 16, color: Colors.grey[500])),
+                    const SizedBox(width: 12),
+                    const Text('Типы тревог:', style: TextStyle(fontSize: 12, color: Color(0xFF666666))),
+                    const SizedBox(width: 6),
+                    SizedBox(
+                      width: 140,
+                      height: 32,
+                      child: DropdownButtonFormField<String>(
+                        value: null,
+                        items: const [],
+                        onChanged: (_) {},
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
+                        ),
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    _filterButton('Открыта', const Color(0xFF2ECC71)),
+                    const SizedBox(width: 6),
+                    _filterButton('Закрыта', const Color(0xFFE67E22)),
+                    const SizedBox(width: 6),
+                    _filterButton('Группировать', const Color(0xFF3498DB)),
+                    const SizedBox(width: 12),
+                    InkWell(
+                      onTap: () {},
+                      child: Row(
+                        children: [
+                          Text('Сбросить фильтр', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                          const SizedBox(width: 4),
+                          Icon(Icons.close, size: 14, color: Colors.grey[500]),
+                        ],
+                      ),
+                    ),
                   ],
-                  onChanged: (val) {},
                 ),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFDA4453), foregroundColor: Colors.white),
-                child: const Text('Открыта'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF37BC9B), foregroundColor: Colors.white),
-                child: const Text('Закрыта'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
-                child: const Text('Группировать'),
-              ),
-              const SizedBox(width: 8),
-              OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.clear, size: 16),
-                label: const Text('Сбросить фильтр'),
-              )
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 16),
+          // Table
           Expanded(
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
-              child: asyncItems.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-                data: (items) => SingleChildScrollView(
-                  child: DataTable(
-                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                    dataRowMaxHeight: 50,
-                    columns: const [
-                      DataColumn(label: Text('Icon')),
-                      DataColumn(label: Text('scooterId')),
-                      DataColumn(label: Text('alertType')),
-                      DataColumn(label: Text('time')),
-                      DataColumn(label: Text('status')),
-                    ],
-                    rows: items.map(_buildRow).toList(),
-                  ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: 1200,
+                child: Column(
+                  children: [
+                    // Header
+                    Container(
+                      color: const Color(0xFFF8F9FA),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      child: const Row(
+                        children: [
+                          SizedBox(width: 50, child: Text('Icon', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 120, child: Text('scooterId', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600))),
+                          Expanded(child: Text('alertType', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 200, child: Text('time', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 150, child: Text('status', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600))),
+                        ],
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    // Rows
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          _alertRow(Icons.check_box, Colors.green, '1796', 'Не включился в заказе', '19.06.2026 13:46:00', 'Тревога закрыта', const Color(0xFFD5F5E3)),
+                          _alertRow(Icons.lock, Colors.red, '1796', 'Не включился в заказе', '19.06.2026 13:45:50', 'Тревога', const Color(0xFFFADAD5)),
+                          _alertRow(Icons.wifi_off, Colors.purple, '1744', 'Самокат без связи', '19.06.2026 13:45:50', 'Тревога', const Color(0xFFFADAD5)),
+                          _alertRow(Icons.check_box, Colors.green, '917', 'Самокат без связи', '19.06.2026 13:44:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
+                          _alertRow(Icons.check_box, Colors.green, '952', 'Не включился в заказе', '19.06.2026 13:44:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
+                          _alertRow(Icons.lock, Colors.red, '952', 'Не включился в заказе', '19.06.2026 13:44:30', 'Тревога', const Color(0xFFFADAD5)),
+                          _alertRow(Icons.wifi_off, Colors.purple, '917', 'Самокат без связи', '19.06.2026 13:43:50', 'Тревога', const Color(0xFFFADAD5)),
+                          _alertRow(Icons.check_box, Colors.green, '1783', 'Самокат без связи', '19.06.2026 13:43:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
+                          _alertRow(Icons.check_box, Colors.green, '1783', 'Самокат разряжен', '19.06.2026 13:43:00', 'Тревога закрыта', const Color(0xFFD5F5E3)),
+                          _alertRow(Icons.check_box, Colors.green, '905', 'Не включился в заказе', '19.06.2026 13:43:00', 'Тревога закрыта', const Color(0xFFD5F5E3)),
+                          _alertRow(Icons.check_box, Colors.green, '917', 'Самокат без связи', '19.06.2026 13:42:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
+                          _alertRow(Icons.lock, Colors.red, '905', 'Не включился в заказе', '19.06.2026 13:42:40', 'Тревога', const Color(0xFFFADAD5)),
+                          _alertRow(Icons.wifi_off, Colors.purple, '917', 'Самокат без связи', '19.06.2026 13:41:50', 'Тревога', const Color(0xFFFADAD5)),
+                          _alertRow(Icons.check_box, Colors.green, '1798', 'Не включился в заказе', '19.06.2026 13:40:00', 'Тревога закрыта', const Color(0xFFD5F5E3)),
+                          _alertRow(Icons.lock, Colors.red, '1798', 'Не включился в заказе', '19.06.2026 13:39:50', 'Тревога', const Color(0xFFFADAD5)),
+                          _alertRow(Icons.check_box, Colors.green, '1779', 'Самокат без связи', '19.06.2026 13:37:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
+                          _alertRow(Icons.check_box, Colors.green, '965', 'Разблокирован без заказа', '19.06.2026 13:37:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
+                          _alertRow(Icons.check_box, Colors.green, '1720', 'Разблокирован без заказа', '19.06.2026 13:36:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  DataRow _buildRow(Map<String, dynamic> a) {
-    final isClosed = (a['status'] ?? '').toString().contains('закрыт');
-    final iconType = (a['alert_type'] ?? a['alertType'] ?? '').toString();
-    IconData icon;
-    Color iconColor;
-    if (iconType.contains('связи') || iconType.contains('offline')) {
-      icon = Icons.signal_cellular_off;
-      iconColor = Colors.red;
-    } else if (iconType.contains('разряжен') || iconType.contains('battery')) {
-      icon = Icons.battery_alert;
-      iconColor = Colors.red;
-    } else if (isClosed) {
-      icon = Icons.check_box;
-      iconColor = Colors.green;
-    } else {
-      icon = Icons.lock;
-      iconColor = Colors.orange;
-    }
-    final bgColor = isClosed ? const Color(0xFFC8E6C9) : const Color(0xFFFFCDD2);
-    return DataRow(
-      color: MaterialStateProperty.all(bgColor),
-      cells: [
-        DataCell(Container(
-          padding: const EdgeInsets.all(4),
-          color: Colors.black,
-          child: Icon(icon, color: iconColor, size: 16),
-        )),
-        DataCell(Text((a['scooter_id'] ?? a['scooterId'] ?? '-').toString(), style: const TextStyle(color: Colors.blue))),
-        DataCell(Text((a['alert_type'] ?? a['alertType'] ?? '-').toString())),
-        DataCell(Text((a['time'] ?? a['created_at'] ?? '-').toString())),
-        DataCell(Text((a['status'] ?? '-').toString())),
-      ],
+  Widget _filterButton(String label, Color color) {
+    return ElevatedButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        minimumSize: const Size(0, 32),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+        textStyle: const TextStyle(fontSize: 12),
+      ),
+      child: Text(label),
+    );
+  }
+
+  Widget _alertRow(IconData icon, Color iconColor, String scooterId, String type, String time, String status, Color bgColor) {
+    return Container(
+      color: bgColor,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Row(
+        children: [
+          SizedBox(width: 50, child: Icon(icon, color: iconColor, size: 20)),
+          SizedBox(width: 120, child: Text(scooterId, style: const TextStyle(fontSize: 12, color: Color(0xFFE67E22)))),
+          Expanded(child: Text(type, style: const TextStyle(fontSize: 12, color: Color(0xFF333333)))),
+          SizedBox(width: 200, child: Text(time, style: const TextStyle(fontSize: 12, color: Color(0xFF333333)))),
+          SizedBox(width: 150, child: Text(status, style: const TextStyle(fontSize: 12, color: Color(0xFF333333)))),
+        ],
+      ),
     );
   }
 }

@@ -1,124 +1,147 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../admin_web_providers.dart';
-
-class FinesPage extends ConsumerWidget {
+class FinesPage extends StatelessWidget {
   const FinesPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final asyncItems = ref.watch(finesListProvider);
-
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Штрафы', style: TextStyle(fontSize: 24)),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              SizedBox(
-                width: 150,
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'ID клиента',
-                    isDense: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
-                  ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Штрафы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    const Text('ID клиента', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                    const SizedBox(width: 4),
+                    _input(100),
+                    const SizedBox(width: 4),
+                    _closeIcon(),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.clear, size: 16),
-                label: const Text('Очистить'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, foregroundColor: Colors.black, elevation: 0),
-              )
-            ],
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
-              elevation: 0,
-              child: asyncItems.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-                data: (items) => SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SingleChildScrollView(
-                    child: DataTable(
-                      headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                      columns: const [
-                        DataColumn(label: Text('ID')),
-                        DataColumn(label: Text('client_id')),
-                        DataColumn(label: Text('amount')),
-                        DataColumn(label: Text('hold_id')),
-                        DataColumn(label: Text('order_id')),
-                        DataColumn(label: Text('bill_id')),
-                        DataColumn(label: Text('description')),
-                        DataColumn(label: Text('timestamp_response')),
-                        DataColumn(label: Text('status')),
-                        DataColumn(label: Text('CardPan')),
-                        DataColumn(label: Text('TransactionId')),
-                        DataColumn(label: Text('UzcardTransactionId')),
-                        DataColumn(label: Text('updated_at')),
-                        DataColumn(label: Text('Управление')),
-                      ],
-                      rows: items.map(_buildRow).toList(),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: 1800,
+                child: Column(
+                  children: [
+                    Container(
+                      color: const Color(0xFFF8F9FA),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      child: const Row(
+                        children: [
+                          SizedBox(width: 200, child: Text('ID', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 60, child: Text('client_id', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 80, child: Text('amount', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 60, child: Text('hold_id', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 60, child: Text('order_id', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 200, child: Text('bill_id', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 80, child: Text('description', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 150, child: Text('timestamp_response', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 60, child: Text('status', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 80, child: Text('CardPan', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 80, child: Text('TransactionId', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 140, child: Text('UzcardTransactionId', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          SizedBox(width: 120, child: Text('updated_at', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                          Expanded(child: Text('Управление', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
+                        ],
+                      ),
                     ),
-                  ),
+                    const Divider(height: 1),
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          _fineRow('1TH6vudSDF954uqo...', '268355', '20000000', '', '', '', '', '27.07.2025 21:03:55', 'debt', '', '', '', ''),
+                          _fineRow('6882f576b40350335...', '266868', '20000000', '', '', '6882f576b403503...', '', '25.07.2025 08:09:46', 'confirm', '', '', '1753412987', showButtons: false),
+                          _fineRow('6864bd8b436464e2...', '253376', '1000000', '', '', '6864bd8b436464...', '', '02.07.2025 10:03:07', 'HOLD', '', '', '', showButtons: true),
+                          _fineRow('6864bd738f558c267...', '253376', '1000000', '', '', '6864bd738f558c...', '', '02.07.2025 10:02:44', 'HOLD', '', '', '', showButtons: true),
+                          _fineRow('6864bd61a249ce96...', '253376', '1000000', '', '', '6864bd61a249ce...', '', '02.07.2025 10:02:26', 'HOLD', '', '', '', showButtons: true),
+                          _fineRow('6864bd564b411f33...', '253376', '1000000', '', '', '6864bd564b411f...', '', '02.07.2025 10:02:14', 'HOLD', '', '', '', showButtons: true),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  DataRow _buildRow(Map<String, dynamic> f) {
-    final id = (f['id'] ?? '-').toString();
-    final cid = (f['client_id'] ?? f['client'] ?? '-').toString();
-    final amt = (f['amount'] ?? '-').toString();
-    final hid = (f['hold_id'] ?? '').toString();
-    final oid = (f['order_id'] ?? '').toString();
-    final bid = (f['bill_id'] ?? '').toString();
-    final desc = (f['description'] ?? '').toString();
-    final time = (f['timestamp_response'] ?? f['created_at'] ?? '').toString();
-    final st = (f['status'] ?? '').toString();
-    final pan = (f['card_pan'] ?? f['CardPan'] ?? '').toString();
-    final tid = (f['transaction_id'] ?? f['TransactionId'] ?? '').toString();
-    final utid = (f['uzcard_transaction_id'] ?? f['UzcardTransactionId'] ?? '').toString();
-    final up = (f['updated_at'] ?? '').toString();
-
-    return DataRow(cells: [
-      DataCell(Text(id)),
-      DataCell(Text(cid, style: const TextStyle(color: Colors.blue))),
-      DataCell(Text(amt)),
-      DataCell(Text(hid)),
-      DataCell(Text(oid)),
-      DataCell(Text(bid)),
-      DataCell(Text(desc)),
-      DataCell(Text(time)),
-      DataCell(Text(st)),
-      DataCell(Text(pan)),
-      DataCell(Text(tid)),
-      DataCell(Text(utid)),
-      DataCell(Text(up)),
-      DataCell(st == 'HOLD' ? Row(
+  Widget _fineRow(String id, String clientId, String amount, String holdId, String orderId, String billId, String desc, String timestamp, String status, String cardPan, String transId, String uzcardId, {bool showButtons = false}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      child: Row(
         children: [
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.check, size: 14), label: const Text('Подтвердить холд', style: TextStyle(color: Colors.blue))),
-          ElevatedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.cancel, size: 14),
-            label: const Text('Отменить холд'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(horizontal: 8)),
-          )
+          SizedBox(width: 200, child: Text(id, style: const TextStyle(fontSize: 10), overflow: TextOverflow.ellipsis)),
+          SizedBox(width: 60, child: Text(clientId, style: const TextStyle(fontSize: 10, color: Color(0xFF3498DB)))),
+          SizedBox(width: 80, child: Text(amount, style: const TextStyle(fontSize: 10))),
+          const SizedBox(width: 60),
+          const SizedBox(width: 60),
+          SizedBox(width: 200, child: Text(billId, style: const TextStyle(fontSize: 10), overflow: TextOverflow.ellipsis)),
+          const SizedBox(width: 80),
+          SizedBox(width: 150, child: Text(timestamp, style: const TextStyle(fontSize: 10))),
+          SizedBox(width: 60, child: Text(status, style: const TextStyle(fontSize: 10))),
+          const SizedBox(width: 80),
+          const SizedBox(width: 80),
+          SizedBox(width: 140, child: Text(uzcardId, style: const TextStyle(fontSize: 10))),
+          const SizedBox(width: 120),
+          Expanded(
+            child: showButtons
+                ? Row(
+                    children: [
+                      _actionBtn('Подтвердить холд', const Color(0xFF2ECC71)),
+                      const SizedBox(width: 4),
+                      _actionBtn('Отменить холд', const Color(0xFFE74C3C)),
+                    ],
+                  )
+                : const SizedBox(),
+          ),
         ],
-      ) : const SizedBox()),
-    ]);
+      ),
+    );
+  }
+
+  Widget _actionBtn(String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
+      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 9)),
+    );
+  }
+
+  static Widget _input(double w) {
+    return SizedBox(
+      width: w,
+      height: 28,
+      child: TextField(
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+        ),
+        style: const TextStyle(fontSize: 11),
+      ),
+    );
+  }
+
+  static Widget _closeIcon() {
+    return InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 }

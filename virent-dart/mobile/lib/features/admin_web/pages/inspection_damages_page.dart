@@ -1,39 +1,179 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../admin_web_providers.dart';
-import '../widgets/admin_table_page.dart';
-
-class InspectionDamagesPage extends ConsumerWidget {
+class InspectionDamagesPage extends StatelessWidget {
   const InspectionDamagesPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return AdminTablePage(
-      title: 'Осмотр Повреждений',
-      provider: inspectionDamagesProvider,
-      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
-      filters: Row(children:[SizedBox(width:120,child:TextField(decoration:adminFilterDecoration(hint:"Самокат"))),SizedBox(width:8),SizedBox(width:120,child:TextField(decoration:adminFilterDecoration(hint:"Номер"))),SizedBox(width:8),Text("Конкретный день ▼"),SizedBox(width:16),Text("Промежуток времени ▼"),SizedBox(width:16),OutlinedButton(onPressed:(){},child:Text("Группировать")),SizedBox(width:8),OutlinedButton(onPressed:(){},child:Text("Фото при начале")),SizedBox(width:8),OutlinedButton(onPressed:(){},child:Text("Фото при завершении",style:TextStyle(color:Colors.orange))),SizedBox(width:8),ElevatedButton.icon(onPressed:(){},icon:Icon(Icons.clear,size:16),label:Text("Очистить фильтры"),style:ElevatedButton.styleFrom(backgroundColor:adminPrimaryColor,foregroundColor:adminPrimaryForeground))]),
-      columns: const [
-        DataColumn(label: Text('Path')),
-        DataColumn(label: Text('Car')),
-        DataColumn(label: Text('Order')),
-        DataColumn(label: Text('Type')),
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFFF5F6FA),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Row(
+                      children: [
+                        Text('Damages', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        SizedBox(width: 12),
+                        Text('Показано 1 до 20 из 297 совпадений (отфильтровано из 156,150 совпадений)',
+                            style: TextStyle(fontSize: 11, color: Colors.grey)),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 200,
+                      height: 32,
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Поиск:',
+                          hintStyle: const TextStyle(fontSize: 11),
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                        ),
+                        style: const TextStyle(fontSize: 11),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _labeledInput('Самокат', 100),
+                      const SizedBox(width: 8),
+                      _labeledInput('Номер', 100),
+                      const SizedBox(width: 8),
+                      const Text('Конкретный день ▼', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                      const SizedBox(width: 8),
+                      const Text('Промежуток времени ▼', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                      const SizedBox(width: 12),
+                      _chipBtn('Парковки', const Color(0xFFBDC3C7)),
+                      _chipBtn('Фото при начале', const Color(0xFFE67E22)),
+                      _chipBtn('Фото при завершении', const Color(0xFFE67E22)),
+                      const SizedBox(width: 8),
+                      _chipBtn('Очистить фильтры', const Color(0xFF7B68EE)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: Column(
+              children: [
+                Container(
+                  color: const Color(0xFFF8F9FA),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: const Row(
+                    children: [
+                      SizedBox(width: 400, child: Text('Path', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      SizedBox(width: 150, child: Text('Car', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      SizedBox(width: 150, child: Text('Order', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Type', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      _damageRow('05-792', '76919[...]', 'Завершение'),
+                      _damageRow('05-742', '76920[...]', 'Завершение'),
+                      _damageRow('05-0114', '76919[...]', 'Завершение'),
+                      _damageRow('05-0090', '76919[...]', 'Завершение'),
+                      _damageRow('05-714', '76919[...]', 'Завершение'),
+                      _damageRow('05-0174', '76918[...]', 'Завершение'),
+                      _damageRow('05-0002', '76919[...]', 'Завершение'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _damageRow(String car, String order, String type) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 400,
+            child: Row(
+              children: [
+                Container(
+                  width: 80,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(3),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Icon(Icons.image, size: 30, color: Colors.grey.shade400),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 150, child: Text(car, style: const TextStyle(fontSize: 11))),
+          SizedBox(width: 150, child: Text(order, style: const TextStyle(fontSize: 11, color: Color(0xFF3498DB)))),
+          Expanded(
+            child: Row(
+              children: [
+                Icon(Icons.grid_view, size: 14, color: Colors.grey.shade500),
+                const SizedBox(width: 4),
+                Text(type, style: const TextStyle(fontSize: 11)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _labeledInput(String label, double width) {
+    return Row(
+      children: [
+        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF666666))),
+        const SizedBox(width: 4),
+        SizedBox(
+          width: width,
+          height: 28,
+          child: TextField(
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+            ),
+            style: const TextStyle(fontSize: 11),
+          ),
+        ),
+        const SizedBox(width: 4),
+        InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
       ],
-      buildRow: (item) {
-        final path = (item['path'] ?? item['image_url'] ?? item['photo'] ?? '-').toString();
-        final car = (item['car'] ?? item['scooter_id'] ?? item['car_id'] ?? '-').toString();
-        final order = (item['order'] ?? item['order_id'] ?? '-').toString();
-        final type = (item['type'] ?? item['inspection_type'] ?? '-').toString();
-        return DataRow(cells: [
-          DataCell(Text(path)),
-          DataCell(Text(car)),
-          DataCell(Text(order)),
-          DataCell(Text(type)),
-        ]);
-      },
+    );
+  }
+
+  Widget _chipBtn(String label, Color color) {
+    return Container(
+      margin: const EdgeInsets.only(right: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
+      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
     );
   }
 }
-
-final _inspectionDamagesPageSearchProvider = StateProvider<String>((ref) => '');

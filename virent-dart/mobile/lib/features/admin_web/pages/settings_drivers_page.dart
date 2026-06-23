@@ -1,48 +1,86 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../admin_web_providers.dart';
-import '../widgets/admin_table_page.dart';
-
-class SettingsDriversPage extends ConsumerWidget {
+class SettingsDriversPage extends StatelessWidget {
   const SettingsDriversPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return AdminTablePage(
-      title: 'Настройки Драйверов',
-      provider: settingsDriversProvider,
-      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
-      createButton: ElevatedButton.icon(onPressed:(){},icon:const Icon(Icons.add, size:16),label:const Text("Добавить драйвер"),style:ElevatedButton.styleFrom(backgroundColor:adminPrimaryColor,foregroundColor:adminPrimaryForeground)),
-      columns: const [
-        DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Name')),
-        DataColumn(label: Text('Version')),
-        DataColumn(label: Text('Platform')),
-        DataColumn(label: Text('Active')),
-      ],
-      buildRow: (item) {
-        final id = (item['id'] ?? '-').toString();
-        final name = (item['name'] ?? '-').toString();
-        final version = (item['version'] ?? '-').toString();
-        final platform = (item['platform'] ?? '-').toString();
-        final active = (item['active'] ?? item['is_active'] ?? '-').toString();
-        return DataRow(cells: [
-          DataCell(Text(id)),
-          DataCell(Text(name)),
-          DataCell(Text(version)),
-          DataCell(Text(platform)),
-          DataCell(Text(active)),
-          DataCell(Row(
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
-              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+              const Text('Entries', style: TextStyle(fontSize: 24)),
+              const Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text('Показано 1 до 4 из 4 совпадений', style: TextStyle(color: Colors.grey)),
+                  )),
+              SizedBox(
+                width: 200,
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Поиск...',
+                    isDense: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                  ),
+                ),
+              ),
             ],
-          )),
-        ]);
-      },
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.add, size: 16),
+            label: const Text('Добавить entry'),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
+              elevation: 0,
+              child: ListView(
+                children: [
+                  DataTable(
+                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                    columns: const [
+                      DataColumn(label: Text('Id')),
+                      DataColumn(label: Text('Description')),
+                      DataColumn(label: Text('Type')),
+                      DataColumn(label: Text('Действия')),
+                    ],
+                    rows: [
+                      _buildRow('7', 'Ninebot', 'FLESPI'),
+                      _buildRow('10', 'OKAI 400', 'FLESPI'),
+                      _buildRow('11', 'ecu200', 'gospi'),
+                      _buildRow('12', 'ecu201', 'gospi'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
-}
 
-final _settingsDriversPageSearchProvider = StateProvider<String>((ref) => '');
+  DataRow _buildRow(String id, String desc, String type) {
+    return DataRow(cells: [
+      DataCell(Text(id)),
+      DataCell(Text(desc)),
+      DataCell(Text(type)),
+      DataCell(Row(
+        children: [
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+        ],
+      )),
+    ]);
+  }
+}
