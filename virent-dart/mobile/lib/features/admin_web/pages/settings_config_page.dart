@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../admin_web_providers.dart';
 
-class SettingsConfigPage extends ConsumerWidget {
+class SettingsConfigPage extends StatelessWidget {
   const SettingsConfigPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(settingsConfigProvider);
-    return async.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e", style: const TextStyle(color: Colors.red))),
-      data: (items) {
-        return Container(
+  Widget build(BuildContext context) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: ListView(
         padding: const EdgeInsets.all(16),
@@ -121,9 +114,6 @@ class SettingsConfigPage extends ConsumerWidget {
         ],
       ),
     );
-      };
-    },
-);
   }
 
   Widget _buildSectionTitle(String title) {

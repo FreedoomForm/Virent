@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../admin_web_providers.dart';
 
-class TariffsPage extends ConsumerWidget {
+class TariffsPage extends StatelessWidget {
   const TariffsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(tariffsListProvider);
-    return async.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e", style: const TextStyle(color: Colors.red))),
-      data: (items) {
-        return Padding(
+  Widget build(BuildContext context) {
+    return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,9 +70,6 @@ class TariffsPage extends ConsumerWidget {
         ],
       ),
     );
-      };
-    },
-);
   }
 
   DataRow _buildRow(String nameAdmin, String nameApp, String hold) {

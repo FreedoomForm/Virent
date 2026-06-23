@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ─── Shared admin styling constants ───────────────────────────────────────
 
 /// Primary action colour used across all admin pages.
+const Color adminPageBg = Color(0xFFF5F6FA);
 const Color adminPrimaryColor = Color(0xFF7B68EE);
 
 /// Foreground colour for buttons using [adminPrimaryColor].

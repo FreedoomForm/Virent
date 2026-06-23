@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../admin_web_providers.dart';
 
-class AdminContactsPage extends ConsumerWidget {
+class AdminContactsPage extends StatelessWidget {
   const AdminContactsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(adminContactsProvider);
-    return async.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e", style: const TextStyle(color: Colors.red))),
-      data: (items) {
-        return Container(
+  Widget build(BuildContext context) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,9 +111,6 @@ class AdminContactsPage extends ConsumerWidget {
         ],
       ),
     );
-      };
-    },
-);
   }
 
   Widget _contactRow(String city, String phone, String email, String tg, String wp, String faq, String company) {

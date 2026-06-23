@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../admin_web_providers.dart';
 
-class PaymeTransactionsPage extends ConsumerWidget {
+class PaymeTransactionsPage extends StatelessWidget {
   const PaymeTransactionsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(paymeTransactionsProvider);
-    return async.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e", style: const TextStyle(color: Colors.red))),
-      data: (items) {
-        return Container(
+  Widget build(BuildContext context) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,9 +109,6 @@ class PaymeTransactionsPage extends ConsumerWidget {
         ],
       ),
     );
-      };
-    },
-);
   }
 
   Widget _paymeRow(String id, String payme, String merch, String paymeTime, String create, String perform, String cancel, String stateDesc, bool isError, String state, String amount, String phone, String client, String reason, {bool isWarning = false, bool isSuccess = false}) {

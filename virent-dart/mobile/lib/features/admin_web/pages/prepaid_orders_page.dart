@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../admin_web_providers.dart';
 
-class PrepaidOrdersPage extends ConsumerWidget {
+class PrepaidOrdersPage extends StatelessWidget {
   const PrepaidOrdersPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(prepaidOrdersProvider);
-    return async.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e", style: const TextStyle(color: Colors.red))),
-      data: (items) {
-        return Container(
+  Widget build(BuildContext context) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,9 +114,6 @@ class PrepaidOrdersPage extends ConsumerWidget {
         ],
       ),
     );
-      };
-    },
-);
   }
 
   Widget _prepaidRow(String id, String token, String car, String client, String company, String abon, String amount, String status, String trans, String order, String created, String type) {

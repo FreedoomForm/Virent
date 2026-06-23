@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../admin_web_providers.dart';
 
-class LogsTelemetryPage extends ConsumerWidget {
+class LogsTelemetryPage extends StatelessWidget {
   const LogsTelemetryPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(logsTelemetryProvider);
-    return async.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e", style: const TextStyle(color: Colors.red))),
-      data: (items) {
-        return Container(
+  Widget build(BuildContext context) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,9 +136,6 @@ class LogsTelemetryPage extends ConsumerWidget {
         ],
       ),
     );
-      };
-    },
-);
   }
 
   Widget _telemetryRow(String id, String carId, String gosnomer, String mileage, String ecuErr, String ecuErrType, String orderId, bool icon1, bool icon2, bool icon3, bool icon4, bool isMotion, String val1, String val2, String val3, String val4, String val5, String val6, String eventTime, String serverTime) {

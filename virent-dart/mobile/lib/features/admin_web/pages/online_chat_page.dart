@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../admin_web_providers.dart';
 
-class OnlineChatPage extends ConsumerWidget {
+class OnlineChatPage extends StatelessWidget {
   const OnlineChatPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(chatLogsProvider);
-    return async.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e", style: const TextStyle(color: Colors.red))),
-      data: (items) {
-        return Container(
+  Widget build(BuildContext context) {
+    return Container(
       color: const Color(0xFFEEEEEE),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -171,9 +164,6 @@ class OnlineChatPage extends ConsumerWidget {
         ],
       ),
     );
-      };
-    },
-);
   }
 
   Widget _clientItem(String id, String time, bool unread) {

@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../admin_web_providers.dart';
 
-class BillingInvoicesPage extends ConsumerWidget {
+class BillingInvoicesPage extends StatelessWidget {
   const BillingInvoicesPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(billingReceiptsProvider);
-    return async.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e", style: const TextStyle(color: Colors.red))),
-      data: (items) {
-        return Container(
+  Widget build(BuildContext context) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,9 +117,6 @@ class BillingInvoicesPage extends ConsumerWidget {
         ],
       ),
     );
-      };
-    },
-);
   }
 
   Widget _invoiceRow(String id, String hold, String company, String operator, String order, String amount, String client, String redis, String status, String created, String resultCode, String type, String trans, String uzcard, String cardPan, String codeMsg, bool showReturn, bool showCreate) {
