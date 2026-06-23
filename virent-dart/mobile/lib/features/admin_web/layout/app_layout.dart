@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/services/ngrok_tunnel_service.dart';
+import '../../../main.dart';
 import '../pages/dashboard_page.dart';
 import 'sidebar.dart';
 import 'header.dart';
@@ -79,6 +82,8 @@ class _AppLayoutState extends State<AppLayout> {
       body: Column(
         children: [
           const AppHeader(),
+          // ── Server status bar ──
+          _ServerStatusBar(),
           Expanded(
             child: Row(
               children: [
