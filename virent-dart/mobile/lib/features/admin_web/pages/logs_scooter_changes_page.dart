@@ -115,6 +115,7 @@ class LogsScooterChangesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _scooterLog(String id, String num, String orderId, String model, String online, String compId, String user, String geo, String updTime, String creTime, String flespi, String imei, String lastOrder) {

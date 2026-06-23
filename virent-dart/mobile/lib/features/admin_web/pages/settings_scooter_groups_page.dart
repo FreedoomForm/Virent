@@ -78,6 +78,7 @@ class SettingsScooterGroupsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   DataRow _buildRow(String id, String desc, String eq) {

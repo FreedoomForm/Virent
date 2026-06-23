@@ -122,6 +122,7 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _labeledInput(String label, double width) {

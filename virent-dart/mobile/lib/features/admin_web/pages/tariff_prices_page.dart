@@ -101,6 +101,7 @@ class TariffPricesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _priceRow(String name, String timeUnit) {

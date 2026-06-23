@@ -125,6 +125,7 @@ class TechniciansPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _techRow(String id, String name, String login, String companies, String techKey, String apiToken, String permissions, String admin, String pass, String curComp) {

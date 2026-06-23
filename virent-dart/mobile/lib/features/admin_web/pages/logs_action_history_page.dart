@@ -112,6 +112,7 @@ class LogsActionHistoryPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _actionRow(String objectId, String userEmail, String key, String newVal, String oldVal, String date, {bool isTech = false}) {

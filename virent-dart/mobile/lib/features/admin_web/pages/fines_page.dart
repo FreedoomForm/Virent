@@ -87,6 +87,7 @@ class FinesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _fineRow(String id, String clientId, String amount, String holdId, String orderId, String billId, String desc, String timestamp, String status, String cardPan, String transId, String uzcardId, {bool showButtons = false}) {

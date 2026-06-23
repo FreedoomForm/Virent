@@ -111,6 +111,7 @@ class ClientGroupsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _groupRow(String id, String desc) {

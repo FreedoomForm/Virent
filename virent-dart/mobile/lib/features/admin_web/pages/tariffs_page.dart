@@ -77,6 +77,7 @@ class TariffsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   DataRow _buildRow(String nameAdmin, String nameApp, String hold) {

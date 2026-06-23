@@ -109,6 +109,7 @@ class LogsPaymentsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _col(String text) {

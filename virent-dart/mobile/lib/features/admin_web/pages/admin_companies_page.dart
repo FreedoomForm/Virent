@@ -116,6 +116,7 @@ class AdminCompaniesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _companyRow(String id, String name, String cpPub) {

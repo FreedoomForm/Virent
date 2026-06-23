@@ -110,6 +110,7 @@ class TariffAbonementsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _abonementRow(String tariff, String desc, String overrun, String cost) {

@@ -100,6 +100,7 @@ class HoldLogsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _dateInput() {

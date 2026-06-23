@@ -96,6 +96,7 @@ class PromoSeriesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _seriesRow(String id, String name, bool isActive) {

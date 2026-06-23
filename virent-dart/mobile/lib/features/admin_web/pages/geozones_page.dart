@@ -135,6 +135,7 @@ class GeozonesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _filterButton(String text, {bool isPurple = false, bool isLightBg = false}) {

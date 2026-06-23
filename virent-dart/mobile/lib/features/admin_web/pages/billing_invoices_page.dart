@@ -124,6 +124,7 @@ class BillingInvoicesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _invoiceRow(String id, String hold, String company, String operator, String order, String amount, String client, String redis, String status, String created, String resultCode, String type, String trans, String uzcard, String cardPan, String codeMsg, bool showReturn, bool showCreate) {

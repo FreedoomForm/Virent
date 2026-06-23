@@ -100,6 +100,7 @@ class PromoCodesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _promoRow(String id, String code, String bonus, String usage, String group, bool isActive, String expires) {

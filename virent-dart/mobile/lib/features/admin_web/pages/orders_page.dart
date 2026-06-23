@@ -160,6 +160,7 @@ class OrdersPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _orderRow(String id, String clientId, String clientName, String car, String tariff, String abon, String dur, String status, String mileage, String start, String finish, String cost) {

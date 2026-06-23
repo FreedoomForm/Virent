@@ -140,6 +140,7 @@ class SelfiesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _filterBtn(String label, Color color) {

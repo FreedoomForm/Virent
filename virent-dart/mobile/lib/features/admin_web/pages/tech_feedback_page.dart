@@ -126,6 +126,7 @@ class TechFeedbackPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _feedbackRow(String id, String carId, String clientId, String orderId, String type, String createdAt, String updatedAt) {

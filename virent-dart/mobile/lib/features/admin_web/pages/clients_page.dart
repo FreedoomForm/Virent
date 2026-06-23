@@ -139,6 +139,7 @@ class ClientsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   static Widget _clientRow(String id, String phone, String data, String debt, bool active, bool blocked, String comment) {

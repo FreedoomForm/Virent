@@ -125,6 +125,7 @@ class BonusesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _bonusRow(String id, String client, String sum, String whoAdded, String created, String comment, String company) {

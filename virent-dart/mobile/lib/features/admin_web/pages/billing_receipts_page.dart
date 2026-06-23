@@ -115,6 +115,7 @@ class BillingReceiptsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _receiptRow(String id, String uuid, String check, String providerUuid, String bill, String status, String client, String amount, String created, String company, String order, String sendable) {

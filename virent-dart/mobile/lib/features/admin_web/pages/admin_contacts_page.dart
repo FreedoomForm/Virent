@@ -118,6 +118,7 @@ class AdminContactsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _contactRow(String city, String phone, String email, String tg, String wp, String faq, String company) {

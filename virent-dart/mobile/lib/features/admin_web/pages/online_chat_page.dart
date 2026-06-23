@@ -171,6 +171,7 @@ class OnlineChatPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _clientItem(String id, String time, bool unread) {

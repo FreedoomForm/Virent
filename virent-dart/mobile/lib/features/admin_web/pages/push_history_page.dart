@@ -129,6 +129,7 @@ class PushHistoryPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _pushRow(String id, String client, String text, String isRead, String deleted, String created, String clientId, String clientName) {

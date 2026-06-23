@@ -95,6 +95,7 @@ class BonusPackagesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _packageRow(String bonus, String cost, bool isActive) {

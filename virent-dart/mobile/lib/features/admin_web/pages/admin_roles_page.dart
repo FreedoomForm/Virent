@@ -115,6 +115,7 @@ class AdminRolesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _roleRow(String name, String permissions) {

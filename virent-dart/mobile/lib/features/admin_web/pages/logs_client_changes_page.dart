@@ -108,6 +108,7 @@ class LogsClientChangesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _clientLog(String id, String clientId, String tariffs, String token, String bonus, String groups, String isActive, String isBlocked, String isDeleted, String isNew, String date) {

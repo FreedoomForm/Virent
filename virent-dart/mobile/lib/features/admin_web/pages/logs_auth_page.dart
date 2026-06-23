@@ -99,6 +99,7 @@ class LogsAuthPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _authRow(String id, String client, String phone, String ip, String time, String smsCode, bool isSuccess) {

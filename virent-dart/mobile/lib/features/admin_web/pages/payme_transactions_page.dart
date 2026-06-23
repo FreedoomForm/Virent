@@ -116,6 +116,7 @@ class PaymeTransactionsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _paymeRow(String id, String payme, String merch, String paymeTime, String create, String perform, String cancel, String stateDesc, bool isError, String state, String amount, String phone, String client, String reason, {bool isWarning = false, bool isSuccess = false}) {

@@ -76,6 +76,7 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   DataRow _buildRow(String tariff, String desc, String overrun, String cost) {

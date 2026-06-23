@@ -121,6 +121,7 @@ class ScooterGroupsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _groupRow(String id, String desc, String trigger) {

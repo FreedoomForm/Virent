@@ -121,6 +121,7 @@ class SettingsConfigPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _buildSectionTitle(String title) {

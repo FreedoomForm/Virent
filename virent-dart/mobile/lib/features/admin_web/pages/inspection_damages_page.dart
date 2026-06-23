@@ -110,6 +110,7 @@ class InspectionDamagesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _damageRow(String car, String order, String type) {

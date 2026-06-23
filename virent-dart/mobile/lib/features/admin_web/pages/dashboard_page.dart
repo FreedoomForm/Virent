@@ -56,6 +56,7 @@ class DashboardPage extends ConsumerWidget {
         ),
       ),
     );
+  )
   }
 
   Widget _buildStatsGrid(BuildContext context) {

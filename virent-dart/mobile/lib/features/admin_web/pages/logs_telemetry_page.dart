@@ -143,6 +143,7 @@ class LogsTelemetryPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _telemetryRow(String id, String carId, String gosnomer, String mileage, String ecuErr, String ecuErrType, String orderId, bool icon1, bool icon2, bool icon3, bool icon4, bool isMotion, String val1, String val2, String val3, String val4, String val5, String val6, String eventTime, String serverTime) {

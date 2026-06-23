@@ -122,6 +122,7 @@ class DotsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _dotRow(String id, String name, String lat, String lon, String type, String radius, String active, String desc) {

@@ -75,6 +75,7 @@ class SmsLogsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   DataRow _buildRow(String id, String phone, String code, String t1, String t2, String t3, String ct, String la, String key) {

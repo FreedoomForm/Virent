@@ -113,6 +113,7 @@ class AdminAgreementsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _agreementRow(String file, String urlLabel, String htmlFile) {

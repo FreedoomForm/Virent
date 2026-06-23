@@ -99,6 +99,7 @@ class ChatLogsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _buildFilterInput(String label, double width, {String hint = ''}) {

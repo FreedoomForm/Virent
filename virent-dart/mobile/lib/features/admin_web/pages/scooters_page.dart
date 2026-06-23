@@ -152,6 +152,7 @@ class ScootersPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _scooterRow(int id, String gos) {

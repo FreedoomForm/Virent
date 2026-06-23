@@ -115,6 +115,7 @@ class ClickTransactionsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _clickRow(String id, String trans, String paydoc, String merchTrans, String merchPrep, String merchConf, String amount, String action, String status, String error, String errorNote, String sign, String created, String updated) {

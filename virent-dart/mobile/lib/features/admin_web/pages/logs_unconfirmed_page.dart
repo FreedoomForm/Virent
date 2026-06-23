@@ -109,6 +109,7 @@ class LogsUnconfirmedPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _unconfirmedRow(String id, String phone, String smsCode, String count, String countAll, String tryLogin, String createTime, String lastAttempt, String checkKey) {

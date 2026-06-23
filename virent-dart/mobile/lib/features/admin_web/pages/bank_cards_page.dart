@@ -107,6 +107,7 @@ class BankCardsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _cardRow(String id, String client, String holder, String bank, String country, String card, String token, String type, String deleted) {

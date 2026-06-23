@@ -134,6 +134,7 @@ class AdminAccountsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _adminRow(String id, String name, String email, String utc, String roles) {

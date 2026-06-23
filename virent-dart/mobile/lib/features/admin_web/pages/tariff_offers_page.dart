@@ -110,6 +110,7 @@ class TariffOffersPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _tariffRow(String adminName, String appName, String hold) {

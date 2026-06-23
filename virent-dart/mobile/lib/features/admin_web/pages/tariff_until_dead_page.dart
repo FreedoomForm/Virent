@@ -80,6 +80,7 @@ class TariffUntilDeadPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _tariffRow(String appName, String adminName, String duration, String insurance, String cost, String batteryLevel) {

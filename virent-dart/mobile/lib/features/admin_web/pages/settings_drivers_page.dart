@@ -74,6 +74,7 @@ class SettingsDriversPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   DataRow _buildRow(String id, String desc, String type) {

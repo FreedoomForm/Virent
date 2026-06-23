@@ -113,6 +113,7 @@ class AdminPermissionsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _permRow(String name, String title) {

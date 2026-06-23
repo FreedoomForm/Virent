@@ -141,6 +141,7 @@ class AlertsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _filterButton(String label, Color color) {

@@ -113,6 +113,7 @@ class DriversPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _driverRow(String id, String desc, String type) {

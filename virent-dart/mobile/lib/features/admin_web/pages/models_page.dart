@@ -119,6 +119,7 @@ class ModelsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _modelRow(String id, bool isPublic, String image, String brand, String model, String deviceType) {

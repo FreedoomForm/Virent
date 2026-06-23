@@ -109,6 +109,7 @@ class AdminFaqPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 
   Widget _faqRow(String name, String desc) {
