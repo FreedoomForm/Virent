@@ -22,7 +22,7 @@ class AppHeader extends StatelessWidget {
           const SizedBox(width: 16),
           IconButton(
             icon: const Icon(Icons.menu, color: Colors.white),
-            onPressed: () {},
+            onPressed: () => Scaffold.of(context).openDrawer(),
           ),
           const Spacer(),
           // Tags

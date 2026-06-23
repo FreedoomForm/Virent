@@ -10,10 +10,7 @@ class AlertsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncItems = ref.watch(alertsListProvider);
 
-    return asyncItems.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Ошибка загрузки: \$e', style: const TextStyle(color: Colors.red))),
-      data: (items) => Padding(
+    return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,18 +78,23 @@ class AlertsPage extends ConsumerWidget {
             child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
-              child: SingleChildScrollView(
-                child: DataTable(
-                  headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                  dataRowMaxHeight: 50,
-                  columns: const [
-                    DataColumn(label: Text('Icon')),
-                    DataColumn(label: Text('scooterId')),
-                    DataColumn(label: Text('alertType')),
-                    DataColumn(label: Text('time')),
-                    DataColumn(label: Text('status')),
-                  ],
-                  rows: items.isEmpty ? [const DataRow(cells: [DataCell(Center(child: Text("В таблице нет доступных данных", style: TextStyle(color: Colors.grey))))])] : items.map(_buildItemRow).toList()                ),
+              child: asyncItems.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+                data: (items) => SingleChildScrollView(
+                  child: DataTable(
+                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                    dataRowMaxHeight: 50,
+                    columns: const [
+                      DataColumn(label: Text('Icon')),
+                      DataColumn(label: Text('scooterId')),
+                      DataColumn(label: Text('alertType')),
+                      DataColumn(label: Text('time')),
+                      DataColumn(label: Text('status')),
+                    ],
+                    rows: items.map(_buildRow).toList(),
+                  ),
+                ),
               ),
             ),
           )
@@ -101,15 +103,24 @@ class AlertsPage extends ConsumerWidget {
     );
   }
 
-  DataRow_buildItemRow(Map<String, dynamic> item) {
-    final icon = (item['icon'] ?? '').toString();
-    final iconColor = (item['iconColor'] ?? '').toString();
-    final sId = (item['sId'] ?? '').toString();
-    final type = (item['type'] ?? '').toString();
-    final time = (item['created_at'] ?? '').toString();
-    final st = (item['status'] ?? '').toString();
-    final isClosed} = (item['isClosed}'] ?? '').toString();
-
+  DataRow _buildRow(Map<String, dynamic> a) {
+    final isClosed = (a['status'] ?? '').toString().contains('закрыт');
+    final iconType = (a['alert_type'] ?? a['alertType'] ?? '').toString();
+    IconData icon;
+    Color iconColor;
+    if (iconType.contains('связи') || iconType.contains('offline')) {
+      icon = Icons.signal_cellular_off;
+      iconColor = Colors.red;
+    } else if (iconType.contains('разряжен') || iconType.contains('battery')) {
+      icon = Icons.battery_alert;
+      iconColor = Colors.red;
+    } else if (isClosed) {
+      icon = Icons.check_box;
+      iconColor = Colors.green;
+    } else {
+      icon = Icons.lock;
+      iconColor = Colors.orange;
+    }
     final bgColor = isClosed ? const Color(0xFFC8E6C9) : const Color(0xFFFFCDD2);
     return DataRow(
       color: MaterialStateProperty.all(bgColor),
@@ -119,15 +130,11 @@ class AlertsPage extends ConsumerWidget {
           color: Colors.black,
           child: Icon(icon, color: iconColor, size: 16),
         )),
-        DataCell(Text(sId, style: const TextStyle(color: Colors.blue))),
-        DataCell(Text(type)),
-        DataCell(Text(time)),
-        DataCell(Text(st)),
+        DataCell(Text((a['scooter_id'] ?? a['scooterId'] ?? '-').toString(), style: const TextStyle(color: Colors.blue))),
+        DataCell(Text((a['alert_type'] ?? a['alertType'] ?? '-').toString())),
+        DataCell(Text((a['time'] ?? a['created_at'] ?? '-').toString())),
+        DataCell(Text((a['status'] ?? '-').toString())),
       ],
     );
-  
-    );
-  ),
-);
   }
 }

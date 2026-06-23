@@ -2,94 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
+import '../widgets/admin_table_page.dart';
 
 class PromoSeriesPage extends ConsumerWidget {
   const PromoSeriesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncItems = ref.watch(promoSeriesProvider);
-
-    return asyncItems.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Ошибка загрузки: \$e', style: const TextStyle(color: Colors.red))),
-      data: (items) => Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return AdminTablePage(
+      title: 'Серии Промокодов',
+      provider: promoSeriesProvider,
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
+      createButton: ElevatedButton.icon(onPressed:(){},icon:const Icon(Icons.add, size:16),label:const Text("Добавить серию"),style:ElevatedButton.styleFrom(backgroundColor:adminPrimaryColor,foregroundColor:adminPrimaryForeground)),
+      columns: const [
+        DataColumn(label: Text('Id')),
+        DataColumn(label: Text('Name')),
+        DataColumn(label: Text('Prefix')),
+        DataColumn(label: Text('Bonus')),
+        DataColumn(label: Text('Usage limit')),
+        DataColumn(label: Text('Is active')),
+        DataColumn(label: Text('Expires')),
+      ],
+      buildRow: (item) {
+        final id = (item['id'] ?? '-').toString();
+        final name = (item['name'] ?? '-').toString();
+        final prefix = (item['prefix'] ?? '-').toString();
+        final bonus = (item['bonus'] ?? item['amount'] ?? '-').toString();
+        final usage_limit = (item['usage_limit'] ?? item['limit'] ?? '-').toString();
+        final is_active = (item['is_active'] ?? item['active'] ?? '-').toString();
+        final expires = (item['expires'] ?? item['expires_at'] ?? '-').toString();
+        return DataRow(cells: [
+          DataCell(Text(id)),
+          DataCell(Text(name)),
+          DataCell(Text(prefix)),
+          DataCell(Text(bonus)),
+          DataCell(Text(usage_limit)),
+          DataCell(Text(is_active)),
+          DataCell(Text(expires)),
+          DataCell(Row(
             children: [
-              const Text('Серии Промокодов', style: TextStyle(fontSize: 24)),
-              const Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('Показано 1 до 4 из 4 совпадений', style: TextStyle(color: Colors.grey)),
-                  )),
-              SizedBox(
-                width: 200,
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Поиск...',
-                    isDense: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
-                  ),
-                ),
-              ),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
             ],
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.add, size: 16),
-            label: const Text('Добавить Серия промокодов'),
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
-          ),
-          const SizedBox(height: 16),
-          // Table mockup
-          Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
-              elevation: 0,
-              child: ListView(
-                children: [
-                  DataTable(
-                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                    columns: const [
-                      DataColumn(label: Text('ID')),
-                      DataColumn(label: Text('Название')),
-                      DataColumn(label: Text('Активна')),
-                      DataColumn(label: Text('Действия')),
-                    ],
-                    rows: items.isEmpty ? [const DataRow(cells: [DataCell(Center(child: Text("В таблице нет доступных данных", style: TextStyle(color: Colors.grey))))])] : items.map(_buildItemRow).toList()                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
+          )),
+        ]);
+      },
     );
-  }
-
-  DataRow_buildItemRow(Map<String, dynamic> item) {
-    final id = (item['id'] ?? '').toString();
-    final name = (item['name'] ?? '').toString();
-
-    return DataRow(cells: [
-      DataCell(Text(id)),
-      DataCell(Text(name)),
-      const DataCell(Icon(Icons.check_box, color: Colors.green)),
-      DataCell(Row(
-        children: [
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
-        ],
-      )),
-    ]);
-  
-    );
-  ),
-);
   }
 }
+
+final _promoSeriesPageSearchProvider = StateProvider<String>((ref) => '');

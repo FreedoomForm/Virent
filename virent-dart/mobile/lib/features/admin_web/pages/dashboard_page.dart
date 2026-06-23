@@ -8,12 +8,9 @@ class DashboardPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncItems = ref.watch(dashboardStatsProvider);
+    final statsAsync = ref.watch(dashboardStatsProvider);
 
-    return asyncItems.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Ошибка загрузки: \$e', style: const TextStyle(color: Colors.red))),
-      data: (items) => SingleChildScrollView(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,63 +20,67 @@ class DashboardPage extends ConsumerWidget {
             style: TextStyle(fontSize: 28, fontWeight: FontWeight.normal),
           ),
           const SizedBox(height: 24),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Left Column (Stats and Lists)
-              Expanded(
-                flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildStatsGrid(context),
-                    const SizedBox(height: 24),
-                    _buildListsSection(),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 24),
-              // Right Column (Controls & Forms)
-              Expanded(
-                flex: 1,
-                child: Column(
-                  children: [
-                    _buildControlPanel(),
-                    const SizedBox(height: 24),
-                    _buildPushPanel(),
-                  ],
-                ),
-              ),
-            ],
+          statsAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+            data: (stats) => _buildDashboard(context, stats),
           ),
         ],
       ),
     );
   }
 
-  Widget_buildStatsGrid(BuildContext context) {
+  Widget _buildDashboard(BuildContext context, Map<String, dynamic> stats) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildStatsGrid(context, stats),
+              const SizedBox(height: 24),
+              _buildListsSection(stats),
+            ],
+          ),
+        ),
+        const SizedBox(width: 24),
+        Expanded(
+          flex: 1,
+          child: Column(
+            children: [
+              _buildControlPanel(),
+              const SizedBox(height: 24),
+              _buildPushPanel(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatsGrid(BuildContext context, Map<String, dynamic> s) {
     return Wrap(
       spacing: 16,
       runSpacing: 16,
       children: [
-        _buildStatCard(context, 'Всего', '300', const Color(0xFF1B2032)),
-        _buildStatCard(context, 'На линии', '241', const Color(0xFF16A085)),
-        _buildStatCard(context, 'Не на линии', '59', const Color(0xFFF39C12)),
-        _buildStatCard(context, 'На складе', '1', const Color(0xFFF1C40F)),
-        _buildStatCard(context, 'В техничке', '50', const Color(0xFFF5D76E)),
-        _buildStatCard(context, 'Свободно', '237', const Color(0xFF5DADE2)),
-        _buildStatCard(context, 'Бронь', '0', const Color(0xFF1ABC9C)),
-        _buildStatCard(context, 'В аренде', '4', const Color(0xFF8E44AD)),
-        _buildStatCard(context, 'Онлайн', '268', const Color(0xFF2ECC71)),
-        _buildStatCard(context, 'Не онлайн', '32', const Color(0xFFD9534F)),
+        _statCard(context, 'Всего', s['total'], const Color(0xFF1B2032)),
+        _statCard(context, 'На линии', s['online'], const Color(0xFF16A085)),
+        _statCard(context, 'Не на линии', s['offline'], const Color(0xFFF39C12)),
+        _statCard(context, 'На складе', s['in_warehouse'], const Color(0xFFF1C40F)),
+        _statCard(context, 'В техничке', s['in_service'], const Color(0xFFF5D76E)),
+        _statCard(context, 'Свободно', s['free'], const Color(0xFF5DADE2)),
+        _statCard(context, 'Бронь', s['booked'], const Color(0xFF1ABC9C)),
+        _statCard(context, 'В аренде', s['in_ride'], const Color(0xFF8E44AD)),
+        _statCard(context, 'Онлайн', s['online'], const Color(0xFF2ECC71)),
+        _statCard(context, 'Не онлайн', s['offline'], const Color(0xFFD9534F)),
       ],
     );
-    );
-  ),
-);
   }
 
-  Widget _buildStatCard(BuildContext context, String title, String value, Color bgColor) {
+  Widget _statCard(BuildContext context, String title, dynamic value, Color bgColor) {
+    final display = value?.toString() ?? '0';
     return InkWell(
       onTap: () {
         showDialog(
@@ -110,18 +111,12 @@ class DashboardPage extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
+                    const Padding(
+                      padding: EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          RichText(text: const TextSpan(children: [TextSpan(text: 'Самокат: ', style: TextStyle(color: Colors.black)), TextSpan(text: '2056', style: TextStyle(color: Colors.blue))])),
-                          const SizedBox(height: 4),
-                          RichText(text: const TextSpan(children: [TextSpan(text: 'Самокат: ', style: TextStyle(color: Colors.black)), TextSpan(text: '2060', style: TextStyle(color: Colors.blue))])),
-                          const SizedBox(height: 4),
-                          RichText(text: const TextSpan(children: [TextSpan(text: 'Самокат: ', style: TextStyle(color: Colors.black)), TextSpan(text: '624', style: TextStyle(color: Colors.blue))])),
-                          const SizedBox(height: 4),
-                          RichText(text: const TextSpan(children: [TextSpan(text: 'Самокат: ', style: TextStyle(color: Colors.black)), TextSpan(text: '940', style: TextStyle(color: Colors.blue))])),
+                          Text('Детальная информация появится здесь', style: TextStyle(color: Colors.black54)),
                         ],
                       ),
                     ),
@@ -157,30 +152,27 @@ class DashboardPage extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(title, style: const TextStyle(color: Colors.white, fontSize: 14)),
-            Text(value, style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+            Text(display, style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildListsSection() {
+  Widget _buildListsSection(Map<String, dynamic> s) {
+    final tariffs = (s['tariffs_in_use'] as List<dynamic>? ?? []).cast<Map<String, dynamic>>();
+    final abonements = (s['abonements_in_use'] as List<dynamic>? ?? []).cast<Map<String, dynamic>>();
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(child: _buildListCard('Тарифы в аренде', [
-          {'title': 'Минутный ИП Асилбеков', 'count': '3'},
-          {'title': 'Для 30мин ИП Асилбеков', 'count': '1'},
-        ])),
+        Expanded(child: _buildListCard('Тарифы в аренде', tariffs)),
         const SizedBox(width: 16),
-        Expanded(child: _buildListCard('Абонементы в аренде', [
-          {'title': '30 Мин ИП Асилбеков', 'count': '1'},
-        ])),
+        Expanded(child: _buildListCard('Абонементы в аренде', abonements)),
       ],
     );
   }
 
-  Widget _buildListCard(String title, List<Map<String, String>> items) {
+  Widget _buildListCard(String title, List<Map<String, dynamic>> items) {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF7B68EE),
@@ -203,11 +195,11 @@ class DashboardPage extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(item['title']!, style: const TextStyle(color: Colors.white)),
+                    Text((item['title'] ?? item['name'] ?? '').toString(), style: const TextStyle(color: Colors.white)),
                     CircleAvatar(
                       radius: 12,
                       backgroundColor: Colors.white.withOpacity(0.3),
-                      child: Text(item['count']!, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                      child: Text((item['count'] ?? item['value'] ?? '0').toString(), style: const TextStyle(color: Colors.white, fontSize: 12)),
                     )
                   ],
                 ),
