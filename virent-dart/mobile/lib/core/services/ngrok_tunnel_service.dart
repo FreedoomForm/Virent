@@ -205,14 +205,3 @@ class NgrokTunnelService {
   }
 }
 
-/// Returns a human-readable status message for the tunnel.
-String get statusMessage {
-  switch (_ref.read(tunnelStatusProvider)) {
-    case TunnelStatus.idle: return 'Туннель не запущен';
-    case TunnelStatus.extracting: return 'Извлечение ngrok...';
-    case TunnelStatus.starting: return 'Запуск туннеля...';
-    case TunnelStatus.running: return 'Туннель активен: $url';
-    case TunnelStatus.notFound: return 'ngrok не найден. Скачайте ngrok.exe в %APPDATA%/Virent/';
-    case TunnelStatus.error: return 'Ошибка туннеля. Используйте локальный IP.';
-  }
-}
