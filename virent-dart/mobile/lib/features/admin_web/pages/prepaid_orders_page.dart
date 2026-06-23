@@ -12,7 +12,8 @@ class PrepaidOrdersPage extends ConsumerWidget {
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-      data: (items) => Container(
+      data: (items) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,6 +123,8 @@ class PrepaidOrdersPage extends ConsumerWidget {
       ),
     );
   )
+  },
+);
   }
 
   Widget _prepaidRow(String id, String token, String car, String client, String company, String abon, String amount, String status, String trans, String order, String created, String type) {

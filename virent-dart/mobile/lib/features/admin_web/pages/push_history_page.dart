@@ -12,7 +12,8 @@ class PushHistoryPage extends ConsumerWidget {
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-      data: (items) => Container(
+      data: (items) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,6 +131,8 @@ class PushHistoryPage extends ConsumerWidget {
       ),
     );
   )
+  },
+);
   }
 
   Widget _pushRow(String id, String client, String text, String isRead, String deleted, String created, String clientId, String clientName) {

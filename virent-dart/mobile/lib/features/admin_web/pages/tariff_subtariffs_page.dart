@@ -12,7 +12,8 @@ class TariffSubTariffsPage extends ConsumerWidget {
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-      data: (items) => Padding(
+      data: (items) {
+    return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,5 +104,7 @@ class TariffSubTariffsPage extends ConsumerWidget {
       ),
     );
   )
+  },
+);
   }
 }

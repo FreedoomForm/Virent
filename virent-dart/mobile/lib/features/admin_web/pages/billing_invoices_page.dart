@@ -12,7 +12,8 @@ class BillingInvoicesPage extends ConsumerWidget {
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-      data: (items) => Container(
+      data: (items) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,6 +126,8 @@ class BillingInvoicesPage extends ConsumerWidget {
       ),
     );
   )
+  },
+);
   }
 
   Widget _invoiceRow(String id, String hold, String company, String operator, String order, String amount, String client, String redis, String status, String created, String resultCode, String type, String trans, String uzcard, String cardPan, String codeMsg, bool showReturn, bool showCreate) {

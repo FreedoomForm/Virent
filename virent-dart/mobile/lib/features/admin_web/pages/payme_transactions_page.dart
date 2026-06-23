@@ -12,7 +12,8 @@ class PaymeTransactionsPage extends ConsumerWidget {
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-      data: (items) => Container(
+      data: (items) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,6 +118,8 @@ class PaymeTransactionsPage extends ConsumerWidget {
       ),
     );
   )
+  },
+);
   }
 
   Widget _paymeRow(String id, String payme, String merch, String paymeTime, String create, String perform, String cancel, String stateDesc, bool isError, String state, String amount, String phone, String client, String reason, {bool isWarning = false, bool isSuccess = false}) {

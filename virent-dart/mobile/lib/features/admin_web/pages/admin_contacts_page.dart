@@ -12,7 +12,8 @@ class AdminContactsPage extends ConsumerWidget {
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-      data: (items) => Container(
+      data: (items) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,6 +120,8 @@ class AdminContactsPage extends ConsumerWidget {
       ),
     );
   )
+  },
+);
   }
 
   Widget _contactRow(String city, String phone, String email, String tg, String wp, String faq, String company) {

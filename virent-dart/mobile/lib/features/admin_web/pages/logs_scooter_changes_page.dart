@@ -12,7 +12,8 @@ class LogsScooterChangesPage extends ConsumerWidget {
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-      data: (items) => Container(
+      data: (items) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,6 +117,8 @@ class LogsScooterChangesPage extends ConsumerWidget {
       ),
     );
   )
+  },
+);
   }
 
   Widget _scooterLog(String id, String num, String orderId, String model, String online, String compId, String user, String geo, String updTime, String creTime, String flespi, String imei, String lastOrder) {

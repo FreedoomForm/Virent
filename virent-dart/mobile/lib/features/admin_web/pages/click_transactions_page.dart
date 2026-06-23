@@ -12,7 +12,8 @@ class ClickTransactionsPage extends ConsumerWidget {
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-      data: (items) => Container(
+      data: (items) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,6 +117,8 @@ class ClickTransactionsPage extends ConsumerWidget {
       ),
     );
   )
+  },
+);
   }
 
   Widget _clickRow(String id, String trans, String paydoc, String merchTrans, String merchPrep, String merchConf, String amount, String action, String status, String error, String errorNote, String sign, String created, String updated) {

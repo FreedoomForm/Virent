@@ -12,7 +12,8 @@ class OrdersPage extends ConsumerWidget {
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-      data: (items) => Container(
+      data: (items) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,6 +162,8 @@ class OrdersPage extends ConsumerWidget {
       ),
     );
   )
+  },
+);
   }
 
   Widget _orderRow(String id, String clientId, String clientName, String car, String tariff, String abon, String dur, String status, String mileage, String start, String finish, String cost) {
