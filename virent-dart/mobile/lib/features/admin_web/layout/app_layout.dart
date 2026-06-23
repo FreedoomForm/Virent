@@ -83,7 +83,7 @@ class _AppLayoutState extends State<AppLayout> {
         children: [
           const AppHeader(),
           // ── Server status bar ──
-          const _ServerStatusBar(),
+          _ServerStatusBar(),
           Expanded(
             child: Row(
               children: [
