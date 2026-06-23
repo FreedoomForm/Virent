@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class FinesPage extends StatelessWidget {
+class FinesPage extends ConsumerWidget {
   const FinesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(finesListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      data: (items) {
+        return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +70,7 @@ class FinesPage extends StatelessWidget {
                     Expanded(
                       child: ListView(
                         children: [
-                          _fineRow('1TH6vudSDF954uqo...', '268355', '20000000', '', '', '', '', '27.07.2025 21:03:55', 'debt', '', '', ''),
+                          _fineRow('1TH6vudSDF954uqo...', '268355', '20000000', '', '', '', '', '27.07.2025 21:03:55', 'debt', '', '', '', ''),
                           _fineRow('6882f576b40350335...', '266868', '20000000', '', '', '6882f576b403503...', '', '25.07.2025 08:09:46', 'confirm', '', '', '1753412987', showButtons: false),
                           _fineRow('6864bd8b436464e2...', '253376', '1000000', '', '', '6864bd8b436464...', '', '02.07.2025 10:03:07', 'HOLD', '', '', '', showButtons: true),
                           _fineRow('6864bd738f558c267...', '253376', '1000000', '', '', '6864bd738f558c...', '', '02.07.2025 10:02:44', 'HOLD', '', '', '', showButtons: true),
@@ -79,6 +86,8 @@ class FinesPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+      },
     );
   }
 

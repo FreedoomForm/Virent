@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class ScootersPage extends StatelessWidget {
+class ScootersPage extends ConsumerWidget {
   const ScootersPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(scootersListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      data: (items) {
+        return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +138,7 @@ class ScootersPage extends StatelessWidget {
                     const Divider(height: 1),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: 15,
+                        itemCount: items.length,
                         itemBuilder: (context, i) {
                           return _scooterRow(789 + i, '05-${(i + 1).toString().padLeft(4, '0')}');
                         },
@@ -144,6 +151,8 @@ class ScootersPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+      },
     );
   }
 
