@@ -11,7 +11,7 @@ class PromoCodesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
       title: 'Промокоды',
-      provider: promoCodesListProvider,
+      provider: promoCodesProvider,
       searchProvider: _promoSearchProvider,
       searchMatcher: (p, query) {
         final id = (p['id'] ?? '').toString().toLowerCase();

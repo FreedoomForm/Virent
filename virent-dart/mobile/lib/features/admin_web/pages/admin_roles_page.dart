@@ -12,7 +12,7 @@ class AdminRolesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
       title: 'Роли',
-      provider: adminRolesProvider,
+      provider: adminListProvider,
       searchProvider: _rolesSearchProvider,
       searchMatcher: (r, query) {
         final name = (r['name'] ?? r['title'] ?? '').toString().toLowerCase();
@@ -30,7 +30,7 @@ class AdminRolesPage extends ConsumerWidget {
             await ref.read(genericCreateAction)(
               '/admin/roles',
               values,
-              adminRolesProvider,
+              adminListProvider,
             );
           },
         ),

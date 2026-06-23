@@ -11,7 +11,7 @@ class PushHistoryPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
       title: 'История Push',
-      provider: pushHistoryProvider,
+      provider: pushHistoryListProvider,
       searchProvider: _pushSearchProvider,
       searchMatcher: (p, query) {
         final id = (p['id'] ?? '').toString().toLowerCase();

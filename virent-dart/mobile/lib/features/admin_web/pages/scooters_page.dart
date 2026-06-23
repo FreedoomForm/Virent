@@ -30,7 +30,7 @@ class ScootersPage extends ConsumerWidget {
             AdminField(key: 'model', label: 'Модель'),
           ],
           onSubmit: (values) async {
-            await ref.read(createScooterAction)(values);
+            await ref.read(genericCreateAction)(values);
           },
         ),
         icon: const Icon(Icons.add, size: 16),
