@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class ScooterGroupsPage extends StatelessWidget {
+class ScooterGroupsPage extends ConsumerWidget {
   const ScooterGroupsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(settingsScooterGroupsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      data: (items) {
+        return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,6 +120,9 @@ class ScooterGroupsPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+      };
+    },
     );
   }
 

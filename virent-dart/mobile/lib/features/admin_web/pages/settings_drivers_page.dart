@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class SettingsDriversPage extends StatelessWidget {
+class SettingsDriversPage extends ConsumerWidget {
   const SettingsDriversPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(settingsDriversProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      data: (items) {
+        return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +73,9 @@ class SettingsDriversPage extends StatelessWidget {
           )
         ],
       ),
+    );
+      };
+    },
     );
   }
 

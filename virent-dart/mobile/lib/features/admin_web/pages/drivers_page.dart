@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class DriversPage extends StatelessWidget {
+class DriversPage extends ConsumerWidget {
   const DriversPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(settingsDriversProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      data: (items) {
+        return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,6 +112,9 @@ class DriversPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+      };
+    },
     );
   }
 
