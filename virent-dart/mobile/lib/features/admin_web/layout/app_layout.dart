@@ -3,7 +3,6 @@ import '../pages/dashboard_page.dart';
 import 'sidebar.dart';
 import 'header.dart';
 
-// All page imports matching mockup structure
 import '../pages/map_page.dart';
 import '../pages/billing_debts_page.dart';
 import '../pages/admin_roles_page.dart';
@@ -49,19 +48,17 @@ import '../pages/tariff_prices_page.dart';
 import '../pages/tariff_abonements_page.dart';
 import '../pages/tariff_subtariffs_page.dart';
 import '../pages/tariff_until_dead_page.dart';
-
-// Extra pages not in mockup but present in current
-import '../pages/scooter_detail_page.dart';
-import '../pages/bulk_prepaid_page.dart';
-import '../pages/push_composer_page.dart';
-import '../pages/zone_editor_page.dart';
-import '../pages/iot_page.dart';
-import '../pages/server_page.dart';
-import '../pages/sms_gateway_page.dart';
-import '../pages/trips_page.dart';
-import '../pages/cities_page.dart';
-import '../pages/juicers_page.dart';
-import '../pages/support_page.dart';
+import 'package:virent_mobile/features/admin_web/pages/bulk_prepaid_page.dart';
+import 'package:virent_mobile/features/admin_web/pages/push_composer_page.dart';
+import 'package:virent_mobile/features/admin_web/pages/scooter_detail_page.dart';
+import 'package:virent_mobile/features/admin_web/pages/iot_page.dart';
+import 'package:virent_mobile/features/admin_web/pages/server_page.dart';
+import 'package:virent_mobile/features/admin_web/pages/sms_gateway_page.dart';
+import 'package:virent_mobile/features/admin_web/pages/trips_page.dart';
+import 'package:virent_mobile/features/admin_web/pages/cities_page.dart';
+import 'package:virent_mobile/features/admin_web/pages/juicers_page.dart';
+import 'package:virent_mobile/features/admin_web/pages/support_page.dart';
+import 'package:virent_mobile/features/admin_web/pages/zone_editor_page.dart';
 
 class AppLayout extends StatefulWidget {
   const AppLayout({super.key});
@@ -71,6 +68,7 @@ class AppLayout extends StatefulWidget {
 }
 
 class _AppLayoutState extends State<AppLayout> {
+  // We can track the current active view here based on sidebar selection
   int _selectedIndex = 0;
 
   @override
@@ -78,10 +76,13 @@ class _AppLayoutState extends State<AppLayout> {
     return Scaffold(
       body: Column(
         children: [
+          // Top Header
           const AppHeader(),
+          // Main Content
           Expanded(
             child: Row(
               children: [
+                // Sidebar
                 AppSidebar(
                   selectedIndex: _selectedIndex,
                   onItemSelected: (index) {
@@ -90,6 +91,7 @@ class _AppLayoutState extends State<AppLayout> {
                     });
                   },
                 ),
+                // Main Page Content
                 Expanded(
                   child: _getPage(_selectedIndex),
                 ),
@@ -103,65 +105,109 @@ class _AppLayoutState extends State<AppLayout> {
 
   Widget _getPage(int index) {
     switch (index) {
-      case 0: return const DashboardPage();
-      case 1: return const StatisticsPage();
-      case 2: return const AlertsPage();
-      case 30: return const MapPage();
-      case 4: return const ScootersPage();
-      case 5: return const PushHistoryPage();
-      case 6: return const PrepaidOrdersPage();
-      case 7: return const SelfiesPage();
-      case 8: return const InspectionDamagesPage();
-      case 9: return const BillingDebtsPage();
-      case 90: return const FinesPage();
-      case 91: return const BillingReceiptsPage();
-      case 10: return const PromoCodesPage();
-      case 11: return const BonusesPage();
-      case 12: return const TariffAbonementsPage();
-      case 120: return const TariffsPage();
-      case 121: return const TariffPricesPage();
-      case 122: return const TariffSubTariffsPage();
-      case 124: return const TariffsSubscriptionsPage();
-      case 123: return const TariffUntilDeadPage();
-      case 13: return const HoldLogsPage();
-      case 130: return const LogsTelemetryPage();
-      case 133: return const LogsUnconfirmedPage();
-      case 134: return const LogsPaymentsPage();
-      case 136: return const LogsScooterChangesPage();
-      case 137: return const LogsClientChangesPage();
-      case 20: return const SmsLogsPage();
-      case 14: return const AdminRolesPage();
-      case 140: return const AdminPermissionsPage();
-      case 142: return const AdminAgreementsPage();
-      case 144: return const AdminFaqPage();
-      case 145: return const AdminCompaniesPage();
-      case 147: return const AdminContactsPage();
-      case 15: return const TechniciansPage();
-      case 151: return const TaskTechniciansPage();
-      case 153: return const TechFeedbackPage();
-      case 16: return const GeozonesPage();
-      case 17: return const ClientGroupsPage();
-      case 100: return const PaymeTransactionsPage();
-      case 101: return const ClickTransactionsPage();
-      case 170: return const SettingsNotificationsPage();
-      case 171: return const SettingsConfigPage();
-      case 172: return const SettingsScooterGroupsPage();
-      case 173: return const SettingsDriversPage();
-      case 18:
-      case 19: return const ChatLogsPage();
-      case 111: return const PromoSeriesPage();
-      // Extra pages (not in mockup)
-      case 3: return const MapPage();
-      case 60: return const BulkPrepaidPage();
-      case 1620: return const PushComposerPage();
-      case 1332: return const ScooterDetailPage();
-      case 200: return const IotPage();
-      case 201: return const ServerPage();
-      case 202: return const SmsGatewayPage();
-      case 203: return const TripsPage();
-      case 204: return const CitiesPage();
-      case 205: return const JuicersPage();
-      case 206: return const SupportPage();
+      case 0: // Дашборд
+        return DashboardPage();
+      case 1: // Статистика
+        return StatisticsPage();
+      case 2: // Тревоги
+        return AlertsPage();
+      case 30: // Карта (Обычная)
+        return MapPage();
+      case 4: // Самокаты
+        return ScootersPage();
+      case 5: // Клиенты (история push)
+        return PushHistoryPage();
+      case 6: // Заказы (Предоплаченные)
+        return PrepaidOrdersPage();
+      case 7: // Селфи
+        return SelfiesPage();
+      case 8: // Осмотр (Damages)
+        return InspectionDamagesPage();
+      case 9: // Биллинг (Долги)
+        return BillingDebtsPage();
+      case 90: // Биллинг (Штрафы - подраздел)
+        return FinesPage();
+      case 91: // Биллинг (Квитанции / Чеки)
+        return BillingReceiptsPage();
+      case 10: // Промо (Промокоды)
+        return PromoCodesPage();
+      case 11: // Бонусы
+        return BonusesPage();
+      case 12: // Тарифы -> Абонементы
+        return TariffAbonementsPage();
+      case 120: // Тарифы -> Тарифы
+        return TariffsPage();
+      case 121: // Тарифы -> Цены
+        return TariffPricesPage();
+      case 122: // Тарифы -> Тариф подписка
+        return TariffSubTariffsPage();
+      case 123: // Тарифы -> Тариф пока не сядет
+        return TariffUntilDeadPage();
+      case 13: // Логи
+        return HoldLogsPage();
+      case 130: // Логи -> Телеметрия
+        return LogsTelemetryPage();
+      case 133: // Логи -> Неподтвержденные
+        return LogsUnconfirmedPage();
+      case 134: // Логи -> Логи платежей
+        return LogsPaymentsPage();
+      case 136: // Логи -> Логи изменения самоката
+        return LogsScooterChangesPage();
+      case 137: // Логи -> Логи изменения клиента
+        return LogsClientChangesPage();
+      case 20: // Логи (Авторизации - временный индекс)
+        return SmsLogsPage();
+      case 14: // Администратор (Роли)
+        return AdminRolesPage();
+      case 15: // Техники
+        return TechniciansPage();
+      case 151: // Техники (Задачи)
+        return TaskTechniciansPage();
+      case 153: // Техники (Фидбек)
+        return TechFeedbackPage();
+      case 17: // Настройки (Группы Клиентов)
+        return ClientGroupsPage();
+      case 100: // Биллинг (Payme транзакции) - временный индекс для просмотра
+        return PaymeTransactionsPage();
+      case 101: // Биллинг (CLICK транзакции)
+        return ClickTransactionsPage();
+      case 140: // Администратор (Разрешения)
+        return AdminPermissionsPage();
+      case 142: // Администратор (Договора)
+        return AdminAgreementsPage();
+      case 144: // Администратор (FAQ)
+        return AdminFaqPage();
+      case 145: // Администратор (Компании)
+        return AdminCompaniesPage();
+      case 147: // Администратор (Контакты)
+        return AdminContactsPage();
+      case 16: // Геозоны
+        return GeozonesPage();
+      case 170: // Настройки (Уведомления)
+        return SettingsNotificationsPage();
+      case 171: // Настройки (Конфиг)
+        return SettingsConfigPage();
+      case 172: // Настройки (Группы Самокатов)
+        return SettingsScooterGroupsPage();
+      case 173: // Настройки (Драйверы)
+        return SettingsDriversPage();
+      case 18: // Чат
+      case 19: // Журнал чата
+        return ChatLogsPage();
+      case 111: // Промо (Серии)
+        return PromoSeriesPage();
+      // Extra custom pages (not in mockup)
+      case 60: return BulkPrepaidPage();
+      case 1620: return PushComposerPage();
+      case 1332: return ScooterDetailPage();
+      case 200: return IotPage();
+      case 201: return ServerPage();
+      case 202: return SmsGatewayPage();
+      case 203: return TripsPage();
+      case 204: return CitiesPage();
+      case 205: return JuicersPage();
+      case 206: return SupportPage();
+      case 207: return ZoneEditorPage();
       default:
         return Center(
           child: Text(
