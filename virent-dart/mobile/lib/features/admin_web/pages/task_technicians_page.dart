@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
-
 class TaskTechniciansPage extends ConsumerWidget {
   const TaskTechniciansPage({super.key});
 
@@ -11,9 +10,9 @@ class TaskTechniciansPage extends ConsumerWidget {
     final async = ref.watch(techTasksProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      error: (e, _) => Center(child: Text("Ошибка: $e", style: const TextStyle(color: Colors.red))),
       data: (items) {
-    return Padding(
+        return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,8 +91,8 @@ class TaskTechniciansPage extends ConsumerWidget {
         ],
       ),
     );
-  )
-  },
+      };
+    },
 );
   }
 }

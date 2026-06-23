@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
-
 class BillingDebtsPage extends ConsumerWidget {
   const BillingDebtsPage({super.key});
 
@@ -11,9 +10,9 @@ class BillingDebtsPage extends ConsumerWidget {
     final async = ref.watch(billingTransactionsProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      error: (e, _) => Center(child: Text("Ошибка: $e", style: const TextStyle(color: Colors.red))),
       data: (items) {
-    return Container(
+        return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,8 +160,8 @@ class BillingDebtsPage extends ConsumerWidget {
         ],
       ),
     );
-  )
-  },
+      };
+    },
 );
   }
 
