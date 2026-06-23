@@ -10,15 +10,9 @@ class SmsLogsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
-      title: 'Entries',
+      title: 'SMS Логи',
       provider: smsLogsProvider,
-      searchProvider: _smsSearchProvider,
-      searchMatcher: (l, query) {
-        final id = (l['id'] ?? '').toString().toLowerCase();
-        final phone = (l['phone'] ?? '').toString().toLowerCase();
-        final code = (l['sms_code'] ?? '').toString().toLowerCase();
-        return id.contains(query) || phone.contains(query) || code.contains(query);
-      },
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
       columns: const [
         DataColumn(label: Text('Id')),
         DataColumn(label: Text('Phone')),
@@ -29,42 +23,31 @@ class SmsLogsPage extends ConsumerWidget {
         DataColumn(label: Text('Create time')),
         DataColumn(label: Text('Sms last attempt')),
         DataColumn(label: Text('Check key')),
-        DataColumn(label: Text('Действия')),
       ],
-      buildRow: (l) {
-        String _s(String key) => (l[key] ?? '-').toString();
-        final id = _s('id');
-        final phone = _s('phone');
-        final code = _s('sms_code');
-        final tryCount = _s('sms_try_count');
-        final tryCountAll = _s('sms_try_count_all');
-        final tryLogin = _s('sms_try_login');
-        final createTime = _s('create_time');
-        final lastAttempt = _s('sms_last_attempt');
-        final checkKey = _s('check_key');
+      buildRow: (item) {
+        final id = (item['id'] ?? '-').toString();
+        final phone = (item['phone'] ?? '-').toString();
+        final code = (item['sms_code'] ?? item['code'] ?? '-').toString();
+        final try_count = (item['sms_try_count'] ?? item['try_count'] ?? '-').toString();
+        final try_count_all = (item['sms_try_count_all'] ?? item['try_count_all'] ?? '-').toString();
+        final try_login = (item['sms_try_login'] ?? item['try_login'] ?? '-').toString();
+        final create_time = (item['create_time'] ?? item['created_at'] ?? '-').toString();
+        final last_attempt = (item['sms_last_attempt'] ?? item['last_attempt'] ?? '-').toString();
+        final check_key = (item['check_key'] ?? item['key'] ?? '-').toString();
         return DataRow(cells: [
           DataCell(Text(id)),
           DataCell(Text(phone)),
           DataCell(Text(code)),
-          DataCell(Text(tryCount)),
-          DataCell(Text(tryCountAll)),
-          DataCell(Text(tryLogin)),
-          DataCell(Text(createTime)),
-          DataCell(Text(lastAttempt)),
-          DataCell(Text(checkKey)),
+          DataCell(Text(try_count)),
+          DataCell(Text(try_count_all)),
+          DataCell(Text(try_login)),
+          DataCell(Text(create_time)),
+          DataCell(Text(last_attempt)),
+          DataCell(Text(check_key)),
           DataCell(Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              TextButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.edit, size: 14),
-                label: const Text('Редактировать'),
-              ),
-              TextButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.delete, size: 14),
-                label: const Text('Удалить'),
-              ),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
             ],
           )),
         ]);
@@ -73,4 +56,4 @@ class SmsLogsPage extends ConsumerWidget {
   }
 }
 
-final _smsSearchProvider = StateProvider<String>((ref) => '');
+final _smsLogsPageSearchProvider = StateProvider<String>((ref) => '');

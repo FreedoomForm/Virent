@@ -12,13 +12,8 @@ class BonusesPage extends ConsumerWidget {
     return AdminTablePage(
       title: 'Бонусы',
       provider: bonusesListProvider,
-      searchProvider: _bonusesSearchProvider,
-      searchMatcher: (b, query) {
-        final id = (b['id'] ?? '').toString().toLowerCase();
-        final client = (b['client_id'] ?? b['client'] ?? '').toString().toLowerCase();
-        final comment = (b['comment'] ?? '').toString().toLowerCase();
-        return id.contains(query) || client.contains(query) || comment.contains(query);
-      },
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
+      createButton: ElevatedButton.icon(onPressed:(){},icon:const Icon(Icons.add, size:16),label:const Text("Добавить бонусы"),style:ElevatedButton.styleFrom(backgroundColor:adminPrimaryColor,foregroundColor:adminPrimaryForeground)),
       columns: const [
         DataColumn(label: Text('Id')),
         DataColumn(label: Text('Client')),
@@ -28,20 +23,26 @@ class BonusesPage extends ConsumerWidget {
         DataColumn(label: Text('Comment')),
         DataColumn(label: Text('Company')),
       ],
-      buildRow: (b) {
-        String _s(String key) => (b[key] ?? '-').toString();
+      buildRow: (item) {
+        final id = (item['id'] ?? '-').toString();
+        final client = (item['client_name'] ?? item['client'] ?? item['name'] ?? '-').toString();
+        final bonus_sum = (item['bonus_sum'] ?? item['amount'] ?? item['sum'] ?? '-').toString();
+        final who_added = (item['who_added'] ?? item['admin'] ?? item['created_by'] ?? '-').toString();
+        final create_time = (item['create_time'] ?? item['created_at'] ?? item['created'] ?? '-').toString();
+        final comment = (item['comment'] ?? '-').toString();
+        final company = (item['company'] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(_s('id'))),
-          DataCell(Text(_s('client_id'), style: adminLinkStyle)),
-          DataCell(Text(_s('bonus_sum') == '-' ? _s('sum') : _s('bonus_sum'))),
-          DataCell(Text(_s('who_added') == '-' ? _s('added_by') : _s('who_added'))),
-          DataCell(Text(_s('create_time') == '-' ? _s('created_at') : _s('create_time'))),
-          DataCell(Text(_s('comment'))),
-          DataCell(Text(_s('company_id') == '-' ? _s('company') : _s('company_id'))),
+          DataCell(Text(id)),
+          DataCell(Text(client)),
+          DataCell(Text(bonus_sum)),
+          DataCell(Text(who_added)),
+          DataCell(Text(create_time)),
+          DataCell(Text(comment)),
+          DataCell(Text(company)),
         ]);
       },
     );
   }
 }
 
-final _bonusesSearchProvider = StateProvider<String>((ref) => '');
+final _bonusesPageSearchProvider = StateProvider<String>((ref) => '');

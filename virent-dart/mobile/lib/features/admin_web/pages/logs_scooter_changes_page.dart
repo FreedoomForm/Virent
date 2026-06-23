@@ -10,58 +10,35 @@ class LogsScooterChangesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
-      title: 'Логи Изменений Самокатов',
+      title: 'Изменения Самокатов',
       provider: logsScooterChangesProvider,
-      searchProvider: _scooterChangesSearchProvider,
-      filters: Row(
-        children: [
-          SizedBox(
-            width: 150,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'Номер'),
-            ),
-          ),
-        ],
-      ),
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
       columns: const [
-        DataColumn(label: Text('ID')),
-        DataColumn(label: Text('Номер самоката')),
-        DataColumn(label: Text('ID текущего заказа')),
-        DataColumn(label: Text('ID модели')),
-        DataColumn(label: Text('Онлайн')),
-        DataColumn(label: Text('columns.elastic_car_change_log.scooter_action')),
-        DataColumn(label: Text('ID компании')),
-        DataColumn(label: Text('Кто внёс изменения')),
-        DataColumn(label: Text('Геозоны')),
-        DataColumn(label: Text('Время обновления')),
-        DataColumn(label: Text('Время создания')),
-        DataColumn(label: Text('Флеспи ID')),
-        DataColumn(label: Text('Imei')),
-        DataColumn(label: Text('Время завершения последнего заказа')),
-        DataColumn(label: Text('Описание')),
+        DataColumn(label: Text('Id')),
+        DataColumn(label: Text('Scooter')),
+        DataColumn(label: Text('Field')),
+        DataColumn(label: Text('Old value')),
+        DataColumn(label: Text('New value')),
+        DataColumn(label: Text('Changed at')),
       ],
       buildRow: (item) {
-        String _s(String key) => (item[key] ?? '-').toString();
+        final id = (item['id'] ?? '-').toString();
+        final scooter = (item['scooter'] ?? item['scooter_id'] ?? '-').toString();
+        final field = (item['field'] ?? item['field_name'] ?? '-').toString();
+        final old_value = (item['old_value'] ?? item['old'] ?? '-').toString();
+        final new_value = (item['new_value'] ?? item['new'] ?? '-').toString();
+        final changed_at = (item['changed_at'] ?? item['created_at'] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(_s('id'))),
-          DataCell(Text(_s('scooter_number'), style: adminLinkStyle)),
-          DataCell(Text(_s('current_order_id'), style: adminLinkStyle)),
-          DataCell(Text(_s('model_id'), style: adminLinkStyle)),
-          DataCell(Text(_s('online'))),
-          const DataCell(Text('')),
-          DataCell(Text(_s('company_id'), style: adminLinkStyle)),
-          DataCell(Text(_s('changed_by'))),
-          DataCell(Text(_s('geozones'))),
-          DataCell(Text(_s('updated_at'))),
-          DataCell(Text(_s('created_at'))),
-          DataCell(Text(_s('flespi_id'))),
-          DataCell(Text(_s('imei'))),
-          DataCell(Text(_s('last_order_finished_at'))),
-          DataCell(Text(_s('description'))),
+          DataCell(Text(id)),
+          DataCell(Text(scooter)),
+          DataCell(Text(field)),
+          DataCell(Text(old_value)),
+          DataCell(Text(new_value)),
+          DataCell(Text(changed_at)),
         ]);
       },
     );
   }
 }
 
-final _scooterChangesSearchProvider = StateProvider<String>((ref) => '');
+final _logsScooterChangesPageSearchProvider = StateProvider<String>((ref) => '');

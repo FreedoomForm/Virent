@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_table_page.dart';
-import '../widgets/admin_dialogs.dart';
 
 class AdminPermissionsPage extends ConsumerWidget {
   const AdminPermissionsPage({super.key});
@@ -13,67 +12,27 @@ class AdminPermissionsPage extends ConsumerWidget {
     return AdminTablePage(
       title: 'Разрешения',
       provider: adminPermissionsProvider,
-      searchProvider: _permissionsSearchProvider,
-      createButton: ElevatedButton.icon(
-        onPressed: () => showAdminFormDialog(
-          context,
-          title: 'Добавить разрешение',
-          fields: const [
-            AdminField(key: 'name', label: 'Имя'),
-            AdminField(key: 'title', label: 'Заголовок'),
-          ],
-          onSubmit: (values) async {
-            await ref.read(genericCreateAction)(
-              '/admin/permissions',
-              values,
-              adminPermissionsProvider,
-            );
-          },
-        ),
-        icon: const Icon(Icons.add, size: 16),
-        label: const Text('Добавить разрешение'),
-        style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-      ),
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
       columns: const [
-        DataColumn(label: Text('Имя')),
-        DataColumn(label: Text('backpack::permissionmanager.title')),
-        DataColumn(label: Text('Действия')),
+        DataColumn(label: Text('Id')),
+        DataColumn(label: Text('Name')),
+        DataColumn(label: Text('Key')),
+        DataColumn(label: Text('Description')),
       ],
       buildRow: (item) {
-        String _s(String key) => (item[key] ?? '-').toString();
-        final id = _s('id');
+        final id = (item['id'] ?? '-').toString();
+        final name = (item['name'] ?? '-').toString();
+        final key = (item['key'] ?? item['permission_key'] ?? '-').toString();
+        final desc = (item['description'] ?? item['desc'] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(_s('name'))),
-          DataCell(Text(_s('title'))),
+          DataCell(Text(id)),
+          DataCell(Text(name)),
+          DataCell(Text(key)),
+          DataCell(Text(desc)),
           DataCell(Row(
             children: [
-              TextButton.icon(
-                onPressed: () => showAdminFormDialog(
-                  context,
-                  title: 'Редактировать разрешение #$id',
-                  isEdit: true,
-                  fields: [
-                    AdminField(key: 'name', label: 'Имя', initial: _s('name')),
-                    AdminField(key: 'title', label: 'Заголовок', initial: _s('title')),
-                  ],
-                  onSubmit: (values) async {
-                    await ref.read(genericUpdateAction)('/admin/permissions', id, values, adminPermissionsProvider);
-                  },
-                ),
-                icon: const Icon(Icons.edit, size: 14),
-                label: const Text('Редактировать'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminDeleteDialog(
-                  context,
-                  name: _s('name'),
-                  onDelete: () async {
-                    await ref.read(genericDeleteAction)('/admin/permissions', id, adminPermissionsProvider);
-                  },
-                ),
-                icon: const Icon(Icons.delete, size: 14),
-                label: const Text('Удалить'),
-              ),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
             ],
           )),
         ]);
@@ -82,4 +41,4 @@ class AdminPermissionsPage extends ConsumerWidget {
   }
 }
 
-final _permissionsSearchProvider = StateProvider<String>((ref) => '');
+final _adminPermissionsPageSearchProvider = StateProvider<String>((ref) => '');

@@ -12,13 +12,8 @@ class PromoCodesPage extends ConsumerWidget {
     return AdminTablePage(
       title: 'Промокоды',
       provider: promoCodesProvider,
-      searchProvider: _promoSearchProvider,
-      searchMatcher: (p, query) {
-        final id = (p['id'] ?? '').toString().toLowerCase();
-        final code = (p['code'] ?? '').toString().toLowerCase();
-        final group = (p['promocode_group'] ?? p['group'] ?? '').toString().toLowerCase();
-        return id.contains(query) || code.contains(query) || group.contains(query);
-      },
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
+      createButton: ElevatedButton.icon(onPressed:(){},icon:const Icon(Icons.add, size:16),label:const Text("Добавить Промокод"),style:ElevatedButton.styleFrom(backgroundColor:adminPrimaryColor,foregroundColor:adminPrimaryForeground)),
       columns: const [
         DataColumn(label: Text('Id')),
         DataColumn(label: Text('Code')),
@@ -27,26 +22,24 @@ class PromoCodesPage extends ConsumerWidget {
         DataColumn(label: Text('Promocode group')),
         DataColumn(label: Text('Group active')),
         DataColumn(label: Text('Expires')),
-        DataColumn(label: Text('Действия')),
       ],
-      buildRow: (p) {
-        String _s(String key) => (p[key] ?? '-').toString();
-        bool _b(String key) {
-          final v = p[key];
-          if (v == null) return false;
-          if (v is bool) return v;
-          return v.toString().toLowerCase() == '1' || v.toString().toLowerCase() == 'true';
-        }
+      buildRow: (item) {
+        final id = (item['id'] ?? '-').toString();
+        final code = (item['code'] ?? '-').toString();
+        final bonus = (item['bonus_gift'] ?? item['bonus'] ?? item['amount'] ?? '-').toString();
+        final usage = (item['usage_remains'] ?? item['usage'] ?? item['usage_count'] ?? '-').toString();
+        final group = (item['promocode_group'] ?? item['group'] ?? item['group_name'] ?? '-').toString();
+        final is_active = (item['group_active'] ?? item['is_active'] ?? item['active'] ?? '-').toString();
+        final expires = (item['expires'] ?? item['expires_at'] ?? item['expiry'] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(_s('id'))),
-          DataCell(Text(_s('code'))),
-          DataCell(Text(_s('bonus_gift') == '-' ? _s('discount') : _s('bonus_gift'))),
-          DataCell(Text(_s('usage_remains') == '-' ? _s('usage_limit') : _s('usage_remains'))),
-          DataCell(Text(_s('promocode_group') == '-' ? _s('group') : _s('promocode_group'))),
-          DataCell(Icon(_b('group_active') ? Icons.check : Icons.close, color: _b('group_active') ? Colors.green : Colors.red)),
-          DataCell(Text(_s('expires_at') == '-' ? _s('expires') : _s('expires_at'))),
+          DataCell(Text(id)),
+          DataCell(Text(code)),
+          DataCell(Text(bonus)),
+          DataCell(Text(usage)),
+          DataCell(Text(group)),
+          DataCell(Text(is_active)),
+          DataCell(Text(expires)),
           DataCell(Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
               TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
               TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
@@ -58,4 +51,4 @@ class PromoCodesPage extends ConsumerWidget {
   }
 }
 
-final _promoSearchProvider = StateProvider<String>((ref) => '');
+final _promoCodesPageSearchProvider = StateProvider<String>((ref) => '');

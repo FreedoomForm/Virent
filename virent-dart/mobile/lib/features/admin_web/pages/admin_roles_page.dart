@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_table_page.dart';
-import '../widgets/admin_dialogs.dart';
 
 class AdminRolesPage extends ConsumerWidget {
   const AdminRolesPage({super.key});
@@ -11,47 +10,30 @@ class AdminRolesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
-      title: 'Роли',
+      title: 'Роли Администраторов',
       provider: adminListProvider,
-      searchProvider: _rolesSearchProvider,
-      searchMatcher: (r, query) {
-        final name = (r['name'] ?? r['title'] ?? '').toString().toLowerCase();
-        return name.contains(query);
-      },
-      createButton: ElevatedButton.icon(
-        onPressed: () => showAdminFormDialog(
-          context,
-          title: 'Добавить роль',
-          fields: const [
-            AdminField(key: 'name', label: 'Имя'),
-            AdminField(key: 'permissions', label: 'Разрешения', multiline: true),
-          ],
-          onSubmit: (values) async {
-            await ref.read(genericCreateAction)(
-              '/admin/roles',
-              values,
-              adminListProvider,
-            );
-          },
-        ),
-        icon: const Icon(Icons.add, size: 16),
-        label: const Text('Добавить роль'),
-        style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-      ),
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
+      createButton: ElevatedButton.icon(onPressed:(){},icon:const Icon(Icons.add, size:16),label:const Text("Добавить администратора"),style:ElevatedButton.styleFrom(backgroundColor:adminPrimaryColor,foregroundColor:adminPrimaryForeground)),
       columns: const [
-        DataColumn(label: Text('Имя')),
-        DataColumn(label: Text('Разрешения')),
-        DataColumn(label: Text('Действия')),
+        DataColumn(label: Text('Id')),
+        DataColumn(label: Text('Name')),
+        DataColumn(label: Text('Email')),
+        DataColumn(label: Text('Role')),
+        DataColumn(label: Text('Is active')),
       ],
-      buildRow: (r) {
-        String _s(String key) => (r[key] ?? '-').toString();
-        final name = _s('name') == '-' ? _s('title') : _s('name');
-        final permissions = _s('permissions');
+      buildRow: (item) {
+        final id = (item['id'] ?? '-').toString();
+        final name = (item['name'] ?? '-').toString();
+        final email = (item['email'] ?? '-').toString();
+        final role = (item['role'] ?? item['role_name'] ?? '-').toString();
+        final is_active = (item['is_active'] ?? item['active'] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(name, style: adminLinkStyle)),
-          DataCell(Text(permissions)),
+          DataCell(Text(id)),
+          DataCell(Text(name)),
+          DataCell(Text(email)),
+          DataCell(Text(role)),
+          DataCell(Text(is_active)),
           DataCell(Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
               TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
               TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
@@ -63,4 +45,4 @@ class AdminRolesPage extends ConsumerWidget {
   }
 }
 
-final _rolesSearchProvider = StateProvider<String>((ref) => '');
+final _adminRolesPageSearchProvider = StateProvider<String>((ref) => '');

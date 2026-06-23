@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_table_page.dart';
-import '../widgets/admin_dialogs.dart';
 
 class LogsUnconfirmedPage extends ConsumerWidget {
   const LogsUnconfirmedPage({super.key});
@@ -11,73 +10,33 @@ class LogsUnconfirmedPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
-      title: 'Entries',
+      title: 'Неподтвержденные Логи',
       provider: logsUnconfirmedProvider,
-      searchProvider: _unconfirmedSearchProvider,
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
       columns: const [
         DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Phone')),
-        DataColumn(label: Text('Sms code')),
-        DataColumn(label: Text('Sms try count')),
-        DataColumn(label: Text('Sms try count all')),
-        DataColumn(label: Text('Sms try logIn')),
-        DataColumn(label: Text('Create time')),
-        DataColumn(label: Text('Sms last attempt')),
-        DataColumn(label: Text('Check key')),
-        DataColumn(label: Text('Api token')),
-        DataColumn(label: Text('Действия')),
+        DataColumn(label: Text('Trip')),
+        DataColumn(label: Text('Status')),
+        DataColumn(label: Text('Reason')),
+        DataColumn(label: Text('Created')),
       ],
       buildRow: (item) {
-        String _s(String key, [String fallback = '-']) => (item[key] ?? fallback).toString();
-        final id = _s('id');
-        final time = _s('create_time');
+        final id = (item['id'] ?? '-').toString();
+        final trip = (item['trip'] ?? item['trip_id'] ?? '-').toString();
+        final status = (item['status'] ?? '-').toString();
+        final reason = (item['reason'] ?? '-').toString();
+        final created = (item['created'] ?? item['created_at'] ?? '-').toString();
         return DataRow(cells: [
           DataCell(Text(id)),
-          DataCell(Text(_s('phone'))),
-          DataCell(Text(_s('sms_code'))),
-          DataCell(Text(_s('sms_try_count'))),
-          DataCell(Text(_s('sms_try_count_all'))),
-          DataCell(Text(_s('sms_try_login'))),
-          DataCell(Text(time)),
-          DataCell(Text(_s('sms_last_attempt', time))),
-          DataCell(Text(_s('check_key'))),
-          DataCell(Text(_s('api_token'))),
-          DataCell(Row(
-            children: [
-              TextButton.icon(
-                onPressed: () => showAdminFormDialog(
-                  context,
-                  title: 'Редактировать запись #$id',
-                  isEdit: true,
-                  fields: [
-                    AdminField(key: 'phone', label: 'Телефон', initial: _s('phone')),
-                    AdminField(key: 'sms_code', label: 'SMS код', initial: _s('sms_code')),
-                    AdminField(key: 'api_token', label: 'API токен', initial: _s('api_token')),
-                  ],
-                  onSubmit: (values) async {
-                    await ref.read(genericUpdateAction)('/admin/logs/unconfirmed', id, values, logsUnconfirmedProvider);
-                  },
-                ),
-                icon: const Icon(Icons.edit, size: 14),
-                label: const Text('Редактировать'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminDeleteDialog(
-                  context,
-                  name: _s('phone'),
-                  onDelete: () async {
-                    await ref.read(genericDeleteAction)('/admin/logs/unconfirmed', id, logsUnconfirmedProvider);
-                  },
-                ),
-                icon: const Icon(Icons.delete, size: 14),
-                label: const Text('Удалить'),
-              ),
-            ],
-          )),
+          DataCell(Text(trip)),
+          DataCell(Text(status)),
+          DataCell(Text(reason)),
+          DataCell(Text(created)),
+          DataCell(TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр'))),
         ]);
       },
     );
   }
 }
 
-final _unconfirmedSearchProvider = StateProvider<String>((ref) => '');
+final _logsUnconfirmedPageSearchProvider = StateProvider<String>((ref) => '');

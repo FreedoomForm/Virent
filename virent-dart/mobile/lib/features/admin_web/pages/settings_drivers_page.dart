@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_table_page.dart';
-import '../widgets/admin_dialogs.dart';
 
 class SettingsDriversPage extends ConsumerWidget {
   const SettingsDriversPage({super.key});
@@ -11,80 +10,33 @@ class SettingsDriversPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
-      title: 'Entries',
+      title: 'Настройки Драйверов',
       provider: settingsDriversProvider,
-      searchProvider: _driversSearchProvider,
-      createButton: ElevatedButton.icon(
-        onPressed: () => showAdminFormDialog(
-          context,
-          title: 'Добавить запись',
-          fields: const [
-            AdminField(key: 'description', label: 'Описание', multiline: true),
-            AdminField(key: 'type', label: 'Тип'),
-          ],
-          onSubmit: (values) async {
-            await ref.read(genericCreateAction)(
-              '/admin/settings/drivers',
-              values,
-              settingsDriversProvider,
-            );
-          },
-        ),
-        icon: const Icon(Icons.add, size: 16),
-        label: const Text('Добавить entry'),
-        style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-      ),
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
+      createButton: ElevatedButton.icon(onPressed:(){},icon:const Icon(Icons.add, size:16),label:const Text("Добавить драйвер"),style:ElevatedButton.styleFrom(backgroundColor:adminPrimaryColor,foregroundColor:adminPrimaryForeground)),
       columns: const [
         DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Description')),
-        DataColumn(label: Text('Type')),
-        DataColumn(label: Text('Действия')),
+        DataColumn(label: Text('Name')),
+        DataColumn(label: Text('Version')),
+        DataColumn(label: Text('Platform')),
+        DataColumn(label: Text('Active')),
       ],
       buildRow: (item) {
-        String _s(String key) => (item[key] ?? '-').toString();
-        final id = _s('id');
+        final id = (item['id'] ?? '-').toString();
+        final name = (item['name'] ?? '-').toString();
+        final version = (item['version'] ?? '-').toString();
+        final platform = (item['platform'] ?? '-').toString();
+        final active = (item['active'] ?? item['is_active'] ?? '-').toString();
         return DataRow(cells: [
           DataCell(Text(id)),
-          DataCell(Text(_s('description'))),
-          DataCell(Text(_s('type'))),
+          DataCell(Text(name)),
+          DataCell(Text(version)),
+          DataCell(Text(platform)),
+          DataCell(Text(active)),
           DataCell(Row(
             children: [
-              TextButton.icon(
-                onPressed: () => showAdminViewDialog(
-                  context,
-                  title: 'Запись #$id',
-                  item: item,
-                ),
-                icon: const Icon(Icons.visibility, size: 14),
-                label: const Text('Просмотр'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminFormDialog(
-                  context,
-                  title: 'Редактировать запись #$id',
-                  isEdit: true,
-                  fields: [
-                    AdminField(key: 'description', label: 'Описание', multiline: true, initial: _s('description')),
-                    AdminField(key: 'type', label: 'Тип', initial: _s('type')),
-                  ],
-                  onSubmit: (values) async {
-                    await ref.read(genericUpdateAction)('/admin/settings/drivers', id, values, settingsDriversProvider);
-                  },
-                ),
-                icon: const Icon(Icons.edit, size: 14),
-                label: const Text('Редактировать'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminDeleteDialog(
-                  context,
-                  name: _s('description'),
-                  onDelete: () async {
-                    await ref.read(genericDeleteAction)('/admin/settings/drivers', id, settingsDriversProvider);
-                  },
-                ),
-                icon: const Icon(Icons.delete, size: 14),
-                label: const Text('Удалить'),
-              ),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
             ],
           )),
         ]);
@@ -93,4 +45,4 @@ class SettingsDriversPage extends ConsumerWidget {
   }
 }
 
-final _driversSearchProvider = StateProvider<String>((ref) => '');
+final _settingsDriversPageSearchProvider = StateProvider<String>((ref) => '');

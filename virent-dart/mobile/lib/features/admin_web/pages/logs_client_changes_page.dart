@@ -10,51 +10,35 @@ class LogsClientChangesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
-      title: 'Entries',
+      title: 'Изменения Клиентов',
       provider: logsClientChangesProvider,
-      searchProvider: _clientChangesSearchProvider,
-      filters: Row(
-        children: [
-          SizedBox(
-            width: 150,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'ClientID'),
-            ),
-          ),
-        ],
-      ),
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
       columns: const [
-        DataColumn(label: Text('ID')),
-        DataColumn(label: Text('ID клиента')),
-        DataColumn(label: Text('Доступные тарифы')),
-        DataColumn(label: Text('Токен')),
-        DataColumn(label: Text('Бонусы')),
-        DataColumn(label: Text('Группы')),
-        DataColumn(label: Text('Активный')),
-        DataColumn(label: Text('Заблокирован')),
-        DataColumn(label: Text('Удален')),
-        DataColumn(label: Text('Новый')),
-        DataColumn(label: Text('Время создания лога')),
+        DataColumn(label: Text('Id')),
+        DataColumn(label: Text('Client')),
+        DataColumn(label: Text('Field')),
+        DataColumn(label: Text('Old value')),
+        DataColumn(label: Text('New value')),
+        DataColumn(label: Text('Changed at')),
       ],
       buildRow: (item) {
-        String _s(String key, [String fallback = '-']) => (item[key] ?? fallback).toString();
-        final active = _s('active');
+        final id = (item['id'] ?? '-').toString();
+        final client = (item['client'] ?? item['client_id'] ?? '-').toString();
+        final field = (item['field'] ?? item['field_name'] ?? '-').toString();
+        final old_value = (item['old_value'] ?? item['old'] ?? '-').toString();
+        final new_value = (item['new_value'] ?? item['new'] ?? '-').toString();
+        final changed_at = (item['changed_at'] ?? item['created_at'] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(_s('id'))),
-          DataCell(Text(_s('client_id'), style: adminLinkStyle)),
-          DataCell(Text(_s('available_tariffs'))),
-          DataCell(Text(_s('token'))),
-          DataCell(Text(_s('bonuses'))),
-          DataCell(Text(_s('groups', '[]'))),
-          DataCell(Text(active.isEmpty || active == '-' ? 'Нет' : active)),
-          DataCell(Text(_s('blocked', 'Нет'))),
-          DataCell(Text(_s('deleted', 'Нет'))),
-          DataCell(Text(_s('is_new', 'Нет'))),
-          DataCell(Text(_s('created_at'))),
+          DataCell(Text(id)),
+          DataCell(Text(client)),
+          DataCell(Text(field)),
+          DataCell(Text(old_value)),
+          DataCell(Text(new_value)),
+          DataCell(Text(changed_at)),
         ]);
       },
     );
   }
 }
 
-final _clientChangesSearchProvider = StateProvider<String>((ref) => '');
+final _logsClientChangesPageSearchProvider = StateProvider<String>((ref) => '');

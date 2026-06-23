@@ -12,13 +12,8 @@ class PrepaidOrdersPage extends ConsumerWidget {
     return AdminTablePage(
       title: 'Предоплаченные Заказы',
       provider: prepaidOrdersProvider,
-      searchProvider: _prepaidSearchProvider,
-      searchMatcher: (o, query) {
-        final id = (o['id'] ?? '').toString().toLowerCase();
-        final token = (o['redis_token'] ?? o['token'] ?? '').toString().toLowerCase();
-        final client = (o['client_id'] ?? '').toString().toLowerCase();
-        return id.contains(query) || token.contains(query) || client.contains(query);
-      },
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
+      filters: SingleChildScrollView(scrollDirection:Axis.horizontal,child:Row(children:[SizedBox(width:120,child:TextField(decoration:adminFilterDecoration(hint:"ID клиента"))),SizedBox(width:8),SizedBox(width:120,child:TextField(decoration:adminFilterDecoration(hint:"car_id"))),SizedBox(width:8),SizedBox(width:120,child:TextField(decoration:adminFilterDecoration(hint:"status"))),SizedBox(width:8),SizedBox(width:200,child:TextField(decoration:adminFilterDecoration(hint:"transaction_id"))),SizedBox(width:8),SizedBox(width:120,child:TextField(decoration:adminFilterDecoration(hint:"order_id")))])),
       columns: const [
         DataColumn(label: Text('Id')),
         DataColumn(label: Text('Redis token')),
@@ -30,32 +25,34 @@ class PrepaidOrdersPage extends ConsumerWidget {
         DataColumn(label: Text('Status')),
         DataColumn(label: Text('Created')),
         DataColumn(label: Text('Type')),
-        DataColumn(label: Text('Действия')),
       ],
-      buildRow: (o) {
-        String _s(String key) => (o[key] ?? '-').toString();
+      buildRow: (item) {
+        final id = (item['id'] ?? '-').toString();
+        final token = (item['redis_token'] ?? item['token'] ?? '-').toString();
+        final car = (item['car'] ?? item['scooter_id'] ?? item['car_id'] ?? '-').toString();
+        final client = (item['client'] ?? item['client_id'] ?? '-').toString();
+        final company = (item['company'] ?? item['company_id'] ?? '-').toString();
+        final abonement = (item['abonement'] ?? item['abonement_id'] ?? '-').toString();
+        final amount = (item['amount'] ?? '-').toString();
+        final status = (item['status'] ?? '-').toString();
+        final created = (item['created'] ?? item['created_at'] ?? '-').toString();
+        final type = (item['type'] ?? item['payment_type'] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(_s('id'))),
-          DataCell(Text(_s('redis_token') == '-' ? _s('token') : _s('redis_token'))),
-          DataCell(Text(_s('car_id') == '-' ? _s('car') : _s('car_id'))),
-          DataCell(Text(_s('client_id') == '-' ? _s('client') : _s('client_id'), style: adminLinkStyle)),
-          DataCell(Text(_s('company_id') == '-' ? _s('company') : _s('company_id'))),
-          DataCell(Text(_s('abonement_id') == '-' ? _s('abonement') : _s('abonement_id'))),
-          DataCell(Text(_s('amount'))),
-          DataCell(Text(_s('status'))),
-          DataCell(Text(_s('created_at') == '-' ? _s('created') : _s('created_at'))),
-          DataCell(Text(_s('type'))),
-          DataCell(Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
-              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
-            ],
-          )),
+          DataCell(Text(id)),
+          DataCell(Text(token)),
+          DataCell(Text(car)),
+          DataCell(Text(client)),
+          DataCell(Text(company)),
+          DataCell(Text(abonement)),
+          DataCell(Text(amount)),
+          DataCell(Text(status)),
+          DataCell(Text(created)),
+          DataCell(Text(type)),
+          DataCell(TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр'))),
         ]);
       },
     );
   }
 }
 
-final _prepaidSearchProvider = StateProvider<String>((ref) => '');
+final _prepaidOrdersPageSearchProvider = StateProvider<String>((ref) => '');

@@ -12,32 +12,34 @@ class PromoSeriesPage extends ConsumerWidget {
     return AdminTablePage(
       title: 'Серии Промокодов',
       provider: promoSeriesProvider,
-      searchProvider: _seriesSearchProvider,
-      searchMatcher: (s, query) {
-        final id = (s['id'] ?? '').toString().toLowerCase();
-        final name = (s['name'] ?? s['title'] ?? '').toString().toLowerCase();
-        return id.contains(query) || name.contains(query);
-      },
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
+      createButton: ElevatedButton.icon(onPressed:(){},icon:const Icon(Icons.add, size:16),label:const Text("Добавить серию"),style:ElevatedButton.styleFrom(backgroundColor:adminPrimaryColor,foregroundColor:adminPrimaryForeground)),
       columns: const [
-        DataColumn(label: Text('ID')),
-        DataColumn(label: Text('Название')),
-        DataColumn(label: Text('Активна')),
-        DataColumn(label: Text('Действия')),
+        DataColumn(label: Text('Id')),
+        DataColumn(label: Text('Name')),
+        DataColumn(label: Text('Prefix')),
+        DataColumn(label: Text('Bonus')),
+        DataColumn(label: Text('Usage limit')),
+        DataColumn(label: Text('Is active')),
+        DataColumn(label: Text('Expires')),
       ],
-      buildRow: (s) {
-        String _s(String key) => (s[key] ?? '-').toString();
-        bool _b(String key) {
-          final v = s[key];
-          if (v == null) return false;
-          if (v is bool) return v;
-          return v.toString().toLowerCase() == '1' || v.toString().toLowerCase() == 'true';
-        }
+      buildRow: (item) {
+        final id = (item['id'] ?? '-').toString();
+        final name = (item['name'] ?? '-').toString();
+        final prefix = (item['prefix'] ?? '-').toString();
+        final bonus = (item['bonus'] ?? item['amount'] ?? '-').toString();
+        final usage_limit = (item['usage_limit'] ?? item['limit'] ?? '-').toString();
+        final is_active = (item['is_active'] ?? item['active'] ?? '-').toString();
+        final expires = (item['expires'] ?? item['expires_at'] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(_s('id'))),
-          DataCell(Text(_s('name') == '-' ? _s('title') : _s('name'))),
-          DataCell(Icon(_b('active') ? Icons.check : Icons.close, color: _b('active') ? Colors.green : Colors.red)),
+          DataCell(Text(id)),
+          DataCell(Text(name)),
+          DataCell(Text(prefix)),
+          DataCell(Text(bonus)),
+          DataCell(Text(usage_limit)),
+          DataCell(Text(is_active)),
+          DataCell(Text(expires)),
           DataCell(Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
               TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
               TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
@@ -49,4 +51,4 @@ class PromoSeriesPage extends ConsumerWidget {
   }
 }
 
-final _seriesSearchProvider = StateProvider<String>((ref) => '');
+final _promoSeriesPageSearchProvider = StateProvider<String>((ref) => '');

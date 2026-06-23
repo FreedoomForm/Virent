@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_table_page.dart';
-import '../widgets/admin_dialogs.dart';
 
 class TechniciansPage extends ConsumerWidget {
   const TechniciansPage({super.key});
@@ -13,30 +12,8 @@ class TechniciansPage extends ConsumerWidget {
     return AdminTablePage(
       title: 'Техники',
       provider: techniciansListProvider,
-      searchProvider: _technicianSearchProvider,
-      createButton: ElevatedButton.icon(
-        onPressed: () => showAdminFormDialog(
-          context,
-          title: 'Добавить техника',
-          fields: const [
-            AdminField(key: 'name', label: 'Имя'),
-            AdminField(key: 'login', label: 'Логин'),
-            AdminField(key: 'password', label: 'Пароль', obscure: true),
-            AdminField(key: 'companies', label: 'Компании'),
-            AdminField(key: 'permissions', label: 'Разрешения'),
-          ],
-          onSubmit: (values) async {
-            await ref.read(genericCreateAction)(
-              '/admin/technicians',
-              values,
-              techniciansListProvider,
-            );
-          },
-        ),
-        icon: const Icon(Icons.add, size: 16),
-        label: const Text('Добавить техник'),
-        style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-      ),
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
+      createButton: ElevatedButton.icon(onPressed:(){},icon:const Icon(Icons.add, size:16),label:const Text("Добавить техник"),style:ElevatedButton.styleFrom(backgroundColor:adminPrimaryColor,foregroundColor:adminPrimaryForeground)),
       columns: const [
         DataColumn(label: Text('Id')),
         DataColumn(label: Text('Имя')),
@@ -46,61 +23,30 @@ class TechniciansPage extends ConsumerWidget {
         DataColumn(label: Text('Permissions')),
         DataColumn(label: Text('Admin')),
         DataColumn(label: Text('Пароль')),
-        DataColumn(label: Text('Действия')),
       ],
       buildRow: (item) {
-        String _s(String key) => (item[key] ?? '-').toString();
-        final id = _s('id');
+        final id = (item['id'] ?? '-').toString();
+        final name = (item['name'] ?? '-').toString();
+        final login = (item['login'] ?? item['email'] ?? '-').toString();
+        final companies = (item['companies'] ?? '-').toString();
+        final key = (item['technick_key'] ?? item['key'] ?? item['tech_key'] ?? '-').toString();
+        final perms = (item['permissions'] ?? item['perms'] ?? '-').toString();
+        final admin = (item['admin'] ?? item['is_admin'] ?? '-').toString();
+        final pass = (item['password'] ?? item['pass'] ?? item['pass_hash'] ?? '-').toString();
         return DataRow(cells: [
           DataCell(Text(id)),
-          DataCell(Text(_s('name'))),
-          DataCell(Text(_s('login'))),
-          DataCell(Text(_s('companies'))),
-          DataCell(Text(_s('tech_key'))),
-          DataCell(Text(_s('permissions'))),
-          DataCell(Text(_s('admin'))),
-          DataCell(Text(_s('password'))),
+          DataCell(Text(name)),
+          DataCell(Text(login)),
+          DataCell(Text(companies)),
+          DataCell(Text(key)),
+          DataCell(Text(perms)),
+          DataCell(Text(admin)),
+          DataCell(Text(pass)),
           DataCell(Row(
             children: [
-              TextButton.icon(
-                onPressed: () => showAdminViewDialog(
-                  context,
-                  title: 'Техник #$id',
-                  item: item,
-                ),
-                icon: const Icon(Icons.visibility, size: 14),
-                label: const Text('Просмотр'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminFormDialog(
-                  context,
-                  title: 'Редактировать техника #$id',
-                  isEdit: true,
-                  fields: [
-                    AdminField(key: 'name', label: 'Имя', initial: _s('name')),
-                    AdminField(key: 'login', label: 'Логин', initial: _s('login')),
-                    AdminField(key: 'password', label: 'Новый пароль', obscure: true),
-                    AdminField(key: 'companies', label: 'Компании', initial: _s('companies')),
-                    AdminField(key: 'permissions', label: 'Разрешения', initial: _s('permissions')),
-                  ],
-                  onSubmit: (values) async {
-                    await ref.read(genericUpdateAction)('/admin/technicians', id, values, techniciansListProvider);
-                  },
-                ),
-                icon: const Icon(Icons.edit, size: 14),
-                label: const Text('Редактировать'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminDeleteDialog(
-                  context,
-                  name: _s('name'),
-                  onDelete: () async {
-                    await ref.read(genericDeleteAction)('/admin/technicians', id, techniciansListProvider);
-                  },
-                ),
-                icon: const Icon(Icons.delete, size: 14),
-                label: const Text('Удалить'),
-              ),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
             ],
           )),
         ]);
@@ -109,4 +55,4 @@ class TechniciansPage extends ConsumerWidget {
   }
 }
 
-final _technicianSearchProvider = StateProvider<String>((ref) => '');
+final _techniciansPageSearchProvider = StateProvider<String>((ref) => '');

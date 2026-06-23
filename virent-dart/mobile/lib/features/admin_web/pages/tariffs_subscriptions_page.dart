@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_table_page.dart';
-import '../widgets/admin_dialogs.dart';
 
 class TariffsSubscriptionsPage extends ConsumerWidget {
   const TariffsSubscriptionsPage({super.key});
@@ -11,71 +10,36 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
-      title: 'Абонементы',
+      title: 'Подписки Тарифов',
       provider: tariffSubscriptionsProvider,
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
       columns: const [
+        DataColumn(label: Text('Id')),
+        DataColumn(label: Text('Client')),
         DataColumn(label: Text('Tariff')),
-        DataColumn(label: Text('Description')),
-        DataColumn(label: Text('Overrun price')),
-        DataColumn(label: Text('Cost')),
-        DataColumn(label: Text('Действия')),
+        DataColumn(label: Text('Start')),
+        DataColumn(label: Text('End')),
+        DataColumn(label: Text('Status')),
       ],
-      buildRow: (t) {
-        final tariff = (t['tariff'] ?? t['name'] ?? '-').toString();
-        final desc = (t['description'] ?? t['desc'] ?? '-').toString();
-        final overrun = (t['overrun_price'] ?? t['overrun'] ?? '-').toString();
-        final cost = (t['cost'] ?? t['price'] ?? '-').toString();
+      buildRow: (item) {
+        final id = (item['id'] ?? '-').toString();
+        final client = (item['client'] ?? item['client_id'] ?? '-').toString();
+        final tariff = (item['tariff'] ?? item['tariff_id'] ?? '-').toString();
+        final start = (item['start'] ?? item['start_date'] ?? item['started_at'] ?? '-').toString();
+        final end = (item['end'] ?? item['end_date'] ?? item['ends_at'] ?? '-').toString();
+        final status = (item['status'] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(tariff, style: adminLinkStyle)),
-          DataCell(Text(desc, style: adminLinkStyle)),
-          DataCell(Text(overrun)),
-          DataCell(Text(cost)),
-          DataCell(Row(
-            children: [
-              TextButton.icon(
-                onPressed: () => showAdminInfoDialog(
-                  context, 'Просмотр', 'Детали абонемента: $tariff',
-                ),
-                icon: const Icon(Icons.visibility, size: 14),
-                label: const Text('Просмотр'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminInfoDialog(
-                  context, 'Геозоны', 'Геозоны завершения: $tariff',
-                ),
-                icon: const Icon(Icons.map, size: 14),
-                label: const Text('Геозоны завершения'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminFormDialog(
-                  context,
-                  title: 'Редактировать абонемент',
-                  fields: const [
-                    AdminField(key: 'tariff', label: 'Tariff'),
-                    AdminField(key: 'description', label: 'Description'),
-                    AdminField(key: 'overrun_price', label: 'Overrun price'),
-                    AdminField(key: 'cost', label: 'Cost'),
-                  ],
-                  onSubmit: (_) async {},
-                ),
-                icon: const Icon(Icons.edit, size: 14),
-                label: const Text('Редактировать'),
-              ),
-              TextButton.icon(
-                onPressed: () async {
-                  await showAdminDeleteDialog(
-                    context,
-                    name: 'абонемент $tariff',
-                    onDelete: () async {},
-                  );
-                },
-                icon: const Icon(Icons.delete, size: 14),
-                label: const Text('Удалить'),
-              ),
-            ],
-          )),
+          DataCell(Text(id)),
+          DataCell(Text(client)),
+          DataCell(Text(tariff)),
+          DataCell(Text(start)),
+          DataCell(Text(end)),
+          DataCell(Text(status)),
+          DataCell(TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр'))),
         ]);
       },
     );
   }
 }
+
+final _tariffsSubscriptionsPageSearchProvider = StateProvider<String>((ref) => '');

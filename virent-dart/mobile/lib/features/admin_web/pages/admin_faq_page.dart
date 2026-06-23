@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_table_page.dart';
-import '../widgets/admin_dialogs.dart';
 
 class AdminFaqPage extends ConsumerWidget {
   const AdminFaqPage({super.key});
@@ -11,69 +10,33 @@ class AdminFaqPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
-      title: 'Faqs',
+      title: 'FAQ',
       provider: adminFaqProvider,
-      searchProvider: _faqSearchProvider,
-      createButton: ElevatedButton.icon(
-        onPressed: () => showAdminFormDialog(
-          context,
-          title: 'Добавить FAQ',
-          fields: const [
-            AdminField(key: 'name', label: 'Название'),
-            AdminField(key: 'description', label: 'Описание', multiline: true),
-          ],
-          onSubmit: (values) async {
-            await ref.read(genericCreateAction)(
-              '/admin/faq',
-              values,
-              adminFaqProvider,
-            );
-          },
-        ),
-        icon: const Icon(Icons.add, size: 16),
-        label: const Text('Добавить faq'),
-        style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-      ),
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
+      createButton: ElevatedButton.icon(onPressed:(){},icon:const Icon(Icons.add, size:16),label:const Text("Добавить вопрос"),style:ElevatedButton.styleFrom(backgroundColor:adminPrimaryColor,foregroundColor:adminPrimaryForeground)),
       columns: const [
-        DataColumn(label: Text('Name')),
-        DataColumn(label: Text('Description')),
-        DataColumn(label: Text('Действия')),
+        DataColumn(label: Text('Id')),
+        DataColumn(label: Text('Question')),
+        DataColumn(label: Text('Answer')),
+        DataColumn(label: Text('Order')),
+        DataColumn(label: Text('Is active')),
       ],
       buildRow: (item) {
-        String _s(String key) => (item[key] ?? '-').toString();
-        final id = _s('id');
+        final id = (item['id'] ?? '-').toString();
+        final question = (item['question'] ?? '-').toString();
+        final answer = (item['answer'] ?? '-').toString();
+        final order = (item['order'] ?? item['sort_order'] ?? item['ordering'] ?? '-').toString();
+        final is_active = (item['is_active'] ?? item['active'] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(_s('name'))),
-          DataCell(Text(_s('description'))),
+          DataCell(Text(id)),
+          DataCell(Text(question)),
+          DataCell(Text(answer)),
+          DataCell(Text(order)),
+          DataCell(Text(is_active)),
           DataCell(Row(
             children: [
-              TextButton.icon(
-                onPressed: () => showAdminFormDialog(
-                  context,
-                  title: 'Редактировать FAQ #$id',
-                  isEdit: true,
-                  fields: [
-                    AdminField(key: 'name', label: 'Название', initial: _s('name')),
-                    AdminField(key: 'description', label: 'Описание', multiline: true, initial: _s('description')),
-                  ],
-                  onSubmit: (values) async {
-                    await ref.read(genericUpdateAction)('/admin/faq', id, values, adminFaqProvider);
-                  },
-                ),
-                icon: const Icon(Icons.edit, size: 14),
-                label: const Text('Редактировать'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminDeleteDialog(
-                  context,
-                  name: _s('name'),
-                  onDelete: () async {
-                    await ref.read(genericDeleteAction)('/admin/faq', id, adminFaqProvider);
-                  },
-                ),
-                icon: const Icon(Icons.delete, size: 14),
-                label: const Text('Удалить'),
-              ),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
             ],
           )),
         ]);
@@ -82,4 +45,4 @@ class AdminFaqPage extends ConsumerWidget {
   }
 }
 
-final _faqSearchProvider = StateProvider<String>((ref) => '');
+final _adminFaqPageSearchProvider = StateProvider<String>((ref) => '');

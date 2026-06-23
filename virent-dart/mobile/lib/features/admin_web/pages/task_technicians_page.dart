@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_table_page.dart';
-import '../widgets/admin_dialogs.dart';
 
 class TaskTechniciansPage extends ConsumerWidget {
   const TaskTechniciansPage({super.key});
@@ -11,101 +10,32 @@ class TaskTechniciansPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AdminTablePage(
-      title: 'Task_techicians',
+      title: 'Задачи Техников',
       provider: techTasksProvider,
-      searchProvider: _taskTechSearchProvider,
-      createButton: ElevatedButton.icon(
-        onPressed: () => showAdminFormDialog(
-          context,
-          title: 'Добавить задачу',
-          fields: const [
-            AdminField(key: 'title', label: 'Название'),
-            AdminField(key: 'technician', label: 'Техник'),
-            AdminField(key: 'description', label: 'Описание', multiline: true),
-          ],
-          onSubmit: (values) async {
-            await ref.read(genericCreateAction)(
-              '/admin/tech-tasks',
-              values,
-              techTasksProvider,
-            );
-          },
-        ),
-        icon: const Icon(Icons.add, size: 16),
-        label: const Text('Добавить tasktechnician'),
-        style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-      ),
-      filters: SizedBox(
-        width: 200,
-        child: TextField(
-          decoration: adminFilterDecoration(hint: 'columns.tasktechnician.technician_id'),
-        ),
-      ),
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
       columns: const [
         DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Title')),
-        DataColumn(label: Text('Technician')),
-        DataColumn(label: Text('Description')),
-        DataColumn(label: Text('Create by')),
-        DataColumn(label: Text('Create time')),
-        DataColumn(label: Text('Завершен')),
-        DataColumn(label: Text('Finish time')),
-        DataColumn(label: Text('Finish by')),
-        DataColumn(label: Text('Действия')),
+        DataColumn(label: Text('Tech')),
+        DataColumn(label: Text('Task')),
+        DataColumn(label: Text('Status')),
+        DataColumn(label: Text('Created')),
       ],
       buildRow: (item) {
-        String _s(String key) => (item[key] ?? '-').toString();
-        final id = _s('id');
+        final id = (item['id'] ?? '-').toString();
+        final tech = (item['tech'] ?? item['technician'] ?? item['tech_id'] ?? '-').toString();
+        final task = (item['task'] ?? item['description'] ?? item['title'] ?? '-').toString();
+        final status = (item['status'] ?? '-').toString();
+        final created = (item['created'] ?? item['created_at'] ?? '-').toString();
         return DataRow(cells: [
           DataCell(Text(id)),
-          DataCell(Text(_s('title'))),
-          DataCell(Text(_s('technician'))),
-          DataCell(Text(_s('description'))),
-          DataCell(Text(_s('created_by'))),
-          DataCell(Text(_s('created_at'))),
-          DataCell(Text(_s('completed'))),
-          DataCell(Text(_s('finished_at'))),
-          DataCell(Text(_s('finished_by'))),
+          DataCell(Text(tech)),
+          DataCell(Text(task)),
+          DataCell(Text(status)),
+          DataCell(Text(created)),
           DataCell(Row(
             children: [
-              TextButton.icon(
-                onPressed: () => showAdminViewDialog(
-                  context,
-                  title: 'Задача #$id',
-                  item: item,
-                ),
-                icon: const Icon(Icons.visibility, size: 14),
-                label: const Text('Просмотр'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminFormDialog(
-                  context,
-                  title: 'Редактировать задачу #$id',
-                  isEdit: true,
-                  fields: [
-                    AdminField(key: 'title', label: 'Название', initial: _s('title')),
-                    AdminField(key: 'technician', label: 'Техник', initial: _s('technician')),
-                    AdminField(key: 'description', label: 'Описание', multiline: true, initial: _s('description')),
-                    AdminField(key: 'completed', label: 'Завершена (0/1)', initial: _s('completed')),
-                  ],
-                  onSubmit: (values) async {
-                    await ref.read(genericUpdateAction)('/admin/tech-tasks', id, values, techTasksProvider);
-                  },
-                ),
-                icon: const Icon(Icons.edit, size: 14),
-                label: const Text('Редактировать'),
-              ),
-              TextButton.icon(
-                onPressed: () => showAdminDeleteDialog(
-                  context,
-                  name: _s('title'),
-                  onDelete: () async {
-                    await ref.read(genericDeleteAction)('/admin/tech-tasks', id, techTasksProvider);
-                  },
-                ),
-                icon: const Icon(Icons.delete, size: 14),
-                label: const Text('Удалить'),
-              ),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
+              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
             ],
           )),
         ]);
@@ -114,4 +44,4 @@ class TaskTechniciansPage extends ConsumerWidget {
   }
 }
 
-final _taskTechSearchProvider = StateProvider<String>((ref) => '');
+final _taskTechniciansPageSearchProvider = StateProvider<String>((ref) => '');

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_table_page.dart';
-import '../widgets/admin_dialogs.dart';
 
 class SelfiesPage extends ConsumerWidget {
   const SelfiesPage({super.key});
@@ -13,58 +12,31 @@ class SelfiesPage extends ConsumerWidget {
     return AdminTablePage(
       title: 'Селфи',
       provider: selfiesListProvider,
-      searchProvider: _selfiesSearchProvider,
-      filters: Row(
-        children: [
-          OutlinedButton(onPressed: () => showAdminSnack(context, 'Фильтр «Да» применён'), child: const Text('Да', style: TextStyle(color: Colors.green))),
-          const SizedBox(width: 8),
-          ElevatedButton(onPressed: () => showAdminSnack(context, 'Фильтр «Нет» применён'), style: ElevatedButton.styleFrom(backgroundColor: Colors.orange), child: const Text('Нет', style: TextStyle(color: Colors.white))),
-          const SizedBox(width: 16),
-          SizedBox(
-            width: 150,
-            child: TextField(
-              decoration: adminFilterDecoration(hint: 'ID клиента'),
-            ),
-          ),
-          const SizedBox(width: 8),
-          ElevatedButton.icon(
-            onPressed: () {
-              ref.invalidate(selfiesListProvider);
-              showAdminSnack(context, 'Фильтры сброшены');
-            },
-            icon: const Icon(Icons.clear, size: 16),
-            label: const Text('Очистить фильтры'),
-            style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-          ),
-        ],
-      ),
+      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
       columns: const [
-        DataColumn(label: Text('ID')),
-        DataColumn(label: Text('Фото')),
-        DataColumn(label: Text('Проверено')),
+        DataColumn(label: Text('Id')),
+        DataColumn(label: Text('Client')),
+        DataColumn(label: Text('Scooter')),
+        DataColumn(label: Text('Type')),
+        DataColumn(label: Text('Created')),
       ],
       buildRow: (item) {
-        String _s(String key) => (item[key] ?? '-').toString();
-        bool _b(String key) {
-          final v = item[key];
-          if (v == null) return false;
-          if (v is bool) return v;
-          final s = v.toString().toLowerCase();
-          return s == '1' || s == 'true' || s == 'yes';
-        }
+        final id = (item['id'] ?? '-').toString();
+        final client = (item['client'] ?? item['client_id'] ?? '-').toString();
+        final scooter = (item['scooter'] ?? item['scooter_id'] ?? '-').toString();
+        final type = (item['type'] ?? item['selfie_type'] ?? '-').toString();
+        final created = (item['created'] ?? item['created_at'] ?? '-').toString();
         return DataRow(cells: [
-          DataCell(Text(_s('id'), style: adminLinkStyle)),
-          DataCell(Container(
-            width: 120,
-            height: 60,
-            color: Colors.grey.shade300,
-            child: const Center(child: Icon(Icons.image, color: Colors.grey)),
-          )),
-          DataCell(Switch(value: _b('verified'), onChanged: (val) {})),
+          DataCell(Text(id)),
+          DataCell(Text(client)),
+          DataCell(Text(scooter)),
+          DataCell(Text(type)),
+          DataCell(Text(created)),
+          DataCell(TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр'))),
         ]);
       },
     );
   }
 }
 
-final _selfiesSearchProvider = StateProvider<String>((ref) => '');
+final _selfiesPageSearchProvider = StateProvider<String>((ref) => '');
