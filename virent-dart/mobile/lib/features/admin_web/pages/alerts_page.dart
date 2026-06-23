@@ -101,10 +101,7 @@ class AlertsPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final icon = (item['icon'] ?? '').toString();
     final iconColor = (item['iconColor'] ?? '').toString();
     final sId = (item['sId'] ?? '').toString();
@@ -129,5 +126,8 @@ class AlertsPage extends ConsumerWidget {
       ],
     );
   
+    );
+  ),
+);
   }
 }

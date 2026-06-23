@@ -80,10 +80,7 @@ class PaymeTransactionsPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  Widget _buildFilterField(String hint, {double width = 150}) {
+  Widget_buildFilterField(String hint, {double width = 150}) {
     return SizedBox(
       width: width,
       child: TextField(
@@ -94,6 +91,9 @@ class PaymeTransactionsPage extends ConsumerWidget {
         ),
       ),
     );
+    );
+  ),
+);
   }
 
   DataRow _buildItemRow(Map<String, dynamic> item) {

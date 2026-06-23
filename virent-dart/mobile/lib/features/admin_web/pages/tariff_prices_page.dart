@@ -71,10 +71,7 @@ class TariffPricesPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final name = (item['name'] ?? '').toString();
     final time = (item['created_at'] ?? '').toString();
 
@@ -95,5 +92,8 @@ class TariffPricesPage extends ConsumerWidget {
       )),
     ]);
   
+    );
+  ),
+);
   }
 }

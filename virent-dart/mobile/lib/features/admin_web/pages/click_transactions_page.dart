@@ -88,10 +88,7 @@ class ClickTransactionsPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  Widget _buildFilterInput(String hint) {
+  Widget_buildFilterInput(String hint) {
     return SizedBox(
       width: 150,
       child: TextField(
@@ -102,6 +99,9 @@ class ClickTransactionsPage extends ConsumerWidget {
         ),
       ),
     );
+    );
+  ),
+);
   }
 
   DataRow _buildItemRow(Map<String, dynamic> item) {

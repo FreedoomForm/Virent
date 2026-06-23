@@ -73,10 +73,7 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final tariff = (item['tariff_name'] ?? '').toString();
     final desc = (item['description'] ?? '').toString();
     final overrun = (item['overrun_price'] ?? '').toString();
@@ -97,5 +94,8 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
       )),
     ]);
   
+    );
+  ),
+);
   }
 }

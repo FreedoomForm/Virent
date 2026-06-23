@@ -87,10 +87,7 @@ class TechFeedbackPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  Widget _buildFilterInput(String label) {
+  Widget_buildFilterInput(String label) {
     return SizedBox(
       width: 150,
       child: TextField(
@@ -104,6 +101,9 @@ class TechFeedbackPage extends ConsumerWidget {
         ),
       ),
     );
+    );
+  ),
+);
   }
 
   DataRow _buildItemRow(Map<String, dynamic> item) {

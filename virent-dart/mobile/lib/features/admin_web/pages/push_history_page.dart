@@ -73,10 +73,7 @@ class PushHistoryPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  Widget _buildFilterField(String hint) {
+  Widget_buildFilterField(String hint) {
     return SizedBox(
       width: 150,
       child: TextField(
@@ -87,6 +84,9 @@ class PushHistoryPage extends ConsumerWidget {
         ),
       ),
     );
+    );
+  ),
+);
   }
 
   DataRow _buildItemRow(Map<String, dynamic> item) {

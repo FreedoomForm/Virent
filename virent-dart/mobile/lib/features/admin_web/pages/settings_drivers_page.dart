@@ -71,10 +71,7 @@ class SettingsDriversPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final desc = (item['description'] ?? '').toString();
     final type = (item['type'] ?? '').toString();
@@ -92,5 +89,8 @@ class SettingsDriversPage extends ConsumerWidget {
       )),
     ]);
   
+    );
+  ),
+);
   }
 }

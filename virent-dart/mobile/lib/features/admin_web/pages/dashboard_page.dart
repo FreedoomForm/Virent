@@ -57,10 +57,7 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  Widget _buildStatsGrid(BuildContext context) {
+  Widget_buildStatsGrid(BuildContext context) {
     return Wrap(
       spacing: 16,
       runSpacing: 16,
@@ -77,6 +74,9 @@ class DashboardPage extends ConsumerWidget {
         _buildStatCard(context, 'Не онлайн', '32', const Color(0xFFD9534F)),
       ],
     );
+    );
+  ),
+);
   }
 
   Widget _buildStatCard(BuildContext context, String title, String value, Color bgColor) {

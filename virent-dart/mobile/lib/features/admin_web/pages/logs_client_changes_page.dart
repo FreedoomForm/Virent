@@ -87,10 +87,7 @@ class LogsClientChangesPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final clientId = (item['client_id'] ?? '').toString();
     final tariffs = (item['available_tariffs'] ?? '').toString();
@@ -112,5 +109,8 @@ class LogsClientChangesPage extends ConsumerWidget {
       const DataCell(Text('19 июн 2026, 12:06')),
     ]);
   
+    );
+  ),
+);
   }
 }

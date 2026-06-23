@@ -112,10 +112,7 @@ class LogsTelemetryPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final carId = (item['carId'] ?? '').toString();
     final gos = (item['gosnomer'] ?? '').toString();
@@ -153,5 +150,8 @@ class LogsTelemetryPage extends ConsumerWidget {
       DataCell(TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр'))),
     ]);
   
+    );
+  ),
+);
   }
 }

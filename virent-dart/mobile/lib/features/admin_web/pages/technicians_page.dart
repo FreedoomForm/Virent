@@ -79,10 +79,7 @@ class TechniciansPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final name = (item['name'] ?? '').toString();
     final login = (item['login'] ?? '').toString();
@@ -110,5 +107,8 @@ class TechniciansPage extends ConsumerWidget {
       )),
     ]);
   
+    );
+  ),
+);
   }
 }

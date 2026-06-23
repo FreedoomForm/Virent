@@ -56,16 +56,16 @@ class SettingsConfigPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  Widget _buildSectionTitle(String title) {
+  Widget_buildSectionTitle(String title) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
       color: Colors.grey.shade100,
       child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
     );
+    );
+  ),
+);
   }
 
   Widget _buildConfigRow(String label, String value, {String? suffix}) {

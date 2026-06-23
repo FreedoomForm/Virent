@@ -64,10 +64,7 @@ class HoldLogsPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  Widget _buildFilterField(String hint) {
+  Widget_buildFilterField(String hint) {
     return SizedBox(
       width: 150,
       child: TextField(
@@ -78,6 +75,9 @@ class HoldLogsPage extends ConsumerWidget {
         ),
       ),
     );
+    );
+  ),
+);
   }
 
   DataRow _buildItemRow(Map<String, dynamic> item) {

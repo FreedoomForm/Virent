@@ -96,10 +96,7 @@ class BillingReceiptsPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final check = (item['check_type'] ?? '').toString();
     final bill = (item['bill_id'] ?? '').toString();
@@ -121,5 +118,8 @@ class BillingReceiptsPage extends ConsumerWidget {
       const DataCell(Text('Нет')),
     ]);
   
+    );
+  ),
+);
   }
 }

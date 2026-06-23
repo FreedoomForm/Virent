@@ -80,10 +80,7 @@ class GeozonesPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final name = (item['name'] ?? '').toString();
     final fill = (item['fill_color'] ?? '').toString();
@@ -115,5 +112,8 @@ class GeozonesPage extends ConsumerWidget {
       )),
     ]);
   
+    );
+  ),
+);
   }
 }

@@ -86,10 +86,7 @@ class BillingDebtsPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  Widget _buildFilterField(String hint) {
+  Widget_buildFilterField(String hint) {
     return SizedBox(
       width: 150,
       child: TextField(
@@ -100,5 +97,8 @@ class BillingDebtsPage extends ConsumerWidget {
         ),
       ),
     );
+    );
+  ),
+);
   }
 }

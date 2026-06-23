@@ -102,10 +102,7 @@ class ScootersPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  Widget _buildFilterField(String hint, {double width = 120}) {
+  Widget_buildFilterField(String hint, {double width = 120}) {
     return SizedBox(
       width: width,
       child: TextField(
@@ -116,6 +113,9 @@ class ScootersPage extends ConsumerWidget {
         ),
       ),
     );
+    );
+  ),
+);
   }
 
   Widget _buildDropdownBtn(String label) {

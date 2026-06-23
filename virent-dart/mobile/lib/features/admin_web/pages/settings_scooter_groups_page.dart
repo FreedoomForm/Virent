@@ -71,10 +71,7 @@ class SettingsScooterGroupsPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final desc = (item['description'] ?? '').toString();
     final eq = (item['trigger_equation'] ?? '').toString();
@@ -92,5 +89,8 @@ class SettingsScooterGroupsPage extends ConsumerWidget {
       )),
     ]);
   
+    );
+  ),
+);
   }
 }

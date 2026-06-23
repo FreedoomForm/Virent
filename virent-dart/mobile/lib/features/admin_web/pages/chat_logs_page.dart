@@ -82,10 +82,7 @@ class ChatLogsPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final cid = (item['client_id'] ?? '').toString();
     final time = (item['created_at'] ?? '').toString();
     final false} = (item['false}'] ?? '').toString();
@@ -110,5 +107,8 @@ class ChatLogsPage extends ConsumerWidget {
       )),
     ]);
   
+    );
+  ),
+);
   }
 }

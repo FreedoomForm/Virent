@@ -144,10 +144,7 @@ class StatisticsPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  Widget _buildStatCard(String value, String label, Color color) {
+  Widget_buildStatCard(String value, String label, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
@@ -161,6 +158,9 @@ class StatisticsPage extends ConsumerWidget {
         ],
       ),
     );
+    );
+  ),
+);
   }
 
   Widget _buildSectionCard(String title, String content, Color color) {

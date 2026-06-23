@@ -68,10 +68,7 @@ class TariffUntilDeadPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final appName = (item['app_name'] ?? '').toString();
     final adminName = (item['admin_name'] ?? '').toString();
     final dur = (item['max_duration'] ?? '').toString();
@@ -96,5 +93,8 @@ class TariffUntilDeadPage extends ConsumerWidget {
       )),
     ]);
   
+    );
+  ),
+);
   }
 }

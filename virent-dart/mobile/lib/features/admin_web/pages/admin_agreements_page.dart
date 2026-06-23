@@ -71,10 +71,7 @@ class AdminAgreementsPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final file = (item['file'] ?? '').toString();
     final urlLabel = (item['url_label'] ?? '').toString();
     final htmlFile = (item['html_file'] ?? '').toString();
@@ -91,5 +88,8 @@ class AdminAgreementsPage extends ConsumerWidget {
       )),
     ]);
   
+    );
+  ),
+);
   }
 }

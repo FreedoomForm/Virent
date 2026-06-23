@@ -91,10 +91,7 @@ class LogsScooterChangesPage extends ConsumerWidget {
     );
   }
 
-      ),
-    );
-  );
-  DataRow _buildItemRow(Map<String, dynamic> item) {
+  DataRow_buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final num = (item['gosnomer'] ?? '').toString();
     final currOrder = (item['current_order_id'] ?? '').toString();
@@ -126,5 +123,8 @@ class LogsScooterChangesPage extends ConsumerWidget {
       const DataCell(Text('')),
     ]);
   
+    );
+  ),
+);
   }
 }
