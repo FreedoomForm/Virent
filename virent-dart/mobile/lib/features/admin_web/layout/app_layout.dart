@@ -120,7 +120,7 @@ class _AppLayoutState extends State<AppLayout> {
       case 12: return TariffAbonementsPage();
       case 120: return TariffsPage();
       case 121: return TariffPricesPage();
-      case 122: return TariffSubTariffsPage();
+      case 122: return TariffSubtariffsPage();
       case 124: return TariffsSubscriptionsPage();
       case 123: return TariffUntilDeadPage();
       case 13: return HoldLogsPage();
