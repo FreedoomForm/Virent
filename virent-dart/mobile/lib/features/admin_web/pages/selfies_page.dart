@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class SelfiesPage extends StatelessWidget {
+class SelfiesPage extends ConsumerWidget {
   const SelfiesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -91,40 +93,45 @@ class SelfiesPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: 8,
-                    itemBuilder: (context, i) {
-                      return Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 120,
-                              child: Text('2966[...]', style: const TextStyle(fontSize: 11, color: Color(0xFFE67E22))),
-                            ),
-                            Expanded(
-                              child: Container(
-                                width: 24,
-                                height: 24,
-                                alignment: Alignment.centerLeft,
-                                child: Icon(Icons.broken_image, size: 20, color: Colors.grey.shade400),
+                  child: ref.watch(selfiesListProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text('Ошибка: $e')),
+                    data: (items) => ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, i) {
+                        final item = items[i];
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 120,
+                                child: Text(item['id']?.toString() ?? '...', style: const TextStyle(fontSize: 11, color: Color(0xFFE67E22))),
                               ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Row(
-                                children: [
-                                  Icon(Icons.check_box_outline_blank, size: 16, color: Colors.grey.shade400),
-                                  const SizedBox(width: 4),
-                                  Icon(Icons.play_arrow_outlined, size: 16, color: Colors.grey.shade400),
-                                ],
+                              Expanded(
+                                child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  alignment: Alignment.centerLeft,
+                                  child: Icon(Icons.broken_image, size: 20, color: Colors.grey.shade400),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                              SizedBox(
+                                width: 120,
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.check_box_outline_blank, size: 16, color: Colors.grey.shade400),
+                                    const SizedBox(width: 4),
+                                    Icon(Icons.play_arrow_outlined, size: 16, color: Colors.grey.shade400),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],

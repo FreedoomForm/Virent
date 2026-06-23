@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class TariffsSubscriptionsPage extends StatelessWidget {
+class TariffsSubscriptionsPage extends ConsumerWidget {
   const TariffsSubscriptionsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class TariffsSubscriptionsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить subscription_tariff', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -83,32 +85,37 @@ class TariffsSubscriptionsPage extends StatelessWidget {
                   ),
                 ),
                 const Divider(height: 1),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 24),
-                  child: const Center(
-                    child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                Expanded(
+                  child: ref.watch(tariffSubscriptionsProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text('Ошибка: $e')),
+                    data: (items) => items.isEmpty
+                      ? const Center(child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)))
+                      : ListView.builder(
+                          itemCount: items.length,
+                          itemBuilder: (context, i) {
+                            final item = items[i];
+                            return Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 150, child: Text(item['name']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 250, child: Text(item['name_in_app']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 150, child: Text(item['price']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 150, child: Text(item['group']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 150, child: Text(item['active']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 150, child: Text(item['daily']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 200, child: Text(item['company']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 200, child: Text(item['duration']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  const Expanded(child: SizedBox()),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                   ),
                 ),
-                const Divider(height: 1),
-                Container(
-                  color: const Color(0xFFF8F9FA),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: const Row(
-                    children: [
-                      SizedBox(width: 150, child: Text('Name', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 250, child: Text('Name in app', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 150, child: Text('Price', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 150, child: Text('Group', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 150, child: Text('Active', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 150, child: Text('Daily', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 200, child: Text('Company', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 200, child: Text('Duration', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
-                const Divider(height: 1),
-                const Expanded(child: SizedBox()),
               ],
             ),
           ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class AdminContactsPage extends StatelessWidget {
+class AdminContactsPage extends ConsumerWidget {
   const AdminContactsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class AdminContactsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -81,10 +83,12 @@ class AdminContactsPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _contactRow('Ташкент', '+998712000373', 'virent2022@gmail.com', '@ViRent2023', '', 'https://virent.uz', '12'),
-                    ],
+                  ref.watch(adminContactsProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _contactRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
                 const Divider(height: 1),
@@ -141,4 +145,18 @@ class AdminContactsPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _contactRowFromItem(Map<String, dynamic> item) {
+    return _contactRow(
+      item['city']?.toString() ?? '',
+      item['phone']?.toString() ?? '',
+      item['email']?.toString() ?? '',
+      item['tg']?.toString() ?? '',
+      item['wp']?.toString() ?? '',
+      item['faq']?.toString() ?? '',
+      item['company']?.toString() ?? '',
+    );
+  }
+
 }

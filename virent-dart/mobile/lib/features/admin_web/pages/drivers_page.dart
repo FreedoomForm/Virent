@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class DriversPage extends StatelessWidget {
+class DriversPage extends ConsumerWidget {
   const DriversPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class DriversPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -77,13 +79,12 @@ class DriversPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _driverRow('7', 'Ninebot', 'FLESPI'),
-                      _driverRow('10', 'OKAI 400', 'FLESPI'),
-                      _driverRow('11', 'ecu200', 'gospi'),
-                      _driverRow('12', 'ecu201', 'gospi'),
-                    ],
+                  ref.watch(settingsDriversProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _driverRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
                 const Divider(height: 1),
@@ -134,4 +135,14 @@ class DriversPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _driverRowFromItem(Map<String, dynamic> item) {
+    return _driverRow(
+      item['id']?.toString() ?? '',
+      item['desc']?.toString() ?? '',
+      item['type']?.toString() ?? '',
+    );
+  }
+
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class PaymeTransactionsPage extends StatelessWidget {
+class PaymeTransactionsPage extends ConsumerWidget {
   const PaymeTransactionsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -87,18 +89,12 @@ class PaymeTransactionsPage extends StatelessWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      child: ListView(
-                        children: [
-                          _paymeRow('39', '6a0c0144d3ee342047105841', '6a0c0144d3ee342047105841', '2026-05-19 11:20:52', '2026-05-19 11:20:53', '2026-05-19 11:21:01', '2026-05-19 11:21:08', 'Отменена после оплаты / возврат (-2)', true, '-2', '2,499,000', '79150213177', '22', '5'),
-                          _paymeRow('38', '6a0c0132d3ee34204710583e', '6a0c0132d3ee34204710583e', '2026-05-19 11:20:34', '2026-05-19 11:20:35', '—', '2026-05-19 11:20:42', 'Отменена до подтверждения (-1)', false, '-1', '2,499,000', '79150213177', '22', '3'),
-                          _paymeRow('37', '6a0b21dcd3ee3420471056fb', '6a0b21dcd3ee3420471056fb', '2026-05-18 19:27:40', '2026-05-18 19:27:40', '2026-05-18 19:28:28', '2026-05-18 19:29:16', 'Отменена после оплаты / возврат (-2)', true, '-2', '2,499,000', '79150213177', '22', '5'),
-                          _paymeRow('36', '6a0b201fd3ee3420471056f4', '6a0b201fd3ee3420471056f4', '2026-05-18 19:20:15', '2026-05-18 19:20:16', '2026-05-18 19:22:29', '2026-05-18 19:23:17', 'Отменена после оплаты / возврат (-2)', true, '-2', '2,499,000', '79150213177', '22', '5'),
-                          _paymeRow('35', '6a0b1cbbd3ee3420471056f1', '6a0b1cbbd3ee3420471056f1', '2026-05-18 19:05:47', '2026-05-18 19:05:47', '—', '—', 'Создана, ожидает оплату (1)', false, '1', '2,499,000', '79150213177', '22', '—', isWarning: true),
-                          _paymeRow('34', '6a0b1cb9d3ee3420471056f0', '6a0b1cb9d3ee3420471056f0', '2026-05-18 19:05:45', '2026-05-18 19:05:46', '—', '—', 'Создана, ожидает оплату (1)', false, '1', '2,499,000', '79150213177', '22', '—', isWarning: true),
-                          _paymeRow('33', 'test-flow-727e9071c8380ff...', 'test-flow-727e9071c8380ff...', '2026-05-15 20:24:00', '2026-05-15 20:24:00', '2026-05-15 20:24:00', '—', 'Успешно оплачена (2)', false, '2', '2,490,000', '998901361576', '269370', '—', isSuccess: true),
-                          _paymeRow('32', 'test-flow-217b6d762990d7...', 'test-flow-217b6d762990d7...', '2026-05-15 19:53:34', '2026-05-15 19:53:42', '2026-05-15 19:53:42', '—', 'Успешно оплачена (2)', false, '2', '2,499,000', '79150213177', '22', '—', isSuccess: true),
-                          _paymeRow('31', 'test-flow-ed21c19ee75e86...', 'test-flow-ed21c19ee75e86...', '2026-05-15 19:44:55', '2026-05-15 19:45:08', '—', '—', 'Создана, ожидает оплату (1)', false, '1', '2,499,000', '79150213177', '22', '—', isWarning: true),
-                        ],
+                      ref.watch(paymeTransactionsProvider).when(
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (e, _) => Center(child: Text("Ошибка: $e")),
+                        data: (items) => ListView(
+                          children: items.map((item) => _paymeRowFromItem(item)).toList(),
+                        ),
                       ),
                     ),
                   ],
@@ -191,4 +187,27 @@ class PaymeTransactionsPage extends StatelessWidget {
       ],
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _paymeRowFromItem(Map<String, dynamic> item) {
+    return _paymeRow(
+      item['id']?.toString() ?? '',
+      item['payme']?.toString() ?? '',
+      item['merch']?.toString() ?? '',
+      item['paymeTime']?.toString() ?? '',
+      item['create']?.toString() ?? '',
+      item['perform']?.toString() ?? '',
+      item['cancel']?.toString() ?? '',
+      item['stateDesc']?.toString() ?? '',
+      item['isError']?.toString() ?? '',
+      item['state']?.toString() ?? '',
+      item['amount']?.toString() ?? '',
+      item['phone']?.toString() ?? '',
+      item['client']?.toString() ?? '',
+      item['reason']?.toString() ?? '',
+      item['{bool']?.toString() ?? '',
+      item['false}']?.toString() ?? '',
+    );
+  }
+
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class LogsScooterChangesPage extends StatelessWidget {
+class LogsScooterChangesPage extends ConsumerWidget {
   const LogsScooterChangesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -80,24 +82,14 @@ class LogsScooterChangesPage extends StatelessWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      child: ListView(
-                        children: [
-                          _scooterLog('Y_4f354BotTmlSvb--dq', '1759', '', '7', '1', '16', 'node', '[22,147,221,400,419,420,421]', '19 июн 2026, 14:04', '11 дек 2023, 23:57:11', '5647690', '867844062312833', '16 июн 2026, 20:43:47'),
-                          _scooterLog('Sf4f354BotTmlSvb7-fv', '977', '769208', '7', '1', '16', 'node', '[22,147,215,400,419,420,421]', '19 июн 2026, 14:04', '09 мая 2023, 03:04:27', '5243381', '867844060831255', '19 июн 2026, 13:01:58'),
-                          _scooterLog('Rv4f354BotTmlSvb7-ez', '806', '769209', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:04', '08 мая 2023, 23:55:39', '5335877', '867844060823575', '18 июн 2026, 04:29:29'),
-                          _scooterLog('yP4f354BotTmlSvbteap', '904', '', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:04', '09 мая 2023, 01:44:39', '5243236', '867844060829424', '19 июн 2026, 02:49:36'),
-                          _scooterLog('xv4f354BotTmlSvbteaT', '1757', '', '7', '1', '16', 'node', '[22,69,147,215,400,419,420,421]', '19 июн 2026, 14:04', '11 дек 2023, 23:57:11', '5647699', '867844062289908', '19 июн 2026, 06:26:31'),
-                          _scooterLog('xP4f354BotTmlSvbteZ9', '806', '769209', '7', '1', '16', 'node', '[22,147,293,400,419,420,421]', '19 июн 2026, 14:04', '08 мая 2023, 23:55:39', '5335877', '867844060823575', '18 июн 2026, 04:29:29'),
-                          _scooterLog('jf4f354BotTmlSvboebM', '977', '769208', '7', '1', '16', 'node', '[22,69,147,215,400,419,420,421]', '19 июн 2026, 14:04', '09 мая 2023, 03:04:27', '5243381', '867844060831255', '19 июн 2026, 13:01:58'),
-                          _scooterLog('HP4f354BotTmlSvbduaX', '806', '769209', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:04', '08 мая 2023, 23:55:39', '5335877', '867844060823575', '18 июн 2026, 04:29:29'),
-                          _scooterLog('_4f354BotTmlSvbZ-Up', '977', '769208', '7', '1', '16', 'node', '[22,69,147,400,419,420,421]', '19 июн 2026, 14:03', '09 мая 2023, 03:04:27', '5243381', '867844060831255', '19 июн 2026, 13:01:58'),
-                          _scooterLog('Iv4f354BotTmlSvbDeWB', '945', '', '7', '1', '16', 'node', '[22,147,221,400,419,420,421]', '19 июн 2026, 14:03', '09 мая 2023, 02:42:02', '5243328', '867844060829903', '16 июн 2026, 08:05:08'),
-                          _scooterLog('9f4e354BotTmlSvb9eTk', '976', '', '7', '1', '16', 'node', '[22,147,221,400,419,420,421]', '19 июн 2026, 14:03', '09 мая 2023, 03:04:09', '5243380', '867844060823500', '19 июн 2026, 06:22:46'),
-                          _scooterLog('Ov4e354BotTmlSvb5uRq', '976', '', '7', '1', '16', 'node', '[22,147,221,400,419,420,421]', '19 июн 2026, 14:03', '09 мая 2023, 03:04:09', '5243380', '867844060823500', '19 июн 2026, 06:22:46'),
-                          _scooterLog('hf4e354BotTmlSvbXuti', '977', '769208', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:03', '09 мая 2023, 03:04:27', '5243381', '867844060831255', '19 июн 2026, 13:01:58'),
-                          _scooterLog('E_4e354BotTmlSvbl-S7', '1790', '769207', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:03', '11 дек 2023, 23:57:11', '5647774', '867844062311694', '19 июн 2026, 00:50:43'),
-                          _scooterLog('1f4e354BotTmlSvbB-kT', '1734', '769205', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:02', '11 дек 2023, 23:57:11', '5647760', '868070043236367', '19 июн 2026, 01:32:58'),
-                        ],
+                      child: ref.watch(logsScooterChangesProvider).when(
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (e, _) => Center(child: Text('Ошибка: $e')),
+                        data: (items) => items.isEmpty
+                          ? const Center(child: Text('Нет данных', style: TextStyle(color: Colors.grey)))
+                          : ListView(
+                              children: items.map((item) => _scooterLogFromItem(item)).toList(),
+                            ),
                       ),
                     ),
                   ],
@@ -110,7 +102,7 @@ class LogsScooterChangesPage extends StatelessWidget {
     );
   }
 
-  Widget _scooterLog(String id, String num, String orderId, String model, String online, String compId, String user, String geo, String updTime, String creTime, String flespi, String imei, String lastOrder) {
+  Widget _scooterLogFromItem(String id, String num, String orderId, String model, String online, String compId, String user, String geo, String updTime, String creTime, String flespi, String imei, String lastOrder) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
@@ -159,4 +151,24 @@ class LogsScooterChangesPage extends StatelessWidget {
       ],
     );
   }
+
+  /// Dynamic row builder for scooter change logs.
+  Widget _scooterLogFromItem(Map<String, dynamic> item) {
+    return _scooterLog(
+      item['id']?.toString() ?? '',
+      item['scooter_num']?.toString() ?? '',
+      item['order_id']?.toString() ?? '',
+      item['model_id']?.toString() ?? '',
+      item['online']?.toString() ?? '',
+      item['company_id']?.toString() ?? '',
+      item['user']?.toString() ?? '',
+      item['geozones']?.toString() ?? '',
+      item['updated_at']?.toString() ?? '',
+      item['created_at']?.toString() ?? '',
+      item['flespi_id']?.toString() ?? '',
+      item['imei']?.toString() ?? '',
+      item['last_order_end']?.toString() ?? '',
+    );
+  }
+
 }

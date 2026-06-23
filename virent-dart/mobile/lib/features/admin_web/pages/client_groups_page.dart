@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class ClientGroupsPage extends StatelessWidget {
+class ClientGroupsPage extends ConsumerWidget {
   const ClientGroupsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class ClientGroupsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить группу клиентов', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -76,13 +78,12 @@ class ClientGroupsPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _groupRow('1', 'Техник'),
-                      _groupRow('2', 'Скрыто'),
-                      _groupRow('14', 'Райдер'),
-                      _groupRow('17', 'Тест'),
-                    ],
+                  ref.watch(clientGroupsProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _groupRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
                 const Divider(height: 1),
@@ -131,4 +132,13 @@ class ClientGroupsPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _groupRowFromItem(Map<String, dynamic> item) {
+    return _groupRow(
+      item['id']?.toString() ?? '',
+      item['desc']?.toString() ?? '',
+    );
+  }
+
 }

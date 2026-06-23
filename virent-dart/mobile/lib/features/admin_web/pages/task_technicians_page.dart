@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class TaskTechniciansPage extends StatelessWidget {
+class TaskTechniciansPage extends ConsumerWidget {
   const TaskTechniciansPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -33,7 +35,7 @@ class TaskTechniciansPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () { /* action */ },
             icon: const Icon(Icons.add, size: 16),
             label: const Text('Добавить tasktechnician'),
             style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
@@ -51,13 +53,18 @@ class TaskTechniciansPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
-              elevation: 0,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SingleChildScrollView(
-                  child: DataTable(
+            child: ref.watch(techTasksProvider).when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text('Ошибка: $e')),
+              data: (items) => items.isEmpty
+                ? const Center(child: Text('В таблице нет доступных данных', style: TextStyle(color: Colors.grey)))
+                : Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
+                    elevation: 0,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SingleChildScrollView(
+                        child: DataTable(
                     headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
                     columns: const [
                       DataColumn(label: Text('Id')),
@@ -71,16 +78,31 @@ class TaskTechniciansPage extends StatelessWidget {
                       DataColumn(label: Text('Finish by')),
                       DataColumn(label: Text('Действия')),
                     ],
-                    rows: const [],
+                    rows: items.map((item) => DataRow(cells: [
+                      DataCell(Text(item['id']?.toString() ?? '')),
+                      DataCell(Text(item['title']?.toString() ?? '')),
+                      DataCell(Text(item['technician']?.toString() ?? '')),
+                      DataCell(Text(item['description']?.toString() ?? '')),
+                      DataCell(Text(item['create_by']?.toString() ?? '')),
+                      DataCell(Text(item['create_time']?.toString() ?? '')),
+                      DataCell(Text(item['finished']?.toString() ?? '')),
+                      DataCell(Text(item['finish_time']?.toString() ?? '')),
+                      DataCell(Text(item['finish_by']?.toString() ?? '')),
+                      DataCell(Row(children: [
+                        TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Ред.')),
+                      ])),
+                    ])).toList(),
                   ),
                 ),
               ),
             ),
           ),
-          const Center(child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text('В таблице нет доступных данных', style: TextStyle(color: Colors.grey)),
-          ))
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class AlertsPage extends StatelessWidget {
+class AlertsPage extends ConsumerWidget {
   const AlertsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -103,27 +105,12 @@ class AlertsPage extends StatelessWidget {
                     const Divider(height: 1),
                     // Rows
                     Expanded(
-                      child: ListView(
-                        children: [
-                          _alertRow(Icons.check_box, Colors.green, '1796', 'Не включился в заказе', '19.06.2026 13:46:00', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                          _alertRow(Icons.lock, Colors.red, '1796', 'Не включился в заказе', '19.06.2026 13:45:50', 'Тревога', const Color(0xFFFADAD5)),
-                          _alertRow(Icons.wifi_off, Colors.purple, '1744', 'Самокат без связи', '19.06.2026 13:45:50', 'Тревога', const Color(0xFFFADAD5)),
-                          _alertRow(Icons.check_box, Colors.green, '917', 'Самокат без связи', '19.06.2026 13:44:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                          _alertRow(Icons.check_box, Colors.green, '952', 'Не включился в заказе', '19.06.2026 13:44:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                          _alertRow(Icons.lock, Colors.red, '952', 'Не включился в заказе', '19.06.2026 13:44:30', 'Тревога', const Color(0xFFFADAD5)),
-                          _alertRow(Icons.wifi_off, Colors.purple, '917', 'Самокат без связи', '19.06.2026 13:43:50', 'Тревога', const Color(0xFFFADAD5)),
-                          _alertRow(Icons.check_box, Colors.green, '1783', 'Самокат без связи', '19.06.2026 13:43:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                          _alertRow(Icons.check_box, Colors.green, '1783', 'Самокат разряжен', '19.06.2026 13:43:00', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                          _alertRow(Icons.check_box, Colors.green, '905', 'Не включился в заказе', '19.06.2026 13:43:00', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                          _alertRow(Icons.check_box, Colors.green, '917', 'Самокат без связи', '19.06.2026 13:42:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                          _alertRow(Icons.lock, Colors.red, '905', 'Не включился в заказе', '19.06.2026 13:42:40', 'Тревога', const Color(0xFFFADAD5)),
-                          _alertRow(Icons.wifi_off, Colors.purple, '917', 'Самокат без связи', '19.06.2026 13:41:50', 'Тревога', const Color(0xFFFADAD5)),
-                          _alertRow(Icons.check_box, Colors.green, '1798', 'Не включился в заказе', '19.06.2026 13:40:00', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                          _alertRow(Icons.lock, Colors.red, '1798', 'Не включился в заказе', '19.06.2026 13:39:50', 'Тревога', const Color(0xFFFADAD5)),
-                          _alertRow(Icons.check_box, Colors.green, '1779', 'Самокат без связи', '19.06.2026 13:37:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                          _alertRow(Icons.check_box, Colors.green, '965', 'Разблокирован без заказа', '19.06.2026 13:37:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                          _alertRow(Icons.check_box, Colors.green, '1720', 'Разблокирован без заказа', '19.06.2026 13:36:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                        ],
+                      ref.watch(alertsListProvider).when(
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (e, _) => Center(child: Text("Ошибка: $e")),
+                        data: (items) => ListView(
+                          children: items.map((item) => _alertRowFromItem(item)).toList(),
+                        ),
                       ),
                     ),
                   ],
@@ -138,7 +125,7 @@ class AlertsPage extends StatelessWidget {
 
   Widget _filterButton(String label, Color color) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () { /* action */ },
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.white,
@@ -167,4 +154,18 @@ class AlertsPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _alertRowFromItem(Map<String, dynamic> item) {
+    return _alertRow(
+      item['icon']?.toString() ?? '',
+      item['iconColor']?.toString() ?? '',
+      item['scooterId']?.toString() ?? '',
+      item['type']?.toString() ?? '',
+      item['time']?.toString() ?? '',
+      item['status']?.toString() ?? '',
+      item['bgColor']?.toString() ?? '',
+    );
+  }
+
 }

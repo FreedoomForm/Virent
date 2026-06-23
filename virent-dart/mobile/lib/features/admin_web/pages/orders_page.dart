@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class OrdersPage extends StatelessWidget {
+class OrdersPage extends ConsumerWidget {
   const OrdersPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -132,17 +134,12 @@ class OrdersPage extends StatelessWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      child: ListView(
-                        children: [
-                          _orderRow('769200', '343022', 'surname Daqavilus', '05-742', 'Minute', '', '00:01:55', 'Завершено', '1', '19 июн 2026, 13:48', '19 июн 2026, 13:50', '3 390.50 С.'),
-                          _orderRow('769199', '334807', 'surname nodir', '05-790', 'Minute', '', '00:06:27', 'Поездка', '1', '19 июн 2026, 13:45', '', '7 169.00 С.'),
-                          _orderRow('769198', '258352', 'surname латиф', '05-0161', 'Минутный[...]', '20 Ми[...]', '00:07:43', 'Поездка', '1', '19 июн 2026, 13:44', '', '14 900.00 С.'),
-                          _orderRow('769197', '283732', 'surname Firdavs', '05-0114', 'Minute', '', '00:05:50', 'Завершено', '1', '19 июн 2026, 13:42', '19 июн 2026, 13:48', '9 340.50 С.'),
-                          _orderRow('769196', '043378', 'surname Doston', '05-792', 'Minute', '', '00:12:25', 'Поездка', '3', '19 июн 2026, 13:39', '', '15 660.00 С.'),
-                          _orderRow('769195', '324096', 'surname feruz', '05-0090', 'Minute', '', '00:08:32', 'Завершено', '2', '19 июн 2026, 13:32', '19 июн 2026, 13:40', '12 013.50 С.'),
-                          _orderRow('769194', '286608', 'surname Behruz', '05-0002', 'Minute', '', '00:04:55', 'Завершено', '1', '19 июн 2026, 13:28', '19 июн 2026, 13:33', '8 433.00 С.'),
-                          _orderRow('769193', '296600', 'surname Behruz', '05-0002', 'Minute', '', '00:00:00', 'Отложено', '0', '19 июн 2026, 13:28', '19 июн 2026, 13:28', '0.00 С.'),
-                        ],
+                      ref.watch(prepaidOrdersProvider).when(
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (e, _) => Center(child: Text("Ошибка: $e")),
+                        data: (items) => ListView(
+                          children: items.map((item) => _orderRowFromItem(item)).toList(),
+                        ),
                       ),
                     ),
                   ],
@@ -267,4 +264,23 @@ class OrdersPage extends StatelessWidget {
       child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _orderRowFromItem(Map<String, dynamic> item) {
+    return _orderRow(
+      item['id']?.toString() ?? '',
+      item['clientId']?.toString() ?? '',
+      item['clientName']?.toString() ?? '',
+      item['car']?.toString() ?? '',
+      item['tariff']?.toString() ?? '',
+      item['abon']?.toString() ?? '',
+      item['dur']?.toString() ?? '',
+      item['status']?.toString() ?? '',
+      item['mileage']?.toString() ?? '',
+      item['start']?.toString() ?? '',
+      item['finish']?.toString() ?? '',
+      item['cost']?.toString() ?? '',
+    );
+  }
+
 }

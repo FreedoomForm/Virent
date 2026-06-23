@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class PrepaidOrdersPage extends StatelessWidget {
+class PrepaidOrdersPage extends ConsumerWidget {
   const PrepaidOrdersPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -93,17 +95,12 @@ class PrepaidOrdersPage extends StatelessWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      child: ListView(
-                        children: [
-                          _prepaidRow('91', '932282693681806...', '932', '269368', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '18 июн 2026, 13:54', 'PAYME'),
-                          _prepaidRow('90', 'redis-token-tes777...', '790', '22', '19', '36', '2,499,000', 'waiting_payment', '—', '—', '16 июн 2026, 13:07', 'PAYME'),
-                          _prepaidRow('89', '895282693701506...', '895', '269370', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'CLICK'),
-                          _prepaidRow('88', '895282693701506...', '895', '269370', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'PAYME'),
-                          _prepaidRow('87', '895392693701506...', '895', '269370', '16', '39', '1,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'CLICK'),
-                          _prepaidRow('86', '895392693701506...', '895', '269370', '16', '39', '1,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'PAYME'),
-                          _prepaidRow('85', '174428269368140...', '1,744', '269368', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '14 июн 2026, 18:49', 'PAYME'),
-                          _prepaidRow('84', '815282693681406...', '815', '269368', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '14 июн 2026, 08:09', 'PAYME'),
-                        ],
+                      ref.watch(prepaidOrdersProvider).when(
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (e, _) => Center(child: Text("Ошибка: $e")),
+                        data: (items) => ListView(
+                          children: items.map((item) => _prepaidRowFromItem(item)).toList(),
+                        ),
                       ),
                     ),
                   ],
@@ -186,4 +183,23 @@ class PrepaidOrdersPage extends StatelessWidget {
       ],
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _prepaidRowFromItem(Map<String, dynamic> item) {
+    return _prepaidRow(
+      item['id']?.toString() ?? '',
+      item['token']?.toString() ?? '',
+      item['car']?.toString() ?? '',
+      item['client']?.toString() ?? '',
+      item['company']?.toString() ?? '',
+      item['abon']?.toString() ?? '',
+      item['amount']?.toString() ?? '',
+      item['status']?.toString() ?? '',
+      item['trans']?.toString() ?? '',
+      item['order']?.toString() ?? '',
+      item['created']?.toString() ?? '',
+      item['type']?.toString() ?? '',
+    );
+  }
+
 }

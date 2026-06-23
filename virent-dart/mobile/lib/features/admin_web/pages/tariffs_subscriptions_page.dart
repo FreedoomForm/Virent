@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class TariffsSubscriptionsPage extends StatelessWidget {
+class TariffsSubscriptionsPage extends ConsumerWidget {
   const TariffsSubscriptionsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -33,7 +35,7 @@ class TariffsSubscriptionsPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () { /* action */ },
             icon: const Icon(Icons.add, size: 16),
             label: const Text('Добавить абонемент'),
             style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
@@ -41,8 +43,17 @@ class TariffsSubscriptionsPage extends StatelessWidget {
           const SizedBox(height: 16),
           // Table mockup
           Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
+            ref.watch(tariffSubscriptionsProvider).when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text('Ошибка: $e')),
+              data: (items) {
+                if (items.isEmpty) {
+                  return const Center(child: Text('Нет данных', style: TextStyle(color: Colors.grey)));
+                }
+                return Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300));
+              },
+            ),
               elevation: 0,
               child: ListView(
                 children: [
@@ -55,12 +66,7 @@ class TariffsSubscriptionsPage extends StatelessWidget {
                       DataColumn(label: Text('Cost')),
                       DataColumn(label: Text('Действия')),
                     ],
-                    rows: [
-                      _buildRow('для 30мин Virent Ташкент', '20 Мин Virent Ташкент', '0.00 С./км', '16 990.00 С.'),
-                      _buildRow('для 30мин Virent Ташкент', '30 мин Virent Ташкент', '0.00 С./км', '24 990.00 С.'),
-                      _buildRow('Для 30мин ИП Асилбеков', '30 Мин ИП Асилбеков', '0.00 С./км', '24 900.00 С.'),
-                      _buildRow('Для 60мин ИП Асилбеков', 'Часовой ИП Асилбеков', '0.00 С./км', '34 900.00 С.'),
-                    ],
+                    rows: items.map((item) => _buildRowFromItem(item)).toList(),,
                   ),
                 ],
               ),
@@ -79,12 +85,23 @@ class TariffsSubscriptionsPage extends StatelessWidget {
       DataCell(Text(cost)),
       DataCell(Row(
         children: [
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.map, size: 14), label: const Text('Геозоны завершения')),
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
+          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.map, size: 14), label: const Text('Геозоны завершения')),
+          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
         ],
       )),
     ]);
   }
+
+  /// Builds a table row from dynamic data item.
+  DataRow _buildRowFromItem(Map<String, dynamic> item) {
+    return _buildRow(
+      item['tariff']?.toString() ?? '',
+      item['desc']?.toString() ?? '',
+      item['overrun']?.toString() ?? '',
+      item['cost']?.toString() ?? '',
+    );
+  }
+
 }

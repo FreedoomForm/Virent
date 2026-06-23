@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: SingleChildScrollView(
@@ -25,7 +27,11 @@ class DashboardPage extends StatelessWidget {
                   flex: 3,
                   child: Column(
                     children: [
-                      _buildStatsGrid(context),
+                      ref.watch(dashboardStatsProvider).when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Center(child: Text('Ошибка: $e')),
+          data: (stats) => _buildStatsGrid(stats),
+        ),
                       const SizedBox(height: 20),
                       _buildRentalLists(),
                     ],
@@ -51,46 +57,55 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsGrid(BuildContext context) {
+    Widget _buildStatsGrid(Map<String, dynamic> stats) {
+    final total = stats['total']?.toString() ?? '300';
+    final online = stats['online']?.toString() ?? '241';
+    final offline = stats['offline']?.toString() ?? '59';
+    final warehouse = stats['warehouse']?.toString() ?? '1';
+    final repair = stats['repair']?.toString() ?? '50';
+    final free = stats['free']?.toString() ?? '237';
+    final reserved = stats['reserved']?.toString() ?? '0';
+    final inRent = stats['in_rent']?.toString() ?? '4';
+    final notOnline = stats['not_online']?.toString() ?? '32';
     return Column(
       children: [
         // Row 1: Всего, На линии, Не на линии
         Row(
           children: [
-            _statCard('Всего', '300', const Color(0xFF2C3345)),
+            _statCard('Всего', total, const Color(0xFF2C3345)),
             const SizedBox(width: 12),
-            _statCard('На линии', '241', const Color(0xFF1ABC9C)),
+            _statCard('На линии', online, const Color(0xFF1ABC9C)),
             const SizedBox(width: 12),
-            _statCard('Не на линии', '59', const Color(0xFF95A5A6)),
+            _statCard('Не на линии', offline, const Color(0xFF95A5A6)),
           ],
         ),
         const SizedBox(height: 12),
         // Row 2: На складе, В техничке, Свободно
         Row(
           children: [
-            _statCard('На складе', '1', const Color(0xFFF39C12)),
+            _statCard('На складе', warehouse, const Color(0xFFF39C12)),
             const SizedBox(width: 12),
-            _statCard('В техничке', '50', const Color(0xFFF1C40F)),
+            _statCard('В техничке', repair, const Color(0xFFF1C40F)),
             const SizedBox(width: 12),
-            _statCard('Свободно', '237', const Color(0xFF3498DB)),
+            _statCard('Свободно', free, const Color(0xFF3498DB)),
           ],
         ),
         const SizedBox(height: 12),
         // Row 3: Бронь, В аренде, Онлайн
         Row(
           children: [
-            _statCard('Бронь', '0', const Color(0xFF2ECC71)),
+            _statCard('Бронь', reserved, const Color(0xFF2ECC71)),
             const SizedBox(width: 12),
-            _statCard('В аренде', '4', const Color(0xFF9B59B6)),
+            _statCard('В аренде', inRent, const Color(0xFF9B59B6)),
             const SizedBox(width: 12),
-            _statCard('Онлайн', '268', const Color(0xFF1ABC9C)),
+            _statCard('Онлайн', online, const Color(0xFF1ABC9C)),
           ],
         ),
         const SizedBox(height: 12),
         // Row 4: Не онлайн
         Row(
           children: [
-            _statCard('Не онлайн', '32', const Color(0xFFE74C3C)),
+            _statCard('Не онлайн', notOnline, const Color(0xFFE74C3C)),
             const SizedBox(width: 12),
             const Expanded(child: SizedBox()),
             const SizedBox(width: 12),
@@ -253,7 +268,7 @@ class DashboardPage extends StatelessWidget {
           Row(
             children: [
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () { /* action */ },
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: Colors.grey.shade300),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -263,7 +278,7 @@ class DashboardPage extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () { /* action */ },
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Color(0xFFE67E22)),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -336,7 +351,7 @@ class DashboardPage extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () { /* action */ },
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.red),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -353,7 +368,7 @@ class DashboardPage extends StatelessWidget {
 
   Widget _colorButton(String label, Color color, {Color textColor = Colors.white}) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () { /* action */ },
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: textColor,

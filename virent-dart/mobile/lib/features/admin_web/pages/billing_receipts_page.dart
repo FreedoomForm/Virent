@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class BillingReceiptsPage extends StatelessWidget {
+class BillingReceiptsPage extends ConsumerWidget {
   const BillingReceiptsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -85,19 +87,12 @@ class BillingReceiptsPage extends StatelessWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      child: ListView(
-                        children: [
-                          _receiptRow('712714', '6930835671', 'CLICK', '', '69e86108fbfa34f0ff0dd9b2', 'SUCCESS', '150273', '500000', '22 апр 2026, 10:50', '23', '', 'Нет'),
-                          _receiptRow('712713', '6930810352', 'CLICK', '', '69e860337aaef991135de6be', 'SUCCESS', '290422', '400100', '22 апр 2026, 10:44', '24', '', 'Нет'),
-                          _receiptRow('712712', '029186218708', 'CLICK', '', '69e85e3a7aaef991135de6bd', 'SUCCESS', '238145', '417550', '22 апр 2026, 10:35', '24', '', 'Нет'),
-                          _receiptRow('712711', '029186161056', 'CLICK', '', '69e85cbc84d6f73a1a0f16c2', 'SUCCESS', '238145', '500000', '22 апр 2026, 10:32', '24', '', 'Нет'),
-                          _receiptRow('712710', '029186066068', 'CLICK', '', '69e85bcb7aaef991135de6ba', 'SUCCESS', '238145', '396100', '22 апр 2026, 10:25', '24', '', 'Нет'),
-                          _receiptRow('712709', '029186061459', 'CLICK', '', '69e85ae1780cea8d9009cac2', 'SUCCESS', '289148', '500000', '22 апр 2026, 10:25', '23', '', 'Нет'),
-                          _receiptRow('712708', '029186048920', 'CLICK', '', '69e85b857aaef991135de6b6', 'SUCCESS', '281315', '249250', '22 апр 2026, 10:24', '22', '', 'Нет'),
-                          _receiptRow('712707', '029186026352', 'CLICK', '', '69e85a97a35ebbb104078e62', 'SUCCESS', '281315', '500000', '22 апр 2026, 10:22', '22', '', 'Нет'),
-                          _receiptRow('712706', '029186019042', 'CLICK', '', '69e85a84f8d391df42066352', 'SUCCESS', '238145', '500000', '22 апр 2026, 10:22', '24', '', 'Нет'),
-                          _receiptRow('712705', '6930612493', 'CLICK', '', '69e859fb27bd41d5b9025d62', 'SUCCESS', '288941', '1490000', '22 апр 2026, 10:17', '16', '', 'Нет'),
-                        ],
+                      ref.watch(billingReceiptsProvider).when(
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (e, _) => Center(child: Text("Ошибка: $e")),
+                        data: (items) => ListView(
+                          children: items.map((item) => _receiptRowFromItem(item)).toList(),
+                        ),
                       ),
                     ),
                   ],
@@ -158,4 +153,23 @@ class BillingReceiptsPage extends StatelessWidget {
       ],
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _receiptRowFromItem(Map<String, dynamic> item) {
+    return _receiptRow(
+      item['id']?.toString() ?? '',
+      item['uuid']?.toString() ?? '',
+      item['check']?.toString() ?? '',
+      item['providerUuid']?.toString() ?? '',
+      item['bill']?.toString() ?? '',
+      item['status']?.toString() ?? '',
+      item['client']?.toString() ?? '',
+      item['amount']?.toString() ?? '',
+      item['created']?.toString() ?? '',
+      item['company']?.toString() ?? '',
+      item['order']?.toString() ?? '',
+      item['sendable']?.toString() ?? '',
+    );
+  }
+
 }

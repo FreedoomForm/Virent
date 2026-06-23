@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class InspectionDamagesPage extends StatelessWidget {
+class InspectionDamagesPage extends ConsumerWidget {
   const InspectionDamagesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -85,16 +87,12 @@ class InspectionDamagesPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _damageRow('05-792', '76919[...]', 'Завершение'),
-                      _damageRow('05-742', '76920[...]', 'Завершение'),
-                      _damageRow('05-0114', '76919[...]', 'Завершение'),
-                      _damageRow('05-0090', '76919[...]', 'Завершение'),
-                      _damageRow('05-714', '76919[...]', 'Завершение'),
-                      _damageRow('05-0174', '76918[...]', 'Завершение'),
-                      _damageRow('05-0002', '76919[...]', 'Завершение'),
-                    ],
+                  ref.watch(inspectionDamagesProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _damageRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
               ],
@@ -176,4 +174,14 @@ class InspectionDamagesPage extends StatelessWidget {
       child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _damageRowFromItem(Map<String, dynamic> item) {
+    return _damageRow(
+      item['car']?.toString() ?? '',
+      item['order']?.toString() ?? '',
+      item['type']?.toString() ?? '',
+    );
+  }
+
 }

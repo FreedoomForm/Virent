@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class PromoCodesPage extends StatelessWidget {
+class PromoCodesPage extends ConsumerWidget {
   const PromoCodesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class PromoCodesPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить Промокод', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -78,13 +80,12 @@ class PromoCodesPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _promoRow('53', 'OCTOBER', '1000000', '7211/1', 'OCTOBER', true, '01 ноя 2024, 04:59'),
-                      _promoRow('51', '1сентября', '1000000', '9717/1', '1 сентября', true, '02 сен 2024, 04:59'),
-                      _promoRow('50', 'VIRENT2000', '200000', '9976/1', '1306', true, '15 июн 2024, 01:00'),
-                      _promoRow('49', 'test', '100000', '9/1', 'test', true, '01 июн 2024, 11:00'),
-                    ],
+                  ref.watch(promoCodesProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _promoRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
               ],
@@ -133,4 +134,18 @@ class PromoCodesPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _promoRowFromItem(Map<String, dynamic> item) {
+    return _promoRow(
+      item['id']?.toString() ?? '',
+      item['code']?.toString() ?? '',
+      item['bonus']?.toString() ?? '',
+      item['usage']?.toString() ?? '',
+      item['group']?.toString() ?? '',
+      item['isActive']?.toString() ?? '',
+      item['expires']?.toString() ?? '',
+    );
+  }
+
 }

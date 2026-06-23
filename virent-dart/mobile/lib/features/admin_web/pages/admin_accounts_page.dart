@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class AdminAccountsPage extends StatelessWidget {
+class AdminAccountsPage extends ConsumerWidget {
   const AdminAccountsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class AdminAccountsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить админа', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -101,24 +103,12 @@ class AdminAccountsPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _adminRow('27', 'toGo Viktor', '+Mag1c_MAn1pulAtOr@yandex.ru', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow('99', 'toGO Наталья Борисенко', 'R3v3ngg_Mts3r@bk.ru', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор'),
-                      _adminRow('278', 'toGO Nikita', 'C^yber\$PuIse@gmail.com', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow('284', 'toGO Крушевский Егор', 'T3ch!Ninj@icloud.com', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow('285', 'toGO Дмитрий Харитонов', 'Qu&ntum#X@gmail.com', '5', 'Техник, Партнер, Оператор, Helper, Техник, Оператор'),
-                      _adminRow('291', 'ViRent-Велесик Виктор', 'toostart2020@mail.ru', '5', '-'),
-                      _adminRow('317', 'ViRent Шерзод Асилбеков', 'e-motion-uz@gmail.com', '5', '-'),
-                      _adminRow('318', 'ViRent Наиль Хасибулов', 'nailamirkhanov192@gmail.com', '5', '-'),
-                      _adminRow('443', 'Ali Dexqonov', 'whilescooter@gmail.com', '5', '-'),
-                      _adminRow('474', 'ViRent-Дмитрий Велесик', 'velesikd@gmail.com', '', 'Техник, Техник, Оператор'),
-                      _adminRow('476', 'toGO Алексей', '%Pr0ph3t_Of_D00m@gmail.com', '', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow('477', 'CALL Аброров Сардор Дониёр ўғли Г.О', 'abrotov57@gmail.com', '', '-'),
-                      _adminRow('478', 'CALL Хамидуллаев Жавoҳир Акром ўғли О', 'javahirxamidullaev337@gmail.com', '', '-'),
-                      _adminRow('479', 'Call Qudratilla', 'kudratbaniyazov@gmail.ru', '', '-'),
-                      _adminRow('480', 'Call Azamat', 'azamat11mirhoshimov@gmail.com', '', '-'),
-                    ],
+                  ref.watch(adminListProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _adminRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
               ],
@@ -170,4 +160,16 @@ class AdminAccountsPage extends StatelessWidget {
       child: Text(text, style: TextStyle(fontSize: 11, color: textColor)),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _adminRowFromItem(Map<String, dynamic> item) {
+    return _adminRow(
+      item['id']?.toString() ?? '',
+      item['name']?.toString() ?? '',
+      item['email']?.toString() ?? '',
+      item['utc']?.toString() ?? '',
+      item['roles']?.toString() ?? '',
+    );
+  }
+
 }

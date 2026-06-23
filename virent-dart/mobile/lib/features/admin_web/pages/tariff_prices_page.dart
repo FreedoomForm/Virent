@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class TariffPricesPage extends StatelessWidget {
+class TariffPricesPage extends ConsumerWidget {
   const TariffPricesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class TariffPricesPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить цены', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -74,18 +76,12 @@ class TariffPricesPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _priceRow('ViRent Ташкент', '60'),
-                      _priceRow('ViRent Самарканд', '60'),
-                      _priceRow('ViRent Motion', '60'),
-                      _priceRow('ИП Асилбеков', '60'),
-                      _priceRow('Минутный Ташкент Е600 самокаты', '60'),
-                      _priceRow('тест', '60'),
-                      _priceRow('Асилбекова Нигора', '60'),
-                      _priceRow('Раматбоев Озод', '60'),
-                      _priceRow('Руфатова Зухра', '60'),
-                    ],
+                  ref.watch(tariffPricesProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _priceRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
               ],
@@ -130,4 +126,13 @@ class TariffPricesPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _priceRowFromItem(Map<String, dynamic> item) {
+    return _priceRow(
+      item['name']?.toString() ?? '',
+      item['timeUnit']?.toString() ?? '',
+    );
+  }
+
 }

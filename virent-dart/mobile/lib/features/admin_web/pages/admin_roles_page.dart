@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class AdminRolesPage extends StatelessWidget {
+class AdminRolesPage extends ConsumerWidget {
   const AdminRolesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class AdminRolesPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить роль', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -76,17 +78,12 @@ class AdminRolesPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _roleRow('Админ', 'send command to device, send push, admin/*, ignore companies, admin/delete_client_card*'),
-                      _roleRow('Техник', 'send command to device, admin/alert*, admin/map*, admin/damage*, admin/damagephoto*, admin/preview/*, admin/techview*, admin/car, admin/car/*'),
-                      _roleRow('Партнер', 'send command to device, send push, admin/alert*, admin/map*, admin/bill*, admin/order*, admin/inspect*, admin/selfie*, admin/damage*, admin/damagephoto*, admin/bonus*, admin/transaction*, admin/activity_log*, admin/unconfirmed_client*, admin/dot*, admin/preview/*, admin/car, admin/car/*, admin/client, admin/client/*, admin/stats'),
-                      _roleRow('Оператор', 'send command to device, send push, admin/alert*, admin/map*, admin/bill*, admin/fine*, admin/order*, admin/inspect*, admin/damage*, admin/damagephoto*, admin/bonus*, admin/transaction*, admin/car_log*, admin/activity_log*, admin/client_login_attempt*, admin/unconfirmed_client*, admin/clientselfie*, admin/preview/*, admin/car, admin/car/*, admin...'),
-                      _roleRow('Helper', 'admin/map*, admin/preview/*, admin/car'),
-                      _roleRow('Техник', 'admin/alert*, admin/map*, admin/damage*, admin/damagephoto*'),
-                      _roleRow('Оператор', 'send push, admin/alert*, admin/map*, admin/bill*, admin/fine*, admin/order*, admin/inspect*, admin/selfie*, admin/damage*, admin/damagephoto*, admin/bonus*, admin/transaction*, admin/car_log*, admin/activity_log*, admin/client_login_attempt*'),
-                      _roleRow('Бехзод', '*, send command to device, send push, pay all debts, restart java, delete_tariff, delete_abonement, pay_all_debt_button, Raider, admin/getHoldLogs, admin/clientStatus, startmessage'),
-                    ],
+                  ref.watch(adminListProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _roleRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
                 const Divider(height: 1),
@@ -133,4 +130,13 @@ class AdminRolesPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _roleRowFromItem(Map<String, dynamic> item) {
+    return _roleRow(
+      item['name']?.toString() ?? '',
+      item['permissions']?.toString() ?? '',
+    );
+  }
+
 }

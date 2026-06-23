@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class LogsActionHistoryPage extends StatelessWidget {
+class LogsActionHistoryPage extends ConsumerWidget {
   const LogsActionHistoryPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -86,17 +88,12 @@ class LogsActionHistoryPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _actionRow('157056', '', 'alive', '2026-06-19T09:03:00.813809Z', '2026-06-19 13:04:32', '19 июн 2026, 14:03'),
-                      _actionRow('904', 'evgwhite@gmail.com', 'command', 'openakb', '', '19 июн 2026, 14:02', isTech: true),
-                      _actionRow('224376', '', 'alive', '2026-06-19T09:02:52.641331Z', '2026-06-19 14:02:12', '19 июн 2026, 14:02'),
-                      _actionRow('935', 'evgwhite@gmail.com', 'command', 'openakb', '', '19 июн 2026, 14:02', isTech: true),
-                      _actionRow('919', 'evgwhite@gmail.com', 'command', 'openakb', '', '19 июн 2026, 14:02', isTech: true),
-                      _actionRow('929', 'evgwhite@gmail.com', 'command', 'openakb', '', '19 июн 2026, 14:02', isTech: true),
-                      _actionRow('224376', '', 'alive', '2026-06-19T09:02:12.498166Z', '2026-06-17 19:35:40', '19 июн 2026, 14:02'),
-                      _actionRow('1779', 'evgwhite@gmail.com', 'command', 'openakb', '', '19 июн 2026, 14:02', isTech: true),
-                    ],
+                  ref.watch(auditLogProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _actionRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
               ],
@@ -244,4 +241,18 @@ class LogsActionHistoryPage extends StatelessWidget {
       child: Text(text, style: TextStyle(fontSize: 10, color: textColor)),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _actionRowFromItem(Map<String, dynamic> item) {
+    return _actionRow(
+      item['objectId']?.toString() ?? '',
+      item['userEmail']?.toString() ?? '',
+      item['key']?.toString() ?? '',
+      item['newVal']?.toString() ?? '',
+      item['oldVal']?.toString() ?? '',
+      item['date']?.toString() ?? '',
+      item['{bool']?.toString() ?? '',
+    );
+  }
+
 }

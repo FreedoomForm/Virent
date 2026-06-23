@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class LogsPaymentsPage extends StatelessWidget {
+class LogsPaymentsPage extends ConsumerWidget {
   const LogsPaymentsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class LogsPaymentsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -75,25 +77,29 @@ class LogsPaymentsPage extends StatelessWidget {
                       ),
                     ),
                     const Divider(height: 1),
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 24),
-                      child: const Center(
-                        child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                    Expanded(
+                      child: ref.watch(logsPaymentsProvider).when(
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (e, _) => Center(child: Text('Ошибка: $e')),
+                        data: (items) => items.isEmpty
+                          ? const Center(child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)))
+                          : ListView.builder(
+                              itemCount: items.length,
+                              itemBuilder: (context, i) {
+                                final item = items[i];
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  child: Row(
+                                    children: List.generate(12, (j) => SizedBox(
+                                      width: 100,
+                                      child: Text(item['key${j+1}']?.toString() ?? '', style: const TextStyle(fontSize: 11)),
+                                    )),
+                                  ),
+                                );
+                              },
+                            ),
                       ),
                     ),
-                    const Divider(height: 1),
-                    Container(
-                      color: const Color(0xFFF8F9FA),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          _col('Key1'), _col('Key2'), _col('Key3'), _col('Key4'), _col('Key5'), _col('Key6'), _col('Key7'), _col('Key8'), _col('Key9'), _col('Key10'), _col('Key11'), _col('Key12'),
-                          const Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
-                    const Divider(height: 1),
-                    const Expanded(child: SizedBox()),
                   ],
                 ),
               ),

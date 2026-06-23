@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class ScootersPage extends StatelessWidget {
+class ScootersPage extends ConsumerWidget {
   const ScootersPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -26,7 +28,7 @@ class ScootersPage extends StatelessWidget {
                 const SizedBox(height: 8),
                 // Add button
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () { /* action */ },
                   icon: const Icon(Icons.add, size: 14),
                   label: const Text('Добавить самокат'),
                   style: ElevatedButton.styleFrom(
@@ -130,11 +132,16 @@ class ScootersPage extends StatelessWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: 15,
-                        itemBuilder: (context, i) {
-                          return _scooterRow(789 + i, '05-${(i + 1).toString().padLeft(4, '0')}');
-                        },
+                      child: ref.watch(scootersListProvider).when(
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (e, _) => Center(child: Text('Ошибка: $e')),
+                        data: (items) => ListView.builder(
+                          itemCount: items.length,
+                          itemBuilder: (context, i) {
+                            final item = items[i];
+                            return _scooterRowFromItem(item);
+                          },
+                        ),
                       ),
                     ),
                   ],

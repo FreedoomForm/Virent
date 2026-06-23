@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class DotsPage extends StatelessWidget {
+class DotsPage extends ConsumerWidget {
   const DotsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class DotsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить dot', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -83,10 +85,12 @@ class DotsPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _dotRow('185', 'Запрет выезда 1', '41.348114149279', '69.25863440402', 'select_field.dot.nodriving', '1', '1', 'Запрет выезда 1'),
-                    ],
+                  ref.watch(zonesListProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _dotRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
                 const Divider(height: 1),
@@ -154,4 +158,19 @@ class DotsPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _dotRowFromItem(Map<String, dynamic> item) {
+    return _dotRow(
+      item['id']?.toString() ?? '',
+      item['name']?.toString() ?? '',
+      item['lat']?.toString() ?? '',
+      item['lon']?.toString() ?? '',
+      item['type']?.toString() ?? '',
+      item['radius']?.toString() ?? '',
+      item['active']?.toString() ?? '',
+      item['desc']?.toString() ?? '',
+    );
+  }
+
 }

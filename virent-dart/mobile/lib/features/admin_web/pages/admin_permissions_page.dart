@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class AdminPermissionsPage extends StatelessWidget {
+class AdminPermissionsPage extends ConsumerWidget {
   const AdminPermissionsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class AdminPermissionsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить разрешение', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -76,28 +78,12 @@ class AdminPermissionsPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _permRow('*', ''),
-                      _permRow('send command to device', 'управление самокатом'),
-                      _permRow('send push', 'отправка PUSH'),
-                      _permRow('admin/*', ''),
-                      _permRow('admin/dashboard*', 'Дашборд'),
-                      _permRow('admin/alert*', 'Тревоги'),
-                      _permRow('admin/map*', 'Карта'),
-                      _permRow('admin/car*', 'Самокаты ВСЕ'),
-                      _permRow('admin/bill*', 'Счета'),
-                      _permRow('admin/client*', 'Клиенты'),
-                      _permRow('admin/fine*', 'Штрафы'),
-                      _permRow('admin/order*', 'Заказы'),
-                      _permRow('admin/inspect*', ''),
-                      _permRow('admin/selfie*', 'Селфи'),
-                      _permRow('admin/damage*', 'Осмотр'),
-                      _permRow('admin/damagephoto*', ''),
-                      _permRow('admin/bonus*', 'Бонусы'),
-                      _permRow('admin/transaction*', 'Транзакции'),
-                      _permRow('admin/bankcard*', 'Банковские карты'),
-                    ],
+                  ref.watch(adminPermissionsProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _permRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
               ],
@@ -130,4 +116,13 @@ class AdminPermissionsPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _permRowFromItem(Map<String, dynamic> item) {
+    return _permRow(
+      item['name']?.toString() ?? '',
+      item['title']?.toString() ?? '',
+    );
+  }
+
 }

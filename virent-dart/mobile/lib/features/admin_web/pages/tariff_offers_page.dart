@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class TariffOffersPage extends StatelessWidget {
+class TariffOffersPage extends ConsumerWidget {
   const TariffOffersPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class TariffOffersPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить тариф', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -74,27 +76,12 @@ class TariffOffersPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _tariffRow('Минутный ViRent Ташкент', 'Minute', '500000 Тийны'),
-                      _tariffRow('Минутный ИП Асилбеков', 'Minute', '500000 Тийны'),
-                      _tariffRow('TEST', 'test', '100000 Тийны'),
-                      _tariffRow('для 30мин ViRent Ташкент', 'Минутный', '500000 Тийны'),
-                      _tariffRow('для 60мин ViRent Ташкент', 'минутный', '500000 Тийны'),
-                      _tariffRow('Для 30мин ИП Асилбеков', 'Минутный', '500000 Тийны'),
-                      _tariffRow('Для 60мин ИП Асилбеков', 'Hour', '500000 Тийны'),
-                      _tariffRow('Минутный 600-самокаты', 'Минутный', '500000 Тийны'),
-                      _tariffRow('тест', 'тест', '500000 Тийны'),
-                      _tariffRow('для 10 минут', '10 Минут', '500000 Тийны'),
-                      _tariffRow('для абонементов 600', 'Минутный', '500000 Тийны'),
-                      _tariffRow('Минутный ИП Асилбекова Нигора', 'Minute', '500000 Тийны'),
-                      _tariffRow('Минутный ИП Pахматбоев Озод', 'Minute', '500000 Тийны'),
-                      _tariffRow('Минутный ИП Руфатова Зухра', 'Minute', '500000 Тийны'),
-                      _tariffRow('Для 20мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
-                      _tariffRow('для 30мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
-                      _tariffRow('для 60мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
-                      _tariffRow('Для 20мин ИП Pахматбоев О', 'Минутный', '500000 Тийны'),
-                    ],
+                  ref.watch(tariffsListProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _tariffRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
               ],
@@ -131,4 +118,14 @@ class TariffOffersPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _tariffRowFromItem(Map<String, dynamic> item) {
+    return _tariffRow(
+      item['adminName']?.toString() ?? '',
+      item['appName']?.toString() ?? '',
+      item['hold']?.toString() ?? '',
+    );
+  }
+
 }

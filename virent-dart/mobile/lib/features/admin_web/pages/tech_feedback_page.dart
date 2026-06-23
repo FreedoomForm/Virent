@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class TechFeedbackPage extends StatelessWidget {
+class TechFeedbackPage extends ConsumerWidget {
   const TechFeedbackPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -35,7 +37,7 @@ class TechFeedbackPage extends StatelessWidget {
                         _labeledInput('Клиент', 100),
                         const SizedBox(width: 12),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () { /* action */ },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF7B68EE),
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -93,24 +95,12 @@ class TechFeedbackPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _feedbackRow('13467', '896', '255358', '768694', 'Самокат имеет неопрятный вид (грязный)', '2026-06-18 21:34:19', '2026-06-18 21:34:19'),
-                      _feedbackRow('13466', '1762', '296132', '768682', 'Самокат не включился', '2026-06-18 21:18:55', '2026-06-18 21:18:55'),
-                      _feedbackRow('13465', '928', '285978', '768649', 'Самокат имеет неопрятный вид (грязный)', '2026-06-18 20:45:30', '2026-06-18 20:45:30'),
-                      _feedbackRow('13464', '959', '293800', '768633', 'Самокат не включился', '2026-06-18 20:30:02', '2026-06-18 20:30:02'),
-                      _feedbackRow('13463', '914', '264511', '768513', 'Самокат не включился', '2026-06-18 16:54:28', '2026-06-18 16:54:28'),
-                      _feedbackRow('13462', '1763', '212741', '768505', 'Самокат не включился', '2026-06-18 16:42:09', '2026-06-18 16:42:09'),
-                      _feedbackRow('13461', '1763', '212741', '768504', 'Самокат не включился', '2026-06-18 16:40:49', '2026-06-18 16:40:49'),
-                      _feedbackRow('13460', '1734', '249529', '768402', 'Самокат не включился', '2026-06-18 14:00:45', '2026-06-18 14:00:45'),
-                      _feedbackRow('13459', '1788', '249529', '768400', 'Самокат включился, но не едет', '2026-06-18 13:59:42', '2026-06-18 13:59:42'),
-                      _feedbackRow('13458', '1706', '248798', '768355', 'Передумал, решил пойти пешком', '2026-06-18 11:40:13', '2026-06-18 11:40:13'),
-                      _feedbackRow('13457', '935', '68757', '768332', 'Самокат не включился', '2026-06-18 10:13:29', '2026-06-18 10:13:29'),
-                      _feedbackRow('13456', '935', '68757', '768331', 'Самокат не включился', '2026-06-18 10:12:22', '2026-06-18 10:12:22'),
-                      _feedbackRow('13455', '799', '296464', '768255', 'Самокат включился, но не едет', '2026-06-18 04:07:06', '2026-06-18 04:07:06'),
-                      _feedbackRow('13454', '1745', '296456', '768210', 'Самокат включился, но не едет', '2026-06-18 02:15:36', '2026-06-18 02:15:36'),
-                      _feedbackRow('13453', '965', '106578', '768181', 'Самокат не включился', '2026-06-18 01:50:16', '2026-06-18 01:50:16'),
-                    ],
+                  ref.watch(techFeedbackProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _feedbackRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
               ],
@@ -187,4 +177,18 @@ class TechFeedbackPage extends StatelessWidget {
       ],
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _feedbackRowFromItem(Map<String, dynamic> item) {
+    return _feedbackRow(
+      item['id']?.toString() ?? '',
+      item['carId']?.toString() ?? '',
+      item['clientId']?.toString() ?? '',
+      item['orderId']?.toString() ?? '',
+      item['type']?.toString() ?? '',
+      item['createdAt']?.toString() ?? '',
+      item['updatedAt']?.toString() ?? '',
+    );
+  }
+
 }

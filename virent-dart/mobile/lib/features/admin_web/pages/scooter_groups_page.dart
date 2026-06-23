@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class ScooterGroupsPage extends StatelessWidget {
+class ScooterGroupsPage extends ConsumerWidget {
   const ScooterGroupsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class ScooterGroupsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -77,21 +79,12 @@ class ScooterGroupsPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _groupRow('0', 'на линии', ''),
-                      _groupRow('1', 'на складе', ''),
-                      _groupRow('7', 'в техничке', ''),
-                      _groupRow('13', 'в поломке', ''),
-                      _groupRow('14', 'Демо', ''),
-                      _groupRow('17', 'Самарканд', ''),
-                      _groupRow('18', 'Ташкент', ''),
-                      _groupRow('19', 'SILK ROAD SAMARQAND', ''),
-                      _groupRow('20', 'ИП Асилбеков', ''),
-                      _groupRow('22', 'Заряд > 50', 'fuel > 50'),
-                      _groupRow('23', 'Заряд > 65', 'fuel > 65'),
-                      _groupRow('24', '600', ''),
-                    ],
+                  ref.watch(settingsScooterGroupsProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _groupRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
                 const Divider(height: 1),
@@ -142,4 +135,14 @@ class ScooterGroupsPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _groupRowFromItem(Map<String, dynamic> item) {
+    return _groupRow(
+      item['id']?.toString() ?? '',
+      item['desc']?.toString() ?? '',
+      item['trigger']?.toString() ?? '',
+    );
+  }
+
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class TariffAbonementsPage extends StatelessWidget {
+class TariffAbonementsPage extends ConsumerWidget {
   const TariffAbonementsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class TariffAbonementsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить абонемент', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -75,26 +77,12 @@ class TariffAbonementsPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _abonementRow('для 30мин ViRent Ташкент', '20 Мин ViRent Ташкент', '0.00 С./км', '16 990.00 С.'),
-                      _abonementRow('для 30мин ViRent Ташкент', '30 мин ViRent Ташкент', '0.00 С./км', '24 990.00 С.'),
-                      _abonementRow('Для 30мин ИП Асилбеков', '30 Мин ИП Асилбеков', '0.00 С./км', '24 900.00 С.'),
-                      _abonementRow('Для 60мин ИП Асилбеков', 'Часовой ИП Асилбеков', '0.00 С./км', '34 900.00 С.'),
-                      _abonementRow('для 60мин ViRent Ташкент', 'Часовой ViRent Ташкент', '0.00 С./км', '49 900.00 С.'),
-                      _abonementRow('для 10 минут', '10 Минут Ташкент', '0.00 С./км', '7 000.00 С.'),
-                      _abonementRow('для абонементов 600', '30 мин 600', '0.00 С./км', '24 990.00 С.'),
-                      _abonementRow('Для 30мин ИП Асилбеков', '20 Мин Асилбеков', '0.00 С./км', '14 900.00 С.'),
-                      _abonementRow('Для 20мин ИП Асилбекова Н', '20 минутный ИП Асилбекова Н', '0.00 С./км', '14 900.00 С.'),
-                      _abonementRow('для 30мин ИП Асилбекова Н', '30 Мин ИП Асилбекова Н', '0.00 С./км', '24 900.00 С.'),
-                      _abonementRow('для 60мин ИП Асилбекова Н', 'Часовой ИП Асилбекова Н', '0.00 С./км', '34 900.00 С.'),
-                      _abonementRow('Для 20мин ИП Pахматбоев О', '20 Мин ИП Pахматбоев О', '0.00 С./км', '14 900.00 С.'),
-                      _abonementRow('для 30мин ИП Pахматбоев О', '30 Мин ИП Pахматбоев О', '0.00 С./км', '24 900.00 С.'),
-                      _abonementRow('для 60мин ИП Pахматбоев О', 'Часовой ИП Pахматбоев О', '0.00 С./км', '34 900.00 С.'),
-                      _abonementRow('Для 20мин ИП Руфатова З', '20 Мин ИП Руфатова', '0.00 С./км', '14 900.00 С.'),
-                      _abonementRow('для 30мин ИП Руфатова З', '30 Мин ИП Руфатова З', '0.00 С./км', '24 900.00 С.'),
-                      _abonementRow('для 60мин ИП Руфатова З', 'Часовой ИП Руфатова З', '0.00 С./км', '34 900.00 С.'),
-                    ],
+                  ref.watch(tariffAbonementsProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text("Ошибка: $e")),
+                    data: (items) => ListView(
+                      children: items.map((item) => _abonementRowFromItem(item)).toList(),
+                    ),
                   ),
                 ),
               ],
@@ -132,4 +120,15 @@ class TariffAbonementsPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _abonementRowFromItem(Map<String, dynamic> item) {
+    return _abonementRow(
+      item['tariff']?.toString() ?? '',
+      item['desc']?.toString() ?? '',
+      item['overrun']?.toString() ?? '',
+      item['cost']?.toString() ?? '',
+    );
+  }
+
 }

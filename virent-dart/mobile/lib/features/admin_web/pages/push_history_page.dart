@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class PushHistoryPage extends StatelessWidget {
+class PushHistoryPage extends ConsumerWidget {
   const PushHistoryPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -94,24 +96,12 @@ class PushHistoryPage extends StatelessWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      child: ListView(
-                        children: [
-                          _pushRow('1274813', '63616', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:10', '063616', 'surname mamurjan'),
-                          _pushRow('1274812', '63615', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063615', 'surname Sardor'),
-                          _pushRow('1274811', '63614', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063614', 'surname нур'),
-                          _pushRow('1274810', '63613', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063613', 'surname Комил'),
-                          _pushRow('1274809', '63612', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063612', 'surname Abdulbosit'),
-                          _pushRow('1274808', '63611', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063611', 'surname Игнат'),
-                          _pushRow('1274807', '63610', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063610', 'surname abuken'),
-                          _pushRow('1274806', '63609', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063609', 'surname Islom'),
-                          _pushRow('1274805', '63606', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063606', 'surname Cemil'),
-                          _pushRow('1274804', '63604', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063604', 'surname s'),
-                          _pushRow('1274803', '63603', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063603', 'surname Аброрбек'),
-                          _pushRow('1274802', '63602', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063602', 'surname Муhammadbobur'),
-                          _pushRow('1274801', '63601', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063601', 'surname firdavs'),
-                          _pushRow('1274800', '63599', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063599', 'surname dilshod'),
-                          _pushRow('1274799', '63598', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063598', 'surname baxa'),
-                        ],
+                      ref.watch(pushHistoryListProvider).when(
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (e, _) => Center(child: Text("Ошибка: $e")),
+                        data: (items) => ListView(
+                          children: items.map((item) => _pushRowFromItem(item)).toList(),
+                        ),
                       ),
                     ),
                   ],
@@ -167,4 +157,19 @@ class PushHistoryPage extends StatelessWidget {
       ),
     );
   }
+
+  /// Builds a row from provider data item.
+  Widget _pushRowFromItem(Map<String, dynamic> item) {
+    return _pushRow(
+      item['id']?.toString() ?? '',
+      item['client']?.toString() ?? '',
+      item['text']?.toString() ?? '',
+      item['isRead']?.toString() ?? '',
+      item['deleted']?.toString() ?? '',
+      item['created']?.toString() ?? '',
+      item['clientId']?.toString() ?? '',
+      item['clientName']?.toString() ?? '',
+    );
+  }
+
 }

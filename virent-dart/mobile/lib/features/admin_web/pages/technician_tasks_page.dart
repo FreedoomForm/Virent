@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class TechnicianTasksPage extends StatelessWidget {
+class TechnicianTasksPage extends ConsumerWidget {
   const TechnicianTasksPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -27,7 +29,7 @@ class TechnicianTasksPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () { /* action */ },
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить tasktechician', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -84,32 +86,38 @@ class TechnicianTasksPage extends StatelessWidget {
                   ),
                 ),
                 const Divider(height: 1),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 24),
-                  child: const Center(
-                    child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                Expanded(
+                  child: ref.watch(techTasksProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text('Ошибка: $e')),
+                    data: (items) => items.isEmpty
+                      ? const Center(child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)))
+                      : ListView.builder(
+                          itemCount: items.length,
+                          itemBuilder: (context, i) {
+                            final item = items[i];
+                            return Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 60, child: Text(item['id']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 150, child: Text(item['title']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 150, child: Text(item['technician']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  Expanded(child: Text(item['description']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 150, child: Text(item['create_by']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 150, child: Text(item['create_time']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 100, child: Text(item['finished']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 150, child: Text(item['finish_time']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  SizedBox(width: 150, child: Text(item['finish_by']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  const SizedBox(width: 200),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                   ),
                 ),
-                const Divider(height: 1),
-                Container(
-                  color: const Color(0xFFF8F9FA),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: const Row(
-                    children: [
-                      SizedBox(width: 60, child: Text('Id', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 150, child: Text('Title', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 150, child: Text('Technician', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Description', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 150, child: Text('Create by', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 150, child: Text('Create time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 100, child: Text('Завершен', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 150, child: Text('Finish time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 150, child: Text('Finish by', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
-                const Divider(height: 1),
               ],
             ),
           ),

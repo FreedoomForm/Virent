@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class SettingsNotificationsPage extends StatelessWidget {
+class SettingsNotificationsPage extends ConsumerWidget {
   const SettingsNotificationsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
@@ -70,30 +72,36 @@ class SettingsNotificationsPage extends StatelessWidget {
                   ),
                 ),
                 const Divider(height: 1),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 24),
-                  child: const Center(
-                    child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                Expanded(
+                  child: ref.watch(settingsNotificationsProvider).when(
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text('Ошибка: $e')),
+                    data: (data) => data.isEmpty
+                      ? const Center(child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)))
+                      : ListView.builder(
+                          itemCount: (data['events'] as List?)?.length ?? 0,
+                          itemBuilder: (context, i) {
+                            final item = (data['events'] as List)[i] as Map<String, dynamic>;
+                            return Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 100, child: Text(item['id']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  Expanded(child: Text(item['event']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  Expanded(child: Text(item['send_sms']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  Expanded(child: Text(item['send_push']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  Expanded(child: Text(item['send_email']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  Expanded(child: Text(item['email_content']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  Expanded(child: Text(item['sms_content']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
+                                  const SizedBox(width: 200),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                   ),
                 ),
-                const Divider(height: 1),
-                Container(
-                  color: const Color(0xFFF8F9FA),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: const Row(
-                    children: [
-                      SizedBox(width: 100, child: Text('#', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Event', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Send sms', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Send push', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Send email', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Email content', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Sms content', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
-                const Divider(height: 1),
               ],
             ),
           ),

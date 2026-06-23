@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../admin_web_providers.dart';
 
-class TariffsPage extends StatelessWidget {
+class TariffsPage extends ConsumerWidget {
   const TariffsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -33,15 +35,24 @@ class TariffsPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () { /* action */ },
             icon: const Icon(Icons.add, size: 16),
             label: const Text('Добавить тариф'),
             style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
           ),
           const SizedBox(height: 16),
           Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
+            ref.watch(tariffsListProvider).when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text('Ошибка: $e')),
+              data: (items) {
+                if (items.isEmpty) {
+                  return const Center(child: Text('Нет данных', style: TextStyle(color: Colors.grey)));
+                }
+                return Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300));
+              },
+            ),
               elevation: 0,
               child: ListView(
                 children: [
@@ -53,15 +64,7 @@ class TariffsPage extends StatelessWidget {
                       DataColumn(label: Text('Hold')),
                       DataColumn(label: Text('Действия')),
                     ],
-                    rows: [
-                      _buildRow('Минутный ViRent Ташкент', 'Minute', '500000 Тийны'),
-                      _buildRow('Минутный ИП Асилбеков', 'Minute', '500000 Тийны'),
-                      _buildRow('TEST', 'test', '100000 Тийны'),
-                      _buildRow('для 30мин ViRent Ташкент', 'Минутный', '500000 Тийны'),
-                      _buildRow('для 60мин ViRent Ташкент', 'минутный', '500000 Тийны'),
-                      _buildRow('Для 30мин ИП Асилбеков', 'Минутный', '500000 Тийны'),
-                      _buildRow('Для 60мин ИП Асилбеков', 'Hour', '500000 Тийны'),
-                    ],
+                    rows: items.map((item) => _buildRowFromItem(item)).toList(),,
                   ),
                 ],
               ),
@@ -79,12 +82,22 @@ class TariffsPage extends StatelessWidget {
       DataCell(Text(hold)),
       DataCell(Row(
         children: [
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.map, size: 14), label: const Text('Геозоны завершения')),
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
+          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.map, size: 14), label: const Text('Геозоны завершения')),
+          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
         ],
       )),
     ]);
   }
+
+  /// Builds a table row from dynamic data item.
+  DataRow _buildRowFromItem(Map<String, dynamic> item) {
+    return _buildRow(
+      item['nameAdmin']?.toString() ?? '',
+      item['nameApp']?.toString() ?? '',
+      item['hold']?.toString() ?? '',
+    );
+  }
+
 }
