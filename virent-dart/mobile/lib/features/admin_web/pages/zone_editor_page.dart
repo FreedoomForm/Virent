@@ -11,7 +11,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../../core/services/map/tile_cache_service.dart';
+import '../../../core/services/map/tile_cache_service.dart';
 import '../admin_web_providers.dart';
 import '../../auth/presentation/providers/auth_providers.dart' show apiClientProvider;
 import '../widgets/admin_dialogs.dart';
