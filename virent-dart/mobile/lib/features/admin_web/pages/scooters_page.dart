@@ -152,4 +152,7 @@ class ScootersPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

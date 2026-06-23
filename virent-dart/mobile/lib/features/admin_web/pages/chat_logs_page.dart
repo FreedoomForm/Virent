@@ -108,4 +108,7 @@ class ChatLogsPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

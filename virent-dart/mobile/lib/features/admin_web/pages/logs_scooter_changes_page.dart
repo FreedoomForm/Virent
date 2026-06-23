@@ -124,4 +124,7 @@ class LogsScooterChangesPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

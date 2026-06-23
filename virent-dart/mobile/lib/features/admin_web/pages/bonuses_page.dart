@@ -116,4 +116,7 @@ class BonusesPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

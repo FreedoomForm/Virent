@@ -98,4 +98,7 @@ class BillingDebtsPage extends ConsumerWidget {
       ),
     );
   }
+      ),
+    ),
+  );
 }

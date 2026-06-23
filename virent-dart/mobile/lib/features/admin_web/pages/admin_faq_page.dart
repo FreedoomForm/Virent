@@ -87,4 +87,7 @@ class AdminFaqPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

@@ -110,4 +110,7 @@ class LogsClientChangesPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

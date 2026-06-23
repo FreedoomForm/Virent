@@ -119,4 +119,7 @@ class FinesPage extends ConsumerWidget {
       ) : const SizedBox()),
     ]);
   }
-  }
+      ),
+    ),
+  );
+}

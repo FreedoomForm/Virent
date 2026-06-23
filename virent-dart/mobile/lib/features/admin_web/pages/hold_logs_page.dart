@@ -99,4 +99,7 @@ class HoldLogsPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

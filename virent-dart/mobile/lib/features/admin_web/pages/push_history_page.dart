@@ -107,4 +107,7 @@ class PushHistoryPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

@@ -119,4 +119,7 @@ class PaymeTransactionsPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

@@ -90,4 +90,7 @@ class SettingsScooterGroupsPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

@@ -90,4 +90,7 @@ class AdminCompaniesPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

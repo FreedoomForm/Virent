@@ -89,4 +89,7 @@ class PromoSeriesPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

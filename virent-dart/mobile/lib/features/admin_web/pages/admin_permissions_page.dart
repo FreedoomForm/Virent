@@ -87,4 +87,7 @@ class AdminPermissionsPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

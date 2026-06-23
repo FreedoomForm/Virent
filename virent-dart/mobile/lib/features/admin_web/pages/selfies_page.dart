@@ -106,4 +106,7 @@ class SelfiesPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

@@ -94,4 +94,7 @@ class TariffUntilDeadPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

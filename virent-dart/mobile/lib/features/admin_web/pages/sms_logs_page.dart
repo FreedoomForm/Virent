@@ -102,4 +102,7 @@ class SmsLogsPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

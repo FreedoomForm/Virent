@@ -151,4 +151,7 @@ class LogsTelemetryPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

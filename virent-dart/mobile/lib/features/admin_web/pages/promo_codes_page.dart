@@ -102,4 +102,7 @@ class PromoCodesPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

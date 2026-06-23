@@ -134,4 +134,7 @@ class ClickTransactionsPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

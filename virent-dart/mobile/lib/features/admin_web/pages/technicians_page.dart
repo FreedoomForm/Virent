@@ -108,4 +108,7 @@ class TechniciansPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

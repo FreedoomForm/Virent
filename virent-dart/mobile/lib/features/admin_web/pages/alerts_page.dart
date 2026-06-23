@@ -127,4 +127,7 @@ class AlertsPage extends ConsumerWidget {
     );
   
   }
+      ),
+    ),
+  );
 }

@@ -129,4 +129,7 @@ class TechFeedbackPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

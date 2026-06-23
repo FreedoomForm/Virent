@@ -121,4 +121,7 @@ class InspectionDamagesPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

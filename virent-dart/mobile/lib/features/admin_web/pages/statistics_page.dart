@@ -182,4 +182,7 @@ class StatisticsPage extends ConsumerWidget {
       ),
     );
   }
+      ),
+    ),
+  );
 }

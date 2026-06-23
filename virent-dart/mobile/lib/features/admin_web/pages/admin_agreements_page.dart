@@ -89,4 +89,7 @@ class AdminAgreementsPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }

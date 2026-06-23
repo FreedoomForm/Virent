@@ -88,4 +88,7 @@ class ClientGroupsPage extends ConsumerWidget {
     ]);
   
   }
+      ),
+    ),
+  );
 }
