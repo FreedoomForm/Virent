@@ -144,9 +144,33 @@ class NgrokTunnelService {
     }
   }
 
+  /// Path to ngrok in the app data directory.
+  Future<String?> _appDataNgrokPath() async {
+    try {
+      final appData = Platform.isWindows
+          ? Platform.environment['APPDATA']
+          : Platform.environment['HOME'];
+      if (appData == null) return null;
+      final dir = Platform.isWindows ? '$appData\Virent' : '$appData/.virent';
+      final ext = Platform.isWindows ? '.exe' : '';
+      final path = '$dir\ngrok$ext';
+      return path;
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Extracts the ngrok binary from the Flutter assets bundle to a temp
   /// file. Returns the path, or null if the asset doesn't exist.
   Future<String?> _extractBinary() async {
+    // First, check if ngrok is already in the app data directory
+    // (put there by setup-ngrok.bat or manual download).
+    final appDataNgrok = await _appDataNgrokPath();
+    if (appDataNgrok != null && File(appDataNgrok).existsSync()) {
+      AppLogger.info('ngrok found in app data: $appDataNgrok', tag: 'NGROK');
+      return appDataNgrok;
+    }
+
     try {
       final byteData = await rootBundle.load(_assetPath);
       final bytes = byteData.buffer.asUint8List();
