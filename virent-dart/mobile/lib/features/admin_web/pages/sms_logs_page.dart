@@ -95,5 +95,6 @@ class SmsLogsPage extends ConsumerWidget {
         ],
       )),
     ]);
+  )
   }
 }

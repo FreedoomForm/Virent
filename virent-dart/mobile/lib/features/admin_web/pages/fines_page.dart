@@ -150,5 +150,6 @@ class FinesPage extends ConsumerWidget {
 
   static Widget _closeIcon() {
     return InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
+  )
   }
 }

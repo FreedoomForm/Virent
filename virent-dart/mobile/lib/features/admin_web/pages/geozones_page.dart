@@ -248,5 +248,6 @@ class GeozonesPage extends ConsumerWidget {
     }
     
     return Icon(icon, size: 16, color: color);
+  )
   }
 }

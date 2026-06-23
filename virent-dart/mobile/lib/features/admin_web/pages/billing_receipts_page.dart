@@ -164,5 +164,6 @@ class BillingReceiptsPage extends ConsumerWidget {
         InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
       ],
     );
+  )
   }
 }

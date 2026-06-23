@@ -137,5 +137,6 @@ class ClientGroupsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

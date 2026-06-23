@@ -147,5 +147,6 @@ class AdminContactsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

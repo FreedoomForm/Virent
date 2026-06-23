@@ -160,5 +160,6 @@ class DotsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

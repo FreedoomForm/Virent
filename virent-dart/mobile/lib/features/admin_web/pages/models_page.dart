@@ -156,5 +156,6 @@ class ModelsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

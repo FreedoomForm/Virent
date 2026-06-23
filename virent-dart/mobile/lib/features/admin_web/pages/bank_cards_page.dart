@@ -136,5 +136,6 @@ class BankCardsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

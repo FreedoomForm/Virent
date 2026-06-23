@@ -116,5 +116,6 @@ class LogsPaymentsPage extends ConsumerWidget {
       width: 100, // Reduced width since there's 12 keys
       child: Text(text, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
     );
+  )
   }
 }

@@ -206,5 +206,6 @@ class OnlineChatPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

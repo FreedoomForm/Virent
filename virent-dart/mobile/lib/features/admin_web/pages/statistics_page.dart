@@ -180,5 +180,6 @@ class StatisticsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

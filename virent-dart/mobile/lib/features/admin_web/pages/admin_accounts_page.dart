@@ -176,5 +176,6 @@ class AdminAccountsPage extends ConsumerWidget {
       ),
       child: Text(text, style: TextStyle(fontSize: 11, color: textColor)),
     );
+  )
   }
 }

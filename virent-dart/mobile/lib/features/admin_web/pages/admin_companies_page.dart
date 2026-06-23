@@ -143,5 +143,6 @@ class AdminCompaniesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

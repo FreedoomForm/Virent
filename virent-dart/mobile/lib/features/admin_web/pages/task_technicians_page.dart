@@ -91,5 +91,6 @@ class TaskTechniciansPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

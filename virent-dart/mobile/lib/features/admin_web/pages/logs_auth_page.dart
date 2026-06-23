@@ -126,5 +126,6 @@ class LogsAuthPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

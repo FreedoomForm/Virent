@@ -90,5 +90,6 @@ class RaiderLogsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

@@ -138,5 +138,6 @@ class TariffAbonementsPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }

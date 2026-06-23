@@ -131,5 +131,6 @@ class PromoSeriesPage extends ConsumerWidget {
         ],
       ),
     );
+  )
   }
 }
