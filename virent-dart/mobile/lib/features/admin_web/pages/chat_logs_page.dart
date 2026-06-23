@@ -10,7 +10,10 @@ class ChatLogsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncItems = ref.watch(chatLogsProvider);
 
-    return Padding(
+    return asyncItems.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: \$e', style: const TextStyle(color: Colors.red))),
+      data: (items) => Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,28 +56,23 @@ class ChatLogsPage extends ConsumerWidget {
             child: Card(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
               elevation: 0,
-              child: asyncItems.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-                data: (items) => SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SingleChildScrollView(
-                    child: DataTable(
-                      headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                      columns: const [
-                        DataColumn(label: Text('client_id')),
-                        DataColumn(label: Text('message')),
-                        DataColumn(label: Text('image')),
-                        DataColumn(label: Text('Answer')),
-                        DataColumn(label: Text('timestamp')),
-                        DataColumn(label: Text('Location')),
-                        DataColumn(label: Text('read_by_admin')),
-                        DataColumn(label: Text('read_date')),
-                        DataColumn(label: Text('Управление')),
-                      ],
-                      rows: items.map(_buildRow).toList(),
-                    ),
-                  ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  child: DataTable(
+                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                    columns: const [
+                      DataColumn(label: Text('client_id')),
+                      DataColumn(label: Text('message')),
+                      DataColumn(label: Text('image')),
+                      DataColumn(label: Text('Answer')),
+                      DataColumn(label: Text('timestamp')),
+                      DataColumn(label: Text('Location')),
+                      DataColumn(label: Text('read_by_admin')),
+                      DataColumn(label: Text('read_date')),
+                      DataColumn(label: Text('Управление')),
+                    ],
+                    rows: items.isEmpty ? [const DataRow(cells: [DataCell(Center(child: Text("В таблице нет доступных данных", style: TextStyle(color: Colors.grey))))])] : items.map(_buildItemRow).toList()                  ),
                 ),
               ),
             ),
@@ -84,39 +82,30 @@ class ChatLogsPage extends ConsumerWidget {
     );
   }
 
-  DataRow _buildRow(Map<String, dynamic> c) {
-    final cid = (c['client_id'] ?? c['client'] ?? '-').toString();
-    final time = (c['timestamp'] ?? c['created_at'] ?? '-').toString();
-    final hasImage = (c['image'] ?? c['has_image'] ?? false) == true || (c['image'] ?? c['has_image'] ?? '') == '1';
-    final message = (c['message'] ?? c['text'] ?? '').toString();
-    final location = (c['location'] ?? c['geo'] ?? '').toString();
-    final readBy = (c['read_by_admin'] ?? c['read'] ?? '').toString();
-    final readDate = (c['read_date'] ?? '').toString();
+  DataRow _buildItemRow(Map<String, dynamic> item) {
+    final cid = (item['client_id'] ?? '').toString();
+    final time = (item['created_at'] ?? '').toString();
+    final false} = (item['false}'] ?? '').toString();
 
     return DataRow(cells: [
       DataCell(Text(cid, style: const TextStyle(color: Colors.blue))),
-      DataCell(message.isNotEmpty
-          ? Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              color: Colors.amber,
-              child: Text(message, style: const TextStyle(color: Colors.white, fontSize: 12)),
-            )
-          : hasImage ? const SizedBox() : Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              color: Colors.amber,
-              child: const Text('Прочитать новое сообщение', style: TextStyle(color: Colors.white, fontSize: 12)),
-            )),
+      DataCell(hasImage ? const SizedBox() : Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        color: Colors.amber,
+        child: const Text('Прочитать новое сообщение', style: TextStyle(color: Colors.white, fontSize: 12)),
+      )),
       DataCell(hasImage ? const Icon(Icons.image) : const SizedBox()),
       const DataCell(Text('')),
       DataCell(Text(time)),
-      DataCell(location.isNotEmpty ? const Text('посмотреть', style: TextStyle(color: Colors.blue)) : const Text('')),
-      DataCell(Text(readBy)),
-      DataCell(Text(readDate)),
+      DataCell(const Text('посмотреть', style: TextStyle(color: Colors.blue))),
+      const DataCell(Text('')),
+      const DataCell(Text('')),
       DataCell(ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
         onPressed: () {},
         child: const Text('Написать сообщение'),
       )),
     ]);
+  
   }
 }

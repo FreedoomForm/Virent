@@ -2,41 +2,95 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
-import '../widgets/admin_table_page.dart';
 
 class TariffPricesPage extends ConsumerWidget {
   const TariffPricesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AdminTablePage(
-      title: 'Цены Тарифов',
-      provider: tariffPricesProvider,
-      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
-      columns: const [
-        DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Tariff')),
-        DataColumn(label: Text('Price per minute')),
-        DataColumn(label: Text('Start price')),
-        DataColumn(label: Text('Max price')),
-      ],
-      buildRow: (item) {
-        final id = (item['id'] ?? '-').toString();
-        final tariff = (item['tariff'] ?? item['tariff_id'] ?? '-').toString();
-        final price_per_minute = (item['price_per_minute'] ?? item['minute_price'] ?? '-').toString();
-        final start_price = (item['start_price'] ?? item['base_price'] ?? '-').toString();
-        final max_price = (item['max_price'] ?? item['max'] ?? '-').toString();
-        return DataRow(cells: [
-          DataCell(Text(id)),
-          DataCell(Text(tariff)),
-          DataCell(Text(price_per_minute)),
-          DataCell(Text(start_price)),
-          DataCell(Text(max_price)),
-          DataCell(TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать'))),
-        ]);
-      },
+    final asyncItems = ref.watch(tariffPricesProvider);
+
+    return asyncItems.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: \$e', style: const TextStyle(color: Colors.red))),
+      data: (items) => Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Цены', style: TextStyle(fontSize: 24)),
+              const Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text('Показано 1 до 9 из 9 совпадений', style: TextStyle(color: Colors.grey)),
+                  )),
+              SizedBox(
+                width: 200,
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Поиск...',
+                    isDense: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.add, size: 16),
+            label: const Text('Добавить цены'),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
+              elevation: 0,
+              child: ListView(
+                children: [
+                  DataTable(
+                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                    columns: const [
+                      DataColumn(label: Text('Наименование')),
+                      DataColumn(label: Text('Json')),
+                      DataColumn(label: Text('Time unit')),
+                      DataColumn(label: Text('Действия')),
+                    ],
+                    rows: items.isEmpty ? [const DataRow(cells: [DataCell(Center(child: Text("В таблице нет доступных данных", style: TextStyle(color: Colors.grey))))])] : items.map(_buildItemRow).toList()                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
-}
 
-final _tariffPricesPageSearchProvider = StateProvider<String>((ref) => '');
+  DataRow _buildItemRow(Map<String, dynamic> item) {
+    final name = (item['name'] ?? '').toString();
+    final time = (item['created_at'] ?? '').toString();
+
+    return DataRow(cells: [
+      DataCell(Text(name)),
+      DataCell(ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, foregroundColor: Colors.white, minimumSize: const Size(0, 30)),
+        child: const Text('Развернуть / Свернуть', style: TextStyle(fontSize: 12)),
+      )),
+      DataCell(Text(time)),
+      DataCell(Row(
+        children: [
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+        ],
+      )),
+    ]);
+  
+  }
+}

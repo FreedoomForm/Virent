@@ -2,58 +2,104 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
-import '../widgets/admin_table_page.dart';
 
 class SmsLogsPage extends ConsumerWidget {
   const SmsLogsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AdminTablePage(
-      title: 'SMS Логи',
-      provider: smsLogsProvider,
-      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
-      columns: const [
-        DataColumn(label: Text('Id')),
-        DataColumn(label: Text('Phone')),
-        DataColumn(label: Text('Sms code')),
-        DataColumn(label: Text('Sms try count')),
-        DataColumn(label: Text('Sms try count all')),
-        DataColumn(label: Text('Sms try login')),
-        DataColumn(label: Text('Create time')),
-        DataColumn(label: Text('Sms last attempt')),
-        DataColumn(label: Text('Check key')),
-      ],
-      buildRow: (item) {
-        final id = (item['id'] ?? '-').toString();
-        final phone = (item['phone'] ?? '-').toString();
-        final code = (item['sms_code'] ?? item['code'] ?? '-').toString();
-        final try_count = (item['sms_try_count'] ?? item['try_count'] ?? '-').toString();
-        final try_count_all = (item['sms_try_count_all'] ?? item['try_count_all'] ?? '-').toString();
-        final try_login = (item['sms_try_login'] ?? item['try_login'] ?? '-').toString();
-        final create_time = (item['create_time'] ?? item['created_at'] ?? '-').toString();
-        final last_attempt = (item['sms_last_attempt'] ?? item['last_attempt'] ?? '-').toString();
-        final check_key = (item['check_key'] ?? item['key'] ?? '-').toString();
-        return DataRow(cells: [
-          DataCell(Text(id)),
-          DataCell(Text(phone)),
-          DataCell(Text(code)),
-          DataCell(Text(try_count)),
-          DataCell(Text(try_count_all)),
-          DataCell(Text(try_login)),
-          DataCell(Text(create_time)),
-          DataCell(Text(last_attempt)),
-          DataCell(Text(check_key)),
-          DataCell(Row(
+    final asyncItems = ref.watch(smsLogsProvider);
+
+    return asyncItems.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: \$e', style: const TextStyle(color: Colors.red))),
+      data: (items) => Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
-              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+              const Text('Entries', style: TextStyle(fontSize: 24)),
+              const Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text('Показано 1 до 20 из 15,114 совпадений', style: TextStyle(color: Colors.grey)),
+                  )),
+              SizedBox(
+                width: 200,
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Поиск...',
+                    isDense: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                  ),
+                ),
+              ),
             ],
-          )),
-        ]);
-      },
+          ),
+          const SizedBox(height: 16),
+          // Table mockup
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
+              elevation: 0,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  child: DataTable(
+                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                    columns: const [
+                      DataColumn(label: Text('Id')),
+                      DataColumn(label: Text('Phone')),
+                      DataColumn(label: Text('Sms code')),
+                      DataColumn(label: Text('Sms try count')),
+                      DataColumn(label: Text('Sms try count all')),
+                      DataColumn(label: Text('Sms try login')),
+                      DataColumn(label: Text('Create time')),
+                      DataColumn(label: Text('Sms last attempt')),
+                      DataColumn(label: Text('Check key')),
+                      DataColumn(label: Text('Действия')),
+                    ],
+                    rows: items.isEmpty ? [const DataRow(cells: [DataCell(Center(child: Text("В таблице нет доступных данных", style: TextStyle(color: Colors.grey))))])] : items.map(_buildItemRow).toList()                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
-}
 
-final _smsLogsPageSearchProvider = StateProvider<String>((ref) => '');
+  DataRow _buildItemRow(Map<String, dynamic> item) {
+    final id = (item['id'] ?? '').toString();
+    final phone = (item['phone'] ?? '').toString();
+    final code = (item['code'] ?? '').toString();
+    final t1 = (item['click_trans_id'] ?? '').toString();
+    final t2 = (item['click_paydoc_id'] ?? '').toString();
+    final t3 = (item['merchant_trans_id'] ?? '').toString();
+    final ct = (item['created_at'] ?? '').toString();
+    final la = (item['last_attempt'] ?? '').toString();
+    final key = (item['tech_key'] ?? '').toString();
+
+    return DataRow(cells: [
+      DataCell(Text(id)),
+      DataCell(Text(phone)),
+      DataCell(Text(code)),
+      DataCell(Text(t1)),
+      DataCell(Text(t2)),
+      DataCell(Text(t3)),
+      DataCell(Text(ct)),
+      DataCell(Text(la)),
+      DataCell(Text(key)),
+      DataCell(Row(
+        children: [
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+        ],
+      )),
+    ]);
+  
+  }
+}

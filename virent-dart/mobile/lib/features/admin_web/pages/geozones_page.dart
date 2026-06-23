@@ -2,63 +2,115 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
-import '../widgets/admin_table_page.dart';
 
 class GeozonesPage extends ConsumerWidget {
   const GeozonesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AdminTablePage(
-      title: 'Геозоны',
-      provider: zonesListProvider,
-      searchMatcher: (item, query) { return item.values.any((v) => v != null && v.toString().toLowerCase().contains(query.toLowerCase())); },
-      createButton: ElevatedButton.icon(onPressed:(){},icon:const Icon(Icons.add, size:16),label:const Text("Добавить геозону"),style:ElevatedButton.styleFrom(backgroundColor:adminPrimaryColor,foregroundColor:adminPrimaryForeground)),
-      columns: const [
-        DataColumn(label: Text('ID')),
-        DataColumn(label: Text('Название')),
-        DataColumn(label: Text('Заполнение')),
-        DataColumn(label: Text('Обводка')),
-        DataColumn(label: Text('Группы')),
-        DataColumn(label: Text('кэф.проз.геозоны')),
-        DataColumn(label: Text('кэф.ярк.обводки')),
-        DataColumn(label: Text('Команды')),
-        DataColumn(label: Text('Зона Разрешенного...')),
-        DataColumn(label: Text('Зона Завершения...')),
-      ],
-      buildRow: (item) {
-        final id = (item['id'] ?? '-').toString();
-        final name = (item['name'] ?? '-').toString();
-        final fill = (item['fill'] ?? item['fill_color'] ?? '-').toString();
-        final stroke = (item['stroke'] ?? item['stroke_color'] ?? '-').toString();
-        final groups = (item['groups'] ?? '-').toString();
-        final alpha = (item['alpha'] ?? item['fill_opacity'] ?? '-').toString();
-        final beta = (item['beta'] ?? item['stroke_opacity'] ?? '-').toString();
-        final cmds = (item['commands'] ?? item['cmds'] ?? item['iot_commands'] ?? '-').toString();
-        final z1 = (item['allowed_zone'] ?? item['zone_allowed'] ?? item['is_allowed_zone'] ?? '-').toString();
-        final z2 = (item['end_zone'] ?? item['zone_end'] ?? item['is_end_zone'] ?? '-').toString();
-        return DataRow(cells: [
-          DataCell(Text(id)),
-          DataCell(Text(name)),
-          DataCell(Text(fill)),
-          DataCell(Text(stroke)),
-          DataCell(Text(groups)),
-          DataCell(Text(alpha)),
-          DataCell(Text(beta)),
-          DataCell(Text(cmds)),
-          DataCell(Text(z1)),
-          DataCell(Text(z2)),
-          DataCell(Row(
+    final asyncItems = ref.watch(zonesListProvider);
+
+    return asyncItems.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: \$e', style: const TextStyle(color: Colors.red))),
+      data: (items) => Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
-              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
-              TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+              const Text('Геозоны', style: TextStyle(fontSize: 24)),
+              const Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text('Показано 1 до 4 из 4 совпадений', style: TextStyle(color: Colors.grey)),
+                  )),
+              SizedBox(
+                width: 200,
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Поиск...',
+                    isDense: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                  ),
+                ),
+              ),
             ],
-          )),
-        ]);
-      },
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.add, size: 16),
+            label: const Text('Добавить геозону'),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
+          ),
+          const SizedBox(height: 16),
+          // Table mockup
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
+              elevation: 0,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  child: DataTable(
+                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                    columns: const [
+                      DataColumn(label: Text('ID')),
+                      DataColumn(label: Text('Название')),
+                      DataColumn(label: Text('Заполнение')),
+                      DataColumn(label: Text('Обводка')),
+                      DataColumn(label: Text('Группы')),
+                      DataColumn(label: Text('кэф.проз.геозоны')),
+                      DataColumn(label: Text('кэф.ярк.обводки')),
+                      DataColumn(label: Text('Команды')),
+                      DataColumn(label: Text('Зона Разрешенного...')),
+                      DataColumn(label: Text('Зона Завершения...')),
+                      DataColumn(label: Text('Действия')),
+                    ],
+                    rows: items.isEmpty ? [const DataRow(cells: [DataCell(Center(child: Text("В таблице нет доступных данных", style: TextStyle(color: Colors.grey))))])] : items.map(_buildItemRow).toList()                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
-}
 
-final _geozonesPageSearchProvider = StateProvider<String>((ref) => '');
+  DataRow _buildItemRow(Map<String, dynamic> item) {
+    final id = (item['id'] ?? '').toString();
+    final name = (item['name'] ?? '').toString();
+    final fill = (item['fill_color'] ?? '').toString();
+    final stroke = (item['stroke_color'] ?? '').toString();
+    final groups = (item['groups'] ?? '').toString();
+    final alpha = (item['fill_opacity'] ?? '').toString();
+    final beta = (item['stroke_opacity'] ?? '').toString();
+    final cmds = (item['commands'] ?? '').toString();
+    final z1 = item['is_permitted_zone'] == true || item['is_permitted_zone'] == 1 || item['is_permitted_zone'] == '1' || item['is_permitted_zone'] == 'true';
+    final z2 = item['is_finish_zone'] == true || item['is_finish_zone'] == 1 || item['is_finish_zone'] == '1' || item['is_finish_zone'] == 'true';
+
+    return DataRow(cells: [
+      DataCell(Text(id)),
+      DataCell(Text(name, style: const TextStyle(color: Colors.blue))),
+      DataCell(Text(fill)),
+      DataCell(Text(stroke)),
+      DataCell(Text(groups)),
+      DataCell(Text(alpha)),
+      DataCell(Text(beta)),
+      DataCell(Text(cmds)),
+      DataCell(Icon(z1 ? Icons.check_box : Icons.check_box_outline_blank, color: z1 ? Colors.green : Colors.red)),
+      DataCell(Icon(z2 ? Icons.check_box : Icons.check_box_outline_blank, color: z2 ? Colors.green : Colors.red)),
+      DataCell(Row(
+        children: [
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+        ],
+      )),
+    ]);
+  
+  }
+}
