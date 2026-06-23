@@ -71,6 +71,9 @@ class TariffsPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final nameAdmin = (item['admin_name'] ?? '').toString();
     final nameApp = (item['app_name'] ?? '').toString();
@@ -91,7 +94,4 @@ class TariffsPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

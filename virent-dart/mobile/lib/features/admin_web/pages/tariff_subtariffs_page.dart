@@ -92,6 +92,6 @@ class TariffSubTariffsPage extends ConsumerWidget {
     );
   }
       ),
-    ),
+    );
   );
 }

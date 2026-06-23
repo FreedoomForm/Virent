@@ -73,6 +73,9 @@ class TariffAbonementsPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final tariff = (item['tariff_name'] ?? '').toString();
     final desc = (item['description'] ?? '').toString();
@@ -95,7 +98,4 @@ class TariffAbonementsPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

@@ -91,6 +91,9 @@ class InspectionDamagesPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   Widget _buildFilterField(String hint, {double width = 150}) {
     return SizedBox(
       width: width,
@@ -121,7 +124,4 @@ class InspectionDamagesPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

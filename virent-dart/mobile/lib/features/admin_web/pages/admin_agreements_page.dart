@@ -71,6 +71,9 @@ class AdminAgreementsPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final file = (item['file'] ?? '').toString();
     final urlLabel = (item['url_label'] ?? '').toString();
@@ -89,7 +92,4 @@ class AdminAgreementsPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

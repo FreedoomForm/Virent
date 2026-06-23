@@ -88,6 +88,9 @@ class ClickTransactionsPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   Widget _buildFilterInput(String hint) {
     return SizedBox(
       width: 150,
@@ -134,7 +137,4 @@ class ClickTransactionsPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

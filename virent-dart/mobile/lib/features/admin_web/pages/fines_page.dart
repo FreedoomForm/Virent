@@ -77,6 +77,9 @@ class FinesPage extends ConsumerWidget {
         ],
       )
 
+      ),
+    );
+  );
   DataRow _buildRow(Map<String, dynamic> f) {
     final id = (f['id'] ?? '-').toString();
     final cid = (f['client_id'] ?? f['client'] ?? '-').toString();
@@ -119,7 +122,4 @@ class FinesPage extends ConsumerWidget {
       ) : const SizedBox()),
     ]);
   }
-      ),
-    ),
-  );
 }

@@ -76,6 +76,6 @@ class SettingsNotificationsPage extends ConsumerWidget {
     );
   }
       ),
-    ),
+    );
   );
 }

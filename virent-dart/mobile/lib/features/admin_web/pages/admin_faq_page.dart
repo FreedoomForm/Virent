@@ -71,6 +71,9 @@ class AdminFaqPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final name = (item['name'] ?? '').toString();
     final desc = (item['description'] ?? '').toString();
@@ -87,7 +90,4 @@ class AdminFaqPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

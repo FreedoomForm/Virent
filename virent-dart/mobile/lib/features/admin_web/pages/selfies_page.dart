@@ -91,6 +91,9 @@ class SelfiesPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
 
@@ -106,7 +109,4 @@ class SelfiesPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

@@ -73,6 +73,9 @@ class PushHistoryPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   Widget _buildFilterField(String hint) {
     return SizedBox(
       width: 150,
@@ -107,7 +110,4 @@ class PushHistoryPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

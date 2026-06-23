@@ -84,6 +84,6 @@ class LogsPaymentsPage extends ConsumerWidget {
     );
   }
       ),
-    ),
+    );
   );
 }

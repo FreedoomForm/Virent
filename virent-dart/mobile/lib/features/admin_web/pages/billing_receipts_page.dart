@@ -96,6 +96,9 @@ class BillingReceiptsPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final check = (item['check_type'] ?? '').toString();
@@ -119,7 +122,4 @@ class BillingReceiptsPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

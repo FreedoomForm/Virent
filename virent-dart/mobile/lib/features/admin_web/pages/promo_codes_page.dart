@@ -76,6 +76,9 @@ class PromoCodesPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final code = (item['code'] ?? '').toString();
@@ -102,7 +105,4 @@ class PromoCodesPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

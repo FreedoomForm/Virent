@@ -90,6 +90,9 @@ class PrepaidOrdersPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   Widget _buildFilterField(String hint, {double width = 120}) {
     return SizedBox(
       width: width,
@@ -134,7 +137,4 @@ class PrepaidOrdersPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

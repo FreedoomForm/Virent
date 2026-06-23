@@ -91,6 +91,9 @@ class LogsScooterChangesPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final num = (item['gosnomer'] ?? '').toString();
@@ -124,7 +127,4 @@ class LogsScooterChangesPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

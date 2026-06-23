@@ -87,6 +87,9 @@ class LogsClientChangesPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final clientId = (item['client_id'] ?? '').toString();
@@ -110,7 +113,4 @@ class LogsClientChangesPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

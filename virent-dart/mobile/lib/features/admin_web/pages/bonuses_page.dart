@@ -96,6 +96,9 @@ class BonusesPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final client = (item['client_name'] ?? '').toString();
@@ -116,7 +119,4 @@ class BonusesPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

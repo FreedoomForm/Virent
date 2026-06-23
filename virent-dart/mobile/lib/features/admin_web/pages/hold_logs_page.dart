@@ -64,6 +64,9 @@ class HoldLogsPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   Widget _buildFilterField(String hint) {
     return SizedBox(
       width: 150,
@@ -99,7 +102,4 @@ class HoldLogsPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

@@ -87,6 +87,9 @@ class TechFeedbackPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   Widget _buildFilterInput(String label) {
     return SizedBox(
       width: 150,
@@ -129,7 +132,4 @@ class TechFeedbackPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

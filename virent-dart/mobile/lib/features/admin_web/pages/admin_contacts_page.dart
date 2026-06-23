@@ -75,6 +75,9 @@ class AdminContactsPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final city = (item['city'] ?? '').toString();
     final phone = (item['phone'] ?? '').toString();
@@ -101,7 +104,4 @@ class AdminContactsPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

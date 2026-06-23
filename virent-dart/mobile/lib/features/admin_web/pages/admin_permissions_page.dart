@@ -71,6 +71,9 @@ class AdminPermissionsPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final name = (item['name'] ?? '').toString();
     final title = (item['title'] ?? '').toString();
@@ -87,7 +90,4 @@ class AdminPermissionsPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }

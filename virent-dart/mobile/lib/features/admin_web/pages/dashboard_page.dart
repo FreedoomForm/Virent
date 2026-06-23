@@ -57,6 +57,9 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   Widget _buildStatsGrid(BuildContext context) {
     return Wrap(
       spacing: 16,
@@ -347,7 +350,4 @@ class DashboardPage extends ConsumerWidget {
       child: Text(label),
     );
   }
-      ),
-    ),
-  );
 }

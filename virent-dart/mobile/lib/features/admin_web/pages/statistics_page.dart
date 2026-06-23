@@ -144,6 +144,9 @@ class StatisticsPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   Widget _buildStatCard(String value, String label, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -182,7 +185,4 @@ class StatisticsPage extends ConsumerWidget {
       ),
     );
   }
-      ),
-    ),
-  );
 }

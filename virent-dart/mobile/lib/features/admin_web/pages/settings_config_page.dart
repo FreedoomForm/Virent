@@ -56,6 +56,9 @@ class SettingsConfigPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   Widget _buildSectionTitle(String title) {
     return Container(
       width: double.infinity,
@@ -98,7 +101,4 @@ class SettingsConfigPage extends ConsumerWidget {
       ),
     );
   }
-      ),
-    ),
-  );
 }

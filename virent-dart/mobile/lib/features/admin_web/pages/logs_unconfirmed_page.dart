@@ -72,6 +72,9 @@ class LogsUnconfirmedPage extends ConsumerWidget {
     );
   }
 
+      ),
+    );
+  );
   DataRow _buildItemRow(Map<String, dynamic> item) {
     final id = (item['id'] ?? '').toString();
     final phone = (item['phone'] ?? '').toString();
@@ -101,7 +104,4 @@ class LogsUnconfirmedPage extends ConsumerWidget {
     ]);
   
   }
-      ),
-    ),
-  );
 }
