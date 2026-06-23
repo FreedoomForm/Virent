@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class BonusesPage extends ConsumerWidget {
   const BonusesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(bonusesListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +34,7 @@ class BonusesPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить бонусы', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -94,12 +99,24 @@ class BonusesPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  ref.watch(bonusesListProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text("Ошибка: $e")),
-                    data: (items) => ListView(
-                      children: items.map((item) => _bonusRowFromItem(item)).toList(),
-                    ),
+                  child: ListView(
+                    children: [
+                      _bonusRow('704', 'surname azamat', '15 000.00 С.', 'Call Abdukarim', '19 июн 2026, 09:34', 'Бонус', 'ViRent'),
+                      _bonusRow('703', 'surname azamat', '10 000.00 С.', 'Call Sirojiddin', '19 июн 2026, 06:26', '', 'ViRent'),
+                      _bonusRow('702', 'surname Нозимбек', '9 000.00 С.', 'Call Sirojiddin', '19 июн 2026, 01:05', '', 'ViRent'),
+                      _bonusRow('701', 'surname abduvoris', '-15 000.00 С.', 'Call Abdukarim', '18 июн 2026, 17:39', '', 'ViRent'),
+                      _bonusRow('700', 'surname Adxam', '15 000.00 С.', 'Call Abdukarim', '18 июн 2026, 17:12', '', 'ViRent'),
+                      _bonusRow('699', 'surname abduvoris', '15 000.00 С.', 'Call Abdukarim', '18 июн 2026, 16:53', '', 'ViRent'),
+                      _bonusRow('698', 'surname malik', '14 900.00 С.', 'Call Abdukarim', '15 июн 2026, 08:05', 'Бонус', 'ViRent'),
+                      _bonusRow('697', 'surname Bobur', '35 000.00 С.', 'ViRent Шерзод А...ов', '15 июн 2026, 04:46', '', 'ViRent'),
+                      _bonusRow('696', 'surname jony', '24 900.00 С.', 'Call Abdukarim', '13 июн 2026, 05:05', '', 'ViRent'),
+                      _bonusRow('695', 'surname Саид', '34 900.00 С.', 'Call Oybek', '13 июн 2026, 03:07', '', 'ViRent'),
+                      _bonusRow('694', 'surname даша', '14 900.00 С.', 'Call Abdukarim', '13 июн 2026, 01:00', 'Бонус', 'ViRent'),
+                      _bonusRow('693', 'surname Амир', '4 050.00 С.', 'Call Sirojiddin', '10 июн 2026, 01:53', 'Бонус', 'ViRent'),
+                      _bonusRow('692', 'surname михаил', '50 000.00 С.', 'ViRent Шерзод А...ов', '08 июн 2026, 23:45', '', 'ViRent'),
+                      _bonusRow('691', 'surname исмаил', '24 900.00 С.', 'Call Oybek Mozirov', '08 июн 2026, 03:13', '', 'ViRent'),
+                      _bonusRow('690', 'surname maf', '14 900.00 С.', 'Call Oybek Mozirov', '08 июн 2026, 02:25', '', 'ViRent'),
+                    ],
                   ),
                 ),
               ],
@@ -151,18 +168,4 @@ class BonusesPage extends ConsumerWidget {
       ],
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _bonusRowFromItem(Map<String, dynamic> item) {
-    return _bonusRow(
-      item['id']?.toString() ?? '',
-      item['client']?.toString() ?? '',
-      item['sum']?.toString() ?? '',
-      item['whoAdded']?.toString() ?? '',
-      item['created']?.toString() ?? '',
-      item['comment']?.toString() ?? '',
-      item['company']?.toString() ?? '',
-    );
-  }
-
 }

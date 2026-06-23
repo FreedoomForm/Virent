@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class RaiderLogsPage extends ConsumerWidget {
   const RaiderLogsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(iotLogsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,42 +75,13 @@ class RaiderLogsPage extends ConsumerWidget {
                       ),
                     ),
                     const Divider(height: 1),
-                    Expanded(
-                      child: ref.watch(iotLogsProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text('Ошибка: $e')),
-                        data: (items) => items.isEmpty
-                          ? const Center(child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)))
-                          : ListView.builder(
-                              itemCount: items.length,
-                              itemBuilder: (context, i) {
-                                final item = items[i];
-                                return Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(width: 40, child: Text(item['id']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 40, child: Text(item['id2']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 100, child: Text(item['scooter_id']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 250, child: Text(item['switch_from']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 150, child: Text(item['coords_act']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 150, child: Text(item['time_act']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 180, child: Text(item['phone_time_act']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 250, child: Text(item['switch_from2']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 40, child: Text(item['id3']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 150, child: Text(item['coords_deact']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 150, child: Text(item['time_deact']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 180, child: Text(item['phone_time_deact']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      SizedBox(width: 80, child: Text(item['action']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      const SizedBox(width: 150),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: const Center(
+                        child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ),
                     ),
+                    const Divider(height: 1),
                   ],
                 ),
               ),

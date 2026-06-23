@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class FinesPage extends ConsumerWidget {
   const FinesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(finesListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,31 +68,15 @@ class FinesPage extends ConsumerWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      child: ref.watch(finesListProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text('Ошибка: $e')),
-                        data: (items) => items.isEmpty
-                          ? const Center(child: Text('Нет данных', style: TextStyle(color: Colors.grey)))
-                          : ListView(
-                              children: items.map((item) {
-                                final status = item['status']?.toString() ?? '';
-                                return _fineRow(
-                                  item['id']?.toString() ?? '',
-                                  item['client_id']?.toString() ?? '',
-                                  item['amount']?.toString() ?? '',
-                                  item['hold_id']?.toString() ?? '',
-                                  item['order_id']?.toString() ?? '',
-                                  item['bill_id']?.toString() ?? '',
-                                  item['description']?.toString() ?? '',
-                                  item['timestamp_response']?.toString() ?? '',
-                                  status,
-                                  item['CardPan']?.toString() ?? '',
-                                  item['TransactionId']?.toString() ?? '',
-                                  item['UzcardTransactionId']?.toString() ?? '',
-                                  showButtons: status == 'HOLD',
-                                );
-                              }).toList(),
-                            ),
+                      child: ListView(
+                        children: [
+                          _fineRow('1TH6vudSDF954uqo...', '268355', '20000000', '', '', '', '', '27.07.2025 21:03:55', 'debt', '', '', '', ''),
+                          _fineRow('6882f576b40350335...', '266868', '20000000', '', '', '6882f576b403503...', '', '25.07.2025 08:09:46', 'confirm', '', '', '1753412987', showButtons: false),
+                          _fineRow('6864bd8b436464e2...', '253376', '1000000', '', '', '6864bd8b436464...', '', '02.07.2025 10:03:07', 'HOLD', '', '', '', showButtons: true),
+                          _fineRow('6864bd738f558c267...', '253376', '1000000', '', '', '6864bd738f558c...', '', '02.07.2025 10:02:44', 'HOLD', '', '', '', showButtons: true),
+                          _fineRow('6864bd61a249ce96...', '253376', '1000000', '', '', '6864bd61a249ce...', '', '02.07.2025 10:02:26', 'HOLD', '', '', '', showButtons: true),
+                          _fineRow('6864bd564b411f33...', '253376', '1000000', '', '', '6864bd564b411f...', '', '02.07.2025 10:02:14', 'HOLD', '', '', '', showButtons: true),
+                        ],
                       ),
                     ),
                   ],

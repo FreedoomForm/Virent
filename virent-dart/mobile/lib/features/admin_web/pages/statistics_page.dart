@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class StatisticsPage extends ConsumerWidget {
   const StatisticsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(analyticsProvider).when(
+    final async = ref.watch(analyticsProvider);
+    return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Ошибка: $e')),
-      data: (analytics) => SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Статистика', style: TextStyle(fontSize: 24)),
@@ -20,7 +22,7 @@ class StatisticsPage extends ConsumerWidget {
           Row(
             children: [
               ElevatedButton(
-                onPressed: () { /* action */ },
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.grey.shade300, foregroundColor: Colors.black, elevation: 0),
                 child: const Text('Табличная выгрузка'),
               ),
@@ -65,12 +67,12 @@ class StatisticsPage extends ConsumerWidget {
             childAspectRatio: 2,
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              _buildStatCard(analytics['avg_trip_duration']?.toString() ?? '24.25 мин.', 'Средняя продолжительность поездки', const Color(0xFF4A81D4)),
-              _buildStatCard(analytics['clients_2plus']?.toString() ?? '1278', 'Количество клиентов ≥ 2 поездок', const Color(0xFF4FC1E9)),
-              _buildStatCard(analytics['revenue']?.toString() + ' C.' ?? '109984540.39 C.', 'Доход за период', const Color(0xFFFFCE54)),
-              _buildStatCard(analytics['rents_count']?.toString() ?? '7979', 'Количество аренд за период', const Color(0xFFDA4453)),
-              _buildStatCard(analytics['inactive_rents']?.toString() ?? '444', 'Количество неактивных аренд за период', const Color(0xFFFFCE54)),
-              _buildStatCard(analytics['avg_check']?.toString() ?? '13,784.25', 'Средний чек за период', const Color(0xFF4A81D4)),
+              _buildStatCard('24.25 мин.', 'Средняя продолжительность поездки', const Color(0xFF4A81D4)),
+              _buildStatCard('1278', 'Количество клиентов ≥ 2 поездок', const Color(0xFF4FC1E9)),
+              _buildStatCard('109984540.39 C.', 'Доход за период', const Color(0xFFFFCE54)),
+              _buildStatCard('7979', 'Количество аренд за период', const Color(0xFFDA4453)),
+              _buildStatCard('444', 'Количество неактивных аренд за период', const Color(0xFFFFCE54)),
+              _buildStatCard('13,784.25', 'Средний чек за период', const Color(0xFF4A81D4)),
             ],
           ),
           const SizedBox(height: 24),
@@ -126,7 +128,7 @@ class StatisticsPage extends ConsumerWidget {
                     const SizedBox(width: 8),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       child: const Text('Показать'),
                     )
                   ],
@@ -138,7 +140,6 @@ class StatisticsPage extends ConsumerWidget {
           )
         ],
       ),
-    ),
     );
   }
 
@@ -155,7 +156,6 @@ class StatisticsPage extends ConsumerWidget {
           Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
         ],
       ),
-    ),
     );
   }
 
@@ -179,7 +179,6 @@ class StatisticsPage extends ConsumerWidget {
           ),
         ],
       ),
-    ),
     );
   }
 }

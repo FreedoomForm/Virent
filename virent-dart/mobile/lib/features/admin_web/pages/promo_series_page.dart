@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class PromoSeriesPage extends ConsumerWidget {
   const PromoSeriesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(promoSeriesProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +34,7 @@ class PromoSeriesPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить Серия промокодов', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -76,12 +81,13 @@ class PromoSeriesPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  ref.watch(promoSeriesProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text("Ошибка: $e")),
-                    data: (items) => ListView(
-                      children: items.map((item) => _seriesRowFromItem(item)).toList(),
-                    ),
+                  child: ListView(
+                    children: [
+                      _seriesRow('5', 'test', true),
+                      _seriesRow('6', '1306', true),
+                      _seriesRow('7', '1 сентября', true),
+                      _seriesRow('8', 'OCTOBER', true),
+                    ],
                   ),
                 ),
               ],
@@ -126,14 +132,4 @@ class PromoSeriesPage extends ConsumerWidget {
       ),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _seriesRowFromItem(Map<String, dynamic> item) {
-    return _seriesRow(
-      item['id']?.toString() ?? '',
-      item['name']?.toString() ?? '',
-      item['isActive']?.toString() ?? '',
-    );
-  }
-
 }

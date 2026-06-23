@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class SmsLogsPage extends ConsumerWidget {
   const SmsLogsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
+    final async = ref.watch(smsLogsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,44 +41,32 @@ class SmsLogsPage extends ConsumerWidget {
           const SizedBox(height: 16),
           // Table mockup
           Expanded(
-            child: ref.watch(smsLogsProvider).when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('Ошибка: $e')),
-              data: (items) => Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
-                elevation: 0,
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
+              elevation: 0,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
                 child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SingleChildScrollView(
-                    child: DataTable(
-                      headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                      columns: const [
-                        DataColumn(label: Text('Id')),
-                        DataColumn(label: Text('Phone')),
-                        DataColumn(label: Text('Sms code')),
-                        DataColumn(label: Text('Sms try count')),
-                        DataColumn(label: Text('Sms try count all')),
-                        DataColumn(label: Text('Sms try login')),
-                        DataColumn(label: Text('Create time')),
-                        DataColumn(label: Text('Sms last attempt')),
-                        DataColumn(label: Text('Check key')),
-                        DataColumn(label: Text('Действия')),
-                      ],
-                      rows: items.isEmpty
-                        ? [const DataRow(cells: [
-                            DataCell(Text('Нет данных')),
-                            DataCell(Text('')),
-                            DataCell(Text('')),
-                            DataCell(Text('')),
-                            DataCell(Text('')),
-                            DataCell(Text('')),
-                            DataCell(Text('')),
-                            DataCell(Text('')),
-                            DataCell(Text('')),
-                            DataCell(Text('')),
-                          ])]
-                        : items.map((item) => _buildRowFromItem(item)).toList(),
-                    ),
+                  child: DataTable(
+                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                    columns: const [
+                      DataColumn(label: Text('Id')),
+                      DataColumn(label: Text('Phone')),
+                      DataColumn(label: Text('Sms code')),
+                      DataColumn(label: Text('Sms try count')),
+                      DataColumn(label: Text('Sms try count all')),
+                      DataColumn(label: Text('Sms try login')),
+                      DataColumn(label: Text('Create time')),
+                      DataColumn(label: Text('Sms last attempt')),
+                      DataColumn(label: Text('Check key')),
+                      DataColumn(label: Text('Действия')),
+                    ],
+                    rows: [
+                      _buildRow('314775', '998908702320', '610059', '0', '1', '0', '19 июн 2026, 05:26', '19 июн 2026, 05:26', '1061a39ae23cd...'),
+                      _buildRow('314766', '998930649249', '527592', '0', '1', '0', '19 июн 2026, 03:34', '19 июн 2026, 03:34', 'e665c59a29f9c...'),
+                      _buildRow('314751', '998971200200', '192542', '0', '1', '0', '19 июн 2026, 00:25', '19 июн 2026, 00:25', '9dfb684d89335...'),
+                      _buildRow('314749', '998991035152', '321778', '0', '1', '0', '19 июн 2026, 00:23', '19 июн 2026, 00:23', '8c0270e39ccdf...'),
+                    ],
                   ),
                 ),
               ),
@@ -81,21 +74,6 @@ class SmsLogsPage extends ConsumerWidget {
           )
         ],
       ),
-    );
-  }
-
-  /// Dynamic SMS log row from provider item.
-  DataRow _buildRowFromItem(Map<String, dynamic> item) {
-    return _buildRow(
-      item['id']?.toString() ?? '',
-      item['phone']?.toString() ?? '',
-      item['sms_code']?.toString() ?? '',
-      item['sms_try_count']?.toString() ?? '',
-      item['sms_try_count_all']?.toString() ?? '',
-      item['sms_try_login']?.toString() ?? '',
-      item['create_time']?.toString() ?? '',
-      item['sms_last_attempt']?.toString() ?? '',
-      item['check_key']?.toString() ?? '',
     );
   }
 
@@ -112,8 +90,8 @@ class SmsLogsPage extends ConsumerWidget {
       DataCell(Text(key)),
       DataCell(Row(
         children: [
-          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
-          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
         ],
       )),
     ]);

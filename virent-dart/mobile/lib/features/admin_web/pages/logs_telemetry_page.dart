@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class LogsTelemetryPage extends ConsumerWidget {
   const LogsTelemetryPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(logsTelemetryProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,12 +115,24 @@ class LogsTelemetryPage extends ConsumerWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      ref.watch(logsTelemetryProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text("Ошибка: $e")),
-                        data: (items) => ListView(
-                          children: items.map((item) => _telemetryRowFromItem(item)).toList(),
-                        ),
+                      child: ListView(
+                        children: [
+                          _telemetryRow('Sf4e354BotTmlSvbq-Rf', '1724', '05718', '35.00', '0000000000000000000', '0', '', true, true, true, true, false, '65 %', '0 км/ч', '31 %', '22 sat', '51,113 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow('SP4e354BotTmlSvbq-RT', '926', '050135', '26.50', '0000000000000000000', '0', '', true, false, true, true, false, '54 %', '0 км/ч', '31 %', 'sat', '52,951 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow('Rv4e354BotTmlSvbq-Q9', '834', '050045', '15.50', '0000000000000000000', '0', '', true, false, true, false, false, '27 %', '4 км/ч', '27 %', 'sat', '47,868 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow('Rf4e354BotTmlSvbq-Qy', '839', '050050', '25.00', '0000000000000000000', '0', '', true, true, true, true, false, '50 %', '0 км/ч', '31 %', 'sat', '51,295 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow('RP4e354BotTmlSvbq-Qm', '865', '050075', '12.50', '0000000000000000000', '0', '', true, false, true, true, false, '88 %', '2 км/ч', '31 %', 'sat', '53,818 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow('Q_4e354BotTmlSvbq-Qb', '1769', '05763', '24.00', '0000000000000000000', '0', '', true, true, true, true, false, '45 %', '0 км/ч', '25 %', '23 sat', '47,795 V', '4 V', '19 июн 2026, 14:03:09', '19 июн 2026, 14:03:09'),
+                          _telemetryRow('Qv4e354BotTmlSvbq-QH', '790', '050002', '22.00', '0000000000000000000', '0', '', true, false, true, true, false, '44 %', '0 км/ч', '31 %', 'sat', '47,898 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow('Qf4e354BotTmlSvbqOSd', '815', '050027', '35.50', '0000000000000000000', '0', '', true, false, true, true, false, '70 %', '0 км/ч', '25 %', 'sat', '50,731 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:08'),
+                          _telemetryRow('QP4e354BotTmlSvbqOSC', '913', '050122', '27.50', '0000000000000000004', '0', '', true, true, true, false, false, '55 %', '0 км/ч', '19 %', 'sat', '49,044 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                          _telemetryRow('P_4e354BotTmlSvbq0Rk', '813', '050025', '24.00', '0000000000000000000', '0', '', true, true, true, true, false, '46 %', '0 км/ч', '31 %', 'sat', '51,348 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                          _telemetryRow('Pv4e354BotTmlSvbq0Rk', '844', '050055', '31.00', '0000000000000000000', '0', '', true, true, true, true, false, '61 %', '0 км/ч', '26 %', 'sat', '50,547 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                          _telemetryRow('Pf4e354BotTmlSvbqOQu', '1711', '05705', '49.50', '0000000000000000000', '0', '', true, true, true, true, false, '90 %', '0 км/ч', '29 %', '23 sat', '53,200 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                          _telemetryRow('PP4e354BotTmlSvbqOQQ', '800', '050012', '33.50', '0000000000000000000', '0', '', true, false, true, false, false, '55 %', '0 км/ч', '30 %', 'sat', '49,152 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                          _telemetryRow('O_4e354BotTmlSvbp-Ty', '1791', '05785', '34.50', '0000000000000000000', '0', '', true, true, true, false, true, '69 %', '0 км/ч', '17 %', '22 sat', '50,771 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:06'),
+                          _telemetryRow('Ov4e354BotTmlSvbp-TT', '922', '050131', '33.00', '0000000000000000000', '0', '', true, false, true, true, false, '61 %', '0 км/ч', '29 %', 'sat', '49,895 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                        ],
                       ),
                     ),
                   ],
@@ -216,31 +233,4 @@ class LogsTelemetryPage extends ConsumerWidget {
       ],
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _telemetryRowFromItem(Map<String, dynamic> item) {
-    return _telemetryRow(
-      item['id']?.toString() ?? '',
-      item['carId']?.toString() ?? '',
-      item['gosnomer']?.toString() ?? '',
-      item['mileage']?.toString() ?? '',
-      item['ecuErr']?.toString() ?? '',
-      item['ecuErrType']?.toString() ?? '',
-      item['orderId']?.toString() ?? '',
-      item['icon1']?.toString() ?? '',
-      item['icon2']?.toString() ?? '',
-      item['icon3']?.toString() ?? '',
-      item['icon4']?.toString() ?? '',
-      item['isMotion']?.toString() ?? '',
-      item['val1']?.toString() ?? '',
-      item['val2']?.toString() ?? '',
-      item['val3']?.toString() ?? '',
-      item['val4']?.toString() ?? '',
-      item['val5']?.toString() ?? '',
-      item['val6']?.toString() ?? '',
-      item['eventTime']?.toString() ?? '',
-      item['serverTime']?.toString() ?? '',
-    );
-  }
-
 }

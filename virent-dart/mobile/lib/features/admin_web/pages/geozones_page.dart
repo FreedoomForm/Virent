@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class GeozonesPage extends ConsumerWidget {
   const GeozonesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(zonesListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +34,7 @@ class GeozonesPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить геозону', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -113,12 +118,13 @@ class GeozonesPage extends ConsumerWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      ref.watch(zonesListProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text("Ошибка: $e")),
-                        data: (items) => ListView(
-                          children: items.map((item) => _geozoneRowFromItem(item)).toList(),
-                        ),
+                      child: ListView(
+                        children: [
+                          _geozoneRow('1', 'Main (0)', '#cc62dc', '#1bffca', '-', '30 %', '30 %', 'unlockWheel,switchDriveModeSport', '0', true, false, false),
+                          _geozoneRow('10', 'Donute test geozone (0)', '#e82f17', '#7a3a00', '-', '75 %', '90 %', 'switchDriveModeEco,switchDriveModeSport', '0', true, false, false),
+                          _geozoneRow('420', 'ЗИ ТАШКЕНТ НОВАЯ (1)', '#16FF17', '#ED0505', 'Города (ЗИ)', '50 %', '100 %', 'speedModeOn,switchDriveModeSport,setSpee[...]', '0', true, false, false),
+                          _geozoneRow('466', 'SAMARKAND (1)', '#00EB27', '#00EB27', 'Города (ЗИ)', '1 %', '100 %', 'speedModeOn,switchDriveModeSport,setSpee[...]', '0', true, false, false),
+                        ],
                       ),
                     ),
                   ],
@@ -243,23 +249,4 @@ class GeozonesPage extends ConsumerWidget {
     
     return Icon(icon, size: 16, color: color);
   }
-
-  /// Builds a row from provider data item.
-  Widget _geozoneRowFromItem(Map<String, dynamic> item) {
-    return _geozoneRow(
-      item['id']?.toString() ?? '',
-      item['name']?.toString() ?? '',
-      item['fill']?.toString() ?? '',
-      item['stroke']?.toString() ?? '',
-      item['groups']?.toString() ?? '',
-      item['opFill']?.toString() ?? '',
-      item['opStroke']?.toString() ?? '',
-      item['cmds']?.toString() ?? '',
-      item['minScooters']?.toString() ?? '',
-      item['rUsed']?.toString() ?? '',
-      item['reqPark']?.toString() ?? '',
-      item['disPark']?.toString() ?? '',
-    );
-  }
-
 }

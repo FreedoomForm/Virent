@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class LogsClientChangesPage extends ConsumerWidget {
   const LogsClientChangesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(logsClientChangesProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,16 +81,23 @@ class LogsClientChangesPage extends ConsumerWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      child: ref.watch(logsClientChangesProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text('Ошибка: $e')),
-                        data: (items) => items.isEmpty
-                          ? const Center(child: Text('Нет данных', style: TextStyle(color: Colors.grey)))
-                          : ListView(
-                              children: items.map((item) => _clientLogFromItem(item)).toList(),
-                            ),
-                      ),
-                    ),                        ],
+                      child: ListView(
+                        children: [
+                          _clientLog('e_2z3p4BotTmlSvbfvj0', '170471', '', 'RjiEvtF83T1ipoJptFarmCPED1c7oONoEx0j8K6f[...]', '380,700', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 12:06'),
+                          _clientLog('cf2x3p4BotTmlSvbKvM9', '170471', '', 'RjiEvtF83T1ipoJptFarmCPED1c7oONoEx0j8K6f[...]', '706,500', '', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 12:03'),
+                          _clientLog('a_4f354BotTmlSvbkuYU', '296601', '[21,24,34,40,41,42]', 'qxVW1H9t9cLvqEuhDePnEmasshQxF0SSp0U8vOcq[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 09:04'),
+                          _clientLog('i_4e354BotTmlSvbyeSS', '157056', '[21,24,34]', 'Em9844NqzUzJz8kOklCmniMHIV5RzwpRukJXWvb[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 09:03'),
+                          _clientLog('NP4e354BotTmlSvbpuR0', '296601', '[21,24,34,40,41,42]', 'qxVW1H9t9cLvqEuhDePnEmasshQxF0SSp0U8vOcq[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 09:03'),
+                          _clientLog('tf4d354BotTmlSvb-eKP', '249529', '[18,21,22,24,34,39]', 'O5Plkj4D5nzMWKG3UENfLANyBV9MuND9pYicXl0O[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 09:02'),
+                          _clientLog('hv4c354BotTmlSvbmt_k', '248798', '[18,21,22,24,34,39]', 'vsWi4YfGdDhHqLJiqnzSr7MdynC1lH5uLEqwbWO[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 09:00'),
+                          _clientLog('lP4c354BotTmlSvbv_v', '232400', '[21,24,34,40,41,42]', '8NdliBtgAxyMNQcHnuKl8TTUddbsZrdURl7TA2a[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 09:00'),
+                          _clientLog('ZP4a354BotTmlSvbBNnX', '232400', '[21,24,34,40,41,42]', '8NdliBtgAxyMNQcHnuKl8TTUddbsZrdURl7TA2a[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 08:58'),
+                          _clientLog('N_4Z354BotTmlSvibhg9', '240529', '[21,24,34,40,41,42]', '5ol04GFvHEz7SKVbB7NfT1btnLuiQmzUXSSsPofs[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 08:57'),
+                          _clientLog('Hv4Z354BotTmlSvbfNg_J', '249529', '[18,21,22,24,34,39]', 'O5Plkj4D5nzMWKG3UENfLANyBV9MuND9pYicXl0O[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 08:57'),
+                          _clientLog('_v4Z354BotTmlSvbbtf4', '258151', '', '0ofiUSh06P8Wa7R9svsdqslpxS5Ac9bcGWsvVM[...]', '0', '', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 08:57'),
+                          _clientLog('Jv4Z354BotTmlSvbHdcW', '249529', '[18,21,22,24,34,39]', 'O5Plkj4D5nzMWKG3UENfLANyBV9MuND9pYicXl0O[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 08:57'),
+                          _clientLog('lf4Y354BotTmlSvbD9Uc', '249529', '[18,21,22,24,34,39]', 'O5Plkj4D5nzMWKG3UENfLANyBV9MuND9pYicXl0O[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 08:56'),
+                        ],
                       ),
                     ),
                   ],
@@ -143,22 +155,4 @@ class LogsClientChangesPage extends ConsumerWidget {
       ],
     );
   }
-
-  /// Dynamic row builder for client change logs.
-  Widget _clientLogFromItem(Map<String, dynamic> item) {
-    return _clientLog(
-      item['id']?.toString() ?? '',
-      item['client_id']?.toString() ?? '',
-      item['tariffs']?.toString() ?? '',
-      item['token']?.toString() ?? '',
-      item['bonus']?.toString() ?? '',
-      item['groups']?.toString() ?? '',
-      item['is_active']?.toString() ?? '',
-      item['is_blocked']?.toString() ?? '',
-      item['is_deleted']?.toString() ?? '',
-      item['is_new']?.toString() ?? '',
-      item['created_at']?.toString() ?? '',
-    );
-  }
-
 }

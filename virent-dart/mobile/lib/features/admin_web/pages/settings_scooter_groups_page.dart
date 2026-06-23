@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class SettingsScooterGroupsPage extends ConsumerWidget {
   const SettingsScooterGroupsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
+    final async = ref.watch(settingsScooterGroupsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,24 +40,15 @@ class SettingsScooterGroupsPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () { /* action */ },
+            onPressed: () {},
             icon: const Icon(Icons.add, size: 16),
             label: const Text('Добавить entry'),
             style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
           ),
           const SizedBox(height: 16),
           Expanded(
-            ref.watch(settingsScooterGroupsProvider).when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('Ошибка: $e')),
-              data: (items) {
-                if (items.isEmpty) {
-                  return const Center(child: Text('Нет данных', style: TextStyle(color: Colors.grey)));
-                }
-                return Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300));
-              },
-            ),
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
               elevation: 0,
               child: ListView(
                 children: [
@@ -64,7 +60,16 @@ class SettingsScooterGroupsPage extends ConsumerWidget {
                       DataColumn(label: Text('Trigger equation')),
                       DataColumn(label: Text('Действия')),
                     ],
-                    rows: items.map((item) => _buildRowFromItem(item)).toList(),,
+                    rows: [
+                      _buildRow('0', 'на линии', ''),
+                      _buildRow('1', 'на складе', ''),
+                      _buildRow('7', 'в техничке', ''),
+                      _buildRow('13', 'в поломке', ''),
+                      _buildRow('14', 'Демо', ''),
+                      _buildRow('17', 'Самарканд', ''),
+                      _buildRow('22', 'Заряд > 50', 'fuel > 50'),
+                      _buildRow('23', 'Заряд > 65', 'fuel > 65'),
+                    ],
                   ),
                 ],
               ),
@@ -82,21 +87,11 @@ class SettingsScooterGroupsPage extends ConsumerWidget {
       DataCell(Text(eq)),
       DataCell(Row(
         children: [
-          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
-          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
-          TextButton.icon(onPressed: () { /* action */ }, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
         ],
       )),
     ]);
   }
-
-  /// Builds a table row from dynamic data item.
-  DataRow _buildRowFromItem(Map<String, dynamic> item) {
-    return _buildRow(
-      item['id']?.toString() ?? '',
-      item['desc']?.toString() ?? '',
-      item['eq']?.toString() ?? '',
-    );
-  }
-
 }

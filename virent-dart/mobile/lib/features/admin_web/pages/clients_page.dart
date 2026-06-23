@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class ClientsPage extends ConsumerWidget {
   const ClientsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(customersListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,7 +32,7 @@ class ClientsPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 ElevatedButton.icon(
-                  onPressed: () { /* action */ },
+                  onPressed: () {},
                   icon: const Icon(Icons.add, size: 14),
                   label: const Text('Добавить Клиента'),
                   style: ElevatedButton.styleFrom(
@@ -106,12 +111,24 @@ class ClientsPage extends ConsumerWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      ref.watch(customersListProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text("Ошибка: $e")),
-                        data: (items) => ListView(
-                          children: items.map((item) => _clientRowFromItem(item)).toList(),
-                        ),
+                      child: ListView(
+                        children: [
+                          _clientRow('152819', '998977033902', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow('153261', '998333808037', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow('153281', '998947993529', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow('153913', '998901057905', 'Full name', '0.00 С.', true, false, 'ошибка не бл...'),
+                          _clientRow('154103', '998991271343', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow('154237', '998907252522', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow('154464', '998997316906', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow('154495', '998900173291', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow('154545', '#998903566044', 'Full name', '0.00 С.', true, false, 'Клиент удалё...'),
+                          _clientRow('154571', '998949995888', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow('154590', '998933404509', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow('154595', '998900970013', 'Full name', '0.00 С.', true, false, ''),
+                          _clientRow('155097', '998979298338', 'Full name', '0.00 С.', true, false, 'не трогайте'),
+                          _clientRow('155191', '998942591700', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow('155218', '998904794872', 'Full name', '0.00 С.', true, false, 'ошибка когда'),
+                        ],
                       ),
                     ),
                   ],
@@ -201,18 +218,4 @@ class ClientsPage extends ConsumerWidget {
       child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _clientRowFromItem(Map<String, dynamic> item) {
-    return _clientRow(
-      item['id']?.toString() ?? '',
-      item['phone']?.toString() ?? '',
-      item['data']?.toString() ?? '',
-      item['debt']?.toString() ?? '',
-      item['active']?.toString() ?? '',
-      item['blocked']?.toString() ?? '',
-      item['comment']?.toString() ?? '',
-    );
-  }
-
 }

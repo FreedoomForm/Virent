@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class InspectionDamagesPage extends ConsumerWidget {
   const InspectionDamagesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(inspectionDamagesProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,12 +92,16 @@ class InspectionDamagesPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  ref.watch(inspectionDamagesProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text("Ошибка: $e")),
-                    data: (items) => ListView(
-                      children: items.map((item) => _damageRowFromItem(item)).toList(),
-                    ),
+                  child: ListView(
+                    children: [
+                      _damageRow('05-792', '76919[...]', 'Завершение'),
+                      _damageRow('05-742', '76920[...]', 'Завершение'),
+                      _damageRow('05-0114', '76919[...]', 'Завершение'),
+                      _damageRow('05-0090', '76919[...]', 'Завершение'),
+                      _damageRow('05-714', '76919[...]', 'Завершение'),
+                      _damageRow('05-0174', '76918[...]', 'Завершение'),
+                      _damageRow('05-0002', '76919[...]', 'Завершение'),
+                    ],
                   ),
                 ),
               ],
@@ -174,14 +183,4 @@ class InspectionDamagesPage extends ConsumerWidget {
       child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _damageRowFromItem(Map<String, dynamic> item) {
-    return _damageRow(
-      item['car']?.toString() ?? '',
-      item['order']?.toString() ?? '',
-      item['type']?.toString() ?? '',
-    );
-  }
-
 }

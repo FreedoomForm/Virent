@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class TechniciansPage extends ConsumerWidget {
   const TechniciansPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(techniciansListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +34,7 @@ class TechniciansPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить техник', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -90,12 +95,26 @@ class TechniciansPage extends ConsumerWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      ref.watch(techniciansListProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text("Ошибка: $e")),
-                        data: (items) => ListView(
-                          children: items.map((item) => _techRowFromItem(item)).toList(),
-                        ),
+                      child: ListView(
+                        children: [
+                          _techRow('18', 'Максим Егорович', 'egor@gmail.com', '', 'egor@gmail.com:M210iK9AG13', 'Uc2onzAwc4vgRNuettopFCFg4EW5iAm3COvmybo3', '', '', '\$2y\$10\$LABLEG6WCc4uVKvcnXenXN6cFTJ3dqS2[...]', '17'),
+                          _techRow('22', 'viktor2', 'viktor2', 'ViRent, ИП Асилбеков Шерзод, Virent Motv[...]', 'viktor2:iPhone16,2', '6AnSAGcD2STUPtcenoXKdvwdcj1LbwuAGVpzCFBb7', '["lock_and_unlock","open_akb","change_ca[...]', '1', '\$2y\$10\$EeEILIL3T7XdxmpMzVqCgyKxNTDwQLdf[...]', '17'),
+                          _techRow('23', 'Egor', 'eGor', 'ViRent, ИП Асилбеков Шерзод, Virent Motv[...]', '', '', '["lock_and_unlock","open_akb","change_ca[...]', '1', '\$2y\$10\$EGLFfAyuSD6ZpzVbyRpd2S3uvXUWzyS[...]', '17'),
+                          _techRow('29', 'aplle', 'apiie@check', 'ViRent, ИП Асилбеков Шерзод, Virent Motv[...]', 'apiie@check:iPad17,4,1', 'MqgpQWXbQXKfj8UVU2EZpZHavJOtoVZVB9CHQyyxB8', '', '0', '\$2y\$10\$Ua4R8LxkKXQEkfmEmwixL22FHgKDDpkm[...]', '17'),
+                          _techRow('30', 'google', 'google@check', 'ViRent, ИП Асилбеков Шерзод, Virent Motv[...]', 'google@check:iPhone17,5,1', '4FAPolUNGpN9EQmdGUBRQyHlbVHxM32lYlq63Rt', '', '0', '\$2y\$10\$uYRwXJ89EvqA6oJt5ti6rKcOUq1AfcB9x[...]', '17'),
+                          _techRow('34', 'Шерзод Асилбеков', 'sher700@gmail.com', 'ИП Асилбеков Шерзод, ИП Асилбекова Нигор[...]', 'sher700@gmail.com:2201116PG13', 'A7q9ty7C8xysOdEue3DZTWoeh5R6SKMlwqEqkiSppJ', '["lock_and_unlock","open_akb","change_ca[...]', '0', '\$2y\$10\$s4lDAsUgGg20Ufzn1OBdDOQHdUXtKxkPI[...]', ''),
+                          _techRow('228', 'TAS-Дмитрий Велесик', 'dima@gmail.com', 'VV-LAND', 'dima@gmail.com:iPhone17,6,1', '6gcrR2Z1t1SPnb2ZlCc2GQMOMKR8PIRqdHB1GMGYfF', '["lock_and_unlock","open_akb","change_ca[...]', '0', '\$2y\$10\$sSUGdZElVKTIsWwmRVvrOd1E7AfcB9x[...]', ''),
+                          _techRow('264', 'Ш', 'b@gmail.com', 'ИП Асилбеков Шерзод, ИП Асилбекова Нигор[...]', 'b@gmail.com:2201116PG13', 'AFSnyBa9E4TqhLOFoNwwqC0N3GCxQuZZwDWxX3LmdV', '["lock_and_unlock","open_akb","change_ca[...]', '1', '\$2y\$10\$CaKZWeccj3td2pf99/pXhCOxsqMtKXdk[...]', '1'),
+                          _techRow('312', 'Ильдар техник', 'i@gmail.com', 'ViRent, Virent Motion Samarqand, VV-LAND', 'i@gmail.com:2203129G14', 'Dk5NjFhtboKTWZwNZ0mSrHDS3H3vJ4aliyWgqkyWHpe', '["lock_and_unlock","open_akb","change_ca[...]', '0', '\$2y\$10\$8AxiKxgki8j3ss2OxoOMmzYH9BzKq[...]', ''),
+                          _techRow('331', 'EVG TECH 1', 'akbopen@gmail.com', 'ИП Асилбеков Шерзод, ИП Асилбекова Нигор[...]', 'akbopen@gmail.com:W-V7710', 'IGOiJ5fOLh1JEle1PqQVrsRVrnxZWxSQ75eZWb', '["open_akb"]', '0', '\$2y\$10\$DVVKXWoSGEwl7O8GSD4VuS/SDfaAwt[...]', ''),
+                          _techRow('332', 'Михаил', 'mihail@gmai.com', 'ИП Асилбеков Шерзод, ИП Асилбекова Нигор[...]', 'mihail@gmai.com:SM-G988N13', 'DsE8ztX8fG0be2ZnCHIDf7twVa5eAAvkigjj6vLbu', '["lock_and_unlock","open_akb","change_ca[...]', '0', '\$2y\$10\$JWMF/yvjIVyv4rBMyMneFyevykWWEK2v[...]', ''),
+                          _techRow('336', 'Наталья Борисенко', 'admnb', 'ИП Асилбеков Шерзод, VV-LAND, ИП Асилбек[...]', 'admnb:iPhone18,7', 'Bmkx4GZNgrzzAumMyvwHcSckk7Sq4BjkVDLRYy', '["lock_and_unlock","open_akb","change_ca[...]', '1', '\$2y\$10\$QkCAZQqd8CrcffS3gECO6vIXWvLhJj9[...]', ''),
+                          _techRow('338', 'Озод Раматбоев', 'ozodramatboev@gmail.com', 'ИП Асилбеков Шерзод, ИП Асилбекова Нигор[...]', 'ozodramatboev@gmail.com:SM-A515F13', 'AVDCsfvMv7fECgjrxQHcoEocvp2TRJO2mw8dUAISSmA', '["open_akb"]', '0', '\$2y\$10\$WQS19MQRtUQh5SWRH4n5zOxAnxRtu3bb[...]', ''),
+                          _techRow('340', 'Техник 1 нов', 'tchnw1@gmail.com', 'ИП Асилбеков Шерзод, ИП Асилбекова Нигор[...]', 'tchnw1@gmail.com:220101316UG14', 'wPBsQtVl3RM1jeKnyzEuN11xJISafRnxN5oClsviD', '["open_akb"]', '0', '\$2y\$10\$SFgWtIVx1mN9UugRrxQfbXvAljQqXIL[...]', ''),
+                          _techRow('341', 'Евгений', 'evgwhite@gmail.com', 'ИП Асилбеков Шерзод, ИП Асилбекова Нигор[...]', 'evgwhite@gmail.com:25078PCG3EG15', '1pHXLQpL2RQalxa5E9mRhU_19bEuEUyU1XLlBj3', '["open_akb"]', '0', '\$2y\$10\$q1hR5hrGfDYKZZa7gAjw8TQfCrjL[...]', ''),
+                          _techRow('343', 'Ночник', 'noch@gmail.com', 'ИП Асилбеков Шерзод, ИП Асилбекова Нигор[...]', 'noch@gmail.com:23049RAD8C15', 'jsCSKFzjtlHYt8DBuBRADmp8UU1FByj6VQ2lzHiv4', '["open_akb"]', '0', '\$2y\$10\$cZ2M2hR7gaA7ioNO0yEua6qDp6MD[...]', ''),
+                          _techRow('345', 'Ночь Акб', 'akbnight@gmail.com', 'ИП Асилбеков Шерзод', 'amn_noch@gmail.com:RNX394115', 'dxkqPkAFewhHLUUeHU2LQq2GjWNYJmXfTWYjXPsJ', '["open_akb"]', '0', '\$2y\$10\$H01u2zZk0gEZ2fillQsZqTQ2wutMweM[...]', ''),
+                        ],
                       ),
                     ),
                   ],
@@ -140,21 +159,4 @@ class TechniciansPage extends ConsumerWidget {
       ),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _techRowFromItem(Map<String, dynamic> item) {
-    return _techRow(
-      item['id']?.toString() ?? '',
-      item['name']?.toString() ?? '',
-      item['login']?.toString() ?? '',
-      item['companies']?.toString() ?? '',
-      item['techKey']?.toString() ?? '',
-      item['apiToken']?.toString() ?? '',
-      item['permissions']?.toString() ?? '',
-      item['admin']?.toString() ?? '',
-      item['pass']?.toString() ?? '',
-      item['curComp']?.toString() ?? '',
-    );
-  }
-
 }

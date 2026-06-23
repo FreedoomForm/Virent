@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class AdminCompaniesPage extends ConsumerWidget {
   const AdminCompaniesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(adminCompaniesProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +34,7 @@ class AdminCompaniesPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить company', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -79,12 +84,16 @@ class AdminCompaniesPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  ref.watch(adminCompaniesProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text("Ошибка: $e")),
-                    data: (items) => ListView(
-                      children: items.map((item) => _companyRowFromItem(item)).toList(),
-                    ),
+                  child: ListView(
+                    children: [
+                      _companyRow('12', 'ViRent', '1002'),
+                      _companyRow('16', 'ИП Асилбеков Шерзод', '1746'),
+                      _companyRow('18', 'Virent Motion Samarqand', '1295'),
+                      _companyRow('19', 'VV-LAND', '1409'),
+                      _companyRow('22', 'ИП Асилбекова Нигора', ''),
+                      _companyRow('23', 'ИП Раматбоев Озод', ''),
+                      _companyRow('24', 'ИП Руфатова Зухра', ''),
+                    ],
                   ),
                 ),
                 const Divider(height: 1),
@@ -135,14 +144,4 @@ class AdminCompaniesPage extends ConsumerWidget {
       ),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _companyRowFromItem(Map<String, dynamic> item) {
-    return _companyRow(
-      item['id']?.toString() ?? '',
-      item['name']?.toString() ?? '',
-      item['cpPub']?.toString() ?? '',
-    );
-  }
-
 }

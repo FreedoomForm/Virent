@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class ModelsPage extends ConsumerWidget {
   const ModelsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(scootersListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +34,7 @@ class ModelsPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -82,12 +87,13 @@ class ModelsPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  ref.watch(scootersListProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text("Ошибка: $e")),
-                    data: (items) => ListView(
-                      children: items.map((item) => _modelRowFromItem(item)).toList(),
-                    ),
+                  child: ListView(
+                    children: [
+                      _modelRow('1', true, 'api/modelImage/', 'Ninebot', 'MAX', ''),
+                      _modelRow('3', true, 'api/modelImage/', 'Ninebot', 'MAX', ''),
+                      _modelRow('7', true, 'api/modelImage/', 'OKAI', 'ES400a', ''),
+                      _modelRow('10', true, 'api/modelImage/', 'OKAI', 'ES600', '2,156'),
+                    ],
                   ),
                 ),
                 const Divider(height: 1),
@@ -151,17 +157,4 @@ class ModelsPage extends ConsumerWidget {
       ),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _modelRowFromItem(Map<String, dynamic> item) {
-    return _modelRow(
-      item['id']?.toString() ?? '',
-      item['isPublic']?.toString() ?? '',
-      item['image']?.toString() ?? '',
-      item['brand']?.toString() ?? '',
-      item['model']?.toString() ?? '',
-      item['deviceType']?.toString() ?? '',
-    );
-  }
-
 }

@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class TarirovPage extends ConsumerWidget {
   const TarirovPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(tariffsListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +34,7 @@ class TarirovPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -80,34 +85,28 @@ class TarirovPage extends ConsumerWidget {
                   ),
                 ),
                 const Divider(height: 1),
-                Expanded(
-                  child: ref.watch(tariffsListProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text('Ошибка: $e')),
-                    data: (items) => items.isEmpty
-                      ? const Center(child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)))
-                      : ListView.builder(
-                          itemCount: items.length,
-                          itemBuilder: (context, i) {
-                            final item = items[i];
-                            return Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 100, child: Text(item['id']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                  Expanded(child: Text(item['json']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                  Expanded(child: Text(item['volume']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                  Expanded(child: Text(item['cruising_range']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                  Expanded(child: Text(item['cruising_time']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                  const SizedBox(width: 200),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 24),
+                  child: const Center(
+                    child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)),
                   ),
                 ),
+                const Divider(height: 1),
+                Container(
+                  color: const Color(0xFFF8F9FA),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: const Row(
+                    children: [
+                      SizedBox(width: 100, child: Text('Id', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Json', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Volume', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Cruising range', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      Expanded(child: Text('Cruising time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                      SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1),
               ],
             ),
           ),

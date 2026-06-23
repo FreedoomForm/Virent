@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class BillingInvoicesPage extends ConsumerWidget {
   const BillingInvoicesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(billingReceiptsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +59,7 @@ class BillingInvoicesPage extends ConsumerWidget {
                     _labeledInput('columns.redis_token', 140),
                     const SizedBox(width: 8),
                     OutlinedButton(
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         textStyle: const TextStyle(fontSize: 11),
@@ -101,12 +106,14 @@ class BillingInvoicesPage extends ConsumerWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      ref.watch(billingReceiptsProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text("Ошибка: $e")),
-                        data: (items) => ListView(
-                          children: items.map((item) => _invoiceRowFromItem(item)).toList(),
-                        ),
+                      child: ListView(
+                        children: [
+                          _invoiceRow('6a3503bf7aa...', '2331349', '16', 'myuzcard', '769199', '117850', '234807', '17964243480...', 'confirmed', '19 июн, 13:55', '', 'money', '55916531', '', '', 'OK', true, true),
+                          _invoiceRow('6a3503ef16f8...', '2331348', '16', 'myuzcard', '769202', '500000', '248798', '17202424879...', 'HOLD', '19 июн, 13:55', '', 'money', '55916523', '', '', '', false, false),
+                          _invoiceRow('6a3503bd7aa...', '2331347', '16', 'myuzcard', '769199', '500000', '234807', '17964243480...', 'cancelled', '19 июн, 13:54', '', 'money', '55916504', '', '', '', false, false),
+                          _invoiceRow('6a3503bd7aa...', '', '16', '', '769199', '500000', '234807', '17964243480...', 'not enough bonus', '19 июн, 13:54', '', 'bonus', '', '', '', '', false, false),
+                          _invoiceRow('6a35037653b...', '2331346', '16', 'myuzcard', '769201', '500000', '224449', '17252424444...', 'HOLD', '19 июн, 13:53', '', 'money', '55916461', '', '', '', false, false),
+                        ],
                       ),
                     ),
                   ],
@@ -197,29 +204,4 @@ class BillingInvoicesPage extends ConsumerWidget {
       ],
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _invoiceRowFromItem(Map<String, dynamic> item) {
-    return _invoiceRow(
-      item['id']?.toString() ?? '',
-      item['hold']?.toString() ?? '',
-      item['company']?.toString() ?? '',
-      item['operator']?.toString() ?? '',
-      item['order']?.toString() ?? '',
-      item['amount']?.toString() ?? '',
-      item['client']?.toString() ?? '',
-      item['redis']?.toString() ?? '',
-      item['status']?.toString() ?? '',
-      item['created']?.toString() ?? '',
-      item['resultCode']?.toString() ?? '',
-      item['type']?.toString() ?? '',
-      item['trans']?.toString() ?? '',
-      item['uzcard']?.toString() ?? '',
-      item['cardPan']?.toString() ?? '',
-      item['codeMsg']?.toString() ?? '',
-      item['showReturn']?.toString() ?? '',
-      item['showCreate']?.toString() ?? '',
-    );
-  }
-
 }

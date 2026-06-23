@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class SettingsConfigPage extends ConsumerWidget {
   const SettingsConfigPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(settingsConfigProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
-      child: ref.watch(settingsConfigProvider).when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Ошибка: $e')),
-        data: (config) => ListView(
+      child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           _buildSectionTitle('Одноразовые SMS коды'),
@@ -118,7 +120,6 @@ class SettingsConfigPage extends ConsumerWidget {
           _buildConfigRow('Maestro', '200'),
         ],
       ),
-      ),
     );
   }
 
@@ -190,7 +191,6 @@ class SettingsConfigPage extends ConsumerWidget {
             ),
           )
         ],
-      ),
       ),
     );
   }

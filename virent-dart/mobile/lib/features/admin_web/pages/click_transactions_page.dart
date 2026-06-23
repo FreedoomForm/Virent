@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class ClickTransactionsPage extends ConsumerWidget {
   const ClickTransactionsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(clickTransactionsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,12 +97,14 @@ class ClickTransactionsPage extends ConsumerWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      ref.watch(clickTransactionsProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text("Ошибка: $e")),
-                        data: (items) => ListView(
-                          children: items.map((item) => _clickRowFromItem(item)).toList(),
-                        ),
+                      child: ListView(
+                        children: [
+                          _clickRow('5', '1378842563', '', '65', '5', '5', '24,900', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-29 12:48:50', '29 мая 2026, 12:48', '29 мая 2026, 12:48'),
+                          _clickRow('4', '1921602807', '', '56', '4', '4', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:32:38', '25 мая 2026, 17:32', '25 мая 2026, 17:32'),
+                          _clickRow('3', '40366171', '', '55', '3', '3', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:30:20', '25 мая 2026, 17:30', '25 мая 2026, 17:30'),
+                          _clickRow('2', '663213541', '', '54', '2', '2', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:18:00', '25 мая 2026, 17:18', '25 мая 2026, 17:18'),
+                          _clickRow('1', '481383948', '', '53', '1', '1', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:17:12', '25 мая 2026, 17:17', '25 мая 2026, 17:17'),
+                        ],
                       ),
                     ),
                   ],
@@ -170,25 +177,4 @@ class ClickTransactionsPage extends ConsumerWidget {
       ],
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _clickRowFromItem(Map<String, dynamic> item) {
-    return _clickRow(
-      item['id']?.toString() ?? '',
-      item['trans']?.toString() ?? '',
-      item['paydoc']?.toString() ?? '',
-      item['merchTrans']?.toString() ?? '',
-      item['merchPrep']?.toString() ?? '',
-      item['merchConf']?.toString() ?? '',
-      item['amount']?.toString() ?? '',
-      item['action']?.toString() ?? '',
-      item['status']?.toString() ?? '',
-      item['error']?.toString() ?? '',
-      item['errorNote']?.toString() ?? '',
-      item['sign']?.toString() ?? '',
-      item['created']?.toString() ?? '',
-      item['updated']?.toString() ?? '',
-    );
-  }
-
 }

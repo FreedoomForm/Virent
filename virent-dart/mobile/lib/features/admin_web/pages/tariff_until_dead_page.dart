@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class TariffUntilDeadPage extends ConsumerWidget {
   const TariffUntilDeadPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(tariffSubscriptionsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,12 +68,10 @@ class TariffUntilDeadPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  ref.watch(tariffSubscriptionsProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text("Ошибка: $e")),
-                    data: (items) => ListView(
-                      children: items.map((item) => _tariffRowFromItem(item)).toList(),
-                    ),
+                  child: ListView(
+                    children: [
+                      _tariffRow('test', 'test', '2', '10000', '10000', '[{"to": "100", "from": "1"}]'),
+                    ],
                   ),
                 ),
               ],
@@ -108,17 +111,4 @@ class TariffUntilDeadPage extends ConsumerWidget {
       ),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _tariffRowFromItem(Map<String, dynamic> item) {
-    return _tariffRow(
-      item['appName']?.toString() ?? '',
-      item['adminName']?.toString() ?? '',
-      item['duration']?.toString() ?? '',
-      item['insurance']?.toString() ?? '',
-      item['cost']?.toString() ?? '',
-      item['batteryLevel']?.toString() ?? '',
-    );
-  }
-
 }

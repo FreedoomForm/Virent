@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class ChatLogsPage extends ConsumerWidget {
   const ChatLogsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(chatLogsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +37,7 @@ class ChatLogsPage extends ConsumerWidget {
                 _buildFilterDropdown('Администратор', 250, 'Выберите администратора'),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: () { /* action */ },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF7B68EE),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -66,12 +71,26 @@ class ChatLogsPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  ref.watch(chatLogsProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text("Ошибка: $e")),
-                    data: (items) => ListView(
-                      children: items.map((item) => _messageRowFromItem(item)).toList(),
-                    ),
+                  child: ListView(
+                    children: [
+                      _messageRow('290671', true, false, '19.06.2026 11:50:00'),
+                      _messageRow('296276', true, false, '19.06.2026 10:23:23'),
+                      _messageRow('296276', true, false, '19.06.2026 10:23:10'),
+                      _messageRow('296587', true, false, '19.06.2026 09:56:12'),
+                      _messageRow('124652', true, false, '19.06.2026 09:25:17'),
+                      _messageRow('200436', false, true, '19.06.2026 02:24:33'),
+                      _messageRow('200436', true, false, '19.06.2026 02:23:56'),
+                      _messageRow('53128', true, false, '19.06.2026 01:51:28'),
+                      _messageRow('295443', true, false, '19.06.2026 01:02:18'),
+                      _messageRow('295443', true, false, '19.06.2026 01:02:12'),
+                      _messageRow('295443', true, false, '19.06.2026 01:01:41'),
+                      _messageRow('296542', true, false, '19.06.2026 00:19:01'),
+                      _messageRow('296509', true, false, '18.06.2026 19:27:41'),
+                      _messageRow('296509', true, false, '18.06.2026 19:27:10'),
+                      _messageRow('296493', true, false, '18.06.2026 15:57:37'),
+                      _messageRow('296493', true, false, '18.06.2026 15:57:26'),
+                      _messageRow('296276', true, false, '18.06.2026 14:33:44'),
+                    ],
                   ),
                 ),
               ],
@@ -205,15 +224,4 @@ class ChatLogsPage extends ConsumerWidget {
       ),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _messageRowFromItem(Map<String, dynamic> item) {
-    return _messageRow(
-      item['clientId']?.toString() ?? '',
-      item['hasMessage']?.toString() ?? '',
-      item['hasImage']?.toString() ?? '',
-      item['timestamp']?.toString() ?? '',
-    );
-  }
-
 }

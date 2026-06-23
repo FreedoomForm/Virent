@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class TariffSubTariffsPage extends ConsumerWidget {
   const TariffSubTariffsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
+    final async = ref.watch(tariffSubscriptionsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +40,7 @@ class TariffSubTariffsPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () { /* action */ },
+            onPressed: () {},
             icon: const Icon(Icons.add, size: 16),
             label: const Text('Добавить subscription_tariff'),
             style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
@@ -57,18 +62,13 @@ class TariffSubTariffsPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Expanded(
-            child: ref.watch(tariffSubscriptionsProvider).when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('Ошибка: $e')),
-              data: (items) => items.isEmpty
-                ? const Center(child: Text('В таблице нет доступных данных', style: TextStyle(color: Colors.grey)))
-                : Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
-                    elevation: 0,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: SingleChildScrollView(
-                        child: DataTable(
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
+              elevation: 0,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  child: DataTable(
                     headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
                     columns: const [
                       DataColumn(label: Text('Name')),
@@ -81,19 +81,19 @@ class TariffSubTariffsPage extends ConsumerWidget {
                       DataColumn(label: Text('Duration')),
                       DataColumn(label: Text('Действия')),
                     ],
-                    rows: items.map((item) => DataRow(cells: [
-                      DataCell(Text(item['name']?.toString() ?? '')),
-                      DataCell(Text(item['name_in_app']?.toString() ?? '')),
-                      DataCell(Text(item['price']?.toString() ?? '')),
-                      DataCell(Text(item['group']?.toString() ?? '')),
-                      DataCell(Text(item['active']?.toString() ?? '')),
-                      DataCell(Text(item['daily']?.toString() ?? '')),
-                      DataCell(Text(item['company']?.toString() ?? '')),
-                      DataCell(Text(item['duration']?.toString() ?? '')),
-                      DataCell(Row(children: [
-                        TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Ред.')),
-                      ])),
-                    ])).toList(),
+                    rows: const [
+                      DataRow(cells: [
+                        DataCell(Text('')),
+                        DataCell(Text('')),
+                        DataCell(Text('')),
+                        DataCell(Text('')),
+                        DataCell(Center(child: Text('В таблице нет доступных данных'))),
+                        DataCell(Text('')),
+                        DataCell(Text('')),
+                        DataCell(Text('')),
+                        DataCell(Text('')),
+                      ]),
+                    ],
                   ),
                 ),
               ),

@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class BonusPackagesPage extends ConsumerWidget {
   const BonusPackagesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(bonusesListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +34,7 @@ class BonusPackagesPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -76,12 +81,12 @@ class BonusPackagesPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  ref.watch(bonusesListProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text("Ошибка: $e")),
-                    data: (items) => ListView(
-                      children: items.map((item) => _packageRowFromItem(item)).toList(),
-                    ),
+                  child: ListView(
+                    children: [
+                      _packageRow('11000 С.', '10000 С.', true),
+                      _packageRow('55000 С.', '50000 С.', true),
+                      _packageRow('110000 С.', '100000 С.', true),
+                    ],
                   ),
                 ),
               ],
@@ -126,14 +131,4 @@ class BonusPackagesPage extends ConsumerWidget {
       ),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _packageRowFromItem(Map<String, dynamic> item) {
-    return _packageRow(
-      item['bonus']?.toString() ?? '',
-      item['cost']?.toString() ?? '',
-      item['isActive']?.toString() ?? '',
-    );
-  }
-
 }

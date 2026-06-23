@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class BillingDebtsPage extends ConsumerWidget {
   const BillingDebtsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(billingTransactionsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,40 +125,9 @@ class BillingDebtsPage extends ConsumerWidget {
                       ),
                     ),
                     const Divider(height: 1),
-                    Expanded(
-                      child: ref.watch(billingTransactionsProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text('Ошибка: $e')),
-                        data: (items) => items.isEmpty
-                          ? const Center(child: Text('Совпадений не найдено', style: TextStyle(fontSize: 12, color: Colors.grey)))
-                          : ListView.builder(
-                              itemCount: items.length,
-                              itemBuilder: (context, i) {
-                                final item = items[i];
-                                return Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(width: 50, child: Text(item['id']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 60, child: Text(item['client_id']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 60, child: Text(item['order_id']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 130, child: Text(item['order_sum']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 80, child: Text(item['total_sum']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 80, child: Text(item['sum_card']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 80, child: Text(item['sum_bonus']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 100, child: Text(item['try_withdrawals']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 60, child: Text(item['status']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 60, child: Text(item['type']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 120, child: Text(item['created_at']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 120, child: Text(item['updated_at']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      SizedBox(width: 100, child: Text(item['company']?.toString() ?? '', style: const TextStyle(fontSize: 10))),
-                                      const Expanded(child: SizedBox()),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
+                    const Expanded(
+                      child: Center(
+                        child: Text('Совпадений не найдено', style: TextStyle(fontSize: 12, color: Colors.grey)),
                       ),
                     ),
                     const Divider(height: 1),
@@ -163,14 +137,14 @@ class BillingDebtsPage extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           OutlinedButton.icon(
-                            onPressed: () { /* action */ },
+                            onPressed: () {},
                             icon: const Icon(Icons.download, size: 14),
                             label: const Text('Экспорт ▼', style: TextStyle(fontSize: 11)),
                             style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6)),
                           ),
                           const SizedBox(width: 8),
                           OutlinedButton.icon(
-                            onPressed: () { /* action */ },
+                            onPressed: () {},
                             icon: const Icon(Icons.view_column, size: 14),
                             label: const Text('Видимость колонок ▼', style: TextStyle(fontSize: 11)),
                             style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6)),

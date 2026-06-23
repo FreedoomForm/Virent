@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class ScootersPage extends ConsumerWidget {
   const ScootersPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(scootersListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +33,7 @@ class ScootersPage extends ConsumerWidget {
                 const SizedBox(height: 8),
                 // Add button
                 ElevatedButton.icon(
-                  onPressed: () { /* action */ },
+                  onPressed: () {},
                   icon: const Icon(Icons.add, size: 14),
                   label: const Text('Добавить самокат'),
                   style: ElevatedButton.styleFrom(
@@ -132,16 +137,11 @@ class ScootersPage extends ConsumerWidget {
                     ),
                     const Divider(height: 1),
                     Expanded(
-                      child: ref.watch(scootersListProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text('Ошибка: $e')),
-                        data: (items) => ListView.builder(
-                          itemCount: items.length,
-                          itemBuilder: (context, i) {
-                            final item = items[i];
-                            return _scooterRowFromItem(item);
-                          },
-                        ),
+                      child: ListView.builder(
+                        itemCount: 15,
+                        itemBuilder: (context, i) {
+                          return _scooterRow(789 + i, '05-${(i + 1).toString().padLeft(4, '0')}');
+                        },
                       ),
                     ),
                   ],

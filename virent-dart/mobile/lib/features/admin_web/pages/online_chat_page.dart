@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class OnlineChatPage extends ConsumerWidget {
   const OnlineChatPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(chatLogsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFEEEEEE),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -67,7 +72,7 @@ class OnlineChatPage extends ConsumerWidget {
                             ),
                             const SizedBox(width: 8),
                             ElevatedButton(
-                              onPressed: () { /* action */ },
+                              onPressed: () {},
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF5CB85C),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
@@ -84,19 +89,23 @@ class OnlineChatPage extends ConsumerWidget {
                 ),
                 // Client list
                 Expanded(
-                  child: ref.watch(chatLogsProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text('Ошибка: $e')),
-                    data: (items) => ListView(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      children: items.isEmpty
-                        ? [const Center(child: Text('Нет активных чатов', style: TextStyle(color: Colors.grey)))]
-                        : items.map((item) => _clientItem(
-                            item['client_id']?.toString() ?? '',
-                            item['last_message_time']?.toString() ?? '',
-                            item['unread'] == true || item['unread'] == 1,
-                          )).toList(),
-                    ),
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    children: [
+                      _clientItem('290671', '19.06.2026, 11:50', true),
+                      _clientItem('296276', '19.06.2026, 10:23', true),
+                      _clientItem('296587', '19.06.2026, 09:56', true),
+                      _clientItem('124652', '19.06.2026, 09:25', true),
+                      _clientItem('200436', '19.06.2026, 02:24', true),
+                      _clientItem('53128', '19.06.2026, 01:51', true),
+                      _clientItem('295443', '19.06.2026, 01:02', true),
+                      _clientItem('296542', '19.06.2026, 00:19', true),
+                      _clientItem('296509', '18.06.2026, 19:27', true),
+                      _clientItem('296493', '18.06.2026, 15:57', true),
+                      _clientItem('296431', '18.06.2026, 00:37', true),
+                      _clientItem('296427', '18.06.2026, 00:23', true),
+                      _clientItem('131969', '17.06.2026, 23:05', true),
+                    ],
                   ),
                 )
               ],
@@ -133,7 +142,7 @@ class OnlineChatPage extends ConsumerWidget {
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () { /* action */ },
+                        onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF5CB85C),
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),

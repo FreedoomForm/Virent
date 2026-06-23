@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class LogsAuthPage extends ConsumerWidget {
   const LogsAuthPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(auditLogProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,12 +68,29 @@ class LogsAuthPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  ref.watch(auditLogProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text("Ошибка: $e")),
-                    data: (items) => ListView(
-                      children: items.map((item) => _authRowFromItem(item)).toList(),
-                    ),
+                  child: ListView(
+                    children: [
+                      _authRow('1072280', '296601', '998910087575', '172.64.198.105', '19 июн 2026, 13:59', '213214', true),
+                      _authRow('1072279', '', '998910087575', '172.64.200.120', '19 июн 2026, 13:59', '213214', true),
+                      _authRow('1072278', '296600', '998907316009', '172.64.200.120', '19 июн 2026, 13:09', '659616', true),
+                      _authRow('1072277', '', '998907316009', '162.158.172.91', '19 июн 2026, 13:09', '659616', true),
+                      _authRow('1072276', '296599', '998901853058', '162.158.172.91', '19 июн 2026, 13:04', '902002', true),
+                      _authRow('1072275', '', '998901853058', '162.158.102.31', '19 июн 2026, 13:03', '902002', true),
+                      _authRow('1072274', '242437', '998503013388', '162.158.102.31', '19 июн 2026, 12:45', '924820', true),
+                      _authRow('1072273', '242437', '998503013388', '172.64.198.105', '19 июн 2026, 12:45', '924820', true),
+                      _authRow('1072272', '286338', '998901896027', '172.70.46.127', '19 июн 2026, 12:31', '568184', true),
+                      _authRow('1072271', '286338', '998901896027', '104.23.221.144', '19 июн 2026, 12:30', '568184', true),
+                      _authRow('1072270', '296598', '998900394115', '162.158.172.91', '19 июн 2026, 12:20', '237563', true),
+                      _authRow('1072269', '', '998900394115', '162.158.102.30', '19 июн 2026, 12:20', '912730', false),
+                      _authRow('1072268', '', '998900394115', '162.158.102.30', '19 июн 2026, 12:19', '237563', true),
+                      _authRow('1072267', '', '998900394115', '162.158.172.91', '19 июн 2026, 12:19', '912730', true),
+                      _authRow('1072266', '296597', '998954932910', '172.69.155.209', '19 июн 2026, 12:07', '877799', true),
+                      _authRow('1072265', '', '998954932910', '172.69.155.209', '19 июн 2026, 12:07', '877799', true),
+                      _authRow('1072264', '296596', '998946371010', '172.64.200.120', '19 июн 2026, 11:53', '606734', true),
+                      _authRow('1072263', '', '998946371010', '172.64.198.105', '19 июн 2026, 11:53', '606734', true),
+                      _authRow('1072262', '296595', '998933849227', '172.64.200.120', '19 июн 2026, 10:25', '116738', true),
+                      _authRow('1072261', '', '998933849227', '172.69.155.209', '19 июн 2026, 10:25', '116738', true),
+                    ],
                   ),
                 ),
               ],
@@ -105,18 +127,4 @@ class LogsAuthPage extends ConsumerWidget {
       ),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _authRowFromItem(Map<String, dynamic> item) {
-    return _authRow(
-      item['id']?.toString() ?? '',
-      item['client']?.toString() ?? '',
-      item['phone']?.toString() ?? '',
-      item['ip']?.toString() ?? '',
-      item['time']?.toString() ?? '',
-      item['smsCode']?.toString() ?? '',
-      item['isSuccess']?.toString() ?? '',
-    );
-  }
-
 }

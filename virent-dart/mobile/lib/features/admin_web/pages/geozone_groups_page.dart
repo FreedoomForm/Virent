@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class GeozoneGroupsPage extends ConsumerWidget {
   const GeozoneGroupsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(zonesListProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +34,7 @@ class GeozoneGroupsPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -79,12 +84,13 @@ class GeozoneGroupsPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  ref.watch(zonesListProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text("Ошибка: $e")),
-                    data: (items) => ListView(
-                      children: items.map((item) => _groupRowFromItem(item)).toList(),
-                    ),
+                  child: ListView(
+                    children: [
+                      _groupRow('2', 'Ташкент', 'Ташкент 3ЗА Фри, 3ЗА ТАШКЕНТ НОВАЯ, СГБ РУз'),
+                      _groupRow('3', 'Самарканд', 'SAMARKAND - зона завершения аренды'),
+                      _groupRow('4', 'Города (ЗИ)', 'ЗИ ТАШКЕНТ НОВАЯ, SAMARKAND'),
+                      _groupRow('5', 'SILK ROAD SAMARKAND', '-'),
+                    ],
                   ),
                 ),
                 const Divider(height: 1),
@@ -135,14 +141,4 @@ class GeozoneGroupsPage extends ConsumerWidget {
       ),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _groupRowFromItem(Map<String, dynamic> item) {
-    return _groupRow(
-      item['id']?.toString() ?? '',
-      item['desc']?.toString() ?? '',
-      item['finishGeo']?.toString() ?? '',
-    );
-  }
-
 }

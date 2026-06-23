@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class AdminAgreementsPage extends ConsumerWidget {
   const AdminAgreementsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(adminAgreementsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +34,7 @@ class AdminAgreementsPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () { /* action */ },
+                      onPressed: () {},
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
@@ -79,12 +84,12 @@ class AdminAgreementsPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  ref.watch(adminAgreementsProvider).when(
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text("Ошибка: $e")),
-                    data: (items) => ListView(
-                      children: items.map((item) => _agreementRowFromItem(item)).toList(),
-                    ),
+                  child: ListView(
+                    children: [
+                      _agreementRow('agreement/VIRENT_public_offer_uz.docx', 'Договор аренды (in Uzbek)', ''),
+                      _agreementRow('agreement/Политика_обработки_персональных_данных_Uz.html', 'O\'zbekcha', ''),
+                      _agreementRow('agreement/Политика_обработки_персональных_данных_Py.html', 'Русский', ''),
+                    ],
                   ),
                 ),
                 const Divider(height: 1),
@@ -134,14 +139,4 @@ class AdminAgreementsPage extends ConsumerWidget {
       ),
     );
   }
-
-  /// Builds a row from provider data item.
-  Widget _agreementRowFromItem(Map<String, dynamic> item) {
-    return _agreementRow(
-      item['file']?.toString() ?? '',
-      item['urlLabel']?.toString() ?? '',
-      item['htmlFile']?.toString() ?? '',
-    );
-  }
-
 }

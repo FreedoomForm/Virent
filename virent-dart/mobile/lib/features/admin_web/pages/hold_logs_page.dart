@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 
+
 class HoldLogsPage extends ConsumerWidget {
   const HoldLogsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    final async = ref.watch(holdLogsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
+      data: (items) Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,34 +66,10 @@ class HoldLogsPage extends ConsumerWidget {
                       ),
                     ),
                     const Divider(height: 1),
-                    Expanded(
-                      child: ref.watch(holdLogsProvider).when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text('Ошибка: $e')),
-                        data: (items) => items.isEmpty
-                          ? const Center(child: Text('Нет записей...', style: TextStyle(fontSize: 11, color: Colors.grey)))
-                          : ListView.builder(
-                              itemCount: items.length,
-                              itemBuilder: (context, i) {
-                                final item = items[i];
-                                return Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  child: Row(
-                                    children: [
-                                      Expanded(flex: 2, child: Text(item['transaction_id']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      Expanded(flex: 1, child: Text(item['client_id']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      Expanded(flex: 2, child: Text(item['type_request_1']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      Expanded(flex: 3, child: Text(item['timestamp_type_request_1']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      Expanded(flex: 1, child: Text(item['order_id']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      Expanded(flex: 1, child: Text(item['amount']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      Expanded(flex: 2, child: Text(item['request_source']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      Expanded(flex: 2, child: Text(item['status_response_1']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                      Expanded(flex: 2, child: Text(item['type_request_2']?.toString() ?? '', style: const TextStyle(fontSize: 11))),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: const Center(
+                        child: Text('Нет записей...', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ),
                     ),
                     const Divider(height: 1),
@@ -109,7 +90,8 @@ class HoldLogsPage extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 1),
+                    const Divider(height: 1),
+                    const Expanded(child: SizedBox()), // Fill remaining space
                   ],
                 ),
               ),
