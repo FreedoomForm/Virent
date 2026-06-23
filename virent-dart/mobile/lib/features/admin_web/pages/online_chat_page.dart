@@ -12,7 +12,7 @@ class OnlineChatPage extends ConsumerWidget {
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Ошибка загрузки: $e', style: const TextStyle(color: Colors.red))),
-      data: (items) Container(
+      data: (items) => Container(
       color: const Color(0xFFEEEEEE),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
