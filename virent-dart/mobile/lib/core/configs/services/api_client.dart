@@ -22,49 +22,49 @@ class ApiClient {
   String baseUrl;
   String? _token;
 
+  /// Cached server URL set at startup or by user override.
+  /// Updated by [init] and [setBaseUrl]. Persisted via SharedPreferences.
+  static String? _cachedBaseUrl;
+
+  /// Call once at app startup to load the saved server URL from storage.
+  static Future<void> init() async {
+    try {
+      final storage = StorageService();
+      await storage.init();
+      final saved = await storage.getString('server_url');
+      if (saved != null && saved.isNotEmpty) {
+        _cachedBaseUrl = saved;
+        return;
+      }
+    } catch (_) {}
+    _cachedBaseUrl = null;
+  }
+
   ApiClient()
       : baseUrl = _defaultBaseUrl;
 
   static String get _defaultBaseUrl {
+    // User-saved override takes priority.
+    if (_cachedBaseUrl != null && _cachedBaseUrl!.isNotEmpty) {
+      return _cachedBaseUrl!;
+    }
     if (kIsWeb) return 'http://localhost:8443';
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       return 'http://localhost:8443'; // desktop: embedded server
     }
-    // Try saved endpoint first, then ngrok, then common LAN IPs.
-    // The user can override at Settings → Server Endpoint.
     return 'https://caliber-lividly-coastline.ngrok-free.dev'; // mobile: ngrok tunnel
   }
 
   /// Update the base URL (used by mobile to connect to a specific PC).
-  ///
-  /// **Admin-only.** Throws [UnauthorizedException] when the current
-  /// SharedPreferences session is not an admin / super_admin. The check
-  /// is performed against the `admin_token` key OR a `user_json` whose
-  /// `role` is `admin` / `super_admin`.
-  ///
-  /// This is the single source of truth — even if a malicious rider
-  /// somehow reaches the call site (e.g. by hooking a debug button),
-  /// the URL mutation is rejected before it can take effect.
+  /// Updates both the static cache (for new instances) and SharedPreferences.
   Future<void> setBaseUrl(String url) async {
-    if (!await _isAdminSession()) {
-      throw UnauthorizedException(
-        'Только администратор может изменить адрес сервера',
-      );
-    }
     baseUrl = url;
-  }
-
-  /// Returns `true` when the active session belongs to an admin.
-  /// Mirrors the same check performed by `app_router.dart`.
-  Future<bool> _isAdminSession() async {
-    final storage = StorageService();
-    await storage.init();
-    final adminToken = await storage.getString('admin_token');
-    if (adminToken != null && adminToken.isNotEmpty) return true;
-    final userJson = await storage.getJson(StorageKeys.userJson);
-    if (userJson == null) return false;
-    final role = (userJson['role'] ?? '').toString().toLowerCase();
-    return role == 'admin' || role == 'super_admin';
+    _cachedBaseUrl = url;
+    try {
+      final storage = StorageService();
+      await storage.init();
+      await storage.setString('server_url', url);
+    } catch (_) {}
   }
 
   /// Attach the bearer token used for authenticated requests.
