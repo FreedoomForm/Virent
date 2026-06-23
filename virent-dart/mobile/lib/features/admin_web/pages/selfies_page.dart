@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../admin_web_providers.dart';
 
-class SelfiesPage extends ConsumerWidget {
+class SelfiesPage extends StatelessWidget {
   const SelfiesPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(selfiesListProvider);
-    return async.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e")),
-      data: (items) {
-        return Container(
+  Widget build(BuildContext context) {
+    return Container(
       color: const Color(0xFFF5F6FA),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +92,7 @@ class SelfiesPage extends ConsumerWidget {
                 const Divider(height: 1),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: items.length,
+                    itemCount: 8,
                     itemBuilder: (context, i) {
                       return Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -139,9 +132,6 @@ class SelfiesPage extends ConsumerWidget {
           ),
         ],
       ),
-    );
-      };
-    },
     );
   }
 
