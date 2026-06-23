@@ -140,7 +140,7 @@ class _AppLayoutState extends State<AppLayout> {
       case 121: // Тарифы -> Цены
         return TariffPricesPage();
       case 122: // Тарифы -> Тариф подписка
-        return TariffSubTariffsPage();
+        return TariffSubtariffsPage();
       case 123: // Тарифы -> Тариф пока не сядет
         return TariffUntilDeadPage();
       case 13: // Логи
