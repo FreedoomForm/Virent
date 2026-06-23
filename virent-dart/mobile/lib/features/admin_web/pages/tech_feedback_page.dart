@@ -13,7 +13,7 @@ class TechFeedbackPage extends ConsumerWidget {
       error: (e, _) => Center(child: Text("Ошибка: $e")),
       data: (items) {
         return Container(
-      color: const Color(0xFFF5F6FA),
+      color: const Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -81,7 +81,7 @@ class TechFeedbackPage extends ConsumerWidget {
             child: Column(
               children: [
                 Container(
-                  color: const Color(0xFFF8F9FA),
+                  color: const Color(0xFFFAFAFA),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: const Row(
                     children: [

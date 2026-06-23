@@ -6,7 +6,7 @@ class MapPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFFF5F6FA),
+      color: const Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -57,7 +57,7 @@ class MapPage extends StatelessWidget {
                   children: [
                     _filterChip('Ташкент', const Color(0xFF7B68EE)),
                     _filterChip('Самарканд', const Color(0xFF7B68EE)),
-                    _filterChip('Фергана', const Color(0xFF2C3345)),
+                    _filterChip('Фергана', const Color(0xFF29343F)),
                   ],
                 ),
               ],

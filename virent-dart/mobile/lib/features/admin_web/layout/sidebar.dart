@@ -72,7 +72,7 @@ class _AppSidebarState extends State<AppSidebar> {
     SidebarItem(index: 11, icon: Icons.card_giftcard_outlined, title: 'Бонусы', children: [
       SidebarSubItem(index: 11, title: 'Бонусы'),
       SidebarSubItem(index: 110, title: 'Пакеты бонусов'),
-      SidebarSubItem(index: 112, title: 'Логи(Hold Logs)'), // reusing index 13 for Hold Logs later
+      SidebarSubItem(index: 112, title: 'Логи(Hold Logs)'),
     ]),
     SidebarItem(index: 12, icon: Icons.monetization_on_outlined, title: 'Тарифы', children: [
       SidebarSubItem(index: 120, title: 'Тарифы'),
@@ -129,13 +129,19 @@ class _AppSidebarState extends State<AppSidebar> {
     ]),
   ];
 
+  static const Color _sidebarBg = Color(0xFFF0F3F9);
+  static const Color _activeColor = Color(0xFF496CAB);
+  static const Color _textColor = Color(0xFF6D737A);
+  static const Color _textColorActive = Colors.white;
+  static const Color _borderColor = Color(0xFFDEE1E8);
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 180,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(right: BorderSide(color: Colors.grey.shade200)),
+      width: 160,
+      decoration: const BoxDecoration(
+        color: _sidebarBg,
+        border: Border(right: BorderSide(color: _borderColor)),
       ),
       child: ListView(
         padding: EdgeInsets.zero,
@@ -163,18 +169,22 @@ class _AppSidebarState extends State<AppSidebar> {
             }
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            color: isSelected ? const Color(0xFFFFF3E0) : Colors.transparent,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            color: isSelected ? _activeColor : Colors.transparent,
             child: Row(
               children: [
-                Icon(item.icon, size: 18, color: isSelected ? const Color(0xFFE67E22) : const Color(0xFF555555)),
-                const SizedBox(width: 10),
+                Icon(
+                  item.icon,
+                  size: 15,
+                  color: isSelected ? _textColorActive : _textColor,
+                ),
+                const SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     item.title,
                     style: TextStyle(
-                      fontSize: 13,
-                      color: isSelected ? const Color(0xFFE67E22) : const Color(0xFF333333),
+                      fontSize: 12,
+                      color: isSelected ? _textColorActive : _textColor,
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                     ),
                   ),
@@ -182,8 +192,8 @@ class _AppSidebarState extends State<AppSidebar> {
                 if (hasChildren)
                   Icon(
                     isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_right,
-                    size: 16,
-                    color: Colors.grey[500],
+                    size: 14,
+                    color: _textColor,
                   ),
               ],
             ),
@@ -195,13 +205,13 @@ class _AppSidebarState extends State<AppSidebar> {
             return InkWell(
               onTap: () => widget.onItemSelected(sub.index),
               child: Container(
-                padding: const EdgeInsets.only(left: 40, right: 12, top: 8, bottom: 8),
-                color: subSelected ? const Color(0xFFFFF3E0) : Colors.transparent,
+                padding: const EdgeInsets.only(left: 29, right: 8, top: 6, bottom: 6),
+                color: subSelected ? _activeColor : Colors.transparent,
                 child: Text(
                   sub.title,
                   style: TextStyle(
-                    fontSize: 12,
-                    color: subSelected ? const Color(0xFFE67E22) : const Color(0xFF666666),
+                    fontSize: 11,
+                    color: subSelected ? _textColorActive : _textColor,
                     fontWeight: subSelected ? FontWeight.w600 : FontWeight.w400,
                   ),
                 ),

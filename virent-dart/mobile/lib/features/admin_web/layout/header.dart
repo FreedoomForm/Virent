@@ -6,15 +6,15 @@ class AppHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
-      color: const Color(0xFF2C3345),
+      height: 30,
+      color: const Color(0xFF29343F),
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: [
           const Text(
             'ViRent',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
               color: Colors.white,
               letterSpacing: 0.5,
@@ -23,7 +23,7 @@ class AppHeader extends StatelessWidget {
           const SizedBox(width: 8),
           InkWell(
             onTap: () {},
-            child: const Icon(Icons.menu, color: Colors.white70, size: 18),
+            child: const Icon(Icons.menu, color: Colors.white70, size: 16),
           ),
           const Spacer(),
           _buildTag('Разблокирован: 0', const Color(0xFF3498DB)),
@@ -33,18 +33,18 @@ class AppHeader extends StatelessWidget {
           _buildTag('Не включился: 1', const Color(0xFFE74C3C)),
           const SizedBox(width: 12),
           const CircleAvatar(
-            radius: 12,
+            radius: 10,
             backgroundColor: Colors.amber,
-            child: Icon(Icons.person, size: 14, color: Colors.white),
+            child: Icon(Icons.person, size: 12, color: Colors.white),
           ),
           const SizedBox(width: 6),
           const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text('ViRent', style: TextStyle(color: Colors.white70, fontSize: 10)),
-              Text('Шерзод', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w500)),
-              Text('Асилбек', style: TextStyle(color: Colors.white70, fontSize: 10)),
+              Text('ViRent', style: TextStyle(color: Colors.white70, fontSize: 9)),
+              Text('Шерзод', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
+              Text('Асилбек', style: TextStyle(color: Colors.white70, fontSize: 9)),
             ],
           ),
         ],
@@ -55,14 +55,14 @@ class AppHeader extends StatelessWidget {
   Widget _buildTag(String label, Color color, {Color textColor = Colors.white}) {
     return Container(
       margin: const EdgeInsets.only(right: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(3),
       ),
       child: Text(
         label,
-        style: TextStyle(color: textColor, fontSize: 11, fontWeight: FontWeight.w500),
+        style: TextStyle(color: textColor, fontSize: 10, fontWeight: FontWeight.w500),
       ),
     );
   }

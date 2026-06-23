@@ -13,7 +13,7 @@ class AlertsPage extends ConsumerWidget {
       error: (e, _) => Center(child: Text("Ошибка: $e")),
       data: (items) {
         return Container(
-      color: const Color(0xFFF5F6FA),
+      color: const Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -95,7 +95,7 @@ class AlertsPage extends ConsumerWidget {
                   children: [
                     // Header
                     Container(
-                      color: const Color(0xFFF8F9FA),
+                      color: const Color(0xFFFAFAFA),
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       child: const Row(
                         children: [

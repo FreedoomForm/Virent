@@ -13,7 +13,7 @@ class DashboardPage extends ConsumerWidget {
       error: (e, _) => Center(child: Text("Ошибка: $e")),
       data: (items) {
         return Container(
-      color: const Color(0xFFF5F6FA),
+      color: const Colors.white,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -66,7 +66,7 @@ class DashboardPage extends ConsumerWidget {
         // Row 1: Всего, На линии, Не на линии
         Row(
           children: [
-            _statCard('Всего', '300', const Color(0xFF2C3345)),
+            _statCard('Всего', '300', const Color(0xFF29343F)),
             const SizedBox(width: 12),
             _statCard('На линии', '241', const Color(0xFF1ABC9C)),
             const SizedBox(width: 12),

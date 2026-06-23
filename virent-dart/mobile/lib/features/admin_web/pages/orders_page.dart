@@ -13,7 +13,7 @@ class OrdersPage extends ConsumerWidget {
       error: (e, _) => Center(child: Text("Ошибка: $e")),
       data: (items) {
         return Container(
-      color: const Color(0xFFF5F6FA),
+      color: const Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -64,7 +64,7 @@ class OrdersPage extends ConsumerWidget {
                       _statusBtn('Парковка', Colors.white, false, textColor: const Color(0xFF666666)),
                       _statusBtn('Завершён', Colors.white, false, textColor: const Color(0xFF666666)),
                       const SizedBox(width: 4),
-                      _statusBtn('В аренду', const Color(0xFF2C3345), true),
+                      _statusBtn('В аренду', const Color(0xFF29343F), true),
                       _statusBtn('Активный', const Color(0xFF7B68EE), true),
                       const SizedBox(width: 8),
                       const Text('Номер', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
@@ -109,7 +109,7 @@ class OrdersPage extends ConsumerWidget {
                 child: Column(
                   children: [
                     Container(
-                      color: const Color(0xFFF8F9FA),
+                      color: const Color(0xFFFAFAFA),
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       child: const Row(
                         children: [

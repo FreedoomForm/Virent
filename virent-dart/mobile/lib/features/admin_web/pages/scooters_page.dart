@@ -13,7 +13,7 @@ class ScootersPage extends ConsumerWidget {
       error: (e, _) => Center(child: Text("Ошибка: $e")),
       data: (items) {
         return Container(
-      color: const Color(0xFFF5F6FA),
+      color: const Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -104,7 +104,7 @@ class ScootersPage extends ConsumerWidget {
                   children: [
                     // Header
                     Container(
-                      color: const Color(0xFFF8F9FA),
+                      color: const Color(0xFFFAFAFA),
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       child: Row(
                         children: [
