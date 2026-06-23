@@ -13,7 +13,7 @@ class SettingsConfigPage extends ConsumerWidget {
       error: (e, _) => Center(child: Text("Ошибка: $e")),
       data: (items) {
         return Container(
-      color: const Colors.white,
+      color: const Color(0xFFFFFFFF),
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [

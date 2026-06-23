@@ -6,7 +6,7 @@ class MapPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Colors.white,
+      color: const Color(0xFFFFFFFF),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

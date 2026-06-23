@@ -13,7 +13,7 @@ class BillingDebtsPage extends ConsumerWidget {
       error: (e, _) => Center(child: Text("Ошибка: $e")),
       data: (items) {
         return Container(
-      color: const Colors.white,
+      color: const Color(0xFFFFFFFF),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
