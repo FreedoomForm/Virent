@@ -174,6 +174,5 @@ class AlertsPage extends ConsumerWidget {
         ],
       ),
     );
-  )
   }
 }

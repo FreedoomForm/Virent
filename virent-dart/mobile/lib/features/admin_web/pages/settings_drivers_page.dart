@@ -90,6 +90,5 @@ class SettingsDriversPage extends ConsumerWidget {
         ],
       )),
     ]);
-  )
   }
 }

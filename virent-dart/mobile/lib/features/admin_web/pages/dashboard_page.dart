@@ -372,6 +372,5 @@ class DashboardPage extends ConsumerWidget {
       ),
       child: Text(label),
     );
-  )
   }
 }

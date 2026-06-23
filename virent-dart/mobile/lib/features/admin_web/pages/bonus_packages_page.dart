@@ -131,6 +131,5 @@ class BonusPackagesPage extends ConsumerWidget {
         ],
       ),
     );
-  )
   }
 }

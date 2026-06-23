@@ -274,6 +274,5 @@ class OrdersPage extends ConsumerWidget {
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
       child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
     );
-  )
   }
 }

@@ -140,6 +140,5 @@ class AdminRolesPage extends ConsumerWidget {
         ],
       ),
     );
-  )
   }
 }

@@ -149,6 +149,5 @@ class ScooterGroupsPage extends ConsumerWidget {
         ],
       ),
     );
-  )
   }
 }

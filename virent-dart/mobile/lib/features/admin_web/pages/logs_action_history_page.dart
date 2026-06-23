@@ -251,6 +251,5 @@ class LogsActionHistoryPage extends ConsumerWidget {
       ),
       child: Text(text, style: TextStyle(fontSize: 10, color: textColor)),
     );
-  )
   }
 }

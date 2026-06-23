@@ -114,6 +114,5 @@ class TarirovPage extends ConsumerWidget {
       ),
     );
   )
-  )
   }
 }

@@ -134,6 +134,5 @@ class AdminFaqPage extends ConsumerWidget {
         ],
       ),
     );
-  )
   }
 }

@@ -224,6 +224,5 @@ class ChatLogsPage extends ConsumerWidget {
         ],
       ),
     );
-  )
   }
 }

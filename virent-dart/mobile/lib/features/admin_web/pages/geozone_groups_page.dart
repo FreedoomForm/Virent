@@ -141,6 +141,5 @@ class GeozoneGroupsPage extends ConsumerWidget {
         ],
       ),
     );
-  )
   }
 }

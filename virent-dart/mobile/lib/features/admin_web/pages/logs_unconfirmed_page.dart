@@ -141,6 +141,5 @@ class LogsUnconfirmedPage extends ConsumerWidget {
         ],
       ),
     );
-  )
   }
 }

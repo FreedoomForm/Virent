@@ -108,6 +108,5 @@ class SettingsNotificationsPage extends ConsumerWidget {
       ),
     );
   )
-  )
   }
 }

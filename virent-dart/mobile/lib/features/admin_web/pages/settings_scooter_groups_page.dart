@@ -94,6 +94,5 @@ class SettingsScooterGroupsPage extends ConsumerWidget {
         ],
       )),
     ]);
-  )
   }
 }

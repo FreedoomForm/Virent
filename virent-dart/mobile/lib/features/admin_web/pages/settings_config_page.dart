@@ -194,6 +194,5 @@ class SettingsConfigPage extends ConsumerWidget {
         ],
       ),
     );
-  )
   }
 }

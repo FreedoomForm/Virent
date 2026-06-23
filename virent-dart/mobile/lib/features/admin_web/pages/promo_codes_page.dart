@@ -140,6 +140,5 @@ class PromoCodesPage extends ConsumerWidget {
         ],
       ),
     );
-  )
   }
 }
