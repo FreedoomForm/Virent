@@ -59,7 +59,7 @@ class _SmsLogsPageState extends ConsumerState<SmsLogsPage> {
                     Row(children: [
                       IconButton(icon: const Icon(Icons.download, size: 18, color: Color(0xFF6D737A)), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: [AdminField(key: 'phone', label: 'Phone'), AdminField(key: 'sms_code', label: 'Sms code')], onExport: (fmt, fields) async {})),
                       IconButton(icon: const Icon(Icons.filter_list, size: 18, color: Color(0xFF6D737A)), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'phone', label: 'Phone'), AdminField(key: 'sms_code', label: 'Sms code')], onApply: (v) async {})),
-                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: const InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: Color(0xFF868686)), filled: true, fillColor: Color(0xFFF1F4F8), border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: Color(0xFFD9E2EF))), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: const InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: Color(0xFF868686)), filled: true, fillColor: Color(0xFFF1F4F8), border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: Color(0xFFD9E2EF))), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
                     ]),
                   ],
                 ),
@@ -68,7 +68,7 @@ class _SmsLogsPageState extends ConsumerState<SmsLogsPage> {
               AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: const Color(0xFF7C69EF))]),
               const SizedBox(height: 8),
               if (_selectedIds.isNotEmpty) _buildBulkActionBar(),
-              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: Color(0xFFD9E2EF))), child: SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1B2A4E)),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: Color(0xFFD9E2EF))), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: Color(0xFFD9E2EF)), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: Color(0xFF868686), fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1B2A4E)),
             dataRowColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.hovered)) return const Color(0xFFF1F4F8);
               return Colors.white;
@@ -89,15 +89,15 @@ class _SmsLogsPageState extends ConsumerState<SmsLogsPage> {
   DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
     return DataRow(cells: [
       DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
-      DataCell(Text('${item['id'] ?? ''}'))
-      DataCell(Text('${item['phone'] ?? ''}'))
-      DataCell(Text('${item['sms_code'] ?? ''}'))
-      DataCell(Text('${item['try_count'] ?? ''}'))
-      DataCell(Text('${item['try_count_all'] ?? ''}'))
-      DataCell(Text('${item['try_login'] ?? ''}'))
-      DataCell(Text('${item['create_time'] ?? ''}'))
-      DataCell(Text('${item['last_attempt'] ?? ''}'))
-      DataCell(Text('${item['check_key'] ?? ''}'))
+      DataCell(Text('${item['id'] ?? ''}')),
+      DataCell(Text('${item['phone'] ?? ''}')),
+      DataCell(Text('${item['sms_code'] ?? ''}')),
+      DataCell(Text('${item['try_count'] ?? ''}')),
+      DataCell(Text('${item['try_count_all'] ?? ''}')),
+      DataCell(Text('${item['try_login'] ?? ''}')),
+      DataCell(Text('${item['create_time'] ?? ''}')),
+      DataCell(Text('${item['last_attempt'] ?? ''}')),
+      DataCell(Text('${item['check_key'] ?? ''}')),
       DataCell(Row(children: [
         TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
         TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'phone', label: 'Phone', initial: '${item[\'phone\'] ?? \'\'}'), AdminField(key: 'sms_code', label: 'Sms code', initial: '${item[\'sms_code\'] ?? \'\'}')], onSubmit: (v) async { ref.invalidate(smsLogsProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: Color(0xFF467FD0)), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
@@ -126,9 +126,9 @@ class _SmsLogsPageState extends ConsumerState<SmsLogsPage> {
       child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
         Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
         Row(children: [
-          IconButton(icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
+          IconButton(tooltip: 'Предыдущая страница', icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
           Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
-          IconButton(icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
+          IconButton(tooltip: 'Следующая страница', icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
         ]),
       ]),
     );

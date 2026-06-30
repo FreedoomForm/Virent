@@ -64,7 +64,7 @@ class _TariffsSubscriptionsPageState extends ConsumerState<TariffsSubscriptionsP
                     Row(children: [
                       IconButton(icon: const Icon(Icons.download, size: 18, color: Color(0xFF6D737A)), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: [AdminField(key: 'name', label: 'Name'), AdminField(key: 'name_app', label: 'Name in app'), AdminField(key: 'price', label: 'Price'), AdminField(key: 'group', label: 'Group')], onExport: (fmt, fields) async {})),
                       IconButton(icon: const Icon(Icons.filter_list, size: 18, color: Color(0xFF6D737A)), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'name', label: 'Name'), AdminField(key: 'name_app', label: 'Name in app'), AdminField(key: 'price', label: 'Price'), AdminField(key: 'group', label: 'Group')], onApply: (v) async {})),
-                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: const InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: Color(0xFF868686)), filled: true, fillColor: Color(0xFFF1F4F8), border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: Color(0xFFD9E2EF))), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: const InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: Color(0xFF868686)), filled: true, fillColor: Color(0xFFF1F4F8), border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: Color(0xFFD9E2EF))), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
                     ]),
                   ],
                 ),
@@ -73,7 +73,7 @@ class _TariffsSubscriptionsPageState extends ConsumerState<TariffsSubscriptionsP
               AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: const Color(0xFF7C69EF))]),
               const SizedBox(height: 8),
               if (_selectedIds.isNotEmpty) _buildBulkActionBar(),
-              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: Color(0xFFD9E2EF))), child: SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1B2A4E)),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: Color(0xFFD9E2EF))), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: Color(0xFFD9E2EF)), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: Color(0xFF868686), fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1B2A4E)),
             dataRowColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.hovered)) return const Color(0xFFF1F4F8);
               return Colors.white;
@@ -94,11 +94,11 @@ class _TariffsSubscriptionsPageState extends ConsumerState<TariffsSubscriptionsP
   DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
     return DataRow(cells: [
       DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
-      DataCell(Text('${item['name'] ?? ''}'))
-      DataCell(Text('${item['name_app'] ?? ''}'))
-      DataCell(Text('${item['price'] ?? ''}'))
-      DataCell(Text('${item['group'] ?? ''}'))
-      DataCell(Text('${item['active'] ?? ''}'))
+      DataCell(Text('${item['name'] ?? ''}')),
+      DataCell(Text('${item['name_app'] ?? ''}')),
+      DataCell(Text('${item['price'] ?? ''}')),
+      DataCell(Text('${item['group'] ?? ''}')),
+      DataCell(Text('${item['active'] ?? ''}')),
       DataCell(Row(children: [
         TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
         TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'name', label: 'Name', initial: '${item[\'name\'] ?? \'\'}'), AdminField(key: 'name_app', label: 'Name in app', initial: '${item[\'name_app\'] ?? \'\'}'), AdminField(key: 'price', label: 'Price', initial: '${item[\'price\'] ?? \'\'}'), AdminField(key: 'group', label: 'Group', initial: '${item[\'group\'] ?? \'\'}')], onSubmit: (v) async { ref.invalidate(tariffSubscriptionsProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: Color(0xFF467FD0)), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
@@ -127,9 +127,9 @@ class _TariffsSubscriptionsPageState extends ConsumerState<TariffsSubscriptionsP
       child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
         Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
         Row(children: [
-          IconButton(icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
+          IconButton(tooltip: 'Предыдущая страница', icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
           Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
-          IconButton(icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
+          IconButton(tooltip: 'Следующая страница', icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
         ]),
       ]),
     );

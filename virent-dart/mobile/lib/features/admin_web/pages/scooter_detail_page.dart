@@ -118,7 +118,7 @@ class ScooterDetailPage extends ConsumerWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 elevation: 0,
                 color: Colors.white,
-                child: SingleChildScrollView(
+                child: telemetry.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: Color(0xFFD9E2EF)), SizedBox(height: 8), Text('Нет телеметрии', style: TextStyle(color: Color(0xFF868686), fontSize: 13))]))) : SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
                     headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1B2A4E)),
