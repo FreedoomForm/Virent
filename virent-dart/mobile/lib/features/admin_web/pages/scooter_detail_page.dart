@@ -121,12 +121,13 @@ class ScooterDetailPage extends ConsumerWidget {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
+                    headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1B2A4E)),
                     headingRowColor: WidgetStateProperty.all(const Color(0xFFF9FAFB)),
                     columns: const [
-                      DataColumn(label: Text('Время')),
-                      DataColumn(label: Text('Батарея')),
-                      DataColumn(label: Text('Скорость')),
-                      DataColumn(label: Text('Статус')),
+                      const DataColumn(label: Text('Время')),
+                      const DataColumn(label: Text('Батарея')),
+                      const DataColumn(label: Text('Скорость')),
+                      const DataColumn(label: Text('Статус')),
                     ],
                     rows: telemetry.map((t) => DataRow(cells: [
                       DataCell(Text(t['time'] ?? '-', style: const TextStyle(fontSize: 12))),
@@ -136,7 +137,7 @@ class ScooterDetailPage extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: t['status'] == 'moving' ? Colors.green.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(t['status'] ?? '-', style: const TextStyle(fontSize: 11)),
                       )),

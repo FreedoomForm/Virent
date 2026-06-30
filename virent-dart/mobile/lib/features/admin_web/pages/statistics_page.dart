@@ -17,7 +17,7 @@ class StatisticsPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Статистика', style: TextStyle(fontSize: 24)),
+          const Text('Статистика', style: TextStyle(fontSize: 22)),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -34,7 +34,7 @@ class StatisticsPage extends ConsumerWidget {
                     prefixIcon: const Icon(Icons.calendar_today, size: 16),
                     hintText: '19.05.26 0:00 - 19.06.26 23:59',
                     isDense: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                 ),
               ),
@@ -45,7 +45,7 @@ class StatisticsPage extends ConsumerWidget {
                   value: 'ИП Асилбеков Шерзод',
                   decoration: InputDecoration(
                     isDense: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   items: const [
                     DropdownMenuItem(value: 'ИП Асилбеков Шерзод', child: Text('ИП Асилбеков Шерзод')),
@@ -87,7 +87,7 @@ class StatisticsPage extends ConsumerWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: const Color(0xFF4FC1E9), borderRadius: BorderRadius.circular(4)),
+            decoration: BoxDecoration(color: const Color(0xFF4FC1E9), borderRadius: BorderRadius.circular(8)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -104,7 +104,7 @@ class StatisticsPage extends ConsumerWidget {
                           prefixIcon: const Icon(Icons.calendar_today, size: 16),
                           hintText: '19.05.26 0:00 - 19.06.26 23:59',
                           isDense: true,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                         ),
                       ),
                     ),
@@ -117,7 +117,7 @@ class StatisticsPage extends ConsumerWidget {
                           filled: true,
                           fillColor: Colors.white,
                           isDense: true,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                         ),
                         items: const [
                           DropdownMenuItem(value: 'ИП Асилбеков Шерзод', child: Text('ИП Асилбеков Шерзод')),
@@ -148,12 +148,12 @@ class StatisticsPage extends ConsumerWidget {
   Widget _buildStatCard(String value, String label, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(value, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+          Text(value, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
           Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
         ],
@@ -163,7 +163,7 @@ class StatisticsPage extends ConsumerWidget {
 
   Widget _buildSectionCard(String title, String content, Color color) {
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), border: Border.all(color: Color(0xFFD9E2EF))),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: Color(0xFFD9E2EF))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

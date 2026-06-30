@@ -92,7 +92,7 @@ class MapPage extends StatelessWidget {
                     margin: const EdgeInsets.fromLTRB(12, 0, 0, 12),
                     decoration: BoxDecoration(
                       color: const Color(0xFFE8E0D8),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Color(0xFFD9E2EF)),
                     ),
                     child: Stack(
@@ -136,7 +136,7 @@ class MapPage extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Color(0xFFD9E2EF)),
                   ),
                   child: SingleChildScrollView(

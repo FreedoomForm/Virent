@@ -65,7 +65,7 @@ class OnlineChatPage extends ConsumerWidget {
                                     fillColor: Colors.white,
                                     filled: true,
                                     contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none),
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                                   ),
                                 ),
                               ),
@@ -75,7 +75,7 @@ class OnlineChatPage extends ConsumerWidget {
                               onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF5CB85C),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
                                 minimumSize: const Size(0, 32),
                               ),
@@ -134,8 +134,8 @@ class OnlineChatPage extends ConsumerWidget {
                             hintText: 'Введите сообщение...',
                             fillColor: Colors.white,
                             filled: true,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide(color: Color(0xFF868686))),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide(color: Color(0xFF868686))),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Color(0xFF868686))),
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Color(0xFF868686))),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                           ),
                         ),
@@ -146,7 +146,7 @@ class OnlineChatPage extends ConsumerWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF5CB85C),
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
                         child: const Text('Отправить', style: TextStyle(color: Colors.white)),
                       )
@@ -181,7 +181,7 @@ class OnlineChatPage extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: unread ? const Color(0xFFFBE4D5) : Colors.white,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

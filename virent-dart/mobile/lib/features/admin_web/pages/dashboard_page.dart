@@ -21,7 +21,7 @@ class DashboardPage extends ConsumerWidget {
           children: [
             const Text(
               'Панель управления',
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E)),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E)),
             ),
             const SizedBox(height: 20),
             Row(
@@ -116,7 +116,7 @@ class DashboardPage extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +140,7 @@ class DashboardPage extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: const Color(0xFF7C69EF),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,7 +161,7 @@ class DashboardPage extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: const Color(0xFF7C69EF),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,7 +204,7 @@ class DashboardPage extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Color(0xFFD9E2EF)),
       ),
       child: Column(
@@ -292,7 +292,7 @@ class DashboardPage extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Color(0xFFD9E2EF)),
       ),
       child: Column(

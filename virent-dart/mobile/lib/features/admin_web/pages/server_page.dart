@@ -32,7 +32,7 @@ class ServerPage extends ConsumerWidget {
             children: [
               const Text('Сервер — Docker',
                   style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 22,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Inter')),
               const Spacer(),
@@ -201,7 +201,7 @@ class _ContainerCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: isRunning ? AppColors.success : AppColors.danger,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(status.toUpperCase(),
                       style: const TextStyle(color: Colors.white, fontSize: 10)),
