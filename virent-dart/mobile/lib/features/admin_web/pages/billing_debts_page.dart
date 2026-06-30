@@ -24,7 +24,7 @@ class BillingDebtsPage extends ConsumerWidget {
               children: [
                 const Row(
                   children: [
-                    Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                    Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                     SizedBox(width: 12),
                     Text('Показано 0 до 0 из 0 совпадений (отфильтровано из 3 совпадений)',
                         style: TextStyle(fontSize: 11, color: Color(0xFFDF4759))),

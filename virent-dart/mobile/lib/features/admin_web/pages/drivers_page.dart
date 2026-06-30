@@ -27,7 +27,7 @@ class DriversPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
                         Text('Показано 1 до 4 из 4 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ],
@@ -36,7 +36,7 @@ class DriversPage extends ConsumerWidget {
                     ElevatedButton.icon(
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
-                      label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
+                      label: const Text('Добавить запись', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF7C69EF),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

@@ -1,0 +1,252 @@
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_auth_page.dart-25-                const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_auth_page.dart-26-                  children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_auth_page.dart:27:                    Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_auth_page.dart-28-                    SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_auth_page.dart-29-                    Text('Показано 1 до 20 из 452,999 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_action_history_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_action_history_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_action_history_page.dart:30:                        Text('История Действий', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_action_history_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_action_history_page.dart-32-                        Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/dots_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/dots_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/dots_page.dart:30:                        Text('Точки', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/dots_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/dots_page.dart-32-                        Text('Показано 1 до 1 из 1 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_companies_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_companies_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_companies_page.dart:30:                        Text('Компании', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_companies_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_companies_page.dart-32-                        Text('Показано 1 до 7 из 7 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/billing_receipts_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/billing_receipts_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/billing_receipts_page.dart:30:                        Text('Чеки', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/billing_receipts_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/billing_receipts_page.dart-32-                        Text('Показано 1 до 20 из 711,062 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/bonus_packages_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/bonus_packages_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/bonus_packages_page.dart:30:                        Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/bonus_packages_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/bonus_packages_page.dart-32-                        Text('Показано 1 до 3 из 3 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/billing_debts_page.dart-25-                const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/billing_debts_page.dart-26-                  children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/billing_debts_page.dart:27:                    Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/billing_debts_page.dart-28-                    SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/billing_debts_page.dart-29-                    Text('Показано 0 до 0 из 0 совпадений (отфильтровано из 3 совпадений)',
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_notifications_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_notifications_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_notifications_page.dart:30:                        Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_notifications_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_notifications_page.dart-32-                        Text('Показано 0 до 0 из 0 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tech_feedback_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tech_feedback_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tech_feedback_page.dart:30:                        Text('Фидбек', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tech_feedback_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tech_feedback_page.dart-32-                        Text('Показано 1 до 20 из 13,420 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/inspection_damages_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/inspection_damages_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/inspection_damages_page.dart:30:                        Text('Повреждения', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/inspection_damages_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/inspection_damages_page.dart-32-                        Text('Показано 1 до 20 из 297 совпадений (отфильтровано из 156,150 совпадений)',
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/promo_codes_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/promo_codes_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/promo_codes_page.dart:30:                        Text('Промокоды', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/promo_codes_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/promo_codes_page.dart-32-                        Text('Показано 1 до 4 из 4 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tarirov_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tarirov_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tarirov_page.dart:30:                        Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tarirov_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tarirov_page.dart-32-                        Text('Показано 0 до 0 из 0 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_unconfirmed_page.dart-25-                const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_unconfirmed_page.dart-26-                  children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_unconfirmed_page.dart:27:                    Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_unconfirmed_page.dart-28-                    SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_unconfirmed_page.dart-29-                    Text('Показано 1 до 20 из 15,114 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/hold_logs_page.dart-23-              crossAxisAlignment: CrossAxisAlignment.start,
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/hold_logs_page.dart-24-              children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/hold_logs_page.dart:25:                const Text('Логи удержаний', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/hold_logs_page.dart-26-                const SizedBox(height: 10),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/hold_logs_page.dart-27-                Row(
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_subscription_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_subscription_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_subscription_page.dart:30:                        Text('Subscription_tariffs', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_subscription_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_subscription_page.dart-32-                        Text('Показано 0 до 0 из 0 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/task_technicians_page.dart-51-                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/task_technicians_page.dart-52-                      Row(children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/task_technicians_page.dart:53:                        const Text('Задачи техников', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/task_technicians_page.dart-54-                        const SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/task_technicians_page.dart-55-                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_scooter_groups_page.dart-51-                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_scooter_groups_page.dart-52-                      Row(children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_scooter_groups_page.dart:53:                        const Text('Группы самокатов', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_scooter_groups_page.dart-54-                        const SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_scooter_groups_page.dart-55-                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/selfies_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/selfies_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/selfies_page.dart:30:                        Text('Селфи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/selfies_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/selfies_page.dart-32-                        Text('Показано 1 до 20 из 296,168 совпадений (отфильтровано из 296,496 совпадений)',
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_telemetry_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_telemetry_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_telemetry_page.dart:30:                        Text('Логи Телеметрии', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_telemetry_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_telemetry_page.dart-32-                        Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/push_history_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/push_history_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/push_history_page.dart:30:                        Text('История Push', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/push_history_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/push_history_page.dart-32-                        Text('Показано 1 до 20 из 1,274,438 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/prepaid_orders_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/prepaid_orders_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/prepaid_orders_page.dart:30:                        Text('Предоплаченные Заказы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/prepaid_orders_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/prepaid_orders_page.dart-32-                        Text('Показано 1 до 20 из 91 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/bonuses_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/bonuses_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/bonuses_page.dart:30:                        Text('Бонусы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/bonuses_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/bonuses_page.dart-32-                        Text('Показано 1 до 20 из 704 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/scooters_page.dart-26-                const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/scooters_page.dart-27-                  children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/scooters_page.dart:28:                    Text('Самокаты', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/scooters_page.dart-29-                    SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/scooters_page.dart-30-                    Text('Показано 1 до 20 из 300 совпадений (отфильтровано из 663 совпадений)', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_accounts_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_accounts_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_accounts_page.dart:30:                        Text('Админы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_accounts_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_accounts_page.dart-32-                        Text('Показано 1 до 20 из 34 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_roles_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_roles_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_roles_page.dart:30:                        Text('Роли', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_roles_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_roles_page.dart-32-                        Text('Показано 1 до 8 из 8 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_payments_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_payments_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_payments_page.dart:30:                        Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_payments_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_payments_page.dart-32-                        Text('Показано 0 до 0 из 0 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_scooter_changes_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_scooter_changes_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_scooter_changes_page.dart:30:                        Text('Логи Изменений Самокатов', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_scooter_changes_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_scooter_changes_page.dart-32-                        Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/technician_tasks_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/technician_tasks_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/technician_tasks_page.dart:30:                        Text('Task_techicians', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/technician_tasks_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/technician_tasks_page.dart-32-                        Text('Показано 0 до 0 из 0 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_permissions_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_permissions_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_permissions_page.dart:30:                        Text('Разрешения', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_permissions_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_permissions_page.dart-32-                        Text('Показано 1 до 20 из 83 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_until_dead_page.dart-25-                const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_until_dead_page.dart-26-                  children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_until_dead_page.dart:27:                    Text('Тариф Пока Не Сядет', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_until_dead_page.dart-28-                    SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_until_dead_page.dart-29-                    Text('Показано 1 до 1 из 1 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/click_transactions_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/click_transactions_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/click_transactions_page.dart:30:                        Text('Транзакции CLICK', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/click_transactions_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/click_transactions_page.dart-32-                        Text('Показано 1 до 5 из 5 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/drivers_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/drivers_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/drivers_page.dart:30:                        Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/drivers_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/drivers_page.dart-32-                        Text('Показано 1 до 4 из 4 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_drivers_page.dart-51-                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_drivers_page.dart-52-                      Row(children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_drivers_page.dart:53:                        const Text('Драйверы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_drivers_page.dart-54-                        const SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/settings_drivers_page.dart-55-                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_abonements_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_abonements_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_abonements_page.dart:30:                        Text('Абонементы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_abonements_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_abonements_page.dart-32-                        Text('Показано 1 до 17 из 17 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/technicians_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/technicians_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/technicians_page.dart:30:                        Text('Техники', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/technicians_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/technicians_page.dart-32-                        Text('Показано 1 до 17 из 17 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_faq_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_faq_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_faq_page.dart:30:                        Text('FAQ', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_faq_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/admin_faq_page.dart-32-                        Text('Показано 1 до 20 из 56 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_client_changes_page.dart-25-                const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_client_changes_page.dart-26-                  children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_client_changes_page.dart:27:                    Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_client_changes_page.dart-28-                    SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/logs_client_changes_page.dart-29-                    Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/orders_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/orders_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/orders_page.dart:30:                        Text('Заказы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/orders_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/orders_page.dart-32-                        Text('Показано 1 до 20 из 435,693 совпадений (отфильтровано из 769,200 совпадений)',
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/fines_page.dart-23-              crossAxisAlignment: CrossAxisAlignment.start,
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/fines_page.dart-24-              children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/fines_page.dart:25:                const Text('Штрафы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/fines_page.dart-26-                const SizedBox(height: 10),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/fines_page.dart-27-                Row(
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_offers_page.dart-28-                    const Row(
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_offers_page.dart-29-                      children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_offers_page.dart:30:                        Text('Тарифы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_offers_page.dart-31-                        SizedBox(width: 12),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariff_offers_page.dart-32-                        Text('Показано 1 до 20 из 23 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/chat_logs_page.dart-23-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/chat_logs_page.dart-24-              children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/chat_logs_page.dart:25:                const Text('Сообщения', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/chat_logs_page.dart-26-              ],
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/chat_logs_page.dart-27-            ),
+--
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariffs_page.dart-51-                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariffs_page.dart-52-                      Row(children: [
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariffs_page.dart:53:                        const Text('Тарифы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+/home/z/my-project/virent-dart/mobile/lib/features/admin_web/pages/tariffs_page.dart-54-                        const SizedBox(width: 12),
+
+[Showing results with pagination = limit: 250]

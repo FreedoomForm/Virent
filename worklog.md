@@ -243,3 +243,39 @@ Stage Summary:
 - All buttons wired to real API calls
 - Infinite loop monitoring continuously
 - 4 commits pushed to GitHub
+
+---
+Task ID: ORCHESTRATOR-1-brace_balance
+Agent: sub-agent (brace balance fixer)
+Task: Fix brace balance issues
+
+Work Log:
+- Scanned admin_web/ with the provided regex script — flagged 2 files:
+  * pages/admin_contacts_page.dart (4/3)
+  * widgets/admin_export.dart (19/18)
+- Read both files completely and manually traced every brace.
+- Verified with a Dart-aware tokenizer that handles string interpolation
+  (${...} with nested strings) and URLs containing `//`.
+- admin_contacts_page.dart: actually 5/5 balanced — FALSE POSITIVE.
+  Cause: line 93 contains '_contactRow(..., 'https://virent.uz', '12'),'.
+  The simple regex's line-comment stripper (//[^\n]*) treats the `//` in
+  https:// as a comment, truncating the line mid-string and leaving an
+  unterminated `'`. The subsequent string regex then runs across newlines
+  and merges multiple lines, miscounting braces.
+- admin_export.dart: actually 22/22 balanced — FALSE POSITIVE.
+  Cause: lines 110, 112, 122 contain string interpolations with nested
+  string literals:
+    L110:  var v = '${row[k] ?? ''}';
+    L112:  v = '"${v.replaceAll('"', '""')}"';
+    L122:  content: Text('CSV скопирован в буфер ($filename — ${data.length} строк)'),
+  The simple single-quote regex (`'[^'\\]*(?:\\.[^'\\]*)*'`) cannot track
+  ${...} interpolation depth, so it pairs quotes incorrectly across
+  nested strings and merges lines, miscounting braces.
+- No edits applied — both files are valid, compilable Dart with correctly
+  balanced braces. Changing anything would risk breaking compilation.
+
+Stage Summary:
+- Files fixed: 0 (no real brace-balance issues)
+- False positives reported: 2 (admin_contacts_page.dart, admin_export.dart)
+- Root cause: simple regex does not handle (1) `//` inside string literals
+  (URLs) and (2) nested string literals inside `${...}` interpolation.

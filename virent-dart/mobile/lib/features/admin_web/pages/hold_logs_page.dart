@@ -22,7 +22,7 @@ class HoldLogsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Hold Logs', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                const Text('Логи удержаний', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -33,7 +33,7 @@ class HoldLogsPage extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                       decoration: BoxDecoration(color: const Color(0xFF7C69EF), borderRadius: BorderRadius.circular(3)),
-                      child: const Text('Filter', style: TextStyle(color: Colors.white, fontSize: 11)),
+                      child: const Text('Фильтр', style: TextStyle(color: Colors.white, fontSize: 11)),
                     ),
                   ],
                 ),
