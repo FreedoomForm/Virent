@@ -258,12 +258,11 @@ def main():
         
         if remaining == 0:
             log(f"✅ Iteration {iteration}: ALL CLEAN — 0 remaining issues")
-            # Don't stop — keep monitoring for new issues
-            log("Continuing to monitor... (Ctrl+C to stop)")
-            time.sleep(5)  # Brief pause
+            log("Continuing to monitor...")
+            time.sleep(30)  # Check every 30 seconds
         else:
             log(f"⚠️ Iteration {iteration}: {remaining} issues remaining")
-            time.sleep(2)
+            time.sleep(5)
         
         iteration += 1
         
