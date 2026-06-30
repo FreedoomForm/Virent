@@ -69,6 +69,14 @@ class _IotPageState extends ConsumerState<IotPage> {
               const SizedBox(height: 8),
               if (_selectedIds.isNotEmpty) _buildBulkActionBar(),
               Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: Color(0xFFD9E2EF))), child: SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1B2A4E)),
+            dataRowColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return const Color(0xFFF1F4F8);
+              return Colors.white;
+            }),
+            dataRowMinHeight: 40,
+            dataRowMaxHeight: 40,
+            columnSpacing: 24,
+            horizontalMargin: 12,
                     headingRowColor: WidgetStateProperty.all(const Color(0xFFF1F4F8)), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('Id')), const DataColumn(label: Text('Mac')), const DataColumn(label: Text('Model')), const DataColumn(label: Text('Status')), const DataColumn(label: Text('Действия'))], rows: pageItems.map((i) => _buildRow(context, ref, i)).toList())))),
               _buildPaginationBar(filtered.length, totalPages),
             ],

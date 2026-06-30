@@ -122,6 +122,14 @@ class ScooterDetailPage extends ConsumerWidget {
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
                     headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1B2A4E)),
+            dataRowColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return const Color(0xFFF1F4F8);
+              return Colors.white;
+            }),
+            dataRowMinHeight: 40,
+            dataRowMaxHeight: 40,
+            columnSpacing: 24,
+            horizontalMargin: 12,
                     headingRowColor: WidgetStateProperty.all(const Color(0xFFF9FAFB)),
                     columns: const [
                       const DataColumn(label: Text('Время')),
