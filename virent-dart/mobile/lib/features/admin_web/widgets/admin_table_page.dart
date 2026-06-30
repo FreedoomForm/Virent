@@ -22,7 +22,7 @@ const Color adminPrimaryForeground = Colors.white;
 
 /// Default card shape for admin table cards.
 final ShapeBorder adminCardShape = RoundedRectangleBorder(
-  borderRadius: BorderRadius.circular(4),
+  borderRadius: BorderRadius.circular(8),
   side: BorderSide(color: Color(0xFFD9E2EF)),
 );
 
@@ -38,7 +38,7 @@ InputDecoration adminSearchDecoration({String label = 'Поиск...'}) {
   return InputDecoration(
     labelText: label,
     isDense: true,
-    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
   );
 }
 
@@ -47,7 +47,7 @@ InputDecoration adminFilterDecoration({String? hint}) {
   return InputDecoration(
     hintText: hint,
     isDense: true,
-    border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
   );
 }
 
