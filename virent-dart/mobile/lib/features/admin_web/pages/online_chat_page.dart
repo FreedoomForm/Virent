@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class OnlineChatPage extends ConsumerWidget {
   const OnlineChatPage({super.key});
@@ -37,11 +38,11 @@ class OnlineChatPage extends ConsumerWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  Container(height: 12, color: const Color(0xFFFFC107)),
+                                  Container(height: 12, color: adminWarning),
                                   const SizedBox(height: 4),
-                                  Container(height: 12, color: const Color(0xFFDF4759)),
+                                  Container(height: 12, color: adminDanger),
                                   const SizedBox(height: 4),
-                                  Container(height: 12, color: const Color(0xFF42BA96)),
+                                  Container(height: 12, color: adminSuccess),
                                 ],
                               ),
                             ),
@@ -121,7 +122,7 @@ class OnlineChatPage extends ConsumerWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        border: Border.all(color: Color(0xFF868686)),
+                        border: Border.all(color: adminTextGray),
                       ),
                     ),
                   ),
@@ -134,8 +135,8 @@ class OnlineChatPage extends ConsumerWidget {
                             hintText: 'Введите сообщение...',
                             fillColor: Colors.white,
                             filled: true,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Color(0xFF868686))),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Color(0xFF868686))),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: adminTextGray)),
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: adminTextGray)),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                           ),
                         ),

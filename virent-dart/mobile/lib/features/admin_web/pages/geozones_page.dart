@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class GeozonesPage extends ConsumerWidget {
   const GeozonesPage({super.key});
@@ -27,9 +28,9 @@ class GeozonesPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Геозоны', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('Геозоны', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 4 из 4 совпадений (отфильтровано из 239 совпадений)', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                        Text('Показано 1 до 4 из 4 совпадений (отфильтровано из 239 совпадений)', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -38,7 +39,7 @@ class GeozonesPage extends ConsumerWidget {
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить геозону', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF7C69EF),
+                        backgroundColor: adminPrimary,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                       ),
@@ -76,8 +77,8 @@ class GeozonesPage extends ConsumerWidget {
                         hintStyle: const TextStyle(fontSize: 11),
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                       ),
                       style: const TextStyle(fontSize: 11),
                     ),
@@ -140,15 +141,15 @@ class GeozonesPage extends ConsumerWidget {
   }
 
   Widget _filterButton(String text, {bool isPurple = false, bool isLightBg = false}) {
-    Color bg = isPurple ? const Color(0xFF7C69EF) : (isLightBg ? const Color(0xFFE8EAF6) : Colors.transparent);
-    Color textColor = isPurple ? Colors.white : (isLightBg ? const Color(0xFF7C69EF) : Colors.black);
+    Color bg = isPurple ? adminPrimary : (isLightBg ? const Color(0xFFE8EAF6) : Colors.transparent);
+    Color textColor = isPurple ? Colors.white : (isLightBg ? adminPrimary : Colors.black);
     return InkWell(
       onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: bg,
-          border: isLightBg ? null : (isPurple ? null : Border.all(color: Color(0xFF868686))),
+          border: isLightBg ? null : (isPurple ? null : Border.all(color: adminTextGray)),
           borderRadius: BorderRadius.circular(3),
         ),
         child: Text(text, style: TextStyle(fontSize: 11, color: textColor)),
@@ -165,11 +166,11 @@ class GeozonesPage extends ConsumerWidget {
           child: TextField(
             decoration: InputDecoration(
               hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF868686)),
+              hintStyle: const TextStyle(fontSize: 11, color: adminTextGray),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
             ),
             style: const TextStyle(fontSize: 11),
           ),
@@ -183,11 +184,11 @@ class GeozonesPage extends ConsumerWidget {
   Widget _geozoneRow(String id, String name, String fill, String stroke, String groups, String opFill, String opStroke, String cmds, String minScooters, bool rUsed, bool reqPark, bool disPark) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
           SizedBox(width: 40, child: Text(id, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 150, child: Text(name, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
+          SizedBox(width: 150, child: Text(name, style: const TextStyle(fontSize: 11, color: adminPrimary))),
           SizedBox(width: 100, child: Text(fill, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 100, child: Text(stroke, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 200, child: Text('-', style: const TextStyle(fontSize: 11))),
@@ -224,11 +225,11 @@ class GeozonesPage extends ConsumerWidget {
             width: 200,
             child: Row(
               children: [
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.visibility, size: 12, color: adminInfo), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: Color(0xFFDF4759)), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFFDF4759)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
               ],
             ),
           ),
@@ -239,7 +240,7 @@ class GeozonesPage extends ConsumerWidget {
 
   Widget _checkBox(bool isChecked, {bool isGreen = false, bool isRed = false}) {
     IconData icon = isChecked ? Icons.check_box : Icons.check_box_outline_blank;
-    Color color = isChecked ? (isGreen ? const Color(0xFF42BA96) : (isRed ? const Color(0xFFDF4759) : Colors.grey)) : (isGreen ? const Color(0xFF42BA96) : (isRed ? const Color(0xFFDF4759) : Colors.grey));
+    Color color = isChecked ? (isGreen ? adminSuccess : (isRed ? adminDanger : Colors.grey)) : (isGreen ? adminSuccess : (isRed ? adminDanger : Colors.grey));
     // The screenshot has the checkbox outline in color even when empty.
     if (!isChecked && isGreen) icon = Icons.check_box_outline_blank;
     if (!isChecked && isRed) icon = Icons.check_box_outline_blank;

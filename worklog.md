@@ -624,3 +624,90 @@ Stage Summary:
   color 0xFF868686
 - Pure Dart, all Russian text preserved
 - Status: ✅ PRODUCTION READY — icons and visual details polished
+
+---
+Task ID: ORCH-EXTRACT-COLORS
+Agent: sub-agent (extract colors)
+Task: Extract hardcoded colors to shared constants
+Work Log:
+- Created lib/features/admin_web/widgets/admin_colors.dart with 18 shared
+  Color constants grouped into 5 categories:
+    * Primary brand colors: adminPrimary, adminPrimaryHover, adminPrimaryDark
+    * Text colors:           adminTextDark, adminTextGray, adminTextSecondary
+    * Status colors:         adminSuccess, adminSuccessDark, adminDanger,
+                             adminDangerDark, adminWarning, adminInfo
+    * Background colors:     adminBgLight, adminBgWhite, adminSidebarBg
+    * Border colors:         adminBorder, adminBorderLight
+    * Badge colors:          adminBadgeSecondary
+- Wrote scripts/extract_admin_colors.py — a Python script that:
+    * Iterates all 76 .dart files in admin_web/pages/
+    * Replaces `const Color(0xFFxxxxxx)` FIRST (stripping `const`, since the
+      constant is already a top-level const), THEN replaces `Color(0xFFxxxxxx)`
+      (without const). Order matters: otherwise the plain-Color regex would
+      match the substring `Color(0xFF...)` inside `const Color(0xFF...)` and
+      produce `const adminPrimary`, which is invalid Dart syntax.
+    * Inserts `import '../widgets/admin_colors.dart';` after the last existing
+      import line in each modified file (only if not already present).
+- Ran the script. Result: 71 files modified, 957 color literal replacements:
+    * adminBorder        (0xFFD9E2EF): 254 replacements
+    * adminInfo          (0xFF467FD0): 157
+    * adminTextGray      (0xFF868686): 143
+    * adminPrimary       (0xFF7C69EF): 102
+    * adminDanger        (0xFFDF4759):  95
+    * adminTextDark      (0xFF1B2A4E):  87
+    * adminSuccess       (0xFF42BA96):  35
+    * adminWarning       (0xFFFFC107):  34
+    * adminBgLight       (0xFFF1F4F8):  34
+    * adminTextSecondary (0xFF6D737A):  16
+    * ----------------------------------------------
+    * TOTAL:                        957
+- 5 page files were not modified (no target colors used):
+    * cities_page.dart        (no Color() literals)
+    * juicers_page.dart       (no Color() literals)
+    * support_page.dart       (no Color() literals)
+    * trips_page.dart         (no Color() literals)
+    * zone_editor_page.dart   (only uses non-target colors:
+                               0xFF22C55E, 0xFFEF4444, 0xFFF59E0B, 0xFF6366F1)
+- Verified with the Dart-aware tokenizer (scripts/verify_balance.py) — ALL
+  76 page files still have balanced (), [], {} after replacements. No file
+  became unbalanced.
+- Verified with `dart analyze` (Dart SDK 3.12.2, no Flutter SDK available in
+  sandbox). The analyzer reports only Flutter-SDK-missing errors (undefined
+  Container/Text/SizedBox/etc.) which affect ALL Flutter files equally when
+  Flutter SDK is absent — these are NOT introduced by my changes. No errors
+  mention admin_colors, adminPrimary, adminBorder, or any of my new constants.
+- Spot-checked replacement correctness on orders_page.dart, dashboard_page.dart,
+  iot_page.dart, scooter_detail_page.dart. All replacements preserve:
+    * `const` keyword before parent widgets (e.g. `const Text(...)` is still
+      const — `adminPrimary` is a top-level const, valid inside const context)
+    * No `const adminPrimary` patterns (which would be invalid syntax —
+      confirmed via `rg 'const admin' pages/` returns 0 matches)
+- Discovered: admin_table_page.dart already defines `adminPrimaryColor`,
+  `adminPrimaryForeground`, `adminPageBg` (pre-existing). These do NOT conflict
+  with the new `adminPrimary`, `adminBgLight` etc. names — different identifiers.
+  Both old and new constants can coexist; future cleanup could deprecate the
+  old names in admin_table_page.dart.
+
+Stage Summary:
+- New file created:
+    lib/features/admin_web/widgets/admin_colors.dart (18 const Color declarations)
+- Helper script created:
+    scripts/extract_admin_colors.py (reusable — can re-run if new pages added)
+- Files modified: 71 of 76 page files in admin_web/pages/
+- Imports added:  71 files now have `import '../widgets/admin_colors.dart';`
+- Color literal replacements: 957 total
+    * Color(0xFF7C69EF) → adminPrimary       (102)
+    * Color(0xFF1B2A4E) → adminTextDark       (87)
+    * Color(0xFF868686) → adminTextGray      (143)
+    * Color(0xFF6D737A) → adminTextSecondary  (16)
+    * Color(0xFF42BA96) → adminSuccess        (35)
+    * Color(0xFFDF4759) → adminDanger         (95)
+    * Color(0xFFFFC107) → adminWarning        (34)
+    * Color(0xFF467FD0) → adminInfo          (157)
+    * Color(0xFFF1F4F8) → adminBgLight        (34)
+    * Color(0xFFD9E2EF) → adminBorder        (254)
+- Brace/paren/bracket balance: ✅ All 76 files balanced
+- Compilation risk: ✅ None — `const` properly stripped before color names;
+  top-level const variables are valid in const contexts.
+- Status: ✅ Color constants extracted — 957 hardcoded Color() literals
+  replaced with named constants across 71 admin page files.

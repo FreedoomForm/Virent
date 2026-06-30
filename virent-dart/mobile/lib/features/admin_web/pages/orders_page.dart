@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class OrdersPage extends ConsumerWidget {
   const OrdersPage({super.key});
@@ -27,10 +28,10 @@ class OrdersPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Заказы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('Заказы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 435,693 совпадений (отфильтровано из 769,200 совпадений)',
-                            style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                            style: TextStyle(fontSize: 11, color: adminTextGray)),
                       ],
                     ),
                     SizedBox(
@@ -42,8 +43,8 @@ class OrdersPage extends ConsumerWidget {
                           hintStyle: const TextStyle(fontSize: 11),
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -56,44 +57,44 @@ class OrdersPage extends ConsumerWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _statusBtn('Отложено', const Color(0xFFFFC107), true),
-                      _statusBtn('Бронь', const Color(0xFFD9E2EF), true),
+                      _statusBtn('Отложено', adminWarning, true),
+                      _statusBtn('Бронь', adminBorder, true),
                       const SizedBox(width: 4),
-                      _statusBtn('Осмотр', Colors.white, false, textColor: const Color(0xFF868686)),
-                      _statusBtn('Осмотр платный', Colors.white, false, textColor: const Color(0xFF868686)),
-                      _statusBtn('Парковка', Colors.white, false, textColor: const Color(0xFF868686)),
-                      _statusBtn('Завершён', Colors.white, false, textColor: const Color(0xFF868686)),
+                      _statusBtn('Осмотр', Colors.white, false, textColor: adminTextGray),
+                      _statusBtn('Осмотр платный', Colors.white, false, textColor: adminTextGray),
+                      _statusBtn('Парковка', Colors.white, false, textColor: adminTextGray),
+                      _statusBtn('Завершён', Colors.white, false, textColor: adminTextGray),
                       const SizedBox(width: 4),
-                      _statusBtn('В аренду', const Color(0xFF1B2A4E), true),
-                      _statusBtn('Активный', const Color(0xFF7C69EF), true),
+                      _statusBtn('В аренду', adminTextDark, true),
+                      _statusBtn('Активный', adminPrimary, true),
                       const SizedBox(width: 8),
-                      const Text('Номер', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      const Text('Номер', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
                       _input(80),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
-                      const Text('ID клиента', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      const Text('ID клиента', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
                       _input(80),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
-                      const Text('Дата', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      const Text('Дата', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
-                      _chip('Не оплачен', const Color(0xFFDF4759)),
+                      _chip('Не оплачен', adminDanger),
                       const SizedBox(width: 4),
-                      const Text('ID самоката', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      const Text('ID самоката', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
                       _input(80),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
-                      _chip('Без абонемента', const Color(0xFF42BA96)),
-                      _chip('С абонементом', const Color(0xFF42BA96)),
-                      _chip('Тариф ▼', const Color(0xFF7C69EF)),
-                      _chip('Абонемент ▼', const Color(0xFF7C69EF)),
-                      _chip('Компания ▼', const Color(0xFF7C69EF)),
+                      _chip('Без абонемента', adminSuccess),
+                      _chip('С абонементом', adminSuccess),
+                      _chip('Тариф ▼', adminPrimary),
+                      _chip('Абонемент ▼', adminPrimary),
+                      _chip('Компания ▼', adminPrimary),
                     ],
                   ),
                 ),
@@ -168,23 +169,23 @@ class OrdersPage extends ConsumerWidget {
     Color statusColor;
     switch (status) {
       case 'Завершено':
-        statusColor = const Color(0xFF42BA96);
+        statusColor = adminSuccess;
         break;
       case 'Поездка':
-        statusColor = const Color(0xFF467FD0);
+        statusColor = adminInfo;
         break;
       case 'Отложено':
-        statusColor = const Color(0xFFFFC107);
+        statusColor = adminWarning;
         break;
       default:
         statusColor = Colors.grey;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
-          SizedBox(width: 60, child: Text(id, style: const TextStyle(fontSize: 10, color: Color(0xFFFFC107)))),
+          SizedBox(width: 60, child: Text(id, style: const TextStyle(fontSize: 10, color: adminWarning))),
           SizedBox(
             width: 80,
             child: Column(
@@ -195,13 +196,13 @@ class OrdersPage extends ConsumerWidget {
                   decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.circular(2)),
                   child: Text(clientId, style: const TextStyle(fontSize: 8, color: Colors.white)),
                 ),
-                Text(clientName, style: const TextStyle(fontSize: 9, color: Color(0xFF467FD0))),
+                Text(clientName, style: const TextStyle(fontSize: 9, color: adminInfo)),
               ],
             ),
           ),
           SizedBox(width: 60, child: Text(car, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 60, child: Text(tariff, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 80, child: abon.isNotEmpty ? Text(abon, style: const TextStyle(fontSize: 10, color: Color(0xFF467FD0))) : const SizedBox()),
+          SizedBox(width: 80, child: abon.isNotEmpty ? Text(abon, style: const TextStyle(fontSize: 10, color: adminInfo)) : const SizedBox()),
           const SizedBox(width: 50),
           SizedBox(width: 70, child: Text(dur, style: const TextStyle(fontSize: 10))),
           SizedBox(
@@ -216,8 +217,8 @@ class OrdersPage extends ConsumerWidget {
           SizedBox(width: 130, child: Text(start, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 130, child: Text(finish, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 50, child: Icon(Icons.check_box, size: 14, color: Colors.green.shade400)),
-          SizedBox(width: 60, child: Icon(Icons.check_box_outline_blank, size: 14, color: Color(0xFF868686))),
-          SizedBox(width: 60, child: Icon(Icons.check_box_outline_blank, size: 14, color: Color(0xFF868686))),
+          SizedBox(width: 60, child: Icon(Icons.check_box_outline_blank, size: 14, color: adminTextGray)),
+          SizedBox(width: 60, child: Icon(Icons.check_box_outline_blank, size: 14, color: adminTextGray)),
           SizedBox(width: 80, child: Text(cost, style: const TextStyle(fontSize: 10))),
           const SizedBox(width: 80),
           const SizedBox(width: 90),
@@ -227,7 +228,7 @@ class OrdersPage extends ConsumerWidget {
           Expanded(
             child: InkWell(
               onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-              child: const Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0))),
+              child: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
             ),
           ),
         ],
@@ -242,9 +243,9 @@ class OrdersPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: filled ? color : Colors.white,
         borderRadius: BorderRadius.circular(3),
-        border: filled ? null : Border.all(color: Color(0xFFD9E2EF)),
+        border: filled ? null : Border.all(color: adminBorder),
       ),
-      child: Text(label, style: TextStyle(color: filled ? textColor : const Color(0xFF868686), fontSize: 10, fontWeight: FontWeight.w500)),
+      child: Text(label, style: TextStyle(color: filled ? textColor : adminTextGray, fontSize: 10, fontWeight: FontWeight.w500)),
     );
   }
 
@@ -256,8 +257,8 @@ class OrdersPage extends ConsumerWidget {
         decoration: InputDecoration(
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
         ),
         style: const TextStyle(fontSize: 11),
       ),

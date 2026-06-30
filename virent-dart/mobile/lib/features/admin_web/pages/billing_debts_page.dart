@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class BillingDebtsPage extends ConsumerWidget {
   const BillingDebtsPage({super.key});
@@ -24,10 +25,10 @@ class BillingDebtsPage extends ConsumerWidget {
               children: [
                 const Row(
                   children: [
-                    Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                    Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                     SizedBox(width: 12),
                     Text('Показано 0 до 0 из 0 совпадений (отфильтровано из 3 совпадений)',
-                        style: TextStyle(fontSize: 11, color: Color(0xFFDF4759))),
+                        style: TextStyle(fontSize: 11, color: adminDanger)),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -39,15 +40,15 @@ class BillingDebtsPage extends ConsumerWidget {
                       const SizedBox(width: 8),
                       _labeledInput('ID заказа', 100),
                       const SizedBox(width: 8),
-                      const Text('Дата ▼', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      const Text('Дата ▼', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(color: const Color(0xFFFFC107), borderRadius: BorderRadius.circular(3)),
+                        decoration: BoxDecoration(color: adminWarning, borderRadius: BorderRadius.circular(3)),
                         child: const Text('Завершённые', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
                       ),
                       const SizedBox(width: 8),
-                      const Text('Попыток списания:', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      const Text('Попыток списания:', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
                       SizedBox(
                         width: 60,
@@ -58,8 +59,8 @@ class BillingDebtsPage extends ConsumerWidget {
                             hintStyle: const TextStyle(fontSize: 10),
                             isDense: true,
                             contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                           ),
                           style: const TextStyle(fontSize: 10),
                         ),
@@ -74,8 +75,8 @@ class BillingDebtsPage extends ConsumerWidget {
                             hintStyle: const TextStyle(fontSize: 10),
                             isDense: true,
                             contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                           ),
                           style: const TextStyle(fontSize: 10),
                         ),
@@ -85,7 +86,7 @@ class BillingDebtsPage extends ConsumerWidget {
                       const SizedBox(width: 12),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(color: const Color(0xFFDF4759), borderRadius: BorderRadius.circular(3)),
+                        decoration: BoxDecoration(color: adminDanger, borderRadius: BorderRadius.circular(3)),
                         child: const Text('Очистить фильтры', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
                       ),
                     ],
@@ -167,7 +168,7 @@ class BillingDebtsPage extends ConsumerWidget {
   Widget _labeledInput(String label, double width) {
     return Row(
       children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+        Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
         const SizedBox(width: 4),
         SizedBox(
           width: width,
@@ -176,8 +177,8 @@ class BillingDebtsPage extends ConsumerWidget {
             decoration: InputDecoration(
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
             ),
             style: const TextStyle(fontSize: 11),
           ),

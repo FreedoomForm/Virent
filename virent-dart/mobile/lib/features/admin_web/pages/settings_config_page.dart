@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class SettingsConfigPage extends ConsumerWidget {
   const SettingsConfigPage({super.key});
@@ -131,7 +132,7 @@ class SettingsConfigPage extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: const Color(0xFFFAFAFA),
-        border: Border.all(color: Color(0xFFD9E2EF)),
+        border: Border.all(color: adminBorder),
       ),
       child: Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
     );
@@ -144,8 +145,8 @@ class SettingsConfigPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
-          left: BorderSide(color: Color(0xFFD9E2EF)),
-          right: BorderSide(color: Color(0xFFD9E2EF)),
+          left: BorderSide(color: adminBorder),
+          right: BorderSide(color: adminBorder),
         ),
       ),
       child: Text(title, style: const TextStyle(fontSize: 11)),
@@ -158,9 +159,9 @@ class SettingsConfigPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
-          left: BorderSide(color: Color(0xFFD9E2EF)),
-          right: BorderSide(color: Color(0xFFD9E2EF)),
-          bottom: BorderSide(color: Color(0xFFF1F4F8)),
+          left: BorderSide(color: adminBorder),
+          right: BorderSide(color: adminBorder),
+          bottom: BorderSide(color: adminBgLight),
         ),
       ),
       child: Row(

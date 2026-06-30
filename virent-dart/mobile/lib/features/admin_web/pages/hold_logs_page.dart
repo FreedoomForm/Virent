@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class HoldLogsPage extends ConsumerWidget {
   const HoldLogsPage({super.key});
@@ -22,7 +23,7 @@ class HoldLogsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Логи удержаний', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                const Text('Логи удержаний', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -32,7 +33,7 @@ class HoldLogsPage extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                      decoration: BoxDecoration(color: const Color(0xFF7C69EF), borderRadius: BorderRadius.circular(3)),
+                      decoration: BoxDecoration(color: adminPrimary, borderRadius: BorderRadius.circular(3)),
                       child: const Text('Фильтр', style: TextStyle(color: Colors.white, fontSize: 11)),
                     ),
                   ],
@@ -110,7 +111,7 @@ class HoldLogsPage extends ConsumerWidget {
       height: 28,
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Color(0xFFD9E2EF)),
+        border: Border.all(color: adminBorder),
         borderRadius: BorderRadius.circular(3),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8),

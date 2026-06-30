@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class AlertsPage extends ConsumerWidget {
   const AlertsPage({super.key});
@@ -22,12 +23,12 @@ class AlertsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Тревоги', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                const Text('Тревоги', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                 const SizedBox(height: 12),
                 // Filters
                 Row(
                   children: [
-                    const Text('Самокат', style: TextStyle(fontSize: 12, color: Color(0xFF868686))),
+                    const Text('Самокат', style: TextStyle(fontSize: 12, color: adminTextGray)),
                     const SizedBox(width: 6),
                     SizedBox(
                       width: 120,
@@ -36,8 +37,8 @@ class AlertsPage extends ConsumerWidget {
                         decoration: InputDecoration(
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                         ),
                         style: const TextStyle(fontSize: 12),
                       ),
@@ -45,7 +46,7 @@ class AlertsPage extends ConsumerWidget {
                     const SizedBox(width: 4),
                     InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 16, color: Colors.grey[500])),
                     const SizedBox(width: 12),
-                    const Text('Типы тревог:', style: TextStyle(fontSize: 12, color: Color(0xFF868686))),
+                    const Text('Типы тревог:', style: TextStyle(fontSize: 12, color: adminTextGray)),
                     const SizedBox(width: 6),
                     SizedBox(
                       width: 140,
@@ -63,11 +64,11 @@ class AlertsPage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    _filterButton('Открыта', const Color(0xFF42BA96)),
+                    _filterButton('Открыта', adminSuccess),
                     const SizedBox(width: 6),
-                    _filterButton('Закрыта', const Color(0xFFFFC107)),
+                    _filterButton('Закрыта', adminWarning),
                     const SizedBox(width: 6),
-                    _filterButton('Группировать', const Color(0xFF467FD0)),
+                    _filterButton('Группировать', adminInfo),
                     const SizedBox(width: 12),
                     InkWell(
                       onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -168,10 +169,10 @@ class AlertsPage extends ConsumerWidget {
       child: Row(
         children: [
           SizedBox(width: 50, child: Icon(icon, color: iconColor, size: 20)),
-          SizedBox(width: 120, child: Text(scooterId, style: const TextStyle(fontSize: 12, color: Color(0xFFFFC107)))),
-          Expanded(child: Text(type, style: const TextStyle(fontSize: 12, color: Color(0xFF1B2A4E)))),
-          SizedBox(width: 200, child: Text(time, style: const TextStyle(fontSize: 12, color: Color(0xFF1B2A4E)))),
-          SizedBox(width: 150, child: Text(status, style: const TextStyle(fontSize: 12, color: Color(0xFF1B2A4E)))),
+          SizedBox(width: 120, child: Text(scooterId, style: const TextStyle(fontSize: 12, color: adminWarning))),
+          Expanded(child: Text(type, style: const TextStyle(fontSize: 12, color: adminTextDark))),
+          SizedBox(width: 200, child: Text(time, style: const TextStyle(fontSize: 12, color: adminTextDark))),
+          SizedBox(width: 150, child: Text(status, style: const TextStyle(fontSize: 12, color: adminTextDark))),
         ],
       ),
     );

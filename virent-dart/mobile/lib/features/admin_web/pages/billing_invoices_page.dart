@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class BillingInvoicesPage extends ConsumerWidget {
   const BillingInvoicesPage({super.key});
@@ -27,9 +28,9 @@ class BillingInvoicesPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Счета', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('Счета', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 3,052,330 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                        Text('Показано 1 до 20 из 3,052,330 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       ],
                     ),
                     SizedBox(
@@ -41,8 +42,8 @@ class BillingInvoicesPage extends ConsumerWidget {
                           hintStyle: const TextStyle(fontSize: 11),
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -130,22 +131,22 @@ class BillingInvoicesPage extends ConsumerWidget {
 
   Widget _invoiceRow(String id, String hold, String company, String operator, String order, String amount, String client, String redis, String status, String created, String resultCode, String type, String trans, String uzcard, String cardPan, String codeMsg, bool showReturn, bool showCreate) {
     Color? statusColor;
-    if (status == 'confirmed') statusColor = const Color(0xFF42BA96);
-    if (status == 'HOLD') statusColor = const Color(0xFFFFC107);
+    if (status == 'confirmed') statusColor = adminSuccess;
+    if (status == 'HOLD') statusColor = adminWarning;
     if (status == 'cancelled') statusColor = Colors.grey;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
           SizedBox(width: 160, child: Text(id, style: const TextStyle(fontSize: 9), overflow: TextOverflow.ellipsis)),
           SizedBox(width: 60, child: Text(hold, style: const TextStyle(fontSize: 9))),
           SizedBox(width: 60, child: Text(company, style: const TextStyle(fontSize: 9))),
           SizedBox(width: 60, child: Text(operator, style: const TextStyle(fontSize: 9))),
-          SizedBox(width: 60, child: Text(order, style: const TextStyle(fontSize: 9, color: Color(0xFF467FD0)))),
+          SizedBox(width: 60, child: Text(order, style: const TextStyle(fontSize: 9, color: adminInfo))),
           SizedBox(width: 60, child: Text(amount, style: const TextStyle(fontSize: 9))),
-          SizedBox(width: 60, child: Text(client, style: const TextStyle(fontSize: 9, color: Color(0xFF467FD0)))),
+          SizedBox(width: 60, child: Text(client, style: const TextStyle(fontSize: 9, color: adminInfo))),
           SizedBox(width: 160, child: Text(redis, style: const TextStyle(fontSize: 9), overflow: TextOverflow.ellipsis)),
           SizedBox(width: 70, child: Text(status, style: const TextStyle(fontSize: 9))),
           SizedBox(width: 130, child: Text(created, style: const TextStyle(fontSize: 9))),
@@ -158,12 +159,12 @@ class BillingInvoicesPage extends ConsumerWidget {
           Expanded(
             child: Row(
               children: [
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Text('Просмотр', style: TextStyle(fontSize: 9, color: Color(0xFF467FD0)))),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Text('Просмотр', style: TextStyle(fontSize: 9, color: adminInfo))),
                 if (showReturn) ...[
                   const SizedBox(width: 4),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                    decoration: BoxDecoration(color: const Color(0xFFFFC107), borderRadius: BorderRadius.circular(2)),
+                    decoration: BoxDecoration(color: adminWarning, borderRadius: BorderRadius.circular(2)),
                     child: const Text('Вернуть платеж', style: TextStyle(fontSize: 8, color: Colors.white)),
                   ),
                 ],
@@ -171,7 +172,7 @@ class BillingInvoicesPage extends ConsumerWidget {
                   const SizedBox(width: 4),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                    decoration: BoxDecoration(color: const Color(0xFF42BA96), borderRadius: BorderRadius.circular(2)),
+                    decoration: BoxDecoration(color: adminSuccess, borderRadius: BorderRadius.circular(2)),
                     child: const Text('Создать чек', style: TextStyle(fontSize: 8, color: Colors.white)),
                   ),
                 ],
@@ -186,7 +187,7 @@ class BillingInvoicesPage extends ConsumerWidget {
   Widget _labeledInput(String label, double width) {
     return Row(
       children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+        Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
         const SizedBox(width: 4),
         SizedBox(
           width: width,
@@ -195,8 +196,8 @@ class BillingInvoicesPage extends ConsumerWidget {
             decoration: InputDecoration(
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
             ),
             style: const TextStyle(fontSize: 11),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class LogsActionHistoryPage extends ConsumerWidget {
   const LogsActionHistoryPage({super.key});
@@ -27,9 +28,9 @@ class LogsActionHistoryPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('История Действий', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('История Действий', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                        Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -65,8 +66,8 @@ class LogsActionHistoryPage extends ConsumerWidget {
                         hintStyle: const TextStyle(fontSize: 11),
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                       ),
                       style: const TextStyle(fontSize: 11),
                     ),
@@ -118,11 +119,11 @@ class LogsActionHistoryPage extends ConsumerWidget {
 
   Widget _actionRow(String objectId, String userEmail, String key, String newVal, String oldVal, String date, {bool isTech = false}) {
     return Container(
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: const EdgeInsets.only(left: 16, top: 16), child: SizedBox(width: 80, child: Text(objectId, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF))))),
+          Padding(padding: const EdgeInsets.only(left: 16, top: 16), child: SizedBox(width: 80, child: Text(objectId, style: const TextStyle(fontSize: 11, color: adminPrimary)))),
           Padding(
             padding: const EdgeInsets.only(left: 0, top: 16),
             child: SizedBox(
@@ -132,11 +133,11 @@ class LogsActionHistoryPage extends ConsumerWidget {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                          decoration: BoxDecoration(color: const Color(0xFF467FD0), borderRadius: BorderRadius.circular(2)),
+                          decoration: BoxDecoration(color: adminInfo, borderRadius: BorderRadius.circular(2)),
                           child: const Text('Техничка', style: TextStyle(color: Colors.white, fontSize: 8)),
                         ),
                         const SizedBox(width: 4),
-                        Text(userEmail, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF))),
+                        Text(userEmail, style: const TextStyle(fontSize: 11, color: adminPrimary)),
                       ],
                     )
                   : const SizedBox(),
@@ -147,14 +148,14 @@ class LogsActionHistoryPage extends ConsumerWidget {
               children: [
                 Expanded(
                   child: Container(
-                    decoration: BoxDecoration(border: Border(right: BorderSide(color: Color(0xFFD9E2EF)), left: BorderSide(color: Color(0xFFD9E2EF)))),
+                    decoration: BoxDecoration(border: Border(right: BorderSide(color: adminBorder), left: BorderSide(color: adminBorder))),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+                          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
                           child: const Text('Key', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                         ),
                         Container(
@@ -163,7 +164,7 @@ class LogsActionHistoryPage extends ConsumerWidget {
                             children: [
                               Text(key, style: const TextStyle(fontSize: 11)),
                               const SizedBox(width: 4),
-                              const Icon(Icons.info_outline, size: 12, color: Color(0xFF467FD0)),
+                              const Icon(Icons.info_outline, size: 12, color: adminInfo),
                             ],
                           ),
                         ),
@@ -173,14 +174,14 @@ class LogsActionHistoryPage extends ConsumerWidget {
                 ),
                 Expanded(
                   child: Container(
-                    decoration: BoxDecoration(border: Border(right: BorderSide(color: Color(0xFFD9E2EF)))),
+                    decoration: BoxDecoration(border: Border(right: BorderSide(color: adminBorder))),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+                          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
                           child: const Text('New', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                         ),
                         Container(padding: const EdgeInsets.all(8), child: Text(newVal, style: const TextStyle(fontSize: 11))),
@@ -191,14 +192,14 @@ class LogsActionHistoryPage extends ConsumerWidget {
                 if (oldVal.isNotEmpty)
                   Expanded(
                     child: Container(
-                      decoration: BoxDecoration(border: Border(right: BorderSide(color: Color(0xFFD9E2EF)))),
+                      decoration: BoxDecoration(border: Border(right: BorderSide(color: adminBorder))),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             width: double.infinity,
                             padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+                            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
                             child: const Text('Old', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                           ),
                           Container(padding: const EdgeInsets.all(8), child: Text(oldVal, style: const TextStyle(fontSize: 11))),
@@ -224,11 +225,11 @@ class LogsActionHistoryPage extends ConsumerWidget {
           child: TextField(
             decoration: InputDecoration(
               hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF868686)),
+              hintStyle: const TextStyle(fontSize: 11, color: adminTextGray),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
             ),
             style: const TextStyle(fontSize: 11),
           ),
@@ -240,8 +241,8 @@ class LogsActionHistoryPage extends ConsumerWidget {
   }
 
   Widget _statusFilter(String text, bool isSelected, {bool isYellow = false}) {
-    final borderColor = isSelected ? const Color(0xFF42BA96) : (isYellow ? const Color(0xFFFFC107) : Colors.transparent);
-    final textColor = isSelected ? const Color(0xFF42BA96) : (isYellow ? const Color(0xFFFFC107) : const Color(0xFF868686));
+    final borderColor = isSelected ? adminSuccess : (isYellow ? adminWarning : Colors.transparent);
+    final textColor = isSelected ? adminSuccess : (isYellow ? adminWarning : adminTextGray);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

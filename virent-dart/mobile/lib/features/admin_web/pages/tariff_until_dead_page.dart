@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class TariffUntilDeadPage extends ConsumerWidget {
   const TariffUntilDeadPage({super.key});
@@ -24,9 +25,9 @@ class TariffUntilDeadPage extends ConsumerWidget {
               children: [
                 const Row(
                   children: [
-                    Text('Тариф Пока Не Сядет', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                    Text('Тариф Пока Не Сядет', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                     SizedBox(width: 12),
-                    Text('Показано 1 до 1 из 1 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                    Text('Показано 1 до 1 из 1 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
                   ],
                 ),
                 SizedBox(
@@ -38,8 +39,8 @@ class TariffUntilDeadPage extends ConsumerWidget {
                       hintStyle: const TextStyle(fontSize: 11),
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                     ),
                     style: const TextStyle(fontSize: 11),
                   ),
@@ -87,10 +88,10 @@ class TariffUntilDeadPage extends ConsumerWidget {
   Widget _tariffRow(String appName, String adminName, String duration, String insurance, String cost, String batteryLevel) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
-          SizedBox(width: 250, child: Text(appName, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
+          SizedBox(width: 250, child: Text(appName, style: const TextStyle(fontSize: 11, color: adminPrimary))),
           SizedBox(width: 200, child: Text(adminName, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 250, child: Text(duration, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 150, child: Text(insurance, style: const TextStyle(fontSize: 11))),
@@ -99,13 +100,13 @@ class TariffUntilDeadPage extends ConsumerWidget {
           Expanded(
             child: Row(
               children: [
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.visibility, size: 12, color: adminInfo), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.map, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Геозоны завершения', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.map, size: 12, color: adminInfo), SizedBox(width: 4), Text('Геозоны завершения', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: Color(0xFFDF4759)), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFFDF4759)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
               ],
             ),
           ),

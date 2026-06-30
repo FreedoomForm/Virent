@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class PrepaidOrdersPage extends ConsumerWidget {
   const PrepaidOrdersPage({super.key});
@@ -27,9 +28,9 @@ class PrepaidOrdersPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Предоплаченные Заказы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('Предоплаченные Заказы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 91 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                        Text('Показано 1 до 20 из 91 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       ],
                     ),
                     SizedBox(
@@ -41,8 +42,8 @@ class PrepaidOrdersPage extends ConsumerWidget {
                           hintStyle: const TextStyle(fontSize: 11),
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -129,13 +130,13 @@ class PrepaidOrdersPage extends ConsumerWidget {
     final bool isClick = type == 'CLICK';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
           SizedBox(width: 40, child: Text(id, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 200, child: Text(token, style: const TextStyle(fontSize: 10), overflow: TextOverflow.ellipsis)),
           SizedBox(width: 50, child: Text(car, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 60, child: Text(client, style: const TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
+          SizedBox(width: 60, child: Text(client, style: const TextStyle(fontSize: 10, color: adminInfo))),
           SizedBox(width: 70, child: Text(company, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 80, child: Text(abon, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 80, child: Text(amount, style: const TextStyle(fontSize: 10))),
@@ -148,7 +149,7 @@ class PrepaidOrdersPage extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: isClick ? const Color(0xFF42BA96) : const Color(0xFF7C69EF),
+                color: isClick ? adminSuccess : adminPrimary,
                 borderRadius: BorderRadius.circular(2),
               ),
               child: Text(type, style: const TextStyle(fontSize: 9, color: Colors.white), textAlign: TextAlign.center),
@@ -160,9 +161,9 @@ class PrepaidOrdersPage extends ConsumerWidget {
               child: const Row(
                 children: [
                   SizedBox(width: 8),
-                  Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)),
+                  Icon(Icons.visibility, size: 12, color: adminInfo),
                   SizedBox(width: 4),
-                  Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0))),
+                  Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
                 ],
               ),
             ),
@@ -175,7 +176,7 @@ class PrepaidOrdersPage extends ConsumerWidget {
   Widget _labeledInput(String label, double width) {
     return Row(
       children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+        Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
         const SizedBox(width: 4),
         SizedBox(
           width: width,
@@ -184,8 +185,8 @@ class PrepaidOrdersPage extends ConsumerWidget {
             decoration: InputDecoration(
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
             ),
             style: const TextStyle(fontSize: 11),
           ),

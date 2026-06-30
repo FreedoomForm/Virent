@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class LogsTelemetryPage extends ConsumerWidget {
   const LogsTelemetryPage({super.key});
@@ -27,9 +28,9 @@ class LogsTelemetryPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Логи Телеметрии', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('Логи Телеметрии', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                        Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       ],
                     ),
                     SizedBox(
@@ -41,8 +42,8 @@ class LogsTelemetryPage extends ConsumerWidget {
                           hintStyle: const TextStyle(fontSize: 11),
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -58,7 +59,7 @@ class LogsTelemetryPage extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(color: const Color(0xFF7C69EF), borderRadius: BorderRadius.circular(3)),
+                      decoration: BoxDecoration(color: adminPrimary, borderRadius: BorderRadius.circular(3)),
                       child: const Row(
                         children: [
                           Icon(Icons.warning_amber_rounded, size: 14, color: Colors.white),
@@ -150,12 +151,12 @@ class LogsTelemetryPage extends ConsumerWidget {
   Widget _telemetryRow(String id, String carId, String gosnomer, String mileage, String ecuErr, String ecuErrType, String orderId, bool icon1, bool icon2, bool icon3, bool icon4, bool isMotion, String val1, String val2, String val3, String val4, String val5, String val6, String eventTime, String serverTime) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
-          SizedBox(width: 150, child: Text(id, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
-          SizedBox(width: 50, child: Text(carId, style: const TextStyle(fontSize: 11, color: Color(0xFF467FD0)))),
-          SizedBox(width: 60, child: Text(gosnomer, style: const TextStyle(fontSize: 11, color: Color(0xFF467FD0)))),
+          SizedBox(width: 150, child: Text(id, style: const TextStyle(fontSize: 11, color: adminPrimary))),
+          SizedBox(width: 50, child: Text(carId, style: const TextStyle(fontSize: 11, color: adminInfo))),
+          SizedBox(width: 60, child: Text(gosnomer, style: const TextStyle(fontSize: 11, color: adminInfo))),
           SizedBox(width: 100, child: Text(mileage, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 150, child: Text(ecuErr, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 80, child: Text(ecuErrType, style: const TextStyle(fontSize: 11))),
@@ -188,9 +189,9 @@ class LogsTelemetryPage extends ConsumerWidget {
               onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
               child: const Row(
                 children: [
-                  Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)),
+                  Icon(Icons.visibility, size: 12, color: adminInfo),
                   SizedBox(width: 4),
-                  Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0))),
+                  Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
                 ],
               ),
             ),
@@ -205,7 +206,7 @@ class LogsTelemetryPage extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Color(0xFFD9E2EF)),
+        border: Border.all(color: adminBorder),
         borderRadius: BorderRadius.circular(3),
       ),
       child: Text(label, style: const TextStyle(color: Colors.grey, fontSize: 11)),
@@ -221,11 +222,11 @@ class LogsTelemetryPage extends ConsumerWidget {
           child: TextField(
             decoration: InputDecoration(
               hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF868686)),
+              hintStyle: const TextStyle(fontSize: 11, color: adminTextGray),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
             ),
             style: const TextStyle(fontSize: 11),
           ),

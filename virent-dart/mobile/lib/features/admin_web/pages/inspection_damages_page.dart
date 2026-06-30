@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class InspectionDamagesPage extends ConsumerWidget {
   const InspectionDamagesPage({super.key});
@@ -27,10 +28,10 @@ class InspectionDamagesPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Повреждения', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('Повреждения', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 297 совпадений (отфильтровано из 156,150 совпадений)',
-                            style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                            style: TextStyle(fontSize: 11, color: adminTextGray)),
                       ],
                     ),
                     SizedBox(
@@ -42,8 +43,8 @@ class InspectionDamagesPage extends ConsumerWidget {
                           hintStyle: const TextStyle(fontSize: 11),
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -59,15 +60,15 @@ class InspectionDamagesPage extends ConsumerWidget {
                       const SizedBox(width: 8),
                       _labeledInput('Номер', 100),
                       const SizedBox(width: 8),
-                      const Text('Конкретный день ▼', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      const Text('Конкретный день ▼', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 8),
-                      const Text('Промежуток времени ▼', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      const Text('Промежуток времени ▼', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 12),
-                      _chipBtn('Парковки', const Color(0xFFD9E2EF)),
-                      _chipBtn('Фото при начале', const Color(0xFFFFC107)),
-                      _chipBtn('Фото при завершении', const Color(0xFFFFC107)),
+                      _chipBtn('Парковки', adminBorder),
+                      _chipBtn('Фото при начале', adminWarning),
+                      _chipBtn('Фото при завершении', adminWarning),
                       const SizedBox(width: 8),
-                      _chipBtn('Очистить фильтры', const Color(0xFF7C69EF)),
+                      _chipBtn('Очистить фильтры', adminPrimary),
                     ],
                   ),
                 ),
@@ -117,7 +118,7 @@ class InspectionDamagesPage extends ConsumerWidget {
   Widget _damageRow(String car, String order, String type) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
           SizedBox(
@@ -128,21 +129,21 @@ class InspectionDamagesPage extends ConsumerWidget {
                   width: 80,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: Color(0xFFD9E2EF),
+                    color: adminBorder,
                     borderRadius: BorderRadius.circular(3),
-                    border: Border.all(color: Color(0xFFD9E2EF)),
+                    border: Border.all(color: adminBorder),
                   ),
-                  child: Icon(Icons.image, size: 30, color: Color(0xFF868686)),
+                  child: Icon(Icons.image, size: 30, color: adminTextGray),
                 ),
               ],
             ),
           ),
           SizedBox(width: 150, child: Text(car, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 150, child: Text(order, style: const TextStyle(fontSize: 11, color: Color(0xFF467FD0)))),
+          SizedBox(width: 150, child: Text(order, style: const TextStyle(fontSize: 11, color: adminInfo))),
           Expanded(
             child: Row(
               children: [
-                Icon(Icons.grid_view, size: 14, color: Color(0xFF868686)),
+                Icon(Icons.grid_view, size: 14, color: adminTextGray),
                 const SizedBox(width: 4),
                 Text(type, style: const TextStyle(fontSize: 11)),
               ],
@@ -156,7 +157,7 @@ class InspectionDamagesPage extends ConsumerWidget {
   Widget _labeledInput(String label, double width) {
     return Row(
       children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+        Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
         const SizedBox(width: 4),
         SizedBox(
           width: width,
@@ -165,8 +166,8 @@ class InspectionDamagesPage extends ConsumerWidget {
             decoration: InputDecoration(
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
             ),
             style: const TextStyle(fontSize: 11),
           ),

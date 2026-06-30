@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class BillingReceiptsPage extends ConsumerWidget {
   const BillingReceiptsPage({super.key});
@@ -27,9 +28,9 @@ class BillingReceiptsPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Чеки', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('Чеки', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 711,062 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                        Text('Показано 1 до 20 из 711,062 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       ],
                     ),
                     SizedBox(
@@ -41,8 +42,8 @@ class BillingReceiptsPage extends ConsumerWidget {
                           hintStyle: const TextStyle(fontSize: 11),
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -122,16 +123,16 @@ class BillingReceiptsPage extends ConsumerWidget {
   Widget _receiptRow(String id, String uuid, String check, String providerUuid, String bill, String status, String client, String amount, String created, String company, String order, String sendable) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
           SizedBox(width: 60, child: Text(id, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 100, child: Text(uuid, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 60, child: Text(check, style: const TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
+          SizedBox(width: 60, child: Text(check, style: const TextStyle(fontSize: 10, color: adminInfo))),
           SizedBox(width: 120, child: Text(providerUuid, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 250, child: Text(bill, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 80, child: Text(status, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 80, child: Text(client, style: const TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
+          SizedBox(width: 80, child: Text(client, style: const TextStyle(fontSize: 10, color: adminInfo))),
           SizedBox(width: 80, child: Text(amount, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 140, child: Text(created, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 80, child: Text(company, style: const TextStyle(fontSize: 10))),
@@ -147,7 +148,7 @@ class BillingReceiptsPage extends ConsumerWidget {
   Widget _labeledInput(String label, double width) {
     return Row(
       children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+        Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
         const SizedBox(width: 4),
         SizedBox(
           width: width,
@@ -156,8 +157,8 @@ class BillingReceiptsPage extends ConsumerWidget {
             decoration: InputDecoration(
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
             ),
             style: const TextStyle(fontSize: 11),
           ),

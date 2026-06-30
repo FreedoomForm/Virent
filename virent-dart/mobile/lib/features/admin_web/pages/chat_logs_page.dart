@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class ChatLogsPage extends ConsumerWidget {
   const ChatLogsPage({super.key});
@@ -22,7 +23,7 @@ class ChatLogsPage extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Сообщения', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                const Text('Сообщения', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
               ],
             ),
           ),
@@ -39,7 +40,7 @@ class ChatLogsPage extends ConsumerWidget {
                 ElevatedButton(
                   onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF7C69EF),
+                    backgroundColor: adminPrimary,
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                   ),
@@ -112,7 +113,7 @@ class ChatLogsPage extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
               color: const Color(0xFFF0F0F0),
-              border: Border.all(color: Color(0xFFD9E2EF)),
+              border: Border.all(color: adminBorder),
               borderRadius: const BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
             ),
             child: Text(label, style: const TextStyle(fontSize: 11)),
@@ -124,8 +125,8 @@ class ChatLogsPage extends ConsumerWidget {
                 hintStyle: const TextStyle(fontSize: 11),
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                border: OutlineInputBorder(borderRadius: const BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                enabledBorder: OutlineInputBorder(borderRadius: const BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                border: OutlineInputBorder(borderRadius: const BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)), borderSide: BorderSide(color: adminBorder)),
+                enabledBorder: OutlineInputBorder(borderRadius: const BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)), borderSide: BorderSide(color: adminBorder)),
                 fillColor: Colors.white,
                 filled: true,
               ),
@@ -146,7 +147,7 @@ class ChatLogsPage extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
               color: const Color(0xFFF0F0F0),
-              border: Border.all(color: Color(0xFFD9E2EF)),
+              border: Border.all(color: adminBorder),
               borderRadius: const BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
             ),
             child: Text(label, style: const TextStyle(fontSize: 11)),
@@ -156,7 +157,7 @@ class ChatLogsPage extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border.all(color: Color(0xFFD9E2EF)),
+                border: Border.all(color: adminBorder),
                 borderRadius: const BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
               ),
               child: Row(
@@ -176,7 +177,7 @@ class ChatLogsPage extends ConsumerWidget {
   Widget _messageRow(String clientId, bool hasMessage, bool hasImage, String timestamp) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -184,9 +185,9 @@ class ChatLogsPage extends ConsumerWidget {
             width: 80,
             child: Row(
               children: [
-                Text(clientId, style: const TextStyle(fontSize: 11, color: Color(0xFF467FD0))),
+                Text(clientId, style: const TextStyle(fontSize: 11, color: adminInfo)),
                 const SizedBox(width: 4),
-                Container(width: 6, height: 6, decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFDF4759))),
+                Container(width: 6, height: 6, decoration: const BoxDecoration(shape: BoxShape.circle, color: adminDanger)),
               ],
             ),
           ),
@@ -196,7 +197,7 @@ class ChatLogsPage extends ConsumerWidget {
                     alignment: Alignment.centerLeft,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                      decoration: BoxDecoration(color: const Color(0xFFFFC107), borderRadius: BorderRadius.circular(3)),
+                      decoration: BoxDecoration(color: adminWarning, borderRadius: BorderRadius.circular(3)),
                       child: const Text('Прочитать новое сообщение', style: TextStyle(fontSize: 11, color: Colors.white)),
                     ),
                   )
@@ -208,7 +209,7 @@ class ChatLogsPage extends ConsumerWidget {
           ),
           const SizedBox(width: 100),
           SizedBox(width: 140, child: Text(timestamp, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 100, child: Text('посмотреть', style: TextStyle(fontSize: 11, color: const Color(0xFF7C69EF).withValues(alpha: 0.8)))),
+          SizedBox(width: 100, child: Text('посмотреть', style: TextStyle(fontSize: 11, color: adminPrimary.withValues(alpha: 0.8)))),
           const SizedBox(width: 120),
           const SizedBox(width: 100),
           SizedBox(
@@ -217,7 +218,7 @@ class ChatLogsPage extends ConsumerWidget {
               alignment: Alignment.centerLeft,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                decoration: BoxDecoration(color: const Color(0xFF7C69EF), borderRadius: BorderRadius.circular(3)),
+                decoration: BoxDecoration(color: adminPrimary, borderRadius: BorderRadius.circular(3)),
                 child: const Text('Написать сообщение', style: TextStyle(fontSize: 11, color: Colors.white)),
               ),
             ),

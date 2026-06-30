@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class PushHistoryPage extends ConsumerWidget {
   const PushHistoryPage({super.key});
@@ -27,9 +28,9 @@ class PushHistoryPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('История Push', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('История Push', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 1,274,438 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                        Text('Показано 1 до 20 из 1,274,438 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       ],
                     ),
                     SizedBox(
@@ -41,8 +42,8 @@ class PushHistoryPage extends ConsumerWidget {
                           hintStyle: const TextStyle(fontSize: 11),
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -52,7 +53,7 @@ class PushHistoryPage extends ConsumerWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    const Text('ID клиента', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                    const Text('ID клиента', style: TextStyle(fontSize: 11, color: adminTextGray)),
                     const SizedBox(width: 4),
                     SizedBox(
                       width: 100,
@@ -61,8 +62,8 @@ class PushHistoryPage extends ConsumerWidget {
                         decoration: InputDecoration(
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -136,7 +137,7 @@ class PushHistoryPage extends ConsumerWidget {
   Widget _pushRow(String id, String client, String text, String isRead, String deleted, String created, String clientId, String clientName) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
           SizedBox(width: 80, child: Text(id, style: const TextStyle(fontSize: 11))),
@@ -155,7 +156,7 @@ class PushHistoryPage extends ConsumerWidget {
                   child: Text(clientId, style: const TextStyle(fontSize: 9, color: Colors.white)),
                 ),
                 const SizedBox(width: 6),
-                Text(clientName, style: const TextStyle(fontSize: 11, color: Color(0xFF467FD0))),
+                Text(clientName, style: const TextStyle(fontSize: 11, color: adminInfo)),
               ],
             ),
           ),
@@ -165,9 +166,9 @@ class PushHistoryPage extends ConsumerWidget {
               onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
               child: Row(
                 children: [
-                  const Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)),
+                  const Icon(Icons.visibility, size: 12, color: adminInfo),
                   const SizedBox(width: 4),
-                  const Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0))),
+                  const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
                 ],
               ),
             ),

@@ -15,6 +15,7 @@ import '../../../core/configs/services/api_client.dart';
 import '../../../core/configs/theme/app_colors.dart';
 import '../../auth/presentation/providers/auth_providers.dart' show apiClientProvider;
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class ServerPage extends ConsumerWidget {
   const ServerPage({super.key});
@@ -34,7 +35,7 @@ class ServerPage extends ConsumerWidget {
                   style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF1B2A4E),
+                      color: adminTextDark,
                       fontFamily: 'Inter')),
               const Spacer(),
               OutlinedButton.icon(
@@ -113,7 +114,7 @@ class ServerPage extends ConsumerWidget {
                             );
                           }
                           return Container(
-                            color: const Color(0xFF1B2A4E),
+                            color: adminTextDark,
                             padding: const EdgeInsets.all(12),
                             child: SingleChildScrollView(
                               child: Column(
@@ -122,7 +123,7 @@ class ServerPage extends ConsumerWidget {
                                   final text = log['line'] ?? log['message'] ?? log.toString();
                                   return Text('$text',
                                       style: const TextStyle(
-                                          color: Color(0xFF7C69EF),
+                                          color: adminPrimary,
                                           fontFamily: 'monospace',
                                           fontSize: 12));
                                 }).toList(),

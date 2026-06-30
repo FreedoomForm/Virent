@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../../auth/presentation/providers/auth_providers.dart' show apiClientProvider;
 import '../widgets/admin_dialogs.dart';
+import '../widgets/admin_colors.dart';
 
 class PushComposerPage extends ConsumerStatefulWidget {
   const PushComposerPage({super.key});
@@ -50,7 +51,7 @@ class _PushComposerPageState extends ConsumerState<PushComposerPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('📢 Композер уведомлений',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
           const SizedBox(height: 6),
           Text('Отправьте push-уведомление пользователям',
               style: TextStyle(fontSize: 13, color: Colors.grey[600])),

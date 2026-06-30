@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_dialogs.dart';
 import '../widgets/admin_export.dart';
+import '../widgets/admin_colors.dart';
 
 class BulkPrepaidPage extends ConsumerStatefulWidget {
   const BulkPrepaidPage({super.key});
@@ -43,7 +44,7 @@ class _BulkPrepaidPageState extends ConsumerState<BulkPrepaidPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('🎫 Генератор предоплаченных карт',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
           const SizedBox(height: 6),
           Text('Создайте N карт с одинаковым номиналом',
               style: TextStyle(fontSize: 13, color: Colors.grey[600])),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class TechFeedbackPage extends ConsumerWidget {
   const TechFeedbackPage({super.key});
@@ -27,9 +28,9 @@ class TechFeedbackPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Фидбек', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('Фидбек', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 13,420 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                        Text('Показано 1 до 20 из 13,420 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -44,7 +45,7 @@ class TechFeedbackPage extends ConsumerWidget {
                         ElevatedButton(
                           onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF7C69EF),
+                            backgroundColor: adminPrimary,
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             minimumSize: const Size(0, 28),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
@@ -66,8 +67,8 @@ class TechFeedbackPage extends ConsumerWidget {
                         hintStyle: const TextStyle(fontSize: 11),
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                       ),
                       style: const TextStyle(fontSize: 11),
                     ),
@@ -133,13 +134,13 @@ class TechFeedbackPage extends ConsumerWidget {
   Widget _feedbackRow(String id, String carId, String clientId, String orderId, String type, String createdAt, String updatedAt) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
           SizedBox(width: 60, child: Text(id, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 80, child: Text(carId, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
-          SizedBox(width: 80, child: Text(clientId, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
-          SizedBox(width: 80, child: Text(orderId, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
+          SizedBox(width: 80, child: Text(carId, style: const TextStyle(fontSize: 11, color: adminPrimary))),
+          SizedBox(width: 80, child: Text(clientId, style: const TextStyle(fontSize: 11, color: adminPrimary))),
+          SizedBox(width: 80, child: Text(orderId, style: const TextStyle(fontSize: 11, color: adminPrimary))),
           Expanded(child: Text(type, style: const TextStyle(fontSize: 11))),
           SizedBox(
             width: 80,
@@ -160,11 +161,11 @@ class TechFeedbackPage extends ConsumerWidget {
             width: 200,
             child: Row(
               children: [
-                const Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)),
+                const Icon(Icons.visibility, size: 12, color: adminInfo),
                 const SizedBox(width: 4),
-                const Text('Просмотр', style: TextStyle(fontSize: 11, color: Color(0xFF467FD0))),
+                const Text('Просмотр', style: TextStyle(fontSize: 11, color: adminInfo)),
                 const SizedBox(width: 12),
-                const Text('Проверить фидбэк', style: TextStyle(fontSize: 11, color: Color(0xFF467FD0))),
+                const Text('Проверить фидбэк', style: TextStyle(fontSize: 11, color: adminInfo)),
               ],
             ),
           ),
@@ -182,11 +183,11 @@ class TechFeedbackPage extends ConsumerWidget {
           child: TextField(
             decoration: InputDecoration(
               hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF868686)),
+              hintStyle: const TextStyle(fontSize: 11, color: adminTextGray),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
             ),
             style: const TextStyle(fontSize: 11),
           ),

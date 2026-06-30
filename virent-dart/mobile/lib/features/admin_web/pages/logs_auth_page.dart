@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class LogsAuthPage extends ConsumerWidget {
   const LogsAuthPage({super.key});
@@ -24,9 +25,9 @@ class LogsAuthPage extends ConsumerWidget {
               children: [
                 const Row(
                   children: [
-                    Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                    Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                     SizedBox(width: 12),
-                    Text('Показано 1 до 20 из 452,999 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                    Text('Показано 1 до 20 из 452,999 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
                   ],
                 ),
                 SizedBox(
@@ -38,8 +39,8 @@ class LogsAuthPage extends ConsumerWidget {
                       hintStyle: const TextStyle(fontSize: 11),
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                     ),
                     style: const TextStyle(fontSize: 11),
                   ),
@@ -106,7 +107,7 @@ class LogsAuthPage extends ConsumerWidget {
   Widget _authRow(String id, String client, String phone, String ip, String time, String smsCode, bool isSuccess) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
           SizedBox(width: 100, child: Text(id, style: const TextStyle(fontSize: 11))),

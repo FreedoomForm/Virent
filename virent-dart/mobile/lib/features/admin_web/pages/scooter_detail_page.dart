@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../admin_web_providers.dart';
 import '../widgets/admin_dialogs.dart';
+import '../widgets/admin_colors.dart';
 
 class ScooterDetailPage extends ConsumerWidget {
   const ScooterDetailPage({super.key, this.scooterId});
@@ -71,7 +72,7 @@ class ScooterDetailPage extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                Text(name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                 const Spacer(),
                 Text(status.toUpperCase(),
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
@@ -118,12 +119,12 @@ class ScooterDetailPage extends ConsumerWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 elevation: 0,
                 color: Colors.white,
-                child: telemetry.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: Color(0xFFD9E2EF)), SizedBox(height: 8), Text('Нет телеметрии', style: TextStyle(color: Color(0xFF868686), fontSize: 13))]))) : SingleChildScrollView(
+                child: telemetry.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет телеметрии', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
-                    headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1B2A4E)),
+                    headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
             dataRowColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.hovered)) return const Color(0xFFF1F4F8);
+              if (states.contains(WidgetState.hovered)) return adminBgLight;
               return Colors.white;
             }),
             dataRowMinHeight: 40,

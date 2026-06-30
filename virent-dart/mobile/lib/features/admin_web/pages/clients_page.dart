@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class ClientsPage extends ConsumerWidget {
   const ClientsPage({super.key});
@@ -24,10 +25,10 @@ class ClientsPage extends ConsumerWidget {
               children: [
                 const Row(
                   children: [
-                    Text('Клиенты', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                    Text('Клиенты', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 129 совпадений (отфильтровано из 296,496 совпадений)',
-                        style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                        style: TextStyle(fontSize: 11, color: adminTextGray)),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -36,7 +37,7 @@ class ClientsPage extends ConsumerWidget {
                   icon: const Icon(Icons.add, size: 14),
                   label: const Text('Добавить Клиента'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF7C69EF),
+                    backgroundColor: adminPrimary,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -49,32 +50,32 @@ class ClientsPage extends ConsumerWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      const Text('ID клиента', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      const Text('ID клиента', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
                       _input(100),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
-                      const Text('Телефон', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      const Text('Телефон', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
                       _input(120),
                       const SizedBox(width: 12),
-                      _chip('Группы ▼', const Color(0xFF7C69EF)),
-                      _chip('Компании ▼', const Color(0xFF7C69EF)),
-                      _chip('Активн.', const Color(0xFF467FD0)),
-                      _chip('Не активн.', const Color(0xFFDF4759)),
-                      _chip('Заблокировать', const Color(0xFF7C69EF)),
-                      _chip('Не заблокирован', const Color(0xFF42BA96)),
-                      _chip('Есть БК', const Color(0xFF42BA96)),
-                      _chip('Нет БК', const Color(0xFFFFC107)),
+                      _chip('Группы ▼', adminPrimary),
+                      _chip('Компании ▼', adminPrimary),
+                      _chip('Активн.', adminInfo),
+                      _chip('Не активн.', adminDanger),
+                      _chip('Заблокировать', adminPrimary),
+                      _chip('Не заблокирован', adminSuccess),
+                      _chip('Есть БК', adminSuccess),
+                      _chip('Нет БК', adminWarning),
                       const SizedBox(width: 8),
-                      const Text('Комментарий', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      const Text('Комментарий', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
                       _input(120),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
-                      _chip('Очистить фильтры', const Color(0xFF7C69EF)),
+                      _chip('Очистить фильтры', adminPrimary),
                     ],
                   ),
                 ),
@@ -146,11 +147,11 @@ class ClientsPage extends ConsumerWidget {
   static Widget _clientRow(String id, String phone, String data, String debt, bool active, bool blocked, String comment) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
           SizedBox(width: 70, child: Text(id, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 120, child: Text(phone, style: const TextStyle(fontSize: 11, color: Color(0xFFFFC107)))),
+          SizedBox(width: 120, child: Text(phone, style: const TextStyle(fontSize: 11, color: adminWarning))),
           SizedBox(
             width: 120,
             child: Container(
@@ -162,8 +163,8 @@ class ClientsPage extends ConsumerWidget {
           const SizedBox(width: 80),
           SizedBox(width: 80, child: Text(debt, style: const TextStyle(fontSize: 11))),
           const SizedBox(width: 80),
-          SizedBox(width: 60, child: Icon(active ? Icons.check_box : Icons.check_box_outline_blank, size: 16, color: active ? Colors.green : Color(0xFF868686))),
-          SizedBox(width: 70, child: Icon(blocked ? Icons.check_box : Icons.check_box_outline_blank, size: 16, color: blocked ? Colors.red : Color(0xFF868686))),
+          SizedBox(width: 60, child: Icon(active ? Icons.check_box : Icons.check_box_outline_blank, size: 16, color: active ? Colors.green : adminTextGray)),
+          SizedBox(width: 70, child: Icon(blocked ? Icons.check_box : Icons.check_box_outline_blank, size: 16, color: blocked ? Colors.red : adminTextGray)),
           SizedBox(width: 50, child: Icon(Icons.videocam, size: 14, color: Colors.purple.shade300)),
           const SizedBox(width: 70, child: Text('-', style: TextStyle(fontSize: 11))),
           SizedBox(
@@ -171,7 +172,7 @@ class ClientsPage extends ConsumerWidget {
             child: comment.isNotEmpty
                 ? Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(color: const Color(0xFF7C69EF), borderRadius: BorderRadius.circular(2)),
+                    decoration: BoxDecoration(color: adminPrimary, borderRadius: BorderRadius.circular(2)),
                     child: Text(comment, style: const TextStyle(fontSize: 9, color: Colors.white), overflow: TextOverflow.ellipsis),
                   )
                 : const SizedBox(),
@@ -181,9 +182,9 @@ class ClientsPage extends ConsumerWidget {
               children: [
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Icon(Icons.people, size: 14, color: Colors.grey)),
                 const SizedBox(width: 8),
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Text('Статус', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Text('Статус', style: TextStyle(fontSize: 10, color: adminInfo))),
                 const SizedBox(width: 8),
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
               ],
             ),
           ),
@@ -200,8 +201,8 @@ class ClientsPage extends ConsumerWidget {
         decoration: InputDecoration(
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
         ),
         style: const TextStyle(fontSize: 11),
       ),

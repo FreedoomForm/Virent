@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
@@ -21,7 +22,7 @@ class DashboardPage extends ConsumerWidget {
           children: [
             const Text(
               'Панель управления',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E)),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark),
             ),
             const SizedBox(height: 20),
             Row(
@@ -66,40 +67,40 @@ class DashboardPage extends ConsumerWidget {
         // Row 1: Всего, На линии, Не на линии
         Row(
           children: [
-            _statCard('Всего', '300', const Color(0xFF1B2A4E)),
+            _statCard('Всего', '300', adminTextDark),
             const SizedBox(width: 12),
-            _statCard('На линии', '241', const Color(0xFF42BA96)),
+            _statCard('На линии', '241', adminSuccess),
             const SizedBox(width: 12),
-            _statCard('Не на линии', '59', const Color(0xFF868686)),
+            _statCard('Не на линии', '59', adminTextGray),
           ],
         ),
         const SizedBox(height: 12),
         // Row 2: На складе, В техничке, Свободно
         Row(
           children: [
-            _statCard('На складе', '1', const Color(0xFFFFC107)),
+            _statCard('На складе', '1', adminWarning),
             const SizedBox(width: 12),
-            _statCard('В техничке', '50', const Color(0xFFFFC107)),
+            _statCard('В техничке', '50', adminWarning),
             const SizedBox(width: 12),
-            _statCard('Свободно', '237', const Color(0xFF467FD0)),
+            _statCard('Свободно', '237', adminInfo),
           ],
         ),
         const SizedBox(height: 12),
         // Row 3: Бронь, В аренде, Онлайн
         Row(
           children: [
-            _statCard('Бронь', '0', const Color(0xFF42BA96)),
+            _statCard('Бронь', '0', adminSuccess),
             const SizedBox(width: 12),
-            _statCard('В аренде', '4', const Color(0xFF7C69EF)),
+            _statCard('В аренде', '4', adminPrimary),
             const SizedBox(width: 12),
-            _statCard('Онлайн', '268', const Color(0xFF42BA96)),
+            _statCard('Онлайн', '268', adminSuccess),
           ],
         ),
         const SizedBox(height: 12),
         // Row 4: Не онлайн
         Row(
           children: [
-            _statCard('Не онлайн', '32', const Color(0xFFDF4759)),
+            _statCard('Не онлайн', '32', adminDanger),
             const SizedBox(width: 12),
             const Expanded(child: SizedBox()),
             const SizedBox(width: 12),
@@ -139,7 +140,7 @@ class DashboardPage extends ConsumerWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF7C69EF),
+              color: adminPrimary,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
@@ -160,7 +161,7 @@ class DashboardPage extends ConsumerWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF7C69EF),
+              color: adminPrimary,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
@@ -205,26 +206,26 @@ class DashboardPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Color(0xFFD9E2EF)),
+        border: Border.all(color: adminBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Управление', style: TextStyle(fontSize: 14, color: Color(0xFF1B2A4E))),
+          const Text('Управление', style: TextStyle(fontSize: 14, color: adminTextDark)),
           const SizedBox(height: 12),
           Row(
             children: [
-              _colorButton('Обновление', const Color(0xFF7C69EF)),
+              _colorButton('Обновление', adminPrimary),
               const SizedBox(width: 8),
-              _colorButton('Режим техника', const Color(0xFFFFC107)),
+              _colorButton('Режим техника', adminWarning),
             ],
           ),
           const SizedBox(height: 16),
           TextField(
             maxLines: 3,
             decoration: InputDecoration(
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
               contentPadding: const EdgeInsets.all(10),
               filled: true,
               fillColor: Colors.white,
@@ -236,10 +237,10 @@ class DashboardPage extends ConsumerWidget {
             spacing: 6,
             runSpacing: 6,
             children: [
-              _colorButton('опубликовать', const Color(0xFF42BA96)),
-              _colorButton('снять с публикации', const Color(0xFFD9E2EF), textColor: Colors.black54),
-              _colorButton('редактировать', const Color(0xFF467FD0)),
-              _colorButton('статус', const Color(0xFFFFC107), textColor: Colors.black87),
+              _colorButton('опубликовать', adminSuccess),
+              _colorButton('снять с публикации', adminBorder, textColor: Colors.black54),
+              _colorButton('редактировать', adminInfo),
+              _colorButton('статус', adminWarning, textColor: Colors.black87),
             ],
           ),
           const SizedBox(height: 16),
@@ -247,7 +248,7 @@ class DashboardPage extends ConsumerWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: const Color(0xFF7C69EF),
+              color: adminPrimary,
               borderRadius: BorderRadius.circular(3),
             ),
             child: const Row(
@@ -264,7 +265,7 @@ class DashboardPage extends ConsumerWidget {
               OutlinedButton(
                 onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Color(0xFFD9E2EF)),
+                  side: BorderSide(color: adminBorder),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   textStyle: const TextStyle(fontSize: 12),
                 ),
@@ -274,11 +275,11 @@ class DashboardPage extends ConsumerWidget {
               OutlinedButton(
                 onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Color(0xFFFFC107)),
+                  side: const BorderSide(color: adminWarning),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   textStyle: const TextStyle(fontSize: 12),
                 ),
-                child: const Text('Получить клиентов', style: TextStyle(color: Color(0xFFFFC107))),
+                child: const Text('Получить клиентов', style: TextStyle(color: adminWarning)),
               ),
             ],
           ),
@@ -293,31 +294,31 @@ class DashboardPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Color(0xFFD9E2EF)),
+        border: Border.all(color: adminBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('PUSH', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1B2A4E))),
+          const Text('PUSH', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: adminTextDark)),
           const SizedBox(height: 12),
-          const Text('Заголовок', style: TextStyle(fontSize: 12, color: Color(0xFF868686))),
+          const Text('Заголовок', style: TextStyle(fontSize: 12, color: adminTextGray)),
           const SizedBox(height: 4),
           TextField(
             decoration: InputDecoration(
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             ),
             style: const TextStyle(fontSize: 13),
           ),
           const SizedBox(height: 12),
-          const Text('Сообщение', style: TextStyle(fontSize: 12, color: Color(0xFF868686))),
+          const Text('Сообщение', style: TextStyle(fontSize: 12, color: adminTextGray)),
           const SizedBox(height: 4),
           TextField(
             decoration: InputDecoration(
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             ),

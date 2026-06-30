@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class LogsScooterChangesPage extends ConsumerWidget {
   const LogsScooterChangesPage({super.key});
@@ -27,9 +28,9 @@ class LogsScooterChangesPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Логи Изменений Самокатов', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        Text('Логи Изменений Самокатов', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                        Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -45,8 +46,8 @@ class LogsScooterChangesPage extends ConsumerWidget {
                       hintStyle: const TextStyle(fontSize: 11),
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
                     ),
                     style: const TextStyle(fontSize: 11),
                   ),
@@ -122,16 +123,16 @@ class LogsScooterChangesPage extends ConsumerWidget {
   Widget _scooterLog(String id, String num, String orderId, String model, String online, String compId, String user, String geo, String updTime, String creTime, String flespi, String imei, String lastOrder) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
-          SizedBox(width: 150, child: Text(id, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
-          SizedBox(width: 100, child: Text(num, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
-          SizedBox(width: 120, child: Text(orderId, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
-          SizedBox(width: 80, child: Text(model, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
+          SizedBox(width: 150, child: Text(id, style: const TextStyle(fontSize: 11, color: adminPrimary))),
+          SizedBox(width: 100, child: Text(num, style: const TextStyle(fontSize: 11, color: adminPrimary))),
+          SizedBox(width: 120, child: Text(orderId, style: const TextStyle(fontSize: 11, color: adminPrimary))),
+          SizedBox(width: 80, child: Text(model, style: const TextStyle(fontSize: 11, color: adminPrimary))),
           SizedBox(width: 80, child: Text(online, style: const TextStyle(fontSize: 11))),
           const SizedBox(width: 250, child: Text('', style: TextStyle(fontSize: 11))), // empty action col
-          SizedBox(width: 100, child: Text(compId, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
+          SizedBox(width: 100, child: Text(compId, style: const TextStyle(fontSize: 11, color: adminPrimary))),
           SizedBox(width: 120, child: Text(user, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 200, child: Text(geo, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 150, child: Text(updTime, style: const TextStyle(fontSize: 11))),
@@ -154,11 +155,11 @@ class LogsScooterChangesPage extends ConsumerWidget {
           child: TextField(
             decoration: InputDecoration(
               hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF868686)),
+              hintStyle: const TextStyle(fontSize: 11, color: adminTextGray),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
             ),
             style: const TextStyle(fontSize: 11),
           ),

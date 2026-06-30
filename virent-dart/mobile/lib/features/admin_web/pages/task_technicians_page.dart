@@ -5,6 +5,7 @@ import '../admin_web_providers.dart';
 import '../widgets/admin_dialogs.dart';
 import '../widgets/admin_export.dart';
 import '../widgets/admin_status_tabs.dart';
+import '../widgets/admin_colors.dart';
 
 class TaskTechniciansPage extends ConsumerStatefulWidget {
   const TaskTechniciansPage({super.key});
@@ -50,39 +51,39 @@ class _TaskTechniciansPageState extends ConsumerState<TaskTechniciansPage> {
                   children: [
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Row(children: [
-                        const Text('Задачи техников', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        const Text('Задачи техников', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         const SizedBox(width: 12),
-                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
                       ElevatedButton.icon(
                       onPressed: () => showAdminFormDialog(context, title: 'Добавить задачу', fields: const [AdminField(key: 'title', label: 'Title'), AdminField(key: 'technician', label: 'Technician'), AdminField(key: 'description', label: 'Description')], onSubmit: (v) async { ref.invalidate(techTasksProvider); }),
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить задачу', style: TextStyle(fontSize: 11, color: Colors.white)),
-                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7C69EF), foregroundColor: Colors.white, elevation: 0, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))),
+                      style: ElevatedButton.styleFrom(backgroundColor: adminPrimary, foregroundColor: Colors.white, elevation: 0, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))),
                     )
                     ]),
                     Row(children: [
-                      IconButton(icon: const Icon(Icons.download, size: 18, color: Color(0xFF6D737A)), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: [AdminField(key: 'title', label: 'Title'), AdminField(key: 'technician', label: 'Technician'), AdminField(key: 'description', label: 'Description')], onExport: (fmt, fields) async {})),
-                      IconButton(icon: const Icon(Icons.filter_list, size: 18, color: Color(0xFF6D737A)), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'title', label: 'Title'), AdminField(key: 'technician', label: 'Technician'), AdminField(key: 'description', label: 'Description')], onApply: (v) async {})),
-                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: const InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: Color(0xFF868686)), filled: true, fillColor: Color(0xFFF1F4F8), border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: Color(0xFFD9E2EF))), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                      IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: [AdminField(key: 'title', label: 'Title'), AdminField(key: 'technician', label: 'Technician'), AdminField(key: 'description', label: 'Description')], onExport: (fmt, fields) async {})),
+                      IconButton(icon: const Icon(Icons.filter_list, size: 18, color: adminTextSecondary), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'title', label: 'Title'), AdminField(key: 'technician', label: 'Technician'), AdminField(key: 'description', label: 'Description')], onApply: (v) async {})),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: const InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
                     ]),
                   ],
                 ),
               ),
               const SizedBox(height: 8),
-              AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: const Color(0xFF7C69EF))]),
+              AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: adminPrimary)]),
               const SizedBox(height: 8),
               if (_selectedIds.isNotEmpty) _buildBulkActionBar(),
-              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: Color(0xFFD9E2EF))), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: Color(0xFFD9E2EF)), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: Color(0xFF868686), fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF1B2A4E)),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: adminBorder)), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
             dataRowColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.hovered)) return const Color(0xFFF1F4F8);
+              if (states.contains(WidgetState.hovered)) return adminBgLight;
               return Colors.white;
             }),
             dataRowMinHeight: 40,
             dataRowMaxHeight: 40,
             columnSpacing: 24,
             horizontalMargin: 12,
-                    headingRowColor: WidgetStateProperty.all(const Color(0xFFF1F4F8)), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('id')), const DataColumn(label: Text('Title')), const DataColumn(label: Text('Technician')), const DataColumn(label: Text('Description')), const DataColumn(label: Text('Create by')), const DataColumn(label: Text('Create time')), const DataColumn(label: Text('Завершен')), const DataColumn(label: Text('Finish time')), const DataColumn(label: Text('Действия'))], rows: pageItems.map((i) => _buildRow(context, ref, i)).toList())))),
+                    headingRowColor: WidgetStateProperty.all(adminBgLight), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('id')), const DataColumn(label: Text('Title')), const DataColumn(label: Text('Technician')), const DataColumn(label: Text('Description')), const DataColumn(label: Text('Create by')), const DataColumn(label: Text('Create time')), const DataColumn(label: Text('Завершен')), const DataColumn(label: Text('Finish time')), const DataColumn(label: Text('Действия'))], rows: pageItems.map((i) => _buildRow(context, ref, i)).toList())))),
               _buildPaginationBar(filtered.length, totalPages),
             ],
           ),
@@ -103,9 +104,9 @@ class _TaskTechniciansPageState extends ConsumerState<TaskTechniciansPage> {
       DataCell(Text('${item['done'] ?? ''}')),
       DataCell(Text('${item['finish_time'] ?? ''}')),
       DataCell(Row(children: [
-        TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
-        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'title', label: 'Title', initial: '${item[\'title\'] ?? \'\'}'), AdminField(key: 'technician', label: 'Technician', initial: '${item[\'technician\'] ?? \'\'}'), AdminField(key: 'description', label: 'Description', initial: '${item[\'description\'] ?? \'\'}')], onSubmit: (v) async { ref.invalidate(techTasksProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: Color(0xFF467FD0)), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
-        TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'Задачи техников', onDelete: () async { ref.invalidate(techTasksProvider); }), icon: const Icon(Icons.delete, size: 12, color: Color(0xFFDF4759)), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFFDF4759)))),
+        TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: adminInfo), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'title', label: 'Title', initial: '${item[\'title\'] ?? \'\'}'), AdminField(key: 'technician', label: 'Technician', initial: '${item[\'technician\'] ?? \'\'}'), AdminField(key: 'description', label: 'Description', initial: '${item[\'description\'] ?? \'\'}')], onSubmit: (v) async { ref.invalidate(techTasksProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: adminInfo), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'Задачи техников', onDelete: () async { ref.invalidate(techTasksProvider); }), icon: const Icon(Icons.delete, size: 12, color: adminDanger), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))),
       ])),
     ]);
   }
@@ -113,11 +114,11 @@ class _TaskTechniciansPageState extends ConsumerState<TaskTechniciansPage> {
   Widget _buildBulkActionBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: const Color(0xFFF1F4F8),
+      color: adminBgLight,
       child: Row(children: [
         Text('Выбрано: ${_selectedIds.length}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
         const SizedBox(width: 16),
-        TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: Color(0xFFDF4759)), label: const Text('Удалить', style: TextStyle(color: Color(0xFFDF4759), fontSize: 11))),
+        TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: adminDanger), label: const Text('Удалить', style: TextStyle(color: adminDanger, fontSize: 11))),
         const Spacer(),
         TextButton(onPressed: () => setState(() => _selectedIds.clear()), child: const Text('Отменить', style: TextStyle(fontSize: 11))),
       ]),
@@ -128,7 +129,7 @@ class _TaskTechniciansPageState extends ConsumerState<TaskTechniciansPage> {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
-        Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+        Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: adminTextGray)),
         Row(children: [
           IconButton(tooltip: 'Предыдущая страница', icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
           Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),

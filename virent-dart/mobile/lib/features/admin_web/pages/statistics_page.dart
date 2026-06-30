@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_colors.dart';
 
 class StatisticsPage extends ConsumerWidget {
   const StatisticsPage({super.key});
@@ -17,13 +18,13 @@ class StatisticsPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Статистика', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+          const Text('Статистика', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
           const SizedBox(height: 16),
           Row(
             children: [
               ElevatedButton(
                 onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-                style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFD9E2EF), foregroundColor: Colors.black, elevation: 0),
+                style: ElevatedButton.styleFrom(backgroundColor: adminBorder, foregroundColor: Colors.black, elevation: 0),
                 child: const Text('Табличная выгрузка'),
               ),
               const SizedBox(width: 8),
@@ -127,7 +128,7 @@ class StatisticsPage extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7C69EF), foregroundColor: Colors.white),
+                      style: ElevatedButton.styleFrom(backgroundColor: adminPrimary, foregroundColor: Colors.white),
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                       child: const Text('Показать'),
                     )
@@ -163,7 +164,7 @@ class StatisticsPage extends ConsumerWidget {
 
   Widget _buildSectionCard(String title, String content, Color color) {
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: Color(0xFFD9E2EF))),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: adminBorder)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
