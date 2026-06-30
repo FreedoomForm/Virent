@@ -26,7 +26,7 @@ class SmsGatewayPage extends ConsumerWidget {
           DataCell(Text(id)),
           DataCell(Text(provider)),
           DataCell(Text(status)),
-          DataCell(TextButton.icon(onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать'))),
+          DataCell(TextButton.icon(onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), icon: const Icon(Icons.edit, size: 12, color: Color(0xFF467FD0)), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0))))),
         ]);
       },
     );

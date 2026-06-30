@@ -71,7 +71,7 @@ class ScooterDetailPage extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+                Text(name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                 const Spacer(),
                 Text(status.toUpperCase(),
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,

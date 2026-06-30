@@ -29,7 +29,7 @@ class ClickTransactionsPage extends ConsumerWidget {
                       children: [
                         Text('Транзакции CLICK', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 5 из 5 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                        Text('Показано 1 до 5 из 5 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       ],
                     ),
                     SizedBox(

@@ -33,7 +33,8 @@ class ServerPage extends ConsumerWidget {
               const Text('Сервер — Docker',
                   style: TextStyle(
                       fontSize: 22,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF1B2A4E),
                       fontFamily: 'Inter')),
               const Spacer(),
               OutlinedButton.icon(

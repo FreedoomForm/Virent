@@ -17,7 +17,7 @@ class StatisticsPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Статистика', style: TextStyle(fontSize: 22)),
+          const Text('Статистика', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
           const SizedBox(height: 16),
           Row(
             children: [

@@ -30,7 +30,7 @@ class SelfiesPage extends ConsumerWidget {
                         Text('Селфи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 296,168 совпадений (отфильтровано из 296,496 совпадений)',
-                            style: TextStyle(fontSize: 11, color: Colors.grey)),
+                            style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       ],
                     ),
                     SizedBox(

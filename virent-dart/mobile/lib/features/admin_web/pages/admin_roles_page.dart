@@ -29,7 +29,7 @@ class AdminRolesPage extends ConsumerWidget {
                       children: [
                         Text('Роли', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
-                        Text('Показано 1 до 8 из 8 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                        Text('Показано 1 до 8 из 8 совпадений', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -134,7 +134,7 @@ class AdminRolesPage extends ConsumerWidget {
               children: [
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
                 const SizedBox(width: 12),
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: Color(0xFFDF4759)), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFFDF4759)))])),
               ],
             ),
           ),

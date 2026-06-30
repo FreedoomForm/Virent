@@ -43,7 +43,7 @@ class _BulkPrepaidPageState extends ConsumerState<BulkPrepaidPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('🎫 Генератор предоплаченных карт',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
           const SizedBox(height: 6),
           Text('Создайте N карт с одинаковым номиналом',
               style: TextStyle(fontSize: 13, color: Colors.grey[600])),
