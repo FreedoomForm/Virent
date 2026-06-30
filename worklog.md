@@ -319,3 +319,59 @@ Stage Summary:
 - 6 commits pushed to GitHub
 
 Status: ✅ PRODUCTION READY — 0 issues
+
+---
+Task ID: ORCH-FINAL-VERIFY
+Agent: sub-agent (final verification)
+Task: Final comprehensive verification
+
+Work Log:
+- Step 1: Ran verification script across all Dart files in admin_web/.
+  Result: 2 issues reported by the simple regex scanner:
+    * ./pages/admin_contacts_page.dart: braces
+    * ./widgets/admin_export.dart: braces
+  No MaterialStateProperty, withOpacity, empty handlers, or old color
+  issues found anywhere.
+- Step 2: Brace-balance investigation — re-ran with a Dart-aware tokenizer
+  that correctly handles:
+    (1) `//` inside string literals (e.g. URLs like 'https://virent.uz')
+    (2) Nested string literals inside `${...}` string interpolation
+        (e.g. '${row[k] ?? ''}', 'CSV скопирован в буфер ($filename — ${data.length} строк)')
+  Result: Both files are correctly balanced:
+    * admin_contacts_page.dart: open=5 close=5  ✅
+    * admin_export.dart:        open=22 close=22 ✅
+  Conclusion: 2 FALSE POSITIVES, no real brace-balance issues. No edits
+  needed (changing valid Dart would risk breaking compilation).
+- Step 3: DataTable feature audit — ran the feature checklist across all
+  DataTable pages (excluding scooter_detail_page.dart, which is a detail
+  page rather than a list page):
+    Required features per page: search, pagination (_pageSize), bulk
+    (_selectedIds), export (showAdminExportDialog), filter
+    (showAdminFilterDialog), status_tabs (AdminStatusTabsRow), checkbox
+    (Checkbox), headingTextStyle, dataRowMinHeight.
+  Result: ALL 8 DataTable pages PASS:
+    ✅ iot_page.dart
+    ✅ settings_drivers_page.dart
+    ✅ settings_scooter_groups_page.dart
+    ✅ sms_logs_page.dart
+    ✅ tariff_subtariffs_page.dart
+    ✅ tariffs_page.dart
+    ✅ tariffs_subscriptions_page.dart
+    ✅ task_technicians_page.dart
+  No missing features detected.
+- Step 4: No fixes required — all issues were either false positives or
+  already resolved.
+
+Stage Summary:
+- Total Dart files: 85 (1 providers, 1 screen, 3 layout, 4 widgets, 76 pages)
+- Issues found:    2 (both false positives, no real issues)
+- Issues fixed:    0 (none required)
+- Brace balance:   ✅ All files balanced
+- Deprecated APIs: ✅ No MaterialStateProperty, no withOpacity
+- Empty handlers:  ✅ No empty onPressed/onTap
+- Old colors:      ✅ All match reference palette
+- DataTable pages: ✅ All 8 pages have search, pagination, bulk, export,
+                   filter, status tabs, checkbox, headingTextStyle,
+                   dataRowMinHeight
+- Pure Dart, all Russian text preserved
+- Status: ✅ PRODUCTION READY — 0 real issues
