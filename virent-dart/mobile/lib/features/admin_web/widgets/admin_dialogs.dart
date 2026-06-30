@@ -202,6 +202,123 @@ Future<void> showAdminViewDialog(
   );
 }
 
+/// Shows a bulk action confirmation dialog. Refuses to proceed when
+/// [selectedCount] is zero (shows an error SnackBar instead).
+Future<void> showAdminBulkActionDialog(
+  BuildContext context, {
+  required String title,
+  required String message,
+  required int selectedCount,
+  required Future<void> Function() onConfirm,
+  String confirmLabel = 'Подтвердить',
+  String successMessage = 'Готово',
+}) async {
+  if (selectedCount == 0) {
+    if (!context.mounted) return;
+    showAdminSnack(context, 'Нет выбранных элементов', isError: true);
+    return;
+  }
+  await showAdminConfirmDialog(
+    context,
+    title: title,
+    message: '$message (Выбрано: $selectedCount)',
+    onConfirm: onConfirm,
+    confirmLabel: confirmLabel,
+    successMessage: successMessage,
+  );
+}
+
+/// Shows a filter form dialog with one [TextField] per [AdminField]. When
+/// the user taps "Применить", [onApply] is called with the entered values.
+Future<void> showAdminFilterDialog(
+  BuildContext context, {
+  required String title,
+  required List<AdminField> fields,
+  required Future<void> Function(Map<String, dynamic> values) onApply,
+  String successMessage = 'Фильтры применены',
+}) async {
+  final controllers = {
+    for (final f in fields) f.key: TextEditingController(text: f.initial),
+  };
+  Map<String, dynamic>? result;
+  try {
+    result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(title),
+          content: SizedBox(
+            width: 420,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: fields
+                    .map((f) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: TextField(
+                            controller: controllers[f.key],
+                            obscureText: f.obscure,
+                            maxLines: f.multiline ? 3 : 1,
+                            decoration: InputDecoration(
+                              labelText: f.label,
+                              hintText: f.hint,
+                              border: const OutlineInputBorder(),
+                              isDense: true,
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Отмена'),
+            ),
+            TextButton(
+              onPressed: () {
+                final values = {
+                  for (final f in fields) f.key: null,
+                };
+                Navigator.of(ctx).pop(values);
+              },
+              child: const Text('Сбросить'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final values = {
+                  for (final f in fields) f.key: controllers[f.key]!.text,
+                };
+                Navigator.of(ctx).pop(values);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: adminPrimaryColor,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Применить'),
+            ),
+          ],
+        );
+      },
+    );
+  } finally {
+    for (final c in controllers.values) {
+      c.dispose();
+    }
+  }
+  if (result == null) return;
+  // When the user tapped "Сбросить", values are all null — still call onApply
+  // so the page can clear its filter state.
+  final values = Map<String, dynamic>.from(result);
+  if (!context.mounted) return;
+  await runAdminAction(
+    context,
+    () => onApply(values),
+    successMessage: successMessage,
+  );
+}
+
 /// Shows a form dialog with one [TextField] per [AdminField]. When the user
 /// taps the submit button, [onSubmit] is called with a Map of field-key →
 /// entered text. A loading spinner is shown while [onSubmit] is running and a

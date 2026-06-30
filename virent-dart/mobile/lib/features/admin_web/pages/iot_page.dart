@@ -1,250 +1,122 @@
-// iot_page.dart — Virent admin IoT command center (web panel).
-//
-// Ported from the old admin_iot_screen.dart. Sends raw IoT commands to
-// a scooter via its MAC address — lock, unlock, alarm, reboot, locate,
-// led_on, led_off. Shows the last 20 commands in a history table.
-//
-// Wired to [sendIoTCommandAction] (POST /iot/command) and
-// [iotLogsProvider] (GET /admin/iot/logs).
-
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../core/configs/theme/app_colors.dart';
 import '../admin_web_providers.dart';
+import '../widgets/admin_dialogs.dart';
+import '../widgets/admin_export.dart';
+import '../widgets/admin_status_tabs.dart';
 
 class IotPage extends ConsumerStatefulWidget {
   const IotPage({super.key});
-
   @override
   ConsumerState<IotPage> createState() => _IotPageState();
 }
 
 class _IotPageState extends ConsumerState<IotPage> {
-  final _macController = TextEditingController();
-  final _commands = <Map<String, dynamic>>[];
+  final _searchController = TextEditingController();
+  final _selectedIds = <dynamic>{};
+  String _query = '';
+  int _currentPage = 1;
+  static const int _pageSize = 20;
 
   @override
   void dispose() {
-    _macController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
-  Future<void> _sendCommand(String command) async {
-    final mac = _macController.text.trim();
-    if (mac.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Введите MAC-адрес самоката')),
-      );
-      return;
-    }
-    try {
-      await ref.read(sendIoTCommandAction)(mac, command);
-      setState(() {
-        _commands.insert(0, {
-          'mac': mac,
-          'command': command,
-          'at': DateTime.now().toIso8601String().substring(0, 19),
-          'status': 'sent',
-        });
-      });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Команда "$command" отправлена на $mac')),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ошибка: $e')),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final logsAsync = ref.watch(iotLogsProvider);
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('IoT — Командный центр',
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Inter')),
-          const SizedBox(height: 24),
-
-          // MAC input + quick commands
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-              side: const BorderSide(color: AppColors.border),
-            ),
-            elevation: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Отправить команду',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: 'Inter')),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _macController,
-                    decoration: InputDecoration(
-                      labelText: 'MAC-адрес самоката',
-                      hintText: '00:11:22:33:44:55',
-                      prefixIcon: const Icon(LucideIcons.bluetooth, size: 18),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      _commandBtn('Блокировка', LucideIcons.lock, () => _sendCommand('lock')),
-                      _commandBtn('Разблокировка', LucideIcons.lock_open, () => _sendCommand('unlock')),
-                      _commandBtn('Сигнал', LucideIcons.bell, () => _sendCommand('alarm_on')),
-                      _commandBtn('Выкл. сигнал', LucideIcons.bell_off, () => _sendCommand('alarm_off')),
-                      _commandBtn('Перезагрузка', LucideIcons.refresh_cw, () => _sendCommand('reboot')),
-                      _commandBtn('Найти', LucideIcons.map_pin, () => _sendCommand('locate')),
-                      _commandBtn('Свет вкл.', LucideIcons.lightbulb, () => _sendCommand('led_on')),
-                      _commandBtn('Свет выкл.', LucideIcons.lightbulb_off, () => _sendCommand('led_off')),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // History
-          Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: const BorderSide(color: AppColors.border),
-              ),
-              elevation: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    final async = ref.watch(iotLogsProvider);
+    return async.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Ошибка: $e')),
+      data: (items) {
+        var filtered = items;
+        if (_query.isNotEmpty) {
+          filtered = filtered.where((i) => i.values.any((v) => v != null && v.toString().toLowerCase().contains(_query.toLowerCase()))).toList();
+        }
+        final totalPages = (filtered.length / _pageSize).ceil().clamp(1, 9999);
+        final pageItems = filtered.skip((_currentPage - 1) * _pageSize).take(_pageSize).toList();
+        return Container(
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        const Text('История команд',
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'Inter')),
-                        const Spacer(),
-                        OutlinedButton.icon(
-                          onPressed: () => ref.invalidate(iotLogsProvider),
-                          icon: const Icon(LucideIcons.refresh_cw, size: 16),
-                          label: const Text('Обновить'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Expanded(
-                      child: logsAsync.when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text('Ошибка: $e')),
-                        data: (serverLogs) {
-                          // Merge local + server logs
-                          final all = [..._commands, ...serverLogs];
-                          if (all.isEmpty) {
-                            return Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(LucideIcons.inbox, size: 48, color: AppColors.textMuted),
-                                  const SizedBox(height: 12),
-                                  Text('Нет отправленных команд',
-                                      style: TextStyle(color: AppColors.textSecondary)),
-                                ],
-                              ),
-                            );
-                          }
-                          return SingleChildScrollView(
-                            child: DataTable(
-                              headingRowColor: WidgetStateProperty.all(const Color(0xFFF9F9F9)),
-                              columns: const [
-                                DataColumn(label: Text('MAC')),
-                                DataColumn(label: Text('Команда')),
-                                DataColumn(label: Text('Время')),
-                                DataColumn(label: Text('Статус')),
-                              ],
-                              rows: all.take(50).map((log) {
-                                return DataRow(cells: [
-                                  DataCell(Text('${log['mac'] ?? log['scooter_mac'] ?? '-'}',
-                                      style: const TextStyle(fontFamily: 'monospace'))),
-                                  DataCell(Text('${log['command'] ?? '-'}')),
-                                  DataCell(Text('${log['at'] ?? log['created_at'] ?? '-'}')),
-                                  DataCell(_StatusChip(status: '${log['status'] ?? 'sent'}')),
-                                ]);
-                              }).toList(),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        const Text('IoT устройства', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
+                        const SizedBox(width: 12),
+                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+                      ]),
+                      const SizedBox.shrink()
+                    ]),
+                    Row(children: [
+                      IconButton(icon: const Icon(Icons.download, size: 18, color: Color(0xFF6D737A)), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: [AdminField(key: 'mac', label: 'Mac'), AdminField(key: 'model', label: 'Model'), AdminField(key: 'status', label: 'Status')], onExport: (fmt, fields) async {})),
+                      IconButton(icon: const Icon(Icons.filter_list, size: 18, color: Color(0xFF6D737A)), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'mac', label: 'Mac'), AdminField(key: 'model', label: 'Model'), AdminField(key: 'status', label: 'Status')], onApply: (v) async {})),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: const InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: Color(0xFF868686)), filled: true, fillColor: Color(0xFFF1F4F8), border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: Color(0xFFD9E2EF))), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                    ]),
                   ],
                 ),
               ),
-            ),
+              const SizedBox(height: 8),
+              AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: const Color(0xFF7C69EF))]),
+              const SizedBox(height: 8),
+              if (_selectedIds.isNotEmpty) _buildBulkActionBar(),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: Color(0xFFD9E2EF))), child: SingleChildScrollView(child: DataTable(headingRowColor: WidgetStateProperty.all(const Color(0xFFF1F4F8)), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('Id')), const DataColumn(label: Text('Mac')), const DataColumn(label: Text('Model')), const DataColumn(label: Text('Status')), const DataColumn(label: Text('Действия'))], rows: pageItems.map((i) => _buildRow(context, ref, i)).toList())))),
+              _buildPaginationBar(filtered.length, totalPages),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _commandBtn(String label, IconData icon, VoidCallback onTap) {
-    return ElevatedButton.icon(
-      onPressed: onTap,
-      icon: Icon(icon, size: 16),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.black,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
+  DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
+    return DataRow(cells: [
+      DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
+      DataCell(Text('${item['id'] ?? ''}'))
+      DataCell(Text('${item['mac'] ?? ''}'))
+      DataCell(Text('${item['model'] ?? ''}'))
+      DataCell(Text('${item['status'] ?? ''}'))
+      DataCell(Row(children: [
+        TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
+        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'mac', label: 'Mac', initial: '${item[\'mac\'] ?? \'\'}'), AdminField(key: 'model', label: 'Model', initial: '${item[\'model\'] ?? \'\'}'), AdminField(key: 'status', label: 'Status', initial: '${item[\'status\'] ?? \'\'}')], onSubmit: (v) async { ref.invalidate(iotLogsProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: Color(0xFF467FD0)), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
+        TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'IoT устройства', onDelete: () async { ref.invalidate(iotLogsProvider); }), icon: const Icon(Icons.delete, size: 12, color: Color(0xFFDF4759)), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFFDF4759)))),
+      ])),
+    ]);
   }
-}
 
-class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.status});
-  final String status;
-
-  @override
-  Widget build(BuildContext context) {
-    Color color;
-    if (status == 'sent' || status == 'delivered' || status == 'success') {
-      color = AppColors.success;
-    } else if (status == 'pending' || status == 'queued') {
-      color = AppColors.warning;
-    } else if (status == 'failed' || status == 'error') {
-      color = AppColors.danger;
-    } else {
-      color = AppColors.textMuted;
-    }
+  Widget _buildBulkActionBar() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
-      child: Text(status.toUpperCase(),
-          style: const TextStyle(color: Colors.white, fontSize: 11, fontFamily: 'Inter')),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: const Color(0xFFF1F4F8),
+      child: Row(children: [
+        Text('Выбрано: ${_selectedIds.length}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+        const SizedBox(width: 16),
+        TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: Color(0xFFDF4759)), label: const Text('Удалить', style: TextStyle(color: Color(0xFFDF4759), fontSize: 11))),
+        const Spacer(),
+        TextButton(onPressed: () => setState(() => _selectedIds.clear()), child: const Text('Отменить', style: TextStyle(fontSize: 11))),
+      ]),
+    );
+  }
+
+  Widget _buildPaginationBar(int total, int totalPages) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
+        Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
+        Row(children: [
+          IconButton(icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
+          Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
+          IconButton(icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
+        ]),
+      ]),
     );
   }
 }

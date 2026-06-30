@@ -5,6 +5,94 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// Shows an export dialog letting the user pick a format (csv/json/xlsx) and
+/// which [fields] to include. When the user taps "Экспорт", [onExport] is
+/// invoked with the chosen values.
+Future<void> showAdminExportDialog(
+  BuildContext context, {
+  required String title,
+  required List<String> fields,
+  required Future<void> Function(String format, List<String> selectedFields) onExport,
+}) async {
+  final selected = <String>{...fields};
+  String format = 'csv';
+  await showDialog<void>(
+    context: context,
+    builder: (ctx) {
+      return StatefulBuilder(
+        builder: (ctx, setState) {
+          return AlertDialog(
+            title: Text(title),
+            content: SizedBox(
+              width: 380,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Формат',
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: ['csv', 'json', 'xlsx'].map((f) {
+                        return ChoiceChip(
+                          label: Text(f.toUpperCase()),
+                          selected: format == f,
+                          onSelected: (s) {
+                            if (s) setState(() => format = f);
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text('Поля',
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: fields.map((f) {
+                        return FilterChip(
+                          label: Text(f),
+                          selected: selected.contains(f),
+                          onSelected: (s) {
+                            setState(() {
+                              if (s) {
+                                selected.add(f);
+                              } else {
+                                selected.remove(f);
+                              }
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Отмена'),
+              ),
+              ElevatedButton(
+                onPressed: selected.isEmpty
+                    ? null
+                    : () {
+                        Navigator.of(ctx).pop();
+                        onExport(format, selected.toList());
+                      },
+                child: const Text('Экспорт'),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
 /// Generates CSV from data and copies to clipboard.
 /// User can paste into Excel / Google Sheets.
 Future<void> exportCsv(
