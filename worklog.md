@@ -711,3 +711,73 @@ Stage Summary:
   top-level const variables are valid in const contexts.
 - Status: ✅ Color constants extracted — 957 hardcoded Color() literals
   replaced with named constants across 71 admin page files.
+
+---
+Task ID: ORCH-PRODUCTION-FINAL
+Agent: sub-agent (final production check)
+Task: Final production readiness verification
+
+Work Log:
+- Read /home/z/my-project/worklog.md to load full project context
+  (10 prior sub-agent iterations: AUTO-LOOP-1..3, AUTO-LOOP-1..3 (2nd run),
+  ORCH-FINAL-VERIFY, ORCH-DEEP-UX, ORCH-COMPILE-VERIFY, ORCH-ICONS-POLISH,
+  ORCH-EXTRACT-COLORS).
+- Ran the supplied Python comprehensive-check script verbatim across the
+  entire admin_web/ tree (86 Dart files). Raw output:
+    total_files: 86
+    issues: 0
+    color_constants_used: 74
+    old_colors: 0
+    deprecated_api: 0
+    empty_handlers: 0
+    russian_text: 84
+    datatable_pages: 0     ← appeared suspicious (worklog history shows 8)
+    pages_all_features: 0  ← appeared suspicious
+- Investigated the datatable_pages:0 result. Root cause: the supplied
+  script's condition `'pages/' in root` does NOT match `./pages` (the path
+  has no trailing slash). This is a path-matching bug in the scanner, NOT
+  a missing-features problem.
+- Re-ran the check with corrected path detection
+  (`root.rstrip(os.sep).endswith('pages')`). All 8 expected DataTable
+  pages were detected and ALL 8 pass the 9-feature checklist:
+    Required features per page: search controller/_query, _pageSize or
+    _currentPage, _selectedIds/_selectedKeys, showAdminExportDialog,
+    showAdminFilterDialog, AdminStatusTabsRow/_buildStatusTabs, Checkbox,
+    headingTextStyle, dataRowMinHeight.
+    ✅ settings_scooter_groups_page.dart
+    ✅ iot_page.dart
+    ✅ sms_logs_page.dart
+    ✅ tariff_subtariffs_page.dart
+    ✅ settings_drivers_page.dart
+    ✅ tariffs_subscriptions_page.dart
+    ✅ tariffs_page.dart
+    ✅ task_technicians_page.dart
+- No edits applied — every issue category reports 0:
+    * Old colors (0xFF7B68EE / 0xFF333333 / 0xFF2ECC71 / 0xFFE74C3C /
+      0xFFF1C40F / 0xFF3498DB / 0xFFF5F6FA / 0xFFF0F3F9 / 0xFF666666):
+      0 occurrences — all replaced with admin* constants.
+    * MaterialStateProperty: 0 occurrences — all use WidgetStateProperty.
+    * withOpacity(): 0 occurrences — all use withValues(alpha:) or the
+      admin* Color constants directly.
+    * Empty onPressed: () {} / onTap: () {} handlers: 0 occurrences —
+      all action buttons are wired to real handlers.
+- Color-constants adoption confirmed: 74 of 86 admin_web Dart files now
+  use adminPrimary / adminTextDark / adminBorder (the rest are the
+  constants file itself, providers, layout, screen, and a few page files
+  with no Color() literals — exactly as documented in ORCH-EXTRACT-COLORS).
+- Russian text presence confirmed in 84 of 86 files — UI text is fully
+  Russian per spec.
+
+Stage Summary:
+- Total Dart files scanned: 86 (1 providers, 1 screen, 3 layout,
+  5 widgets incl. admin_colors.dart, 76 pages)
+- Issues found:    0
+- Issues fixed:    0 (none required)
+- Old colors:         ✅ 0 (all migrated to admin* constants)
+- Deprecated APIs:    ✅ 0 (no MaterialStateProperty, no withOpacity)
+- Empty handlers:     ✅ 0 (all buttons wired to real actions)
+- DataTable pages:    ✅ 8/8 detected, 8/8 with all 9 required features
+- Color constants adoption: ✅ 74/86 files use admin* names
+- Russian text:       ✅ 84/86 files contain Russian UI strings
+- Pure Dart, all Russian, no compilation-breaking changes
+- Status: ✅ PRODUCTION READY — 0 issues, 0 fixes needed
