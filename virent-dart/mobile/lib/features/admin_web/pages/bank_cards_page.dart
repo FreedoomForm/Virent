@@ -24,7 +24,7 @@ class BankCardsPage extends ConsumerWidget {
               children: [
                 const Row(
                   children: [
-                    Text('Банковские Карты', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                    Text('Банковские Карты', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 246,192 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                   ],
@@ -38,8 +38,8 @@ class BankCardsPage extends ConsumerWidget {
                       hintStyle: const TextStyle(fontSize: 11),
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                     ),
                     style: const TextStyle(fontSize: 11),
                   ),
@@ -114,11 +114,11 @@ class BankCardsPage extends ConsumerWidget {
   Widget _cardRow(String id, String client, String holder, String bank, String country, String card, String token, String type, String deleted) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         children: [
-          SizedBox(width: 50, child: Text(id, style: const TextStyle(fontSize: 11, color: Color(0xFF3498DB)))),
-          SizedBox(width: 200, child: Text(client, style: TextStyle(fontSize: 11, color: client == '1' || client == '38' || client == '28' || client == '68' ? Colors.black : const Color(0xFF3498DB)))),
+          SizedBox(width: 50, child: Text(id, style: const TextStyle(fontSize: 11, color: Color(0xFF467FD0)))),
+          SizedBox(width: 200, child: Text(client, style: TextStyle(fontSize: 11, color: client == '1' || client == '38' || client == '28' || client == '68' ? Colors.black : const Color(0xFF467FD0)))),
           SizedBox(width: 250, child: Text(holder, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 100, child: Text(bank, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 100, child: Text(country, style: const TextStyle(fontSize: 11))),
@@ -129,9 +129,9 @@ class BankCardsPage extends ConsumerWidget {
           Expanded(
             child: Row(
               children: [
-                InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.visibility, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
                 const SizedBox(width: 12),
-                InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.delete, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
               ],
             ),
           ),

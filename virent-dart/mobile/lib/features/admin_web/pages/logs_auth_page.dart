@@ -24,7 +24,7 @@ class LogsAuthPage extends ConsumerWidget {
               children: [
                 const Row(
                   children: [
-                    Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                    Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 452,999 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                   ],
@@ -38,8 +38,8 @@ class LogsAuthPage extends ConsumerWidget {
                       hintStyle: const TextStyle(fontSize: 11),
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                     ),
                     style: const TextStyle(fontSize: 11),
                   ),
@@ -106,7 +106,7 @@ class LogsAuthPage extends ConsumerWidget {
   Widget _authRow(String id, String client, String phone, String ip, String time, String smsCode, bool isSuccess) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         children: [
           SizedBox(width: 100, child: Text(id, style: const TextStyle(fontSize: 11))),

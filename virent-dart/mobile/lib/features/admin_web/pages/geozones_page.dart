@@ -27,18 +27,18 @@ class GeozonesPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Геозоны', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        Text('Геозоны', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
                         Text('Показано 1 до 4 из 4 совпадений (отфильтровано из 239 совпадений)', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ],
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить геозону', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF7B68EE),
+                        backgroundColor: const Color(0xFF7C69EF),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                       ),
@@ -76,8 +76,8 @@ class GeozonesPage extends ConsumerWidget {
                         hintStyle: const TextStyle(fontSize: 11),
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                       ),
                       style: const TextStyle(fontSize: 11),
                     ),
@@ -140,15 +140,15 @@ class GeozonesPage extends ConsumerWidget {
   }
 
   Widget _filterButton(String text, {bool isPurple = false, bool isLightBg = false}) {
-    Color bg = isPurple ? const Color(0xFF7B68EE) : (isLightBg ? const Color(0xFFE8EAF6) : Colors.transparent);
-    Color textColor = isPurple ? Colors.white : (isLightBg ? const Color(0xFF7B68EE) : Colors.black);
+    Color bg = isPurple ? const Color(0xFF7C69EF) : (isLightBg ? const Color(0xFFE8EAF6) : Colors.transparent);
+    Color textColor = isPurple ? Colors.white : (isLightBg ? const Color(0xFF7C69EF) : Colors.black);
     return InkWell(
-      onTap: () {},
+      onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: bg,
-          border: isLightBg ? null : (isPurple ? null : Border.all(color: Colors.grey.shade400)),
+          border: isLightBg ? null : (isPurple ? null : Border.all(color: Color(0xFF868686))),
           borderRadius: BorderRadius.circular(3),
         ),
         child: Text(text, style: TextStyle(fontSize: 11, color: textColor)),
@@ -165,17 +165,17 @@ class GeozonesPage extends ConsumerWidget {
           child: TextField(
             decoration: InputDecoration(
               hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF666666)),
+              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF868686)),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
             ),
             style: const TextStyle(fontSize: 11),
           ),
         ),
         const SizedBox(width: 4),
-        InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
+        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
       ],
     );
   }
@@ -183,11 +183,11 @@ class GeozonesPage extends ConsumerWidget {
   Widget _geozoneRow(String id, String name, String fill, String stroke, String groups, String opFill, String opStroke, String cmds, String minScooters, bool rUsed, bool reqPark, bool disPark) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         children: [
           SizedBox(width: 40, child: Text(id, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 150, child: Text(name, style: const TextStyle(fontSize: 11, color: Color(0xFF7B68EE)))),
+          SizedBox(width: 150, child: Text(name, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
           SizedBox(width: 100, child: Text(fill, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 100, child: Text(stroke, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 200, child: Text('-', style: const TextStyle(fontSize: 11))),
@@ -224,11 +224,11 @@ class GeozonesPage extends ConsumerWidget {
             width: 200,
             child: Row(
               children: [
-                InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.visibility, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
                 const SizedBox(width: 12),
-                InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.edit, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
                 const SizedBox(width: 12),
-                InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.delete, size: 12, color: Color(0xFF3498DB)), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))])),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: Color(0xFF467FD0)), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))])),
               ],
             ),
           ),
@@ -239,7 +239,7 @@ class GeozonesPage extends ConsumerWidget {
 
   Widget _checkBox(bool isChecked, {bool isGreen = false, bool isRed = false}) {
     IconData icon = isChecked ? Icons.check_box : Icons.check_box_outline_blank;
-    Color color = isChecked ? (isGreen ? const Color(0xFF2ECC71) : (isRed ? const Color(0xFFE74C3C) : Colors.grey)) : (isGreen ? const Color(0xFF2ECC71) : (isRed ? const Color(0xFFE74C3C) : Colors.grey));
+    Color color = isChecked ? (isGreen ? const Color(0xFF42BA96) : (isRed ? const Color(0xFFDF4759) : Colors.grey)) : (isGreen ? const Color(0xFF42BA96) : (isRed ? const Color(0xFFDF4759) : Colors.grey));
     // The screenshot has the checkbox outline in color even when empty.
     if (!isChecked && isGreen) icon = Icons.check_box_outline_blank;
     if (!isChecked && isRed) icon = Icons.check_box_outline_blank;

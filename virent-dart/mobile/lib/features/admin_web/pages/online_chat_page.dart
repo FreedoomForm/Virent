@@ -37,11 +37,11 @@ class OnlineChatPage extends ConsumerWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  Container(height: 12, color: const Color(0xFFF1C40F)),
+                                  Container(height: 12, color: const Color(0xFFFFC107)),
                                   const SizedBox(height: 4),
-                                  Container(height: 12, color: const Color(0xFFE74C3C)),
+                                  Container(height: 12, color: const Color(0xFFDF4759)),
                                   const SizedBox(height: 4),
-                                  Container(height: 12, color: const Color(0xFF2ECC71)),
+                                  Container(height: 12, color: const Color(0xFF42BA96)),
                                 ],
                               ),
                             ),
@@ -72,7 +72,7 @@ class OnlineChatPage extends ConsumerWidget {
                             ),
                             const SizedBox(width: 8),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF5CB85C),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
@@ -121,7 +121,7 @@ class OnlineChatPage extends ConsumerWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        border: Border.all(color: Colors.grey.shade400),
+                        border: Border.all(color: Color(0xFF868686)),
                       ),
                     ),
                   ),
@@ -134,15 +134,15 @@ class OnlineChatPage extends ConsumerWidget {
                             hintText: 'Введите сообщение...',
                             fillColor: Colors.white,
                             filled: true,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide(color: Colors.grey.shade400)),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide(color: Colors.grey.shade400)),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide(color: Color(0xFF868686))),
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide(color: Color(0xFF868686))),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                           ),
                         ),
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF5CB85C),
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),

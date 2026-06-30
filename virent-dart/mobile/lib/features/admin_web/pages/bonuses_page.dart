@@ -27,18 +27,18 @@ class BonusesPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Бонусы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        Text('Бонусы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 704 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ],
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить бонусы', style: TextStyle(fontSize: 11, color: Colors.white)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF7B68EE),
+                        backgroundColor: const Color(0xFF7C69EF),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
                       ),
@@ -50,7 +50,7 @@ class BonusesPage extends ConsumerWidget {
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(color: const Color(0xFF7B68EE), borderRadius: BorderRadius.circular(3)),
+                          decoration: BoxDecoration(color: const Color(0xFF7C69EF), borderRadius: BorderRadius.circular(3)),
                           child: const Text('Компания ▼', style: TextStyle(color: Colors.white, fontSize: 11)),
                         ),
                       ],
@@ -68,8 +68,8 @@ class BonusesPage extends ConsumerWidget {
                         hintStyle: const TextStyle(fontSize: 11),
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                       ),
                       style: const TextStyle(fontSize: 11),
                     ),
@@ -132,11 +132,11 @@ class BonusesPage extends ConsumerWidget {
   Widget _bonusRow(String id, String client, String sum, String whoAdded, String created, String comment, String company) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         children: [
           SizedBox(width: 50, child: Text(id, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 150, child: Text(client, style: const TextStyle(fontSize: 11, color: Color(0xFF3498DB)))),
+          SizedBox(width: 150, child: Text(client, style: const TextStyle(fontSize: 11, color: Color(0xFF467FD0)))),
           SizedBox(width: 150, child: Text(sum, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 250, child: Text(whoAdded, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 200, child: Text(created, style: const TextStyle(fontSize: 11))),
@@ -156,17 +156,17 @@ class BonusesPage extends ConsumerWidget {
           child: TextField(
             decoration: InputDecoration(
               hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF666666)),
+              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF868686)),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
             ),
             style: const TextStyle(fontSize: 11),
           ),
         ),
         const SizedBox(width: 4),
-        InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
+        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
       ],
     );
   }

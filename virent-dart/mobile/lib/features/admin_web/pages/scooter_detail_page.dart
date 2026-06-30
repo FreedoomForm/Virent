@@ -174,7 +174,7 @@ class ScooterDetailPage extends ConsumerWidget {
 
   Widget _cmdBtn(String label, IconData icon, Color color) {
     return ElevatedButton.icon(
-      onPressed: () {},
+      onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       icon: Icon(icon, size: 14),
       label: Text(label, style: const TextStyle(fontSize: 12)),
       style: ElevatedButton.styleFrom(

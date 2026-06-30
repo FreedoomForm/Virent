@@ -14,8 +14,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ─── Shared admin styling constants ───────────────────────────────────────
 
 /// Primary action colour used across all admin pages.
-const Color adminPageBg = Color(0xFFF5F6FA);
-const Color adminPrimaryColor = Color(0xFF7B68EE);
+const Color adminPageBg = Color(0xFFF1F4F8);
+const Color adminPrimaryColor = Color(0xFF7C69EF);
 
 /// Foreground colour for buttons using [adminPrimaryColor].
 const Color adminPrimaryForeground = Colors.white;
@@ -23,12 +23,12 @@ const Color adminPrimaryForeground = Colors.white;
 /// Default card shape for admin table cards.
 final ShapeBorder adminCardShape = RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(4),
-  side: BorderSide(color: Colors.grey.shade300),
+  side: BorderSide(color: Color(0xFFD9E2EF)),
 );
 
 /// Heading row colour for DataTable widgets.
 final WidgetStateProperty<Color> adminTableHeadingColor =
-    WidgetStateProperty.all(Colors.grey.shade100);
+    WidgetStateProperty.all(Color(0xFFF1F4F8));
 
 /// Text style for ID / link-like cells in admin tables.
 const TextStyle adminLinkStyle = TextStyle(color: Colors.blue);

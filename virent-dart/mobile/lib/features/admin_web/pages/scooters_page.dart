@@ -25,7 +25,7 @@ class ScootersPage extends ConsumerWidget {
                 // Title + count
                 const Row(
                   children: [
-                    Text('Самокаты', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                    Text('Самокаты', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 300 совпадений (отфильтровано из 663 совпадений)', style: TextStyle(fontSize: 11, color: Colors.grey)),
                   ],
@@ -33,11 +33,11 @@ class ScootersPage extends ConsumerWidget {
                 const SizedBox(height: 8),
                 // Add button
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                   icon: const Icon(Icons.add, size: 14),
                   label: const Text('Добавить самокат'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF7B68EE),
+                    backgroundColor: const Color(0xFF7C69EF),
                     foregroundColor: Colors.white,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -51,42 +51,42 @@ class ScootersPage extends ConsumerWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      const Text('Номер', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                      const Text('Номер', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       const SizedBox(width: 4),
                       _input(100),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
-                      const Text('Комментарий', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                      const Text('Комментарий', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       const SizedBox(width: 4),
                       _input(140),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
-                      const Text('Батарея:', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                      const Text('Батарея:', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       const SizedBox(width: 4),
                       _input(60),
                       _input(60),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 12),
-                      _chip('Модель ▼', const Color(0xFF7B68EE)),
-                      _chip('Группы ▼', const Color(0xFF7B68EE)),
-                      _chip('Компании ▼', const Color(0xFF7B68EE)),
-                      _chip('Геозоны ▼', const Color(0xFF7B68EE)),
+                      _chip('Модель ▼', const Color(0xFF7C69EF)),
+                      _chip('Группы ▼', const Color(0xFF7C69EF)),
+                      _chip('Компании ▼', const Color(0xFF7C69EF)),
+                      _chip('Геозоны ▼', const Color(0xFF7C69EF)),
                       const SizedBox(width: 8),
-                      _chip('Свободные', const Color(0xFFF39C12)),
-                      _chip('Выключенные заказ', const Color(0xFFF39C12)),
-                      _chip('Не в сети', const Color(0xFFE74C3C)),
-                      _chip('В сети', const Color(0xFF2ECC71)),
-                      _chip('Тревоги и откл.', const Color(0xFF1ABC9C)),
-                      _chip('Тревоги и включ.', const Color(0xFF1ABC9C)),
-                      _chip('Есть тревоги', const Color(0xFF1ABC9C)),
-                      _chip('Нет тревог', const Color(0xFF1ABC9C)),
-                      _chip('На линии', const Color(0xFF3498DB)),
-                      _chip('Не на линии', const Color(0xFFE74C3C)),
-                      _chip('Статус Raider', const Color(0xFF1ABC9C)),
-                      _chip('Отключение АКБ', const Color(0xFFF39C12)),
+                      _chip('Свободные', const Color(0xFFFFC107)),
+                      _chip('Выключенные заказ', const Color(0xFFFFC107)),
+                      _chip('Не в сети', const Color(0xFFDF4759)),
+                      _chip('В сети', const Color(0xFF42BA96)),
+                      _chip('Тревоги и откл.', const Color(0xFF42BA96)),
+                      _chip('Тревоги и включ.', const Color(0xFF42BA96)),
+                      _chip('Есть тревоги', const Color(0xFF42BA96)),
+                      _chip('Нет тревог', const Color(0xFF42BA96)),
+                      _chip('На линии', const Color(0xFF467FD0)),
+                      _chip('Не на линии', const Color(0xFFDF4759)),
+                      _chip('Статус Raider', const Color(0xFF42BA96)),
+                      _chip('Отключение АКБ', const Color(0xFFFFC107)),
                     ],
                   ),
                 ),
@@ -161,12 +161,12 @@ class ScootersPage extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+        border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF))),
       ),
       child: Row(
         children: [
           SizedBox(width: 40, child: Text('$id', style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 70, child: Text(gos, style: const TextStyle(fontSize: 11, color: Color(0xFFE67E22)))),
+          SizedBox(width: 70, child: Text(gos, style: const TextStyle(fontSize: 11, color: Color(0xFFFFC107)))),
           // Fake groups - colored chips
           SizedBox(
             width: 160,
@@ -232,8 +232,8 @@ class ScootersPage extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: InkWell(
-        onTap: () {},
-        child: Text(label, style: const TextStyle(fontSize: 10, color: Color(0xFF3498DB))),
+        onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
+        child: Text(label, style: const TextStyle(fontSize: 10, color: Color(0xFF467FD0))),
       ),
     );
   }
@@ -262,8 +262,8 @@ class ScootersPage extends ConsumerWidget {
         decoration: InputDecoration(
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
         ),
         style: const TextStyle(fontSize: 11),
       ),
@@ -271,7 +271,7 @@ class ScootersPage extends ConsumerWidget {
   }
 
   Widget _closeIcon() {
-    return InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
+    return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 
   Widget _chip(String label, Color color) {

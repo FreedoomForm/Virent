@@ -24,7 +24,7 @@ class LogsClientChangesPage extends ConsumerWidget {
               children: [
                 const Row(
                   children: [
-                    Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                    Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                   ],
@@ -38,8 +38,8 @@ class LogsClientChangesPage extends ConsumerWidget {
                       hintStyle: const TextStyle(fontSize: 11),
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                     ),
                     style: const TextStyle(fontSize: 11),
                   ),
@@ -115,11 +115,11 @@ class LogsClientChangesPage extends ConsumerWidget {
   Widget _clientLog(String id, String clientId, String tariffs, String token, String bonus, String groups, String isActive, String isBlocked, String isDeleted, String isNew, String date) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         children: [
           SizedBox(width: 180, child: Text(id, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 100, child: Text(clientId, style: const TextStyle(fontSize: 11, color: Color(0xFF7B68EE)))),
+          SizedBox(width: 100, child: Text(clientId, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
           SizedBox(width: 150, child: Text(tariffs, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 350, child: Text(token, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 100, child: Text(bonus, style: const TextStyle(fontSize: 11))),
@@ -143,17 +143,17 @@ class LogsClientChangesPage extends ConsumerWidget {
           child: TextField(
             decoration: InputDecoration(
               hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF666666)),
+              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF868686)),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
             ),
             style: const TextStyle(fontSize: 11),
           ),
         ),
         const SizedBox(width: 4),
-        InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
+        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
       ],
     );
   }

@@ -24,7 +24,7 @@ class ClientsPage extends ConsumerWidget {
               children: [
                 const Row(
                   children: [
-                    Text('Клиенты', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                    Text('Клиенты', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 129 совпадений (отфильтровано из 296,496 совпадений)',
                         style: TextStyle(fontSize: 11, color: Colors.grey)),
@@ -32,11 +32,11 @@ class ClientsPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                   icon: const Icon(Icons.add, size: 14),
                   label: const Text('Добавить Клиента'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF7B68EE),
+                    backgroundColor: const Color(0xFF7C69EF),
                     foregroundColor: Colors.white,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -49,32 +49,32 @@ class ClientsPage extends ConsumerWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      const Text('ID клиента', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                      const Text('ID клиента', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       const SizedBox(width: 4),
                       _input(100),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
-                      const Text('Телефон', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                      const Text('Телефон', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       const SizedBox(width: 4),
                       _input(120),
                       const SizedBox(width: 12),
-                      _chip('Группы ▼', const Color(0xFF7B68EE)),
-                      _chip('Компании ▼', const Color(0xFF7B68EE)),
-                      _chip('Активн.', const Color(0xFF3498DB)),
-                      _chip('Не активн.', const Color(0xFFE74C3C)),
-                      _chip('Заблокировать', const Color(0xFF9B59B6)),
-                      _chip('Не заблокирован', const Color(0xFF2ECC71)),
-                      _chip('Есть БК', const Color(0xFF1ABC9C)),
-                      _chip('Нет БК', const Color(0xFFE67E22)),
+                      _chip('Группы ▼', const Color(0xFF7C69EF)),
+                      _chip('Компании ▼', const Color(0xFF7C69EF)),
+                      _chip('Активн.', const Color(0xFF467FD0)),
+                      _chip('Не активн.', const Color(0xFFDF4759)),
+                      _chip('Заблокировать', const Color(0xFF7C69EF)),
+                      _chip('Не заблокирован', const Color(0xFF42BA96)),
+                      _chip('Есть БК', const Color(0xFF42BA96)),
+                      _chip('Нет БК', const Color(0xFFFFC107)),
                       const SizedBox(width: 8),
-                      const Text('Комментарий', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                      const Text('Комментарий', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       const SizedBox(width: 4),
                       _input(120),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
-                      _chip('Очистить фильтры', const Color(0xFF7B68EE)),
+                      _chip('Очистить фильтры', const Color(0xFF7C69EF)),
                     ],
                   ),
                 ),
@@ -146,11 +146,11 @@ class ClientsPage extends ConsumerWidget {
   static Widget _clientRow(String id, String phone, String data, String debt, bool active, bool blocked, String comment) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         children: [
           SizedBox(width: 70, child: Text(id, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 120, child: Text(phone, style: const TextStyle(fontSize: 11, color: Color(0xFFE67E22)))),
+          SizedBox(width: 120, child: Text(phone, style: const TextStyle(fontSize: 11, color: Color(0xFFFFC107)))),
           SizedBox(
             width: 120,
             child: Container(
@@ -162,8 +162,8 @@ class ClientsPage extends ConsumerWidget {
           const SizedBox(width: 80),
           SizedBox(width: 80, child: Text(debt, style: const TextStyle(fontSize: 11))),
           const SizedBox(width: 80),
-          SizedBox(width: 60, child: Icon(active ? Icons.check_box : Icons.check_box_outline_blank, size: 16, color: active ? Colors.green : Colors.grey.shade400)),
-          SizedBox(width: 70, child: Icon(blocked ? Icons.check_box : Icons.check_box_outline_blank, size: 16, color: blocked ? Colors.red : Colors.grey.shade400)),
+          SizedBox(width: 60, child: Icon(active ? Icons.check_box : Icons.check_box_outline_blank, size: 16, color: active ? Colors.green : Color(0xFF868686))),
+          SizedBox(width: 70, child: Icon(blocked ? Icons.check_box : Icons.check_box_outline_blank, size: 16, color: blocked ? Colors.red : Color(0xFF868686))),
           SizedBox(width: 50, child: Icon(Icons.videocam, size: 14, color: Colors.purple.shade300)),
           const SizedBox(width: 70, child: Text('-', style: TextStyle(fontSize: 11))),
           SizedBox(
@@ -171,7 +171,7 @@ class ClientsPage extends ConsumerWidget {
             child: comment.isNotEmpty
                 ? Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(color: const Color(0xFF7B68EE), borderRadius: BorderRadius.circular(2)),
+                    decoration: BoxDecoration(color: const Color(0xFF7C69EF), borderRadius: BorderRadius.circular(2)),
                     child: Text(comment, style: const TextStyle(fontSize: 9, color: Colors.white), overflow: TextOverflow.ellipsis),
                   )
                 : const SizedBox(),
@@ -179,11 +179,11 @@ class ClientsPage extends ConsumerWidget {
           Expanded(
             child: Row(
               children: [
-                InkWell(onTap: () {}, child: const Icon(Icons.people, size: 14, color: Colors.grey)),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Icon(Icons.people, size: 14, color: Colors.grey)),
                 const SizedBox(width: 8),
-                InkWell(onTap: () {}, child: const Text('Статус', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Text('Статус', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
                 const SizedBox(width: 8),
-                InkWell(onTap: () {}, child: const Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB)))),
+                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Text('Редактировать', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
               ],
             ),
           ),
@@ -200,8 +200,8 @@ class ClientsPage extends ConsumerWidget {
         decoration: InputDecoration(
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
         ),
         style: const TextStyle(fontSize: 11),
       ),
@@ -209,7 +209,7 @@ class ClientsPage extends ConsumerWidget {
   }
 
   static Widget _closeIcon() {
-    return InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
+    return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 
   static Widget _chip(String label, Color color) {

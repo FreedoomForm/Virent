@@ -131,7 +131,7 @@ class SettingsConfigPage extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: const Color(0xFFFAFAFA),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: Color(0xFFD9E2EF)),
       ),
       child: Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
     );
@@ -144,8 +144,8 @@ class SettingsConfigPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
-          left: BorderSide(color: Colors.grey.shade300),
-          right: BorderSide(color: Colors.grey.shade300),
+          left: BorderSide(color: Color(0xFFD9E2EF)),
+          right: BorderSide(color: Color(0xFFD9E2EF)),
         ),
       ),
       child: Text(title, style: const TextStyle(fontSize: 11)),
@@ -158,9 +158,9 @@ class SettingsConfigPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
-          left: BorderSide(color: Colors.grey.shade300),
-          right: BorderSide(color: Colors.grey.shade300),
-          bottom: BorderSide(color: Colors.grey.shade100),
+          left: BorderSide(color: Color(0xFFD9E2EF)),
+          right: BorderSide(color: Color(0xFFD9E2EF)),
+          bottom: BorderSide(color: Color(0xFFF1F4F8)),
         ),
       ),
       child: Row(

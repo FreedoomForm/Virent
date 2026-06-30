@@ -22,8 +22,8 @@ class StatisticsPage extends ConsumerWidget {
           Row(
             children: [
               ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey.shade300, foregroundColor: Colors.black, elevation: 0),
+                onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
+                style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFD9E2EF), foregroundColor: Colors.black, elevation: 0),
                 child: const Text('Табличная выгрузка'),
               ),
               const SizedBox(width: 8),
@@ -127,8 +127,8 @@ class StatisticsPage extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
-                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7C69EF), foregroundColor: Colors.white),
+                      onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                       child: const Text('Показать'),
                     )
                   ],
@@ -163,7 +163,7 @@ class StatisticsPage extends ConsumerWidget {
 
   Widget _buildSectionCard(String title, String content, Color color) {
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), border: Border.all(color: Colors.grey.shade300)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), border: Border.all(color: Color(0xFFD9E2EF))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -176,7 +176,7 @@ class StatisticsPage extends ConsumerWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
-            color: color.withOpacity(0.9),
+            color: color.withValues(alpha: 0.9),
             child: Text(content, style: const TextStyle(color: Colors.white)),
           ),
         ],

@@ -27,7 +27,7 @@ class SelfiesPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Селфи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        Text('Селфи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 296,168 совпадений (отфильтровано из 296,496 совпадений)',
                             style: TextStyle(fontSize: 11, color: Colors.grey)),
@@ -42,8 +42,8 @@ class SelfiesPage extends ConsumerWidget {
                           hintStyle: const TextStyle(fontSize: 11),
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -53,11 +53,11 @@ class SelfiesPage extends ConsumerWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    _filterBtn('Да', const Color(0xFF2ECC71)),
+                    _filterBtn('Да', const Color(0xFF42BA96)),
                     const SizedBox(width: 4),
-                    _filterBtn('Нет', const Color(0xFFE67E22)),
+                    _filterBtn('Нет', const Color(0xFFFFC107)),
                     const SizedBox(width: 12),
-                    const Text('ID клиента', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                    const Text('ID клиента', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                     const SizedBox(width: 4),
                     SizedBox(
                       width: 100,
@@ -66,16 +66,16 @@ class SelfiesPage extends ConsumerWidget {
                         decoration: InputDecoration(
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
                     ),
                     const SizedBox(width: 4),
-                    InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
+                    InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
                     const SizedBox(width: 12),
-                    _filterBtn('Очистить фильтры', const Color(0xFFE67E22)),
+                    _filterBtn('Очистить фильтры', const Color(0xFFFFC107)),
                   ],
                 ),
               ],
@@ -103,28 +103,28 @@ class SelfiesPage extends ConsumerWidget {
                     itemBuilder: (context, i) {
                       return Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
                         child: Row(
                           children: [
                             SizedBox(
                               width: 120,
-                              child: Text('2966[...]', style: const TextStyle(fontSize: 11, color: Color(0xFFE67E22))),
+                              child: Text('2966[...]', style: const TextStyle(fontSize: 11, color: Color(0xFFFFC107))),
                             ),
                             Expanded(
                               child: Container(
                                 width: 24,
                                 height: 24,
                                 alignment: Alignment.centerLeft,
-                                child: Icon(Icons.broken_image, size: 20, color: Colors.grey.shade400),
+                                child: Icon(Icons.broken_image, size: 20, color: Color(0xFF868686)),
                               ),
                             ),
                             SizedBox(
                               width: 120,
                               child: Row(
                                 children: [
-                                  Icon(Icons.check_box_outline_blank, size: 16, color: Colors.grey.shade400),
+                                  Icon(Icons.check_box_outline_blank, size: 16, color: Color(0xFF868686)),
                                   const SizedBox(width: 4),
-                                  Icon(Icons.play_arrow_outlined, size: 16, color: Colors.grey.shade400),
+                                  Icon(Icons.play_arrow_outlined, size: 16, color: Color(0xFF868686)),
                                 ],
                               ),
                             ),

@@ -40,20 +40,20 @@ class TariffsPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
             icon: const Icon(Icons.add, size: 16),
             label: const Text('Добавить тариф'),
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7C69EF), foregroundColor: Colors.white),
           ),
           const SizedBox(height: 16),
           Expanded(
             child: Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Color(0xFFD9E2EF))),
               elevation: 0,
               child: ListView(
                 children: [
                   DataTable(
-                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                    headingRowColor: WidgetStateProperty.all(Color(0xFFF1F4F8)),
                     columns: const [
                       DataColumn(label: Text('Название в админке')),
                       DataColumn(label: Text('Название в мобильном приложении')),
@@ -88,10 +88,10 @@ class TariffsPage extends ConsumerWidget {
       DataCell(Text(hold)),
       DataCell(Row(
         children: [
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.map, size: 14), label: const Text('Геозоны завершения')),
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
-          TextButton.icon(onPressed: () {}, icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
+          TextButton.icon(onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), icon: const Icon(Icons.visibility, size: 14), label: const Text('Просмотр')),
+          TextButton.icon(onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), icon: const Icon(Icons.map, size: 14), label: const Text('Геозоны завершения')),
+          TextButton.icon(onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), icon: const Icon(Icons.edit, size: 14), label: const Text('Редактировать')),
+          TextButton.icon(onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), icon: const Icon(Icons.delete, size: 14), label: const Text('Удалить')),
         ],
       )),
     ]);

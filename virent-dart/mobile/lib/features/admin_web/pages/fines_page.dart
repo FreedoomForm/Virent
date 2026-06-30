@@ -22,11 +22,11 @@ class FinesPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Штрафы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                const Text('Штрафы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    const Text('ID клиента', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                    const Text('ID клиента', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                     const SizedBox(width: 4),
                     _input(100),
                     const SizedBox(width: 4),
@@ -94,11 +94,11 @@ class FinesPage extends ConsumerWidget {
   Widget _fineRow(String id, String clientId, String amount, String holdId, String orderId, String billId, String desc, String timestamp, String status, String cardPan, String transId, String uzcardId, {bool showButtons = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         children: [
           SizedBox(width: 200, child: Text(id, style: const TextStyle(fontSize: 10), overflow: TextOverflow.ellipsis)),
-          SizedBox(width: 60, child: Text(clientId, style: const TextStyle(fontSize: 10, color: Color(0xFF3498DB)))),
+          SizedBox(width: 60, child: Text(clientId, style: const TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
           SizedBox(width: 80, child: Text(amount, style: const TextStyle(fontSize: 10))),
           const SizedBox(width: 60),
           const SizedBox(width: 60),
@@ -114,9 +114,9 @@ class FinesPage extends ConsumerWidget {
             child: showButtons
                 ? Row(
                     children: [
-                      _actionBtn('Подтвердить холд', const Color(0xFF2ECC71)),
+                      _actionBtn('Подтвердить холд', const Color(0xFF42BA96)),
                       const SizedBox(width: 4),
-                      _actionBtn('Отменить холд', const Color(0xFFE74C3C)),
+                      _actionBtn('Отменить холд', const Color(0xFFDF4759)),
                     ],
                   )
                 : const SizedBox(),
@@ -142,8 +142,8 @@ class FinesPage extends ConsumerWidget {
         decoration: InputDecoration(
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
         ),
         style: const TextStyle(fontSize: 11),
       ),
@@ -151,6 +151,6 @@ class FinesPage extends ConsumerWidget {
   }
 
   static Widget _closeIcon() {
-    return InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
+    return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 }

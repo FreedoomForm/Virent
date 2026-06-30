@@ -112,7 +112,7 @@ class ServerPage extends ConsumerWidget {
                             );
                           }
                           return Container(
-                            color: const Color(0xFF29343F),
+                            color: const Color(0xFF1B2A4E),
                             padding: const EdgeInsets.all(12),
                             child: SingleChildScrollView(
                               child: Column(
@@ -121,7 +121,7 @@ class ServerPage extends ConsumerWidget {
                                   final text = log['line'] ?? log['message'] ?? log.toString();
                                   return Text('$text',
                                       style: const TextStyle(
-                                          color: Color(0xFF7B68EE),
+                                          color: Color(0xFF7C69EF),
                                           fontFamily: 'monospace',
                                           fontSize: 12));
                                 }).toList(),

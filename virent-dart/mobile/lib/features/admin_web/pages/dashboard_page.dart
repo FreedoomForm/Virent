@@ -21,7 +21,7 @@ class DashboardPage extends ConsumerWidget {
           children: [
             const Text(
               'Панель управления',
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w400, color: Color(0xFF333333)),
+              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E)),
             ),
             const SizedBox(height: 20),
             Row(
@@ -66,40 +66,40 @@ class DashboardPage extends ConsumerWidget {
         // Row 1: Всего, На линии, Не на линии
         Row(
           children: [
-            _statCard('Всего', '300', const Color(0xFF29343F)),
+            _statCard('Всего', '300', const Color(0xFF1B2A4E)),
             const SizedBox(width: 12),
-            _statCard('На линии', '241', const Color(0xFF1ABC9C)),
+            _statCard('На линии', '241', const Color(0xFF42BA96)),
             const SizedBox(width: 12),
-            _statCard('Не на линии', '59', const Color(0xFF95A5A6)),
+            _statCard('Не на линии', '59', const Color(0xFF868686)),
           ],
         ),
         const SizedBox(height: 12),
         // Row 2: На складе, В техничке, Свободно
         Row(
           children: [
-            _statCard('На складе', '1', const Color(0xFFF39C12)),
+            _statCard('На складе', '1', const Color(0xFFFFC107)),
             const SizedBox(width: 12),
-            _statCard('В техничке', '50', const Color(0xFFF1C40F)),
+            _statCard('В техничке', '50', const Color(0xFFFFC107)),
             const SizedBox(width: 12),
-            _statCard('Свободно', '237', const Color(0xFF3498DB)),
+            _statCard('Свободно', '237', const Color(0xFF467FD0)),
           ],
         ),
         const SizedBox(height: 12),
         // Row 3: Бронь, В аренде, Онлайн
         Row(
           children: [
-            _statCard('Бронь', '0', const Color(0xFF2ECC71)),
+            _statCard('Бронь', '0', const Color(0xFF42BA96)),
             const SizedBox(width: 12),
-            _statCard('В аренде', '4', const Color(0xFF9B59B6)),
+            _statCard('В аренде', '4', const Color(0xFF7C69EF)),
             const SizedBox(width: 12),
-            _statCard('Онлайн', '268', const Color(0xFF1ABC9C)),
+            _statCard('Онлайн', '268', const Color(0xFF42BA96)),
           ],
         ),
         const SizedBox(height: 12),
         // Row 4: Не онлайн
         Row(
           children: [
-            _statCard('Не онлайн', '32', const Color(0xFFE74C3C)),
+            _statCard('Не онлайн', '32', const Color(0xFFDF4759)),
             const SizedBox(width: 12),
             const Expanded(child: SizedBox()),
             const SizedBox(width: 12),
@@ -139,7 +139,7 @@ class DashboardPage extends ConsumerWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF7B68EE),
+              color: const Color(0xFF7C69EF),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Column(
@@ -160,7 +160,7 @@ class DashboardPage extends ConsumerWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF7B68EE),
+              color: const Color(0xFF7C69EF),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Column(
@@ -181,9 +181,9 @@ class DashboardPage extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.12),
+        color: Colors.white.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(3),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -191,7 +191,7 @@ class DashboardPage extends ConsumerWidget {
           Flexible(child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 12))),
           CircleAvatar(
             radius: 11,
-            backgroundColor: Colors.white.withOpacity(0.3),
+            backgroundColor: Colors.white.withValues(alpha: 0.3),
             child: Text(count, style: const TextStyle(color: Colors.white, fontSize: 11)),
           ),
         ],
@@ -205,26 +205,26 @@ class DashboardPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Color(0xFFD9E2EF)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Управление', style: TextStyle(fontSize: 14, color: Color(0xFF333333))),
+          const Text('Управление', style: TextStyle(fontSize: 14, color: Color(0xFF1B2A4E))),
           const SizedBox(height: 12),
           Row(
             children: [
-              _colorButton('Обновление', const Color(0xFF8E44AD)),
+              _colorButton('Обновление', const Color(0xFF7C69EF)),
               const SizedBox(width: 8),
-              _colorButton('Режим техника', const Color(0xFFF39C12)),
+              _colorButton('Режим техника', const Color(0xFFFFC107)),
             ],
           ),
           const SizedBox(height: 16),
           TextField(
             maxLines: 3,
             decoration: InputDecoration(
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
               contentPadding: const EdgeInsets.all(10),
               filled: true,
               fillColor: Colors.white,
@@ -236,10 +236,10 @@ class DashboardPage extends ConsumerWidget {
             spacing: 6,
             runSpacing: 6,
             children: [
-              _colorButton('опубликовать', const Color(0xFF1ABC9C)),
-              _colorButton('снять с публикации', const Color(0xFFBDC3C7), textColor: Colors.black54),
-              _colorButton('редактировать', const Color(0xFF3498DB)),
-              _colorButton('статус', const Color(0xFFF1C40F), textColor: Colors.black87),
+              _colorButton('опубликовать', const Color(0xFF42BA96)),
+              _colorButton('снять с публикации', const Color(0xFFD9E2EF), textColor: Colors.black54),
+              _colorButton('редактировать', const Color(0xFF467FD0)),
+              _colorButton('статус', const Color(0xFFFFC107), textColor: Colors.black87),
             ],
           ),
           const SizedBox(height: 16),
@@ -247,7 +247,7 @@ class DashboardPage extends ConsumerWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: const Color(0xFF7B68EE),
+              color: const Color(0xFF7C69EF),
               borderRadius: BorderRadius.circular(3),
             ),
             child: const Row(
@@ -262,9 +262,9 @@ class DashboardPage extends ConsumerWidget {
           Row(
             children: [
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.grey.shade300),
+                  side: BorderSide(color: Color(0xFFD9E2EF)),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   textStyle: const TextStyle(fontSize: 12),
                 ),
@@ -272,13 +272,13 @@ class DashboardPage extends ConsumerWidget {
               ),
               const SizedBox(width: 8),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Color(0xFFE67E22)),
+                  side: const BorderSide(color: Color(0xFFFFC107)),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   textStyle: const TextStyle(fontSize: 12),
                 ),
-                child: const Text('Получить клиентов', style: TextStyle(color: Color(0xFFE67E22))),
+                child: const Text('Получить клиентов', style: TextStyle(color: Color(0xFFFFC107))),
               ),
             ],
           ),
@@ -293,31 +293,31 @@ class DashboardPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Color(0xFFD9E2EF)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('PUSH', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF333333))),
+          const Text('PUSH', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1B2A4E))),
           const SizedBox(height: 12),
-          const Text('Заголовок', style: TextStyle(fontSize: 12, color: Color(0xFF666666))),
+          const Text('Заголовок', style: TextStyle(fontSize: 12, color: Color(0xFF868686))),
           const SizedBox(height: 4),
           TextField(
             decoration: InputDecoration(
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             ),
             style: const TextStyle(fontSize: 13),
           ),
           const SizedBox(height: 12),
-          const Text('Сообщение', style: TextStyle(fontSize: 12, color: Color(0xFF666666))),
+          const Text('Сообщение', style: TextStyle(fontSize: 12, color: Color(0xFF868686))),
           const SizedBox(height: 4),
           TextField(
             decoration: InputDecoration(
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             ),
@@ -345,7 +345,7 @@ class DashboardPage extends ConsumerWidget {
               ),
               const SizedBox(width: 6),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.red),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -362,7 +362,7 @@ class DashboardPage extends ConsumerWidget {
 
   Widget _colorButton(String label, Color color, {Color textColor = Colors.white}) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: textColor,

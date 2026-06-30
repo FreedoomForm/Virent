@@ -27,7 +27,7 @@ class LogsScooterChangesPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Логи Изменений Самокатов', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        Text('Логи Изменений Самокатов', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ],
@@ -45,8 +45,8 @@ class LogsScooterChangesPage extends ConsumerWidget {
                       hintStyle: const TextStyle(fontSize: 11),
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                     ),
                     style: const TextStyle(fontSize: 11),
                   ),
@@ -122,16 +122,16 @@ class LogsScooterChangesPage extends ConsumerWidget {
   Widget _scooterLog(String id, String num, String orderId, String model, String online, String compId, String user, String geo, String updTime, String creTime, String flespi, String imei, String lastOrder) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         children: [
-          SizedBox(width: 150, child: Text(id, style: const TextStyle(fontSize: 11, color: Color(0xFF7B68EE)))),
-          SizedBox(width: 100, child: Text(num, style: const TextStyle(fontSize: 11, color: Color(0xFF7B68EE)))),
-          SizedBox(width: 120, child: Text(orderId, style: const TextStyle(fontSize: 11, color: Color(0xFF7B68EE)))),
-          SizedBox(width: 80, child: Text(model, style: const TextStyle(fontSize: 11, color: Color(0xFF7B68EE)))),
+          SizedBox(width: 150, child: Text(id, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
+          SizedBox(width: 100, child: Text(num, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
+          SizedBox(width: 120, child: Text(orderId, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
+          SizedBox(width: 80, child: Text(model, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
           SizedBox(width: 80, child: Text(online, style: const TextStyle(fontSize: 11))),
           const SizedBox(width: 250, child: Text('', style: TextStyle(fontSize: 11))), // empty action col
-          SizedBox(width: 100, child: Text(compId, style: const TextStyle(fontSize: 11, color: Color(0xFF7B68EE)))),
+          SizedBox(width: 100, child: Text(compId, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF)))),
           SizedBox(width: 120, child: Text(user, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 200, child: Text(geo, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 150, child: Text(updTime, style: const TextStyle(fontSize: 11))),
@@ -154,17 +154,17 @@ class LogsScooterChangesPage extends ConsumerWidget {
           child: TextField(
             decoration: InputDecoration(
               hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF666666)),
+              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF868686)),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
             ),
             style: const TextStyle(fontSize: 11),
           ),
         ),
         const SizedBox(width: 4),
-        InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
+        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
       ],
     );
   }

@@ -27,7 +27,7 @@ class BillingReceiptsPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Чеки', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        Text('Чеки', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 711,062 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ],
@@ -41,8 +41,8 @@ class BillingReceiptsPage extends ConsumerWidget {
                           hintStyle: const TextStyle(fontSize: 11),
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -122,16 +122,16 @@ class BillingReceiptsPage extends ConsumerWidget {
   Widget _receiptRow(String id, String uuid, String check, String providerUuid, String bill, String status, String client, String amount, String created, String company, String order, String sendable) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         children: [
           SizedBox(width: 60, child: Text(id, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 100, child: Text(uuid, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 60, child: Text(check, style: const TextStyle(fontSize: 10, color: Color(0xFF3498DB)))),
+          SizedBox(width: 60, child: Text(check, style: const TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
           SizedBox(width: 120, child: Text(providerUuid, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 250, child: Text(bill, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 80, child: Text(status, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 80, child: Text(client, style: const TextStyle(fontSize: 10, color: Color(0xFF3498DB)))),
+          SizedBox(width: 80, child: Text(client, style: const TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
           SizedBox(width: 80, child: Text(amount, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 140, child: Text(created, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 80, child: Text(company, style: const TextStyle(fontSize: 10))),
@@ -147,7 +147,7 @@ class BillingReceiptsPage extends ConsumerWidget {
   Widget _labeledInput(String label, double width) {
     return Row(
       children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF666666))),
+        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
         const SizedBox(width: 4),
         SizedBox(
           width: width,
@@ -156,14 +156,14 @@ class BillingReceiptsPage extends ConsumerWidget {
             decoration: InputDecoration(
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
             ),
             style: const TextStyle(fontSize: 11),
           ),
         ),
         const SizedBox(width: 4),
-        InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
+        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
       ],
     );
   }

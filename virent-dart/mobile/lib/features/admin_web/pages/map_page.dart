@@ -17,37 +17,37 @@ class MapPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Фильтры', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF333333))),
+                const Text('Фильтры', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF1B2A4E))),
                 const SizedBox(height: 8),
                 // Row 1: Model, Status, Groups, etc.
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _filterChip('Модель', const Color(0xFF7B68EE)),
-                      _filterChip('Статус', const Color(0xFF7B68EE)),
-                      _filterChip('Группы', const Color(0xFF7B68EE)),
-                      _filterChip('Свободные', const Color(0xFFF39C12)),
-                      _filterChip('Выключенные заказ.', const Color(0xFF7B68EE)),
+                      _filterChip('Модель', const Color(0xFF7C69EF)),
+                      _filterChip('Статус', const Color(0xFF7C69EF)),
+                      _filterChip('Группы', const Color(0xFF7C69EF)),
+                      _filterChip('Свободные', const Color(0xFFFFC107)),
+                      _filterChip('Выключенные заказ.', const Color(0xFF7C69EF)),
                       const SizedBox(width: 8),
                       _smallInput('Номер', 100),
                       const SizedBox(width: 4),
                       _smallInput('Телефон', 120),
                       const SizedBox(width: 4),
-                      const Text('Батарея:', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                      const Text('Батарея:', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       const SizedBox(width: 4),
                       _smallInput('От (%)', 60),
                       _smallInput('До (%)', 60),
                       const SizedBox(width: 12),
-                      _filterChip('На линии', const Color(0xFF3498DB)),
-                      _filterChip('Не на линии', const Color(0xFFF39C12)),
-                      _filterChip('В сети', const Color(0xFF2ECC71)),
-                      _filterChip('Не в сети', const Color(0xFFE74C3C)),
-                      _filterChip('Заказ и долги', const Color(0xFF1ABC9C)),
-                      _filterChip('Тревоги отключены', const Color(0xFF1ABC9C)),
-                      _filterChip('Тревоги включены', const Color(0xFF1ABC9C)),
-                      _filterChip('карта на весь экран', const Color(0xFF2ECC71)),
-                      _filterChip('Режим Raider', const Color(0xFFE74C3C), outlined: true),
+                      _filterChip('На линии', const Color(0xFF467FD0)),
+                      _filterChip('Не на линии', const Color(0xFFFFC107)),
+                      _filterChip('В сети', const Color(0xFF42BA96)),
+                      _filterChip('Не в сети', const Color(0xFFDF4759)),
+                      _filterChip('Заказ и долги', const Color(0xFF42BA96)),
+                      _filterChip('Тревоги отключены', const Color(0xFF42BA96)),
+                      _filterChip('Тревоги включены', const Color(0xFF42BA96)),
+                      _filterChip('карта на весь экран', const Color(0xFF42BA96)),
+                      _filterChip('Режим Raider', const Color(0xFFDF4759), outlined: true),
                     ],
                   ),
                 ),
@@ -55,9 +55,9 @@ class MapPage extends StatelessWidget {
                 // Row 2: Cities
                 Row(
                   children: [
-                    _filterChip('Ташкент', const Color(0xFF7B68EE)),
-                    _filterChip('Самарканд', const Color(0xFF7B68EE)),
-                    _filterChip('Фергана', const Color(0xFF29343F)),
+                    _filterChip('Ташкент', const Color(0xFF7C69EF)),
+                    _filterChip('Самарканд', const Color(0xFF7C69EF)),
+                    _filterChip('Фергана', const Color(0xFF1B2A4E)),
                   ],
                 ),
               ],
@@ -69,7 +69,7 @@ class MapPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Текущая карта: Общая', style: TextStyle(fontSize: 13, color: Color(0xFF666666))),
+                const Text('Текущая карта: Общая', style: TextStyle(fontSize: 13, color: Color(0xFF868686))),
                 const SizedBox(height: 6),
                 Row(
                   children: [
@@ -93,7 +93,7 @@ class MapPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: const Color(0xFFE8E0D8),
                       borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: Colors.grey.shade300),
+                      border: Border.all(color: Color(0xFFD9E2EF)),
                     ),
                     child: Stack(
                       children: [
@@ -114,12 +114,12 @@ class MapPage extends StatelessWidget {
                           child: Column(
                             children: [
                               Container(
-                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(2), border: Border.all(color: Colors.grey.shade400)),
+                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(2), border: Border.all(color: Color(0xFF868686))),
                                 child: const SizedBox(width: 28, height: 28, child: Center(child: Icon(Icons.add, size: 16))),
                               ),
                               const SizedBox(height: 2),
                               Container(
-                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(2), border: Border.all(color: Colors.grey.shade400)),
+                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(2), border: Border.all(color: Color(0xFF868686))),
                                 child: const SizedBox(width: 28, height: 28, child: Center(child: Icon(Icons.remove, size: 16))),
                               ),
                             ],
@@ -137,7 +137,7 @@ class MapPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: Colors.grey.shade200),
+                    border: Border.all(color: Color(0xFFD9E2EF)),
                   ),
                   child: SingleChildScrollView(
                     child: Column(
@@ -174,7 +174,7 @@ class MapPage extends StatelessWidget {
             children: [
               const Icon(Icons.circle, size: 8, color: Colors.grey),
               const SizedBox(width: 6),
-              Expanded(child: Divider(color: Colors.grey.shade300)),
+              Expanded(child: Divider(color: Color(0xFFD9E2EF))),
             ],
           ),
         );
@@ -184,7 +184,7 @@ class MapPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(f, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF333333))),
+            Text(f, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF1B2A4E))),
             const Divider(height: 8),
           ],
         ),
@@ -215,8 +215,8 @@ class MapPage extends StatelessWidget {
           hintStyle: const TextStyle(fontSize: 11),
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
         ),
         style: const TextStyle(fontSize: 11),
       ),
@@ -228,11 +228,11 @@ class MapPage extends StatelessWidget {
       margin: const EdgeInsets.only(right: 4),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: active ? const Color(0xFF7B68EE) : Colors.white,
+        color: active ? const Color(0xFF7C69EF) : Colors.white,
         borderRadius: BorderRadius.circular(3),
-        border: Border.all(color: active ? const Color(0xFF7B68EE) : Colors.grey.shade300),
+        border: Border.all(color: active ? const Color(0xFF7C69EF) : Color(0xFFD9E2EF)),
       ),
-      child: Text(label, style: TextStyle(fontSize: 11, color: active ? Colors.white : const Color(0xFF666666))),
+      child: Text(label, style: TextStyle(fontSize: 11, color: active ? Colors.white : const Color(0xFF868686))),
     );
   }
 }

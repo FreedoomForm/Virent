@@ -40,10 +40,10 @@ class TaskTechniciansPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
             icon: const Icon(Icons.add, size: 16),
             label: const Text('Добавить tasktechnician'),
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7B68EE), foregroundColor: Colors.white),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7C69EF), foregroundColor: Colors.white),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -59,13 +59,13 @@ class TaskTechniciansPage extends ConsumerWidget {
           const SizedBox(height: 16),
           Expanded(
             child: Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Colors.grey.shade300)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: BorderSide(color: Color(0xFFD9E2EF))),
               elevation: 0,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: SingleChildScrollView(
                   child: DataTable(
-                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                    headingRowColor: WidgetStateProperty.all(Color(0xFFF1F4F8)),
                     columns: const [
                       DataColumn(label: Text('Id')),
                       DataColumn(label: Text('Title')),

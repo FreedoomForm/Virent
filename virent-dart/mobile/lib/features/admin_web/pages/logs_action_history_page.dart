@@ -27,7 +27,7 @@ class LogsActionHistoryPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('История Действий', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        Text('История Действий', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ],
@@ -65,8 +65,8 @@ class LogsActionHistoryPage extends ConsumerWidget {
                         hintStyle: const TextStyle(fontSize: 11),
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                       ),
                       style: const TextStyle(fontSize: 11),
                     ),
@@ -118,11 +118,11 @@ class LogsActionHistoryPage extends ConsumerWidget {
 
   Widget _actionRow(String objectId, String userEmail, String key, String newVal, String oldVal, String date, {bool isTech = false}) {
     return Container(
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: const EdgeInsets.only(left: 16, top: 16), child: SizedBox(width: 80, child: Text(objectId, style: const TextStyle(fontSize: 11, color: Color(0xFF7B68EE))))),
+          Padding(padding: const EdgeInsets.only(left: 16, top: 16), child: SizedBox(width: 80, child: Text(objectId, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF))))),
           Padding(
             padding: const EdgeInsets.only(left: 0, top: 16),
             child: SizedBox(
@@ -132,11 +132,11 @@ class LogsActionHistoryPage extends ConsumerWidget {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                          decoration: BoxDecoration(color: const Color(0xFF3498DB), borderRadius: BorderRadius.circular(2)),
+                          decoration: BoxDecoration(color: const Color(0xFF467FD0), borderRadius: BorderRadius.circular(2)),
                           child: const Text('Техничка', style: TextStyle(color: Colors.white, fontSize: 8)),
                         ),
                         const SizedBox(width: 4),
-                        Text(userEmail, style: const TextStyle(fontSize: 11, color: Color(0xFF7B68EE))),
+                        Text(userEmail, style: const TextStyle(fontSize: 11, color: Color(0xFF7C69EF))),
                       ],
                     )
                   : const SizedBox(),
@@ -147,14 +147,14 @@ class LogsActionHistoryPage extends ConsumerWidget {
               children: [
                 Expanded(
                   child: Container(
-                    decoration: BoxDecoration(border: Border(right: BorderSide(color: Colors.grey.shade200), left: BorderSide(color: Colors.grey.shade200))),
+                    decoration: BoxDecoration(border: Border(right: BorderSide(color: Color(0xFFD9E2EF)), left: BorderSide(color: Color(0xFFD9E2EF)))),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+                          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
                           child: const Text('Key', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                         ),
                         Container(
@@ -163,7 +163,7 @@ class LogsActionHistoryPage extends ConsumerWidget {
                             children: [
                               Text(key, style: const TextStyle(fontSize: 11)),
                               const SizedBox(width: 4),
-                              const Icon(Icons.info_outline, size: 12, color: Color(0xFF3498DB)),
+                              const Icon(Icons.info_outline, size: 12, color: Color(0xFF467FD0)),
                             ],
                           ),
                         ),
@@ -173,14 +173,14 @@ class LogsActionHistoryPage extends ConsumerWidget {
                 ),
                 Expanded(
                   child: Container(
-                    decoration: BoxDecoration(border: Border(right: BorderSide(color: Colors.grey.shade200))),
+                    decoration: BoxDecoration(border: Border(right: BorderSide(color: Color(0xFFD9E2EF)))),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+                          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
                           child: const Text('New', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                         ),
                         Container(padding: const EdgeInsets.all(8), child: Text(newVal, style: const TextStyle(fontSize: 11))),
@@ -191,14 +191,14 @@ class LogsActionHistoryPage extends ConsumerWidget {
                 if (oldVal.isNotEmpty)
                   Expanded(
                     child: Container(
-                      decoration: BoxDecoration(border: Border(right: BorderSide(color: Colors.grey.shade200))),
+                      decoration: BoxDecoration(border: Border(right: BorderSide(color: Color(0xFFD9E2EF)))),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             width: double.infinity,
                             padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+                            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
                             child: const Text('Old', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                           ),
                           Container(padding: const EdgeInsets.all(8), child: Text(oldVal, style: const TextStyle(fontSize: 11))),
@@ -224,24 +224,24 @@ class LogsActionHistoryPage extends ConsumerWidget {
           child: TextField(
             decoration: InputDecoration(
               hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF666666)),
+              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF868686)),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
             ),
             style: const TextStyle(fontSize: 11),
           ),
         ),
         const SizedBox(width: 4),
-        InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
+        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
       ],
     );
   }
 
   Widget _statusFilter(String text, bool isSelected, {bool isYellow = false}) {
-    final borderColor = isSelected ? const Color(0xFF2ECC71) : (isYellow ? const Color(0xFFF1C40F) : Colors.transparent);
-    final textColor = isSelected ? const Color(0xFF2ECC71) : (isYellow ? const Color(0xFFF1C40F) : const Color(0xFF666666));
+    final borderColor = isSelected ? const Color(0xFF42BA96) : (isYellow ? const Color(0xFFFFC107) : Colors.transparent);
+    final textColor = isSelected ? const Color(0xFF42BA96) : (isYellow ? const Color(0xFFFFC107) : const Color(0xFF868686));
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

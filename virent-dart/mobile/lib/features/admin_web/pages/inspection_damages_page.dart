@@ -27,7 +27,7 @@ class InspectionDamagesPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Damages', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        Text('Damages', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 297 совпадений (отфильтровано из 156,150 совпадений)',
                             style: TextStyle(fontSize: 11, color: Colors.grey)),
@@ -42,8 +42,8 @@ class InspectionDamagesPage extends ConsumerWidget {
                           hintStyle: const TextStyle(fontSize: 11),
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -59,15 +59,15 @@ class InspectionDamagesPage extends ConsumerWidget {
                       const SizedBox(width: 8),
                       _labeledInput('Номер', 100),
                       const SizedBox(width: 8),
-                      const Text('Конкретный день ▼', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                      const Text('Конкретный день ▼', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       const SizedBox(width: 8),
-                      const Text('Промежуток времени ▼', style: TextStyle(fontSize: 11, color: Color(0xFF666666))),
+                      const Text('Промежуток времени ▼', style: TextStyle(fontSize: 11, color: Color(0xFF868686))),
                       const SizedBox(width: 12),
-                      _chipBtn('Парковки', const Color(0xFFBDC3C7)),
-                      _chipBtn('Фото при начале', const Color(0xFFE67E22)),
-                      _chipBtn('Фото при завершении', const Color(0xFFE67E22)),
+                      _chipBtn('Парковки', const Color(0xFFD9E2EF)),
+                      _chipBtn('Фото при начале', const Color(0xFFFFC107)),
+                      _chipBtn('Фото при завершении', const Color(0xFFFFC107)),
                       const SizedBox(width: 8),
-                      _chipBtn('Очистить фильтры', const Color(0xFF7B68EE)),
+                      _chipBtn('Очистить фильтры', const Color(0xFF7C69EF)),
                     ],
                   ),
                 ),
@@ -117,7 +117,7 @@ class InspectionDamagesPage extends ConsumerWidget {
   Widget _damageRow(String car, String order, String type) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         children: [
           SizedBox(
@@ -128,21 +128,21 @@ class InspectionDamagesPage extends ConsumerWidget {
                   width: 80,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
+                    color: Color(0xFFD9E2EF),
                     borderRadius: BorderRadius.circular(3),
-                    border: Border.all(color: Colors.grey.shade300),
+                    border: Border.all(color: Color(0xFFD9E2EF)),
                   ),
-                  child: Icon(Icons.image, size: 30, color: Colors.grey.shade400),
+                  child: Icon(Icons.image, size: 30, color: Color(0xFF868686)),
                 ),
               ],
             ),
           ),
           SizedBox(width: 150, child: Text(car, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 150, child: Text(order, style: const TextStyle(fontSize: 11, color: Color(0xFF3498DB)))),
+          SizedBox(width: 150, child: Text(order, style: const TextStyle(fontSize: 11, color: Color(0xFF467FD0)))),
           Expanded(
             child: Row(
               children: [
-                Icon(Icons.grid_view, size: 14, color: Colors.grey.shade500),
+                Icon(Icons.grid_view, size: 14, color: Color(0xFF868686)),
                 const SizedBox(width: 4),
                 Text(type, style: const TextStyle(fontSize: 11)),
               ],
@@ -156,7 +156,7 @@ class InspectionDamagesPage extends ConsumerWidget {
   Widget _labeledInput(String label, double width) {
     return Row(
       children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF666666))),
+        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
         const SizedBox(width: 4),
         SizedBox(
           width: width,
@@ -165,14 +165,14 @@ class InspectionDamagesPage extends ConsumerWidget {
             decoration: InputDecoration(
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
             ),
             style: const TextStyle(fontSize: 11),
           ),
         ),
         const SizedBox(width: 4),
-        InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
+        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
       ],
     );
   }

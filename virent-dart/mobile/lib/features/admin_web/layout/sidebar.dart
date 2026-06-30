@@ -129,8 +129,8 @@ class _AppSidebarState extends State<AppSidebar> {
     ]),
   ];
 
-  static const Color _sidebarBg = Color(0xFFF0F3F9);
-  static const Color _activeColor = Color(0xFF496CAB);
+  static const Color _sidebarBg = Color(0xFFF1F4F8);
+  static const Color _activeColor = Color(0xFF7C69EF);
   static const Color _textColor = Color(0xFF6D737A);
   static const Color _textColorActive = Colors.white;
   static const Color _borderColor = Color(0xFFDEE1E8);

@@ -27,7 +27,7 @@ class PaymeTransactionsPage extends ConsumerWidget {
                   children: [
                     const Row(
                       children: [
-                        Text('Транзакции Payme', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                        Text('Транзакции Payme', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 39 совпадений', style: TextStyle(fontSize: 11, color: Colors.grey)),
                       ],
@@ -41,8 +41,8 @@ class PaymeTransactionsPage extends ConsumerWidget {
                           hintStyle: const TextStyle(fontSize: 11),
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                         ),
                         style: const TextStyle(fontSize: 11),
                       ),
@@ -124,20 +124,20 @@ class PaymeTransactionsPage extends ConsumerWidget {
     Color stateColor;
     Color textColor = Colors.white;
     if (isError) {
-      stateColor = const Color(0xFFE74C3C);
+      stateColor = const Color(0xFFDF4759);
     } else if (isWarning) {
-      stateColor = const Color(0xFFF1C40F);
+      stateColor = const Color(0xFFFFC107);
       textColor = Colors.black;
     } else if (isSuccess) {
-      stateColor = const Color(0xFF2ECC71);
+      stateColor = const Color(0xFF42BA96);
     } else {
-      stateColor = const Color(0xFFBDC3C7);
+      stateColor = const Color(0xFFD9E2EF);
       textColor = Colors.black;
     }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey.shade200))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xFFD9E2EF)))),
       child: Row(
         children: [
           SizedBox(width: 40, child: Text(id, style: const TextStyle(fontSize: 10))),
@@ -158,16 +158,16 @@ class PaymeTransactionsPage extends ConsumerWidget {
           SizedBox(width: 60, child: Text(state, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 80, child: Text(amount, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 100, child: Text(phone, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 60, child: Text(client, style: const TextStyle(fontSize: 10, color: Color(0xFF3498DB)))),
+          SizedBox(width: 60, child: Text(client, style: const TextStyle(fontSize: 10, color: Color(0xFF467FD0)))),
           SizedBox(width: 60, child: Text(reason, style: const TextStyle(fontSize: 10))),
           Expanded(
             child: InkWell(
-              onTap: () {},
+              onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
               child: const Row(
                 children: [
-                  Icon(Icons.visibility, size: 12, color: Color(0xFF3498DB)),
+                  Icon(Icons.visibility, size: 12, color: Color(0xFF467FD0)),
                   SizedBox(width: 4),
-                  Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF3498DB))),
+                  Text('Просмотр', style: TextStyle(fontSize: 10, color: Color(0xFF467FD0))),
                 ],
               ),
             ),
@@ -180,7 +180,7 @@ class PaymeTransactionsPage extends ConsumerWidget {
   Widget _labeledInput(String label, double width) {
     return Row(
       children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF666666))),
+        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF868686))),
         const SizedBox(width: 4),
         SizedBox(
           width: width,
@@ -189,14 +189,14 @@ class PaymeTransactionsPage extends ConsumerWidget {
             decoration: InputDecoration(
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
             ),
             style: const TextStyle(fontSize: 11),
           ),
         ),
         const SizedBox(width: 4),
-        InkWell(onTap: () {}, child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
+        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
       ],
     );
   }

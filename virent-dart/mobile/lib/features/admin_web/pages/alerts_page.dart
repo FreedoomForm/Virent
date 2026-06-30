@@ -22,12 +22,12 @@ class AlertsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Тревоги', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400, color: Color(0xFF333333))),
+                const Text('Тревоги', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400, color: Color(0xFF1B2A4E))),
                 const SizedBox(height: 12),
                 // Filters
                 Row(
                   children: [
-                    const Text('Самокат', style: TextStyle(fontSize: 12, color: Color(0xFF666666))),
+                    const Text('Самокат', style: TextStyle(fontSize: 12, color: Color(0xFF868686))),
                     const SizedBox(width: 6),
                     SizedBox(
                       width: 120,
@@ -36,16 +36,16 @@ class AlertsPage extends ConsumerWidget {
                         decoration: InputDecoration(
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Colors.grey.shade300)),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: Color(0xFFD9E2EF))),
                         ),
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),
                     const SizedBox(width: 4),
-                    InkWell(onTap: () {}, child: Icon(Icons.close, size: 16, color: Colors.grey[500])),
+                    InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 16, color: Colors.grey[500])),
                     const SizedBox(width: 12),
-                    const Text('Типы тревог:', style: TextStyle(fontSize: 12, color: Color(0xFF666666))),
+                    const Text('Типы тревог:', style: TextStyle(fontSize: 12, color: Color(0xFF868686))),
                     const SizedBox(width: 6),
                     SizedBox(
                       width: 140,
@@ -63,14 +63,14 @@ class AlertsPage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    _filterButton('Открыта', const Color(0xFF2ECC71)),
+                    _filterButton('Открыта', const Color(0xFF42BA96)),
                     const SizedBox(width: 6),
-                    _filterButton('Закрыта', const Color(0xFFE67E22)),
+                    _filterButton('Закрыта', const Color(0xFFFFC107)),
                     const SizedBox(width: 6),
-                    _filterButton('Группировать', const Color(0xFF3498DB)),
+                    _filterButton('Группировать', const Color(0xFF467FD0)),
                     const SizedBox(width: 12),
                     InkWell(
-                      onTap: () {},
+                      onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                       child: Row(
                         children: [
                           Text('Сбросить фильтр', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
@@ -147,7 +147,7 @@ class AlertsPage extends ConsumerWidget {
 
   Widget _filterButton(String label, Color color) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.white,
@@ -168,10 +168,10 @@ class AlertsPage extends ConsumerWidget {
       child: Row(
         children: [
           SizedBox(width: 50, child: Icon(icon, color: iconColor, size: 20)),
-          SizedBox(width: 120, child: Text(scooterId, style: const TextStyle(fontSize: 12, color: Color(0xFFE67E22)))),
-          Expanded(child: Text(type, style: const TextStyle(fontSize: 12, color: Color(0xFF333333)))),
-          SizedBox(width: 200, child: Text(time, style: const TextStyle(fontSize: 12, color: Color(0xFF333333)))),
-          SizedBox(width: 150, child: Text(status, style: const TextStyle(fontSize: 12, color: Color(0xFF333333)))),
+          SizedBox(width: 120, child: Text(scooterId, style: const TextStyle(fontSize: 12, color: Color(0xFFFFC107)))),
+          Expanded(child: Text(type, style: const TextStyle(fontSize: 12, color: Color(0xFF1B2A4E)))),
+          SizedBox(width: 200, child: Text(time, style: const TextStyle(fontSize: 12, color: Color(0xFF1B2A4E)))),
+          SizedBox(width: 150, child: Text(status, style: const TextStyle(fontSize: 12, color: Color(0xFF1B2A4E)))),
         ],
       ),
     );

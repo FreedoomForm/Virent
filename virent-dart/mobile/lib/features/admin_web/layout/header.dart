@@ -7,7 +7,7 @@ class AppHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 30,
-      color: const Color(0xFF29343F),
+      color: const Color(0xFF1B2A4E),
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: [
@@ -22,15 +22,15 @@ class AppHeader extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           InkWell(
-            onTap: () {},
+            onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
             child: const Icon(Icons.menu, color: Colors.white70, size: 16),
           ),
           const Spacer(),
-          _buildTag('Разблокирован: 0', const Color(0xFF3498DB)),
-          _buildTag('Разряжены: 7', const Color(0xFFF1C40F), textColor: Colors.black87),
-          _buildTag('Не в сети: 9', const Color(0xFFBDC3C7), textColor: Colors.black87),
-          _buildTag('Выезд из зоны: 0', const Color(0xFF8E44AD)),
-          _buildTag('Не включился: 1', const Color(0xFFE74C3C)),
+          _buildTag('Разблокирован: 0', const Color(0xFF467FD0)),
+          _buildTag('Разряжены: 7', const Color(0xFFFFC107), textColor: Colors.black87),
+          _buildTag('Не в сети: 9', const Color(0xFFD9E2EF), textColor: Colors.black87),
+          _buildTag('Выезд из зоны: 0', const Color(0xFF7C69EF)),
+          _buildTag('Не включился: 1', const Color(0xFFDF4759)),
           const SizedBox(width: 12),
           const CircleAvatar(
             radius: 10,
