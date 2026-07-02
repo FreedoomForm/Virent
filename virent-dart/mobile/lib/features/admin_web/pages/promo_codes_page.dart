@@ -55,7 +55,11 @@ class _PromoCodesPageState extends ConsumerState<PromoCodesPage> {
                         const SizedBox(width: 12),
                         Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                      const SizedBox.shrink()
+                      ElevatedButton.icon(
+                        onPressed: () => showAdminFormDialog(context, title: 'Добавить промокод', fields: const [AdminField(key: 'code', label: 'Код'), AdminField(key: 'discount', label: 'Скидка'), AdminField(key: 'active', label: 'Активен')], onSubmit: (values) async { await ref.read(genericCreateAction)('/admin/promo-codes', values, promoCodesProvider); }),
+                        icon: const Icon(Icons.add, size: 14, color: Colors.white),
+                        label: const Text('Добавить промокод', style: TextStyle(fontSize: 11, color: Colors.white)),
+                        style: ElevatedButton.styleFrom(backgroundColor: adminPrimary, foregroundColor: Colors.white, elevation: 0, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))))
                     ]),
                     Row(children: [
                       IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['id', 'code', 'bonus', 'group', 'expires'], onExport: (fmt, fields) async {})),

@@ -55,7 +55,11 @@ class _TechFeedbackPageState extends ConsumerState<TechFeedbackPage> {
                         const SizedBox(width: 12),
                         Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                      const SizedBox.shrink()
+                      ElevatedButton.icon(
+                        onPressed: () => showAdminFormDialog(context, title: 'Добавить фидбек', fields: const [AdminField(key: 'technician', label: 'Техник'), AdminField(key: 'text', label: 'Текст')], onSubmit: (values) async { await ref.read(genericCreateAction)('/admin/tech-feedback', values, techFeedbackProvider); }),
+                        icon: const Icon(Icons.add, size: 14, color: Colors.white),
+                        label: const Text('Добавить фидбек', style: TextStyle(fontSize: 11, color: Colors.white)),
+                        style: ElevatedButton.styleFrom(backgroundColor: adminPrimary, foregroundColor: Colors.white, elevation: 0, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))))
                     ]),
                     Row(children: [
                       IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['id', 'car_id', 'client_id', 'order_id', 'type', 'checked', 'who_checked', 'created_at'], onExport: (fmt, fields) async {})),

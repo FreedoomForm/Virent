@@ -583,6 +583,11 @@ class EmbeddedServer {
     _registerZones(router);
     _registerIoT(router);
     _registerSupport(router);
+    // Extended admin endpoints used by the admin web UI. These back ~40
+    // admin pages (customers, orders, billing, tariffs, technicians,
+    // logs, settings, etc.) that previously hit non-existent routes and
+    // silently rendered empty lists via _safeGetList.
+    _registerAdminExtended(router);
 
     final handler = Pipeline()
         .addMiddleware(_loggingMiddleware)
@@ -1859,6 +1864,1356 @@ class EmbeddedServer {
       return _json({'success': true});
     });
   }
+
+  // ---------------------------------------------------------------------
+  // Extended admin endpoints (admin web UI)
+  // ---------------------------------------------------------------------
+  //
+  // These routes back the ~40 admin pages that previously called
+  // non-existent endpoints. _safeGetList swallowed the 404s and rendered
+  // empty DataTables. Each handler below returns either:
+  //   - real data from DataStore when available (customers, orders,
+  //     alerts, support), or
+  //   - realistic seed data so the admin UI has something to render.
+  //
+  // List keys are matched exactly against the listKey argument in each
+  // _safeGetList call in admin_web_providers.dart.
+
+  void _registerAdminExtended(Router router) {
+    // ---- Real-data endpoints -------------------------------------------
+
+    // GET /admin/customers — every registered rider, plus seed rows when
+    // the store is empty (so the dashboard has data immediately after
+    // first boot).
+    router.get('/admin/customers', (_) {
+      final list = data.users.values.toList();
+      final out = list.isEmpty ? _seedCustomers() : list;
+      return _json({'customers': out, 'count': out.length});
+    });
+
+    // GET /admin/orders — admin alias for trips. Mirrors /trips but with
+    // the "orders" list key expected by ordersProvider.
+    router.get('/admin/orders', (_) {
+      final list = data.trips.values.toList();
+      final out = list.isEmpty ? _seedOrders() : list;
+      return _json({'orders': out, 'count': out.length});
+    });
+
+    // GET /admin/alerts — derived from scooter status (low battery,
+    // maintenance, retired, offline). Falls back to seed alerts when the
+    // fleet is healthy.
+    router.get('/admin/alerts', (_) {
+      final alerts = <Map<String, dynamic>>[];
+      for (final s in data.scooters) {
+        final bat = (s['battery'] as num?)?.toInt() ?? 100;
+        final status = s['status'] as String? ?? 'available';
+        if (status == 'low_battery' || bat < 20) {
+          alerts.add({
+            'id': 'alert_${s['id']}_lowbat',
+            'scooter_id': s['id'],
+            'type': 'low_battery',
+            'severity': 'warning',
+            'message': 'Scooter ${s['name']} battery at $bat%',
+            'created_at': _iso(5),
+            'status': 'open',
+          });
+        }
+        if (status == 'maintenance' || status == 'retired') {
+          alerts.add({
+            'id': 'alert_${s['id']}_maint',
+            'scooter_id': s['id'],
+            'type': 'maintenance',
+            'severity': 'info',
+            'message': 'Scooter ${s['name']} in $status',
+            'created_at': _iso(60),
+            'status': 'open',
+          });
+        }
+      }
+      final out = alerts.isEmpty ? _seedAlerts() : alerts;
+      return _json({'alerts': out, 'count': out.length});
+    });
+
+    // GET /admin/support — list support tickets (real + seed).
+    router.get('/admin/support', (_) {
+      final list = data.supportTickets.values.toList();
+      final out = list.isEmpty ? _seedSupport() : list;
+      return _json({'tickets': out, 'count': out.length});
+    });
+
+    // GET /admin/juicers — juicer / charging team roster.
+    router.get('/admin/juicers', (_) =>
+        _json({'juicers': _seedJuicers(), 'count': 6}));
+
+    // ---- Billing & payments -------------------------------------------
+
+    router.get('/admin/bank-cards', (_) =>
+        _json({'cards': _seedBankCards(), 'count': 6}));
+
+    router.get('/admin/debts', (_) =>
+        _json({'debts': _seedDebts(), 'count': 6}));
+
+    router.get('/admin/invoices', (_) =>
+        _json({'invoices': _seedInvoices(), 'count': 6}));
+
+    router.get('/admin/receipts', (_) =>
+        _json({'receipts': _seedReceipts(), 'count': 6}));
+
+    router.get('/admin/fines', (_) =>
+        _json({'fines': _seedFines(), 'count': 6}));
+
+    router.get('/admin/payme', (_) =>
+        _json({'transactions': _seedPayme(), 'count': 6}));
+
+    router.get('/admin/click', (_) =>
+        _json({'transactions': _seedClick(), 'count': 6}));
+
+    // ---- Bonuses & promos ---------------------------------------------
+
+    router.get('/admin/bonuses', (_) =>
+        _json({'bonuses': _seedBonuses(), 'count': 6}));
+
+    router.get('/admin/bonus-packages', (_) =>
+        _json({'packages': _seedBonusPackages(), 'count': 6}));
+
+    // NOTE: promo-codes returns the "promos" list key (matches
+    // promoCodesProvider in admin_web_providers.dart).
+    router.get('/admin/promo-codes', (_) =>
+        _json({'promos': _seedPromoCodes(), 'count': 6}));
+
+    // NOTE: promo-series returns the "series" list key.
+    router.get('/admin/promo-series', (_) =>
+        _json({'series': _seedPromoSeries(), 'count': 5}));
+
+    // ---- Tariffs -------------------------------------------------------
+
+    router.get('/admin/tariffs', (_) =>
+        _json({'tariffs': _seedTariffs(), 'count': 5}));
+
+    router.get('/admin/tariff-prices', (_) =>
+        _json({'prices': _seedTariffPrices(), 'count': 6}));
+
+    router.get('/admin/tariff-abonements', (_) =>
+        _json({'abonements': _seedTariffAbonements(), 'count': 5}));
+
+    router.get('/admin/tariff-subscriptions', (_) =>
+        _json({'subscriptions': _seedTariffSubscriptions(), 'count': 5}));
+
+    router.get('/admin/tariff-until-dead', (_) =>
+        _json({'tariffs': _seedTariffUntilDead(), 'count': 3}));
+
+    // ---- Technicians & maintenance ------------------------------------
+
+    router.get('/admin/technicians', (_) =>
+        _json({'technicians': _seedTechnicians(), 'count': 6}));
+
+    router.get('/admin/tech-tasks', (_) =>
+        _json({'tasks': _seedTechTasks(), 'count': 6}));
+
+    router.get('/admin/tech-feedback', (_) =>
+        _json({'feedback': _seedTechFeedback(), 'count': 6}));
+
+    router.get('/admin/inspections', (_) =>
+        _json({'inspections': _seedInspections(), 'count': 6}));
+
+    // ---- Fleet inventory ----------------------------------------------
+
+    router.get('/admin/models', (_) =>
+        _json({'models': _seedModels(), 'count': 5}));
+
+    router.get('/admin/scooter-groups', (_) =>
+        _json({'groups': _seedScooterGroups(), 'count': 5}));
+
+    router.get('/admin/client-groups', (_) =>
+        _json({'groups': _seedClientGroups(), 'count': 5}));
+
+    router.get('/admin/drivers', (_) =>
+        _json({'drivers': _seedDrivers(), 'count': 5}));
+
+    // NOTE: tarirov returns the "entries" list key (matches
+    // tarirovProvider in admin_web_providers.dart).
+    router.get('/admin/tarirov', (_) =>
+        _json({'entries': _seedTarirov(), 'count': 6}));
+
+    router.get('/admin/dots', (_) =>
+        _json({'dots': _seedDots(), 'count': 6}));
+
+    router.get('/admin/geozone-groups', (_) =>
+        _json({'groups': _seedGeozoneGroups(), 'count': 5}));
+
+    // ---- CRM: roles, agreements, companies, contacts, FAQ -------------
+
+    router.get('/admin/roles', (_) =>
+        _json({'roles': _seedRoles(), 'count': 5}));
+
+    router.get('/admin/agreements', (_) =>
+        _json({'agreements': _seedAgreements(), 'count': 5}));
+
+    router.get('/admin/companies', (_) =>
+        _json({'companies': _seedCompanies(), 'count': 5}));
+
+    router.get('/admin/contacts', (_) =>
+        _json({'contacts': _seedContacts(), 'count': 5}));
+
+    // NOTE: faq returns the "faq" list key (matches faqListProvider).
+    router.get('/admin/faq', (_) =>
+        _json({'faq': _seedFaq(), 'count': 6}));
+
+    router.get('/admin/permissions', (_) =>
+        _json({'permissions': _seedPermissions(), 'count': 10}));
+
+    router.get('/admin/selfies', (_) =>
+        _json({'selfies': _seedSelfies(), 'count': 6}));
+
+    // ---- Notifications & chat -----------------------------------------
+
+    router.get('/admin/push-history', (_) =>
+        _json({'pushes': _seedPushHistory(), 'count': 6}));
+
+    // NOTE: chat-logs returns the "logs" list key (matches chatLogsProvider).
+    router.get('/admin/chat-logs', (_) =>
+        _json({'logs': _seedChatLogs(), 'count': 6}));
+
+    // ---- Log endpoints (all return {"logs": [...]} or {"clients": ...}) -
+
+    router.get('/admin/logs', (_) =>
+        _json({'logs': _seedLogs('generic'), 'count': 6}));
+
+    router.get('/admin/logs/telemetry', (_) =>
+        _json({'logs': _seedLogs('telemetry'), 'count': 6}));
+
+    router.get('/admin/logs/action-history', (_) =>
+        _json({'logs': _seedLogs('action'), 'count': 6}));
+
+    router.get('/admin/logs/auth', (_) =>
+        _json({'logs': _seedLogs('auth'), 'count': 6}));
+
+    router.get('/admin/logs/client-changes', (_) =>
+        _json({'logs': _seedLogs('client_changes'), 'count': 6}));
+
+    router.get('/admin/logs/payments', (_) =>
+        _json({'logs': _seedLogs('payments'), 'count': 6}));
+
+    router.get('/admin/logs/scooter-changes', (_) =>
+        _json({'logs': _seedLogs('scooter_changes'), 'count': 6}));
+
+    router.get('/admin/logs/unconfirmed', (_) =>
+        _json({'logs': _seedLogs('unconfirmed'), 'count': 6}));
+
+    router.get('/admin/logs/hold', (_) =>
+        _json({'logs': _seedLogs('hold'), 'count': 6}));
+
+    router.get('/admin/logs/raider', (_) =>
+        _json({'logs': _seedLogs('raider'), 'count': 6}));
+
+    // IoT logs — mirrors /admin/iot/logs used by iotLogsProvider.
+    router.get('/admin/iot/logs', (_) =>
+        _json({'logs': _seedLogs('iot'), 'count': 6}));
+
+    // ---- Settings -----------------------------------------------------
+
+    // GET /admin/settings/config — server config object (not a list).
+    // Returned as a single-object response so settingsConfigProvider can
+    // surface it directly.
+    router.get('/admin/settings/config', (_) => _json(_seedSettingsConfig()));
+
+    // GET /admin/settings/notifications — event→channels matrix. Returned
+    // as {"events": [...]} so the settings notifications page can render
+    // each event as a DataTable row.
+    router.get('/admin/settings/notifications', (_) => _json({
+          'events': _seedSettingsNotifications(),
+        }));
+
+    router.get('/admin/settings/drivers', (_) =>
+        _json({'drivers': _seedDrivers(), 'count': 5}));
+
+    router.get('/admin/settings/scooter-groups', (_) =>
+        _json({'groups': _seedScooterGroups(), 'count': 5}));
+
+    // ---- Analytics -----------------------------------------------------
+
+    // GET /admin/analytics — aggregate analytics object (not a list).
+    // Mirrors the shape consumed by analyticsProvider.
+    router.get('/admin/analytics', (_) => _json(_seedAnalytics()));
+  }
+
+  // ---------------------------------------------------------------------
+  // Seed data generators (admin web UI)
+  // ---------------------------------------------------------------------
+  //
+  // Each generator returns a List<Map<String, dynamic>> (or Map for the
+  // single-object endpoints) with realistic demo data. They are NOT
+  // persisted — the admin UI uses them purely for display. Real data
+  // from DataStore is preferred wherever it exists (customers, orders,
+  // alerts, support).
+
+  /// ISO timestamp for [minutesAgo] minutes before now.
+  String _iso(int minutesAgo) =>
+      DateTime.now().subtract(Duration(minutes: minutesAgo)).toIso8601String();
+
+  List<Map<String, dynamic>> _seedCustomers() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'u$i',
+            'phone': '+9989${(10000000 + i * 111111).toString().padLeft(8, '0')}',
+            'name': 'Customer $i',
+            'email': 'customer$i@example.com',
+            'balance': 50000 - i * 5000,
+            'trips_count': i * 3,
+            'status': i == 6 ? 'blocked' : 'active_user',
+            'blocked_reason': i == 6 ? 'Unpaid fines' : null,
+            'created_at': _iso(60 * 24 * i),
+            'role': 'user',
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedOrders() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 't${1000 + i}',
+            'user_id': 'u$i',
+            'scooter_id': 's${(i % 5) + 1}',
+            'tariff': i % 2 == 0 ? 'subscription' : 'per_minute',
+            'abonement': i % 3 == 0 ? 'monthly' : null,
+            'debt': i > 4 ? (i - 4) * 5000 : 0,
+            'duration_min': 5 + i * 4,
+            'cost': (5 + i * 4) * 1200,
+            'status': i % 3 == 0
+                ? 'active'
+                : (i % 3 == 1 ? 'completed' : 'cancelled'),
+            'start_time': _iso(60 * i),
+            'end_time': i % 3 == 0 ? null : _iso(60 * i - 30),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedAlerts() => [
+        {
+          'id': 'alert_1',
+          'scooter_id': 's3',
+          'type': 'low_battery',
+          'severity': 'warning',
+          'message': 'Scooter Virent#3 battery at 12%',
+          'created_at': _iso(5),
+          'status': 'open',
+        },
+        {
+          'id': 'alert_2',
+          'scooter_id': 's2',
+          'type': 'offline',
+          'severity': 'critical',
+          'message': 'Scooter Virent#2 offline 35min',
+          'created_at': _iso(35),
+          'status': 'open',
+        },
+        {
+          'id': 'alert_3',
+          'scooter_id': 's5',
+          'type': 'geofence_breach',
+          'severity': 'warning',
+          'message': 'Scooter Virent#5 outside allowed zone',
+          'created_at': _iso(12),
+          'status': 'open',
+        },
+        {
+          'id': 'alert_4',
+          'scooter_id': 's1',
+          'type': 'tamper',
+          'severity': 'critical',
+          'message': 'Tamper alarm on Virent#1',
+          'created_at': _iso(90),
+          'status': 'acknowledged',
+        },
+        {
+          'id': 'alert_5',
+          'scooter_id': 's4',
+          'type': 'tip_over',
+          'severity': 'info',
+          'message': 'Scooter Virent#4 detected tip-over',
+          'created_at': _iso(180),
+          'status': 'resolved',
+        },
+      ];
+
+  List<Map<String, dynamic>> _seedSupport() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'tk$i',
+            'user_id': 'u$i',
+            'subject': 'Issue #$i',
+            'message': 'Customer reports ${i % 2 == 0 ? "scooter not unlocking" : "charge issue"}',
+            'status': i == 1
+                ? 'open'
+                : (i < 4 ? 'in_progress' : 'closed'),
+            'priority': i < 3 ? 'high' : 'normal',
+            'assigned_to': i < 4 ? 'admin@virent.io' : null,
+            'created_at': _iso(60 * i * 3),
+            'updated_at': _iso(60 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedJuicers() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'j$i',
+            'name': 'Juicer $i',
+            'phone': '+9989${(20000000 + i * 222222).toString().padLeft(8, '0')}',
+            'status': i % 3 == 0 ? 'offline' : 'available',
+            'scooters_collected': i * 4,
+            'scooters_charged': i * 3,
+            'rating': 4.0 + (i % 3) * 0.3,
+            'balance': 120000 + i * 8000,
+            'zone': 'Zone ${(i % 3) + 1}',
+            'last_active_at': _iso(60 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedBankCards() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'card_$i',
+            'user_id': 'u$i',
+            'brand': i % 3 == 0 ? 'Visa' : (i % 3 == 1 ? 'Mastercard' : 'Uzcard'),
+            'last4': '${1000 + i * 1111}'.substring(0, 4),
+            'exp_month': (i % 12) + 1,
+            'exp_year': 2025 + (i % 4),
+            'is_default': i == 1,
+            'status': i == 6 ? 'blocked' : 'active',
+            'created_at': _iso(60 * 24 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedDebts() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'debt_$i',
+            'user_id': 'u$i',
+            'amount': 5000 + i * 4000,
+            'currency': 'UZS',
+            'reason': i % 2 == 0 ? 'Unpaid trip' : 'Damaged scooter',
+            'status': i < 4 ? 'outstanding' : 'paid',
+            'created_at': _iso(60 * 24 * i),
+            'due_at': _iso(-60 * 24 * (7 - i)),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedInvoices() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'inv_$i',
+            'user_id': 'u$i',
+            'number': 'INV-2025-${1000 + i}',
+            'amount': 15000 + i * 3000,
+            'currency': 'UZS',
+            'status': i < 3 ? 'pending' : (i < 5 ? 'paid' : 'overdue'),
+            'items': [
+              {'description': 'Scooter rental', 'amount': 10000 + i * 2000},
+              {'description': 'Service fee', 'amount': 5000 + i * 1000},
+            ],
+            'created_at': _iso(60 * 24 * i),
+            'due_at': _iso(-60 * 24 * (7 - i)),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedReceipts() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'rc_$i',
+            'user_id': 'u$i',
+            'invoice_id': 'inv_$i',
+            'number': 'RC-2025-${2000 + i}',
+            'amount': 15000 + i * 3000,
+            'currency': 'UZS',
+            'method': i % 2 == 0 ? 'payme' : 'click',
+            'status': 'confirmed',
+            'created_at': _iso(60 * 12 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedFines() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'fine_$i',
+            'user_id': 'u$i',
+            'trip_id': 't$i',
+            'amount': 50000 + i * 10000,
+            'currency': 'UZS',
+            'reason': i % 2 == 0
+                ? 'Riding outside allowed zone'
+                : 'Parking in restricted area',
+            'status': i < 3 ? 'unpaid' : (i < 5 ? 'paid' : 'disputed'),
+            'created_at': _iso(60 * 24 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedPayme() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'payme_$i',
+            'user_id': 'u$i',
+            'transaction_id': 'PME${1000000 + i * 12345}',
+            'amount': 10000 + i * 5000,
+            'currency': 'UZS',
+            'status': i == 6 ? 'failed' : 'completed',
+            'type': i % 2 == 0 ? 'topup' : 'trip_payment',
+            'created_at': _iso(60 * 6 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedClick() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'click_$i',
+            'user_id': 'u$i',
+            'transaction_id': 'CLK${2000000 + i * 54321}',
+            'amount': 12000 + i * 4500,
+            'currency': 'UZS',
+            'status': i == 5 ? 'pending' : 'completed',
+            'type': i % 2 == 1 ? 'topup' : 'trip_payment',
+            'created_at': _iso(60 * 7 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedBonuses() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'bonus_$i',
+            'user_id': 'u$i',
+            'amount': 1000 + i * 500,
+            'currency': 'UZS',
+            'reason': i % 3 == 0
+                ? 'Referral'
+                : (i % 3 == 1 ? 'Promo code' : 'Birthday gift'),
+            'expires_at': _iso(-60 * 24 * 30),
+            'status': i < 4 ? 'active' : 'expired',
+            'created_at': _iso(60 * 24 * 10 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedBonusPackages() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'pkg_$i',
+            'name': 'Package $i',
+            'bonus_amount': 5000 + i * 2500,
+            'price': 10000 + i * 5000,
+            'currency': 'UZS',
+            'validity_days': 30 * i,
+            'is_active': i != 6,
+            'created_at': _iso(60 * 24 * 30 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedPromoCodes() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'promo_$i',
+            'code': 'VIRENT${100 + i}',
+            'bonus_gift': 5000 + i * 1000,
+            'usage_limit': 100,
+            'usage_count': i * 12,
+            'usage_remains': 100 - i * 12,
+            'group': i % 2 == 0 ? 'summer' : 'winter',
+            'group_active': i % 2 == 0,
+            'expires_at': _iso(-60 * 24 * 60),
+            'is_active': i != 6,
+            'created_at': _iso(60 * 24 * 30 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedPromoSeries() => [
+        for (var i = 1; i <= 5; i++)
+          {
+            'id': 'ps_$i',
+            'name': 'Series $i',
+            'code_prefix': i % 2 == 0 ? 'SUMMER' : 'WINTER',
+            'total_codes': 100 * i,
+            'used_codes': 25 * i,
+            'active': i != 5,
+            'created_at': _iso(60 * 24 * 30 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedTariffs() => [
+        {
+          'id': 'tariff_1',
+          'name': 'Per Minute',
+          'type': 'per_minute',
+          'rate_per_min': 1200,
+          'unlock_fee': 3000,
+          'currency': 'UZS',
+          'is_active': true,
+          'created_at': _iso(60 * 24 * 90),
+        },
+        {
+          'id': 'tariff_2',
+          'name': 'Daily Pass',
+          'type': 'subscription',
+          'rate_per_min': 0,
+          'unlock_fee': 0,
+          'fixed_price': 35000,
+          'currency': 'UZS',
+          'is_active': true,
+          'created_at': _iso(60 * 24 * 80),
+        },
+        {
+          'id': 'tariff_3',
+          'name': 'Weekly Pass',
+          'type': 'subscription',
+          'rate_per_min': 0,
+          'unlock_fee': 0,
+          'fixed_price': 150000,
+          'currency': 'UZS',
+          'is_active': true,
+          'created_at': _iso(60 * 24 * 70),
+        },
+        {
+          'id': 'tariff_4',
+          'name': 'Monthly Pass',
+          'type': 'subscription',
+          'rate_per_min': 0,
+          'unlock_fee': 0,
+          'fixed_price': 450000,
+          'currency': 'UZS',
+          'is_active': true,
+          'created_at': _iso(60 * 24 * 60),
+        },
+        {
+          'id': 'tariff_5',
+          'name': 'Until Dead',
+          'type': 'until_dead',
+          'rate_per_min': 1500,
+          'unlock_fee': 5000,
+          'currency': 'UZS',
+          'is_active': false,
+          'created_at': _iso(60 * 24 * 30),
+        },
+      ];
+
+  List<Map<String, dynamic>> _seedTariffPrices() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'tp_$i',
+            'tariff_id': 'tariff_${(i % 5) + 1}',
+            'tariff_name': ['Per Minute', 'Daily Pass', 'Weekly Pass',
+                'Monthly Pass', 'Until Dead'][i % 5],
+            'price': 5000 + i * 7000,
+            'currency': 'UZS',
+            'valid_from': _iso(60 * 24 * 30 * i),
+            'valid_to': i < 5 ? null : _iso(-60 * 24 * 30),
+            'is_active': i != 6,
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedTariffAbonements() => [
+        for (var i = 1; i <= 5; i++)
+          {
+            'id': 'ab_$i',
+            'name': ['Day', 'Week', 'Month', 'Quarter', 'Year'][i - 1],
+            'duration_days': [1, 7, 30, 90, 365][i - 1],
+            'price': [15000, 80000, 250000, 600000, 2000000][i - 1],
+            'currency': 'UZS',
+            'is_active': true,
+            'created_at': _iso(60 * 24 * 30 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedTariffSubscriptions() => [
+        for (var i = 1; i <= 5; i++)
+          {
+            'id': 'sub_$i',
+            'user_id': 'u$i',
+            'tariff_id': 'tariff_${(i % 4) + 1}',
+            'status': i < 4 ? 'active' : 'expired',
+            'started_at': _iso(60 * 24 * 30 * i),
+            'expires_at': i < 4 ? _iso(-60 * 24 * 30 * (5 - i)) : _iso(60),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedTariffUntilDead() => [
+        {
+          'id': 'tud_1',
+          'name': 'Until Dead Standard',
+          'rate_per_min': 1500,
+          'unlock_fee': 5000,
+          'min_battery': 20,
+          'currency': 'UZS',
+          'is_active': true,
+        },
+        {
+          'id': 'tud_2',
+          'name': 'Until Dead Premium',
+          'rate_per_min': 2000,
+          'unlock_fee': 7000,
+          'min_battery': 15,
+          'currency': 'UZS',
+          'is_active': true,
+        },
+        {
+          'id': 'tud_3',
+          'name': 'Until Dead Promo',
+          'rate_per_min': 1000,
+          'unlock_fee': 3000,
+          'min_battery': 25,
+          'currency': 'UZS',
+          'is_active': false,
+        },
+      ];
+
+  List<Map<String, dynamic>> _seedTechnicians() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'tech_$i',
+            'name': 'Technician $i',
+            'phone': '+9989${(30000000 + i * 333333).toString().padLeft(8, '0')}',
+            'email': 'tech$i@virent.io',
+            'specialty': i % 3 == 0
+                ? 'battery'
+                : (i % 3 == 1 ? 'mechanical' : 'electronics'),
+            'status': i % 4 == 0 ? 'busy' : 'available',
+            'tasks_open': i,
+            'tasks_done': i * 8,
+            'rating': 4.0 + (i % 3) * 0.3,
+            'created_at': _iso(60 * 24 * 30 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedTechTasks() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'task_$i',
+            'technician_id': i <= 3 ? 'tech_$i' : null,
+            'scooter_id': 's${(i % 5) + 1}',
+            'type': i % 3 == 0
+                ? 'repair'
+                : (i % 3 == 1 ? 'inspection' : 'swap_battery'),
+            'description': 'Task #$i: ${i % 2 == 0 ? "Battery swap" : "Brake check"}',
+            'status': i == 1
+                ? 'in_progress'
+                : (i < 4 ? 'assigned' : (i < 6 ? 'completed' : 'cancelled')),
+            'priority': i < 3 ? 'high' : 'normal',
+            'created_at': _iso(60 * 12 * i),
+            'updated_at': _iso(60 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedTechFeedback() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'fb_$i',
+            'task_id': 'task_$i',
+            'technician_id': 'tech_${(i % 3) + 1}',
+            'rating': 3 + (i % 3),
+            'comment': i % 2 == 0
+                ? 'Quick fix, scooter back in service'
+                : 'Took longer than expected',
+            'created_at': _iso(60 * 24 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedInspections() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'insp_$i',
+            'scooter_id': 's${(i % 5) + 1}',
+            'technician_id': 'tech_${(i % 3) + 1}',
+            'damages_found': i % 3,
+            'severity': i % 4 == 0 ? 'high' : (i % 4 == 1 ? 'medium' : 'low'),
+            'notes': i % 2 == 0 ? 'Scratch on deck' : 'Loose handle',
+            'photo_url': 'https://picsum.photos/seed/insp$i/200',
+            'status': i < 4 ? 'pending' : 'resolved',
+            'created_at': _iso(60 * 24 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedModels() => [
+        {
+          'id': 'model_1',
+          'name': 'Virent X1',
+          'manufacturer': 'Virent',
+          'max_speed': 25,
+          'battery_capacity': '36V 10Ah',
+          'range_km': 35,
+          'weight_kg': 14,
+          'is_active': true,
+        },
+        {
+          'id': 'model_2',
+          'name': 'Virent X2',
+          'manufacturer': 'Virent',
+          'max_speed': 28,
+          'battery_capacity': '48V 12Ah',
+          'range_km': 50,
+          'weight_kg': 16,
+          'is_active': true,
+        },
+        {
+          'id': 'model_3',
+          'name': 'Virent Pro',
+          'manufacturer': 'Virent',
+          'max_speed': 30,
+          'battery_capacity': '48V 15Ah',
+          'range_km': 65,
+          'weight_kg': 18,
+          'is_active': true,
+        },
+        {
+          'id': 'model_4',
+          'name': 'Virent Lite',
+          'manufacturer': 'Virent',
+          'max_speed': 22,
+          'battery_capacity': '36V 7Ah',
+          'range_km': 25,
+          'weight_kg': 12,
+          'is_active': true,
+        },
+        {
+          'id': 'model_5',
+          'name': 'Virent Cargo',
+          'manufacturer': 'Virent',
+          'max_speed': 20,
+          'battery_capacity': '48V 20Ah',
+          'range_km': 45,
+          'weight_kg': 24,
+          'is_active': false,
+        },
+      ];
+
+  List<Map<String, dynamic>> _seedScooterGroups() => [
+        for (var i = 1; i <= 5; i++)
+          {
+            'id': 'sg_$i',
+            'name': 'Group $i',
+            'description': i % 2 == 0 ? 'City center fleet' : 'Suburban fleet',
+            'scooter_count': i * 5,
+            'tariff_id': 'tariff_${(i % 5) + 1}',
+            'is_active': i != 5,
+            'created_at': _iso(60 * 24 * 30 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedClientGroups() => [
+        for (var i = 1; i <= 5; i++)
+          {
+            'id': 'cg_$i',
+            'name': ['VIP', 'Regular', 'New', 'Blocked', 'Test'][i - 1],
+            'description': ['High-value customers', 'Frequent riders',
+                'Newly registered', 'Suspended accounts', 'Test accounts'][i - 1],
+            'user_count': [25, 480, 132, 8, 4][i - 1],
+            'discount_percent': i == 1 ? 15 : (i == 2 ? 5 : 0),
+            'is_active': i != 5,
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedDrivers() => [
+        for (var i = 1; i <= 5; i++)
+          {
+            'id': 'drv_$i',
+            'name': 'Driver $i',
+            'phone': '+9989${(40000000 + i * 444444).toString().padLeft(8, '0')}',
+            'license_number': 'AB${100000 + i * 12345}',
+            'vehicle_plate': '01A${100 + i}BC',
+            'status': i % 3 == 0 ? 'on_break' : 'on_duty',
+            'zone': 'Zone ${(i % 3) + 1}',
+            'rating': 4.0 + (i % 3) * 0.3,
+            'created_at': _iso(60 * 24 * 60 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedTarirov() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'tr_$i',
+            'scooter_id': 's${(i % 5) + 1}',
+            'calibrated_by': 'tech_${(i % 3) + 1}',
+            'battery_drain_per_km': 1.5 + (i % 3) * 0.2,
+            'speed_offset': (i % 3) - 1,
+            'odometer_km': i * 125,
+            'notes': i % 2 == 0 ? 'Calibration OK' : 'Recalibrate in 30d',
+            'created_at': _iso(60 * 24 * 7 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedDots() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'dot_$i',
+            'name': 'Parking Dot $i',
+            'lat': 41.3111 + (i * 0.001),
+            'lng': 69.2406 + (i * 0.001),
+            'capacity': 8 + i * 2,
+            'occupied': i * 2,
+            'type': i % 2 == 0 ? 'parking' : 'charging',
+            'is_active': i != 6,
+            'created_at': _iso(60 * 24 * 30 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedGeozoneGroups() => [
+        for (var i = 1; i <= 5; i++)
+          {
+            'id': 'gg_$i',
+            'name': ['Center', 'North', 'South', 'East', 'West'][i - 1],
+            'description': 'Geozone group $i',
+            'zone_count': [12, 8, 6, 4, 3][i - 1],
+            'color': ['#3489FF', '#16A34A', '#DC2626', '#D97706', '#9333EA'][i - 1],
+            'is_active': i != 5,
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedRoles() => [
+        {
+          'id': 'role_1',
+          'name': 'super_admin',
+          'description': 'Full system access',
+          'permissions_count': 42,
+          'user_count': 1,
+        },
+        {
+          'id': 'role_2',
+          'name': 'admin',
+          'description': 'Standard admin access',
+          'permissions_count': 30,
+          'user_count': 3,
+        },
+        {
+          'id': 'role_3',
+          'name': 'operator',
+          'description': 'Daily operations',
+          'permissions_count': 18,
+          'user_count': 8,
+        },
+        {
+          'id': 'role_4',
+          'name': 'technician',
+          'description': 'Maintenance & repair',
+          'permissions_count': 12,
+          'user_count': 6,
+        },
+        {
+          'id': 'role_5',
+          'name': 'support',
+          'description': 'Customer support',
+          'permissions_count': 8,
+          'user_count': 4,
+        },
+      ];
+
+  List<Map<String, dynamic>> _seedAgreements() => [
+        for (var i = 1; i <= 5; i++)
+          {
+            'id': 'agr_$i',
+            'title': 'Agreement $i',
+            'version': '1.$i',
+            'type': i == 1 ? 'privacy' : (i == 2 ? 'terms' : 'rental'),
+            'body': 'This is the body of agreement $i...',
+            'is_active': i < 4,
+            'effective_at': _iso(60 * 24 * 30 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedCompanies() => [
+        for (var i = 1; i <= 5; i++)
+          {
+            'id': 'co_$i',
+            'name': ['Virent LLC', 'Scoot Tashkent', 'EcoRide',
+                'CityWheels', 'GreenGo'][i - 1],
+            'inn': '${100000000 + i * 12345678}',
+            'address': 'Tashkent, Amir Temur St. $i',
+            'phone': '+9987${(2000000 + i * 111111).toString().padLeft(7, '0')}',
+            'email': 'info@company$i.uz',
+            'scooter_count': i * 25,
+            'is_active': i != 5,
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedContacts() => [
+        for (var i = 1; i <= 5; i++)
+          {
+            'id': 'cnt_$i',
+            'name': 'Contact $i',
+            'company_id': 'co_$i',
+            'position': ['Manager', 'Support Lead', 'Tech Lead',
+                'Accountant', 'CEO'][i - 1],
+            'phone': '+9989${(50000000 + i * 555555).toString().padLeft(8, '0')}',
+            'email': 'contact$i@company.uz',
+            'is_primary': i == 1,
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedFaq() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'faq_$i',
+            'question': [
+              'How do I unlock a scooter?',
+              'What payment methods are supported?',
+              'How is the trip cost calculated?',
+              'What if the scooter breaks down?',
+              'Where can I park the scooter?',
+              'How do I get a refund?'
+            ][i - 1],
+            'answer': [
+              'Open the app, scan the QR code on the handlebar.',
+              'We support Payme, Click and bank cards.',
+              'Cost = unlock fee + (rate per minute × duration).',
+              'Use the SOS button in the app to report it.',
+              'Only in designated parking dots shown on the map.',
+              'Contact support — refunds are processed within 24h.'
+            ][i - 1],
+            'category': i % 3 == 0 ? 'billing' : (i % 3 == 1 ? 'rental' : 'support'),
+            'is_published': i != 6,
+            'created_at': _iso(60 * 24 * 30 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedPermissions() => [
+        {'id': 'perm_1', 'name': 'admin.view', 'description': 'View admin panel'},
+        {'id': 'perm_2', 'name': 'admin.users.manage', 'description': 'Manage users'},
+        {'id': 'perm_3', 'name': 'admin.scooters.manage', 'description': 'Manage scooters'},
+        {'id': 'perm_4', 'name': 'admin.zones.manage', 'description': 'Manage geofence zones'},
+        {'id': 'perm_5', 'name': 'admin.tariffs.manage', 'description': 'Manage tariffs'},
+        {'id': 'perm_6', 'name': 'admin.billing.view', 'description': 'View billing'},
+        {'id': 'perm_7', 'name': 'admin.billing.refund', 'description': 'Issue refunds'},
+        {'id': 'perm_8', 'name': 'admin.notifications.send', 'description': 'Send push notifications'},
+        {'id': 'perm_9', 'name': 'admin.support.manage', 'description': 'Manage support tickets'},
+        {'id': 'perm_10', 'name': 'admin.audit.view', 'description': 'View audit log'},
+      ];
+
+  List<Map<String, dynamic>> _seedSelfies() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'selfie_$i',
+            'user_id': 'u$i',
+            'photo_url': 'https://picsum.photos/seed/selfie$i/200',
+            'status': i < 4 ? 'verified' : (i < 6 ? 'pending' : 'rejected'),
+            'rejection_reason': i == 6 ? 'Blurry photo' : null,
+            'verified_at': i < 4 ? _iso(60 * 24 * i) : null,
+            'created_at': _iso(60 * 24 * (i + 1)),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedPushHistory() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'push_$i',
+            'client_id': 'u$i',
+            'title': i % 2 == 0 ? 'Promo 50% off!' : 'Your trip ended',
+            'body': i % 2 == 0
+                ? 'Use code VIRENT50 before Friday'
+                : 'Thank you for riding with Virent',
+            'is_read': i % 3 == 0,
+            'deleted': i == 6,
+            'segment': i % 2 == 0 ? 'all' : 'active',
+            'created_at': _iso(60 * 12 * i),
+          },
+      ];
+
+  List<Map<String, dynamic>> _seedChatLogs() => [
+        for (var i = 1; i <= 6; i++)
+          {
+            'id': 'msg_$i',
+            'client_id': 'u$i',
+            'message': i % 2 == 0
+                ? 'Hello, my scooter is not unlocking'
+                : 'I was charged twice for my last trip',
+            'image': i % 3 == 0 ? 'https://picsum.photos/seed/chat$i/100' : null,
+            'from_admin': i % 2 == 0,
+            'timestamp': _iso(60 * i),
+            'location': i % 3 == 0 ? '41.31, 69.24' : null,
+            'read_by_admin': i % 2 == 0,
+            'read_date': i % 2 == 0 ? _iso(60 * i - 30) : null,
+          },
+      ];
+
+  /// Generic log generator. Returns 6 rows shaped for the requested
+  /// [kind] (telemetry / action / auth / client_changes / payments /
+  /// scooter_changes / unconfirmed / hold / raider / iot / generic).
+  List<Map<String, dynamic>> _seedLogs(String kind) {
+    switch (kind) {
+      case 'telemetry':
+        return [
+          for (var i = 1; i <= 6; i++)
+            {
+              'id': 'tl_$i',
+              'scooter_id': 's${(i % 5) + 1}',
+              'event': i % 2 == 0 ? 'gps_update' : 'battery_drop',
+              'value': i % 2 == 0 ? '41.31, 69.24' : '${i * 5}%',
+              'timestamp': _iso(60 * i),
+            },
+        ];
+      case 'action':
+        return [
+          for (var i = 1; i <= 6; i++)
+            {
+              'id': 'al_$i',
+              'actor': 'admin@virent.io',
+              'action': ['scooter.retire', 'user.block', 'zone.create',
+                  'notification.send', 'trip.refund', 'prepaid.bulk_create'][i - 1],
+              'entity': ['scooter', 'user', 'zone',
+                  'notification', 'trip', 'prepaid'][i - 1],
+              'entity_id': 'e$i',
+              'timestamp': _iso(60 * i),
+            },
+        ];
+      case 'auth':
+        return [
+          for (var i = 1; i <= 6; i++)
+            {
+              'id': 'auth_$i',
+              'phone': '+9989${(10000000 + i * 111111).toString().padLeft(8, '0')}',
+              'ip': '192.168.1.${10 + i}',
+              'success': i != 4,
+              'failure_reason': i == 4 ? 'Invalid OTP' : null,
+              'user_agent': 'VirentApp/1.0 Android',
+              'timestamp': _iso(60 * i),
+            },
+        ];
+      case 'client_changes':
+        return [
+          for (var i = 1; i <= 6; i++)
+            {
+              'id': 'cc_$i',
+              'user_id': 'u$i',
+              'field': ['name', 'phone', 'email', 'balance',
+                  'status', 'password'][i - 1],
+              'old_value': 'old_$i',
+              'new_value': 'new_$i',
+              'actor': i % 2 == 0 ? 'admin@virent.io' : 'system',
+              'timestamp': _iso(60 * 24 * i),
+            },
+        ];
+      case 'payments':
+        return [
+          for (var i = 1; i <= 6; i++)
+            {
+              'id': 'pl_$i',
+              'user_id': 'u$i',
+              'amount': 5000 + i * 2500,
+              'currency': 'UZS',
+              'method': i % 2 == 0 ? 'payme' : 'click',
+              'status': i == 6 ? 'failed' : 'success',
+              'reference': 'TX${1000000 + i * 98765}',
+              'timestamp': _iso(60 * 6 * i),
+            },
+        ];
+      case 'scooter_changes':
+        return [
+          for (var i = 1; i <= 6; i++)
+            {
+              'id': 'sc_$i',
+              'scooter_id': 's${(i % 5) + 1}',
+              'field': ['status', 'battery', 'lat', 'lng',
+                  'mac_address', 'rate_per_min'][i - 1],
+              'old_value': 'old_$i',
+              'new_value': 'new_$i',
+              'actor': i % 2 == 0 ? 'system' : 'admin@virent.io',
+              'timestamp': _iso(60 * 12 * i),
+            },
+        ];
+      case 'unconfirmed':
+        return [
+          for (var i = 1; i <= 6; i++)
+            {
+              'id': 'uc_$i',
+              'user_id': 'u$i',
+              'phone': '+9989${(10000000 + i * 111111).toString().padLeft(8, '0')}',
+              'reason': i % 2 == 0
+                  ? 'Phone not verified'
+                  : 'Selfie not uploaded',
+              'attempts': i,
+              'created_at': _iso(60 * 24 * i),
+            },
+        ];
+      case 'hold':
+        return [
+          for (var i = 1; i <= 6; i++)
+            {
+              'id': 'hl_$i',
+              'user_id': 'u$i',
+              'trip_id': 't$i',
+              'amount': 5000 + i * 2000,
+              'currency': 'UZS',
+              'status': i < 4 ? 'held' : (i < 6 ? 'captured' : 'released'),
+              'provider': i % 2 == 0 ? 'payme' : 'click',
+              'created_at': _iso(60 * 6 * i),
+            },
+        ];
+      case 'raider':
+        return [
+          for (var i = 1; i <= 6; i++)
+            {
+              'id': 'rd_$i',
+              'scooter_id': 's${(i % 5) + 1}',
+              'user_id': i % 2 == 0 ? 'u$i' : null,
+              'event': 'unauthorized_move',
+              'location': '41.31, 69.24',
+              'distance_m': i * 50,
+              'timestamp': _iso(60 * i),
+            },
+        ];
+      case 'iot':
+        return [
+          for (var i = 1; i <= 6; i++)
+            {
+              'id': 'iot_$i',
+              'scooter_mac': 'AA:BB:CC:00:00:0${(i % 5) + 1}',
+              'command': ['lock', 'unlock', 'alarm_on',
+                  'led_on', 'reboot', 'locate'][i - 1],
+              'status': i < 4 ? 'delivered' : 'pending',
+              'created_at': _iso(60 * i),
+              'delivered_at': i < 4 ? _iso(60 * i - 2) : null,
+            },
+        ];
+      default: // generic
+        return [
+          for (var i = 1; i <= 6; i++)
+            {
+              'id': 'log_$i',
+              'level': i % 3 == 0 ? 'error' : (i % 3 == 1 ? 'info' : 'warn'),
+              'source': i % 2 == 0 ? 'server' : 'admin',
+              'message': 'Log entry #$i',
+              'timestamp': _iso(60 * i),
+            },
+        ];
+    }
+  }
+
+  /// Server config object — returned as the response body (not wrapped
+  /// in a list key) so settingsConfigProvider surfaces it directly.
+  Map<String, dynamic> _seedSettingsConfig() => {
+        'version': '1.0.0',
+        'environment': 'production',
+        'currency': 'UZS',
+        'language': 'ru',
+        'timezone': 'Asia/Tashkent',
+        'support_phone': '+998712000000',
+        'support_email': 'support@virent.io',
+        'min_balance': 0,
+        'max_trip_minutes': 120,
+        'idle_timeout_seconds': 60,
+        'low_battery_threshold': 20,
+        'features': {
+          'selfie_verification': true,
+          'promocodes': true,
+          'subscriptions': true,
+          'bonuses': true,
+          'raider_mode': false,
+        },
+        'payment_gateways': {
+          'payme': {'enabled': true, 'merchant_id': 'PME1234'},
+          'click': {'enabled': true, 'merchant_id': 'CLK5678'},
+        },
+        'updated_at': _iso(60 * 24),
+      };
+
+  /// Settings → notifications matrix. Each row is one event with channel
+  /// toggles. The settings notifications page normalizes this into a
+  /// DataTable.
+  List<Map<String, dynamic>> _seedSettingsNotifications() => [
+        {
+          'id': 'ev_1',
+          'event': 'user_registered',
+          'send_sms': false,
+          'send_push': true,
+          'send_chat': false,
+          'is_active': true,
+        },
+        {
+          'id': 'ev_2',
+          'event': 'trip_started',
+          'send_sms': false,
+          'send_push': true,
+          'send_chat': true,
+          'is_active': true,
+        },
+        {
+          'id': 'ev_3',
+          'event': 'trip_ended',
+          'send_sms': false,
+          'send_push': true,
+          'send_chat': true,
+          'is_active': true,
+        },
+        {
+          'id': 'ev_4',
+          'event': 'low_balance',
+          'send_sms': true,
+          'send_push': true,
+          'send_chat': false,
+          'is_active': true,
+        },
+        {
+          'id': 'ev_5',
+          'event': 'promo_received',
+          'send_sms': false,
+          'send_push': true,
+          'send_chat': false,
+          'is_active': true,
+        },
+        {
+          'id': 'ev_6',
+          'event': 'fine_issued',
+          'send_sms': true,
+          'send_push': true,
+          'send_chat': true,
+          'is_active': false,
+        },
+      ];
+
+  /// Aggregate analytics object. Returned as the response body so
+  /// analyticsProvider surfaces it directly.
+  Map<String, dynamic> _seedAnalytics() => {
+        'period': 'last_30_days',
+        'currency': 'UZS',
+        'totals': {
+          'revenue': 28500000,
+          'trips': 1842,
+          'active_users': 612,
+          'new_users': 89,
+          'avg_trip_duration_min': 14,
+          'avg_trip_cost': 16800,
+          'fleet_utilization_pct': 62,
+        },
+        'revenue_by_day': [
+          for (var i = 30; i >= 1; i--)
+            {
+              'date': DateTime.now()
+                  .subtract(Duration(days: i))
+                  .toIso8601String()
+                  .substring(0, 10),
+              'revenue': 800000 + (i * 12345) % 400000,
+              'trips': 50 + (i * 7) % 30,
+            },
+        ],
+        'trips_by_status': {
+          'completed': 1720,
+          'cancelled': 98,
+          'active': 24,
+        },
+        'scooters_by_status': {
+          'available': data.availableScooters,
+          'in_use': data.scooters
+              .where((s) => s['status'] == 'in_use')
+              .length,
+          'low_battery': data.scooters
+              .where((s) =>
+                  s['status'] == 'low_battery' ||
+                  ((s['battery'] as num?)?.toInt() ?? 100) < 20)
+              .length,
+          'maintenance': data.scooters
+              .where((s) => s['status'] == 'maintenance')
+              .length,
+          'retired': data.scooters
+              .where((s) => s['status'] == 'retired')
+              .length,
+        },
+        'top_zones': [
+          {'name': 'Amir Parking', 'trips': 412, 'revenue': 6300000},
+          {'name': 'Charging Hub', 'trips': 287, 'revenue': 4400000},
+          {'name': 'School Zone', 'trips': 198, 'revenue': 3100000},
+        ],
+        'generated_at': DateTime.now().toIso8601String(),
+      };
 
   // ---------------------------------------------------------------------
   // Helpers

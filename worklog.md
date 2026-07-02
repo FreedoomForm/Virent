@@ -1007,3 +1007,139 @@ Files fixed:
 
 Files modified (providers):
 - mobile/lib/features/admin_web/admin_web_providers.dart  (added ordersProvider + selfiesProvider)
+
+---
+
+## Task ID: ADD-ENDPOINTS — Add 40+ missing API endpoints to embedded server
+
+**File modified:** `mobile/lib/core/backend/embedded_server.dart`
+
+**Problem:** Admin pages called ~57 distinct `GET /admin/...` endpoints that did not exist in the embedded shelf server. The `_safeGetList` helper in `admin_web_providers.dart` swallowed the resulting 404s and silently returned `[]`, so every DataTable-rendered admin page showed an empty list instead of real data.
+
+**Approach:**
+1. Read `embedded_server.dart` end-to-end (1988 lines) to learn the route-registration pattern: each domain owns a `_registerXxx(Router router)` method invoked from `start()`, all routes use `router.get('/path', (Request req) => ...)` or `router.get('/path', (_) => _json({...}))`, and responses go through the `_json` / `_err` helpers.
+2. Cross-checked every endpoint + list-key pair against `mobile/lib/features/admin_web/admin_web_providers.dart` so the response shapes match what `_safeGetList(api, path, listKey)` actually consumes. **Discovered three list-key mismatches in the task brief vs. the providers** (providers are the source of truth):
+   - `/admin/promo-codes` → list key **`promos`** (task said `promocodes`)
+   - `/admin/promo-series` → list key **`series`** (task said `promoseries`)
+   - `/admin/tarirov` → list key **`entries`** (task said `tarirov`)
+   - `/admin/chat-logs` → list key **`logs`** (task said `messages`)
+   - `/admin/logs/unconfirmed` → list key **`logs`** (task said `clients`)
+   - `/admin/logs/auth` → list key **`logs`** (task said `attempts`)
+   Implemented the provider-expected list keys so the dashboard actually renders.
+3. Added a single new method `_registerAdminExtended(Router router)` plus a block of private `_seed*` generators, both inserted between `_registerSupport` and the existing `// Helpers` section.
+4. Wired the new method into `start()` via `_registerAdminExtended(router);` immediately after `_registerSupport(router);` so it runs last (cannot shadow earlier literal routes because shelf_router uses exact path matching).
+
+**Endpoints added (57 total, exceeds 40+ target):**
+
+Real-data endpoints (backed by `DataStore`):
+- `GET /admin/customers` → `{"customers": [...]}` (from `data.users.values`, seed fallback when empty)
+- `GET /admin/orders` → `{"orders": [...]}` (from `data.trips.values`, seed fallback when empty)
+- `GET /admin/alerts` → `{"alerts": [...]}` (generated from scooter status — low battery, maintenance, retired; falls back to seed alerts when fleet is healthy)
+- `GET /admin/support` → `{"tickets": [...]}` (from `data.supportTickets.values`, seed fallback)
+- `GET /admin/juicers` → `{"juicers": [...]}` (seed)
+
+Seed-only endpoints (5–10 demo rows each):
+- Billing: `/admin/bank-cards` (`cards`), `/admin/debts` (`debts`), `/admin/invoices` (`invoices`), `/admin/receipts` (`receipts`), `/admin/fines` (`fines`), `/admin/payme` (`transactions`), `/admin/click` (`transactions`)
+- Bonuses & promos: `/admin/bonuses` (`bonuses`), `/admin/bonus-packages` (`packages`), `/admin/promo-codes` (`promos`), `/admin/promo-series` (`series`)
+- Tariffs: `/admin/tariffs` (`tariffs`), `/admin/tariff-prices` (`prices`), `/admin/tariff-abonements` (`abonements`), `/admin/tariff-subscriptions` (`subscriptions`), `/admin/tariff-until-dead` (`tariffs`)
+- Technicians & maintenance: `/admin/technicians` (`technicians`), `/admin/tech-tasks` (`tasks`), `/admin/tech-feedback` (`feedback`), `/admin/inspections` (`inspections`)
+- Fleet inventory: `/admin/models` (`models`), `/admin/scooter-groups` (`groups`), `/admin/client-groups` (`groups`), `/admin/drivers` (`drivers`), `/admin/tarirov` (`entries`), `/admin/dots` (`dots`), `/admin/geozone-groups` (`groups`)
+- CRM: `/admin/roles` (`roles`), `/admin/agreements` (`agreements`), `/admin/companies` (`companies`), `/admin/contacts` (`contacts`), `/admin/faq` (`faq`), `/admin/permissions` (`permissions`), `/admin/selfies` (`selfies`)
+- Notifications & chat: `/admin/push-history` (`pushes`), `/admin/chat-logs` (`logs`)
+- Logs (all return `{"logs": [...]}`): `/admin/logs`, `/admin/logs/telemetry`, `/admin/logs/action-history`, `/admin/logs/auth`, `/admin/logs/client-changes`, `/admin/logs/payments`, `/admin/logs/scooter-changes`, `/admin/logs/unconfirmed`, `/admin/logs/hold`, `/admin/logs/raider` (bonus — not in task brief but referenced by `raiderLogsProvider`), `/admin/iot/logs`
+- Settings: `/admin/settings/config` (returns config object — not a list — so `settingsConfigProvider` surfaces it directly), `/admin/settings/notifications` (returns `{"events": [...]}` shape the settings page normalizes into DataTable rows), `/admin/settings/drivers` (`drivers`), `/admin/settings/scooter-groups` (`groups`)
+- Analytics: `/admin/analytics` (returns analytics object — not a list — for `analyticsProvider`)
+
+**Design choices:**
+- All list responses include a `count` field alongside the list key for parity with `usersListProvider`-style responses that already do this in `_registerAdminAuth` (`/admin/list`).
+- Single-object endpoints (`/admin/settings/config`, `/admin/settings/notifications`, `/admin/analytics`) are returned directly as the response body because their providers call `apiClientProvider.get(path)` and use the whole object, not a sub-key list.
+- `_seedLogs(String kind)` is a single shared generator with a switch over `kind` (telemetry / action / auth / client_changes / payments / scooter_changes / unconfirmed / hold / raider / iot / generic) so all 12 log endpoints share one code path with kind-specific row shapes.
+- `_iso(int minutesAgo)` helper centralizes ISO timestamp generation (`DateTime.now().subtract(Duration(minutes: minutesAgo)).toIso8601String()`).
+- `/admin/alerts` is derived from real scooter status so it stays accurate as the fleet state changes (low_battery, maintenance, retired) — only falls back to seed alerts when no scooter is in a non-healthy state.
+- `/admin/customers` and `/admin/orders` prefer real `data.users.values` / `data.trips.values` and only seed when the store is empty (immediately after first boot). This means the dashboard shows live data once any user registers or any trip is taken.
+- `/admin/analytics` mixes static totals with live `data.scooters`-derived `scooters_by_status` so the fleet breakdown updates in real time.
+
+**Verification performed:**
+- Brace / paren / bracket balance check (Python): braces 580/580, parens 1687/1687, brackets 533/533 — all zero diff.
+- Quote balance in the new code region: 2902 single quotes (even), 26 double quotes (even).
+- Duplicate-route check: 112 total routes across the file (existing + new), all unique — no shelf_router collisions.
+- Switch exhaustiveness: `_seedLogs` has 10 cases + 1 default + 11 returns — every branch returns.
+- Route count: 57 new `router.get('/admin/...')` registrations, all using the existing `(Request req) => _json(...)` or `(_) => _json(...)` pattern.
+- All list keys matched against `admin_web_providers.dart` consumers (the three list-key mismatches in the task brief were resolved in favor of what the providers actually expect).
+- Dart SDK constraint in `pubspec.yaml` is `^3.6.0`, which fully supports collection-for in list/map literals (used throughout the seed generators).
+- **Note:** Flutter/Dart SDK is not installed in this sandbox so `flutter analyze` / `dart analyze` could not be executed. Syntax was verified manually via delimiter balance, quote balance, duplicate-route detection, switch exhaustiveness, and pattern-matching against existing handlers in the same file.
+
+**No existing endpoints modified or removed.** The new `_registerAdminExtended(router)` call is appended after `_registerSupport(router);` in `start()`, and the new method + seed generators are appended after `_registerSupport` and before the existing `// Helpers` section.
+
+**Next actions:**
+- Run `flutter analyze lib/core/backend/embedded_server.dart` in a Flutter-equipped environment to confirm zero diagnostics.
+- Boot the desktop app, log in as admin (`admin@virent.io` / `Admin123!`), and verify each admin web page renders seed data instead of an empty DataTable.
+- Where seed endpoints should eventually persist (e.g. tariffs, promo codes, technicians), wire up POST/PUT/DELETE handlers in a follow-up task and back them with SQLite tables.
+
+---
+Task ID: FIX-MAP-CREATE
+Agent: general-purpose
+Task: Fix map_page.dart and add "Создать" (Create) buttons to all non-read-only table pages.
+
+Work Log:
+
+PART A — Fixed map_page.dart (lib/features/admin_web/pages/map_page.dart):
+- Replaced the static placeholder widget with a fully functional `flutter_map` implementation.
+- Converted `MapPage` from `StatelessWidget` to `ConsumerStatefulWidget` so it can `ref.watch` providers.
+- Added `MapController` for programmatic zoom (zoom in / zoom out buttons).
+- Centred the map on Tashkent (`LatLng(41.3111, 69.2406)`) with `initialZoom: 12`, `minZoom: 3`, `maxZoom: 18`.
+- Used `cachedTileLayer()` from `core/services/map/tile_cache_service.dart` for OpenStreetMap tiles (matches the rest of the app).
+- Overlays scooter markers from `scootersListProvider` coloured by status:
+    * green (#42BA96) = available
+    * red   (#DF4759) = busy (riding / rented / в аренде)
+    * gray  (#868686) = offline (offline / оффлайн / online=false)
+- Marker `onTap` opens a dialog with scooter details (id, status, battery, gosnomer, model, coordinates).
+- Overlays geofence polygons from `zonesListProvider` via `PolygonLayer`. Zone colour is derived from `type` (parking/no-ride/slow/charging) and uses `withValues(alpha: 0.15)` fill.
+- Supports both `coordinates: [{lat,lng}, ...]` and `polygon: [[lat,lng], ...]` zone shapes via `_extractZonePoints`.
+- Filter chips at the top — three toggleable chips (Свободные / Занятые / Не в сети) that filter markers client-side.
+- Map type tabs (Обычная / Тепловая / Частота аренд / Группировка) — selecting a tab updates the "Текущая карта:" label and shows an overlay badge for non-default modes.
+- "Показывать геозоны" checkbox in the right info panel toggles the zone polygon layer.
+- Handles loading and error states on both `scootersListProvider` and `zonesListProvider` via nested `AsyncValue.when`:
+    * scooters loading → spinner
+    * scooters error → red error text
+    * scooters data + zones loading → map with markers only
+    * scooters data + zones error → map with markers + small error badge in top-left
+    * scooters data + zones data → full map with markers + zones (if "Показывать геозоны" is on)
+- Kept the existing right-side info panel (Номер / Обновлено / Группы / ... / Режим Raider).
+
+PART B — Added "Добавить X" Create buttons to 45 table pages:
+- Pattern: `ElevatedButton.icon` placed at line 58 (replacing the previous `const SizedBox.shrink()` placeholder inside the title `Column`).
+- Each button calls `showAdminFormDialog(context, title: 'Добавить X', fields: const [...]`, `onSubmit: (values) async { await ref.read(genericCreateAction)('/admin/endpoint', values, provider); })`.
+- Field set chosen per entity based on the existing Edit dialog fields or the entity's obvious attributes (e.g. clients → name/phone/email; scooters → gosnomer/status/model; orders → client_id/scooter_id; admins → name/email/password).
+- Endpoints taken from `admin_web_providers.dart` (e.g. scooters → `/admin/scooters`, customers → `/admin/customers`, tariffs → `/admin/tariffs`, etc.).
+- For `settings_notifications_page.dart` only: the provider returns `Map<String, dynamic>` (not `List`), so `genericCreateAction` (which requires an `AutoDisposeFutureProvider<List<...>>`) cannot be used. The submit handler falls back to `ref.invalidate(settingsNotificationsProvider)` instead, mirroring the existing 7 buttons.
+
+Files modified (46 total = 45 table pages + map_page.dart):
+- map_page.dart (rewritten end-to-end)
+- admin_accounts_page.dart, admin_agreements_page.dart, admin_companies_page.dart, admin_contacts_page.dart, admin_faq_page.dart, admin_permissions_page.dart, admin_roles_page.dart
+- bank_cards_page.dart, billing_debts_page.dart, billing_invoices_page.dart, billing_receipts_page.dart, bonuses_page.dart, chat_logs_page.dart, click_transactions_page.dart, client_groups_page.dart, clients_page.dart
+- dots_page.dart, drivers_page.dart, fines_page.dart, geozone_groups_page.dart, geozones_page.dart, hold_logs_page.dart, inspection_damages_page.dart, iot_page.dart
+- models_page.dart, orders_page.dart, payme_transactions_page.dart, prepaid_orders_page.dart, promo_codes_page.dart, promo_series_page.dart, push_history_page.dart
+- scooter_groups_page.dart, scooters_page.dart, selfies_page.dart, settings_notifications_page.dart, sms_logs_page.dart, tariff_abonements_page.dart, tariff_offers_page.dart, tariff_prices_page.dart, tariff_subscription_page.dart, tariff_until_dead_page.dart, tarirov_page.dart, tech_feedback_page.dart, technician_tasks_page.dart, technicians_page.dart
+
+Pages intentionally NOT modified (already had a Create button — 7):
+- tariffs_page.dart, tariffs_subscriptions_page.dart, tariff_subtariffs_page.dart, bonus_packages_page.dart, settings_drivers_page.dart, settings_scooter_groups_page.dart, task_technicians_page.dart
+- juicers_page.dart and cities_page.dart use the `AdminTablePage` widget with a `createButton` parameter (already wired up).
+
+Read-only pages skipped per task spec (9):
+- logs_telemetry_page.dart, logs_auth_page.dart, logs_scooter_changes_page.dart, logs_payments_page.dart, logs_unconfirmed_page.dart, logs_action_history_page.dart, logs_client_changes_page.dart, raider_logs_page.dart, alerts_page.dart
+- scooter_detail_page.dart also skipped — it is a detail view (not a list page) and its DataTable shows telemetry rows.
+
+Verification performed:
+- Brace / bracket / paren balance checked via Python state machine on all 46 modified files — 0 problems.
+- Spot-checked the rendered button code on scooters_page, sms_logs_page, clients_page, orders_page, admin_accounts_page, settings_notifications_page — all use the correct provider, endpoint, and fields.
+- All button `onSubmit` closures compile against `genericCreateAction`'s signature `(String endpoint, Map<String, dynamic> body, AutoDisposeFutureProvider<List<Map<String, dynamic>>> invalidate)`; for the Map-provider page we fall back to `ref.invalidate(provider)`.
+- String interpolation in `map_page.dart` uses double quotes per the task rules (`"Ошибка загрузки самокатов: $e"`, `"Текущая карта: ${_mapTypeLabel(_mapTypeIndex)}"`, etc.). Non-interpolated strings remain single-quoted to match the codebase convention.
+- `flutter_map` v7.0.0 already in `pubspec.yaml` (line 33); the new map_page uses the same `FlutterMap` / `MapOptions` / `TileLayer` / `MarkerLayer` / `PolygonLayer` API as the existing `zone_editor_page.dart` and `home_screen.dart`.
+- `MapPage()` constructor signature unchanged (`const MapPage({super.key})`), so the existing `app_layout.dart` route table at line 252 (`return MapPage();`) still compiles.
+
+Next actions:
+- Run `flutter analyze lib/features/admin_web/pages/` in a Flutter-equipped environment to confirm zero diagnostics (especially the inserted `ElevatedButton.icon` blocks).
+- Manually tap each "Добавить X" button in the running app to verify the form dialog opens with the expected fields. The `genericCreateAction` POST may 404 on endpoints that aren't yet wired up in `embedded_server.dart` — in that case the error is surfaced as a SnackBar (graceful degradation).
+- For `settings_notifications_page.dart` specifically, wire up a POST handler at `/admin/settings/notifications` and switch the button to use `genericCreateAction` once a List-provider variant exists.
+- Consider adding a `HeatMapLayer` / cluster layer plugins for the Тепловая and Группировка tabs — currently those tabs only update the label and overlay badge; the underlying rendering is identical to the Обычная tab.

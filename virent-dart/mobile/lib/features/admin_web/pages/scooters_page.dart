@@ -55,7 +55,11 @@ class _ScootersPageState extends ConsumerState<ScootersPage> {
                         const SizedBox(width: 12),
                         Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                      const SizedBox.shrink()
+                      ElevatedButton.icon(
+                        onPressed: () => showAdminFormDialog(context, title: 'Добавить самокат', fields: const [AdminField(key: 'gosnomer', label: 'Госномер'), AdminField(key: 'status', label: 'Статус'), AdminField(key: 'model', label: 'Модель')], onSubmit: (values) async { await ref.read(genericCreateAction)('/admin/scooters', values, scootersListProvider); }),
+                        icon: const Icon(Icons.add, size: 14, color: Colors.white),
+                        label: const Text('Добавить самокат', style: TextStyle(fontSize: 11, color: Colors.white)),
+                        style: ElevatedButton.styleFrom(backgroundColor: adminPrimary, foregroundColor: Colors.white, elevation: 0, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))))
                     ]),
                     Row(children: [
                       IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['id', 'gosnomer', 'gsm', 'battery', 'status', 'model', 'company'], onExport: (fmt, fields) async {})),

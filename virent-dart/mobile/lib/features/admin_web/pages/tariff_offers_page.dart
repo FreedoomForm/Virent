@@ -55,7 +55,11 @@ class _TariffOffersPageState extends ConsumerState<TariffOffersPage> {
                         const SizedBox(width: 12),
                         Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                      const SizedBox.shrink()
+                      ElevatedButton.icon(
+                        onPressed: () => showAdminFormDialog(context, title: 'Добавить тариф', fields: const [AdminField(key: 'name_admin', label: 'Название в админке'), AdminField(key: 'name_app', label: 'Название в приложении'), AdminField(key: 'hold', label: 'Hold')], onSubmit: (values) async { await ref.read(genericCreateAction)('/admin/tariffs', values, tariffsListProvider); }),
+                        icon: const Icon(Icons.add, size: 14, color: Colors.white),
+                        label: const Text('Добавить тариф', style: TextStyle(fontSize: 11, color: Colors.white)),
+                        style: ElevatedButton.styleFrom(backgroundColor: adminPrimary, foregroundColor: Colors.white, elevation: 0, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))))
                     ]),
                     Row(children: [
                       IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['admin_name', 'app_name', 'hold'], onExport: (fmt, fields) async {})),

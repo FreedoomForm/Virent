@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'sidebar.dart';
 import 'header.dart';
+
+import '../admin_web_providers.dart';
+import '../../home/presentation/screens/home_screen.dart';
 
 import '../pages/dashboard_page.dart';
 import '../pages/statistics_page.dart';
@@ -63,40 +67,175 @@ import '../pages/chat_logs_page.dart';
 import '../pages/sms_logs_page.dart';
 import '../pages/settings_drivers_page.dart';
 
-class AppLayout extends StatefulWidget {
+class AppLayout extends ConsumerStatefulWidget {
   const AppLayout({super.key});
 
   @override
-  State<AppLayout> createState() => _AppLayoutState();
+  ConsumerState<AppLayout> createState() => _AppLayoutState();
 }
 
-class _AppLayoutState extends State<AppLayout> {
+class _AppLayoutState extends ConsumerState<AppLayout> {
   int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final mode = ref.watch(adminModeProvider);
+    final bool isTest =
+        mode == AdminMode.test || mode == AdminMode.testClient;
+    final bool isClient =
+        mode == AdminMode.client || mode == AdminMode.testClient;
+
     return Scaffold(
       body: Column(
         children: [
           const AppHeader(),
+          if (isTest) _buildTestBanner(mode),
           Expanded(
-            child: Row(
+            child: Stack(
               children: [
-                AppSidebar(
-                  selectedIndex: _selectedIndex,
-                  onItemSelected: (index) {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
+                // Underlying admin panel (sidebar + page content) is always
+                // built so that switching modes doesn't lose page state.
+                Row(
+                  children: [
+                    AppSidebar(
+                      selectedIndex: _selectedIndex,
+                      onItemSelected: (index) {
+                        setState(() {
+                          _selectedIndex = index;
+                        });
+                      },
+                    ),
+                    Expanded(
+                      child: _getPage(_selectedIndex),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  child: _getPage(_selectedIndex),
-                ),
+                // Mobile client UI overlay (client / testClient modes).
+                if (isClient) _buildClientOverlay(mode),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// Orange banner shown at the top whenever the admin is in a test mode.
+  /// Reminds the user that table data is seed/sample data and that no real
+  /// mutations are being made.
+  Widget _buildTestBanner(AdminMode mode) {
+    final String label = mode == AdminMode.testClient
+        ? 'ТЕСТОВЫЙ РЕЖИМ КЛИЕНТА — изменения не влияют на реальные данные'
+        : 'ТЕСТОВЫЙ РЕЖИМ — изменения не влияют на реальные данные';
+    return Container(
+      width: double.infinity,
+      color: Colors.deepOrange,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: Row(
+        children: [
+          const Icon(Icons.warning_amber_rounded,
+              color: Colors.white, size: 14),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () => ref.read(adminModeProvider.notifier).state =
+                AdminMode.normal,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.close, color: Colors.white, size: 14),
+                  SizedBox(width: 4),
+                  Text(
+                    'Выйти из тестового режима',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Full-screen overlay of the mobile client UI ([HomeScreen]) on top of the
+  /// admin panel. The client UI connects to the same server via the ngrok URL
+  /// already configured in `apiClientProvider`. A floating exit button lets
+  /// the admin return to the panel without going through the header dropdown.
+  Widget _buildClientOverlay(AdminMode mode) {
+    return Positioned.fill(
+      child: Material(
+        color: Colors.black87,
+        child: Stack(
+          children: [
+            // The mobile client UI. Same HomeScreen the rider app shows —
+            // it pulls live data from the server via the same providers.
+            const Positioned.fill(
+              child: HomeScreen(),
+            ),
+            // Floating exit button (top-right).
+            Positioned(
+              top: 12,
+              right: 12,
+              child: FloatingActionButton.extended(
+                heroTag: 'exit_client_mode',
+                backgroundColor: Colors.deepOrange,
+                foregroundColor: Colors.white,
+                icon: const Icon(Icons.close),
+                label: const Text('Выйти из режима клиента'),
+                onPressed: () {
+                  ref.read(adminModeProvider.notifier).state =
+                      AdminMode.normal;
+                },
+              ),
+            ),
+            // Test-client-mode badge (top-left) — only when testClient.
+            if (mode == AdminMode.testClient)
+              Positioned(
+                top: 12,
+                left: 12,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.deepOrange,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.science_outlined,
+                          color: Colors.white, size: 14),
+                      SizedBox(width: 6),
+                      Text(
+                        'ТЕСТ-КЛИЕНТ',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -80,7 +80,11 @@ class _SettingsNotificationsPageState extends ConsumerState<SettingsNotification
                         const SizedBox(width: 12),
                         Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                      const SizedBox.shrink()
+                      ElevatedButton.icon(
+                        onPressed: () => showAdminFormDialog(context, title: 'Добавить уведомление', fields: const [AdminField(key: 'event', label: 'Событие'), AdminField(key: 'send_sms', label: 'Отправить SMS'), AdminField(key: 'send_push', label: 'Отправить push')], onSubmit: (values) async { ref.invalidate(settingsNotificationsProvider); }),
+                        icon: const Icon(Icons.add, size: 14, color: Colors.white),
+                        label: const Text('Добавить уведомление', style: TextStyle(fontSize: 11, color: Colors.white)),
+                        style: ElevatedButton.styleFrom(backgroundColor: adminPrimary, foregroundColor: Colors.white, elevation: 0, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))))
                     ]),
                     Row(children: [
                       IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['event', 'send_sms', 'send_push', 'send_chat'], onExport: (fmt, fields) async {})),

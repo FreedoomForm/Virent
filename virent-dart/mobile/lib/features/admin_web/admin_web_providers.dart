@@ -39,6 +39,7 @@ import '../../core/configs/services/api_client.dart';
 import '../auth/presentation/providers/auth_providers.dart' show apiClientProvider;
 export '../auth/presentation/providers/auth_providers.dart' show apiClientProvider;
 import '../admin/data/services/admin_repository.dart';
+import 'admin_test_data.dart' show adminTestDataProvider;
 
 /// Singleton [AdminRepository] shared by every admin-web page.
 final adminWebRepositoryProvider = Provider<AdminRepository>((ref) {
@@ -58,18 +59,30 @@ final dashboardStatsProvider =
 /// List of every scooter in the fleet.
 final scootersListProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+  if (ref.watch(isAdminTestModeProvider)) {
+    return ref.read(adminTestDataProvider)['scooters'] ??
+        const <Map<String, dynamic>>[];
+  }
   return ref.read(adminWebRepositoryProvider).getScooters();
 });
 
 /// List of every geofenced zone.
 final zonesListProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+  if (ref.watch(isAdminTestModeProvider)) {
+    return ref.read(adminTestDataProvider)['zones'] ??
+        const <Map<String, dynamic>>[];
+  }
   return ref.read(adminWebRepositoryProvider).getZones();
 });
 
 /// List of every customer (rider) account.
 final customersListProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+  if (ref.watch(isAdminTestModeProvider)) {
+    return ref.read(adminTestDataProvider)['customers'] ??
+        const <Map<String, dynamic>>[];
+  }
   return ref.read(adminWebRepositoryProvider).getCustomers();
 });
 
@@ -82,6 +95,10 @@ final auditLogProvider =
 /// All trips (history + active) for the admin trips explorer.
 final tripsListProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+  if (ref.watch(isAdminTestModeProvider)) {
+    return ref.read(adminTestDataProvider)['trips'] ??
+        const <Map<String, dynamic>>[];
+  }
   final api = ref.read(apiClientProvider);
   final data = await api.get('/trips');
   final list = data['trips'] as List? ?? [];
@@ -652,3 +669,51 @@ final genericUpdateAction =
               await ref.read(apiClientProvider).put('$endpoint/$id', body);
               ref.invalidate(invalidate);
             });
+
+// ============================================================================
+// ADMIN MODE — toggles between normal / test / client / testClient modes.
+// Set by the profile dropdown in the header (see layout/header.dart). Pages
+// can watch [isAdminTestModeProvider] to swap live API data for the seed data
+// in [adminTestDataProvider]. The layout (layout/app_layout.dart) watches
+// [adminModeProvider] directly to overlay the mobile client UI when in client
+// mode and to show the orange "ТЕСТОВЫЙ РЕЖИМ" banner when in test mode.
+// ============================================================================
+
+/// Modes that the admin header's profile dropdown can switch to.
+enum AdminMode {
+  /// Production admin panel — live data from the server.
+  normal,
+
+  /// Test mode — show seed/sample data in all tables; an orange banner is
+  /// displayed at the top warning that changes do not affect real data.
+  test,
+
+  /// Client mode — overlay the mobile client UI (HomeScreen) on top of the
+  /// admin panel. The client UI connects to the same server via the ngrok URL
+  /// already configured in `apiClientProvider`.
+  client,
+
+  /// Test client mode — same as client mode but with test/seed data shown in
+  /// the admin tables underneath the overlay.
+  testClient,
+}
+
+/// Current admin mode. Set by the profile dropdown in the header.
+final adminModeProvider = StateProvider<AdminMode>((ref) => AdminMode.normal);
+
+/// True when the admin should see test/seed data instead of live API data —
+/// i.e. when [adminModeProvider] is [AdminMode.test] or [AdminMode.testClient].
+/// Read-only convenience provider used by individual FutureProviders so they
+/// don't have to repeat the mode comparison.
+final isAdminTestModeProvider = Provider<bool>((ref) {
+  final mode = ref.watch(adminModeProvider);
+  return mode == AdminMode.test || mode == AdminMode.testClient;
+});
+
+/// True when the mobile client UI overlay should be shown on top of the admin
+/// panel — i.e. when [adminModeProvider] is [AdminMode.client] or
+/// [AdminMode.testClient].
+final isClientModeProvider = Provider<bool>((ref) {
+  final mode = ref.watch(adminModeProvider);
+  return mode == AdminMode.client || mode == AdminMode.testClient;
+});

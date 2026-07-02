@@ -55,7 +55,11 @@ class _BankCardsPageState extends ConsumerState<BankCardsPage> {
                         const SizedBox(width: 12),
                         Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                      const SizedBox.shrink()
+                      ElevatedButton.icon(
+                        onPressed: () => showAdminFormDialog(context, title: 'Добавить карту', fields: const [AdminField(key: 'client_id', label: 'ID клиента'), AdminField(key: 'card_number', label: 'Номер карты')], onSubmit: (values) async { await ref.read(genericCreateAction)('/admin/bank-cards', values, bankCardsProvider); }),
+                        icon: const Icon(Icons.add, size: 14, color: Colors.white),
+                        label: const Text('Добавить карту', style: TextStyle(fontSize: 11, color: Colors.white)),
+                        style: ElevatedButton.styleFrom(backgroundColor: adminPrimary, foregroundColor: Colors.white, elevation: 0, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))))
                     ]),
                     Row(children: [
                       IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['id', 'client', 'holder_name', 'bank_name', 'country', 'card_number', 'token', 'card_type', 'deleted'], onExport: (fmt, fields) async {})),

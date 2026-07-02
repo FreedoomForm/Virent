@@ -55,7 +55,11 @@ class _PrepaidOrdersPageState extends ConsumerState<PrepaidOrdersPage> {
                         const SizedBox(width: 12),
                         Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                      const SizedBox.shrink()
+                      ElevatedButton.icon(
+                        onPressed: () => showAdminFormDialog(context, title: 'Добавить предоплаченный заказ', fields: const [AdminField(key: 'amount', label: 'Сумма'), AdminField(key: 'client_id', label: 'ID клиента'), AdminField(key: 'status', label: 'Статус')], onSubmit: (values) async { await ref.read(genericCreateAction)('/admin/prepaids', values, prepaidOrdersProvider); }),
+                        icon: const Icon(Icons.add, size: 14, color: Colors.white),
+                        label: const Text('Добавить предоплаченный заказ', style: TextStyle(fontSize: 11, color: Colors.white)),
+                        style: ElevatedButton.styleFrom(backgroundColor: adminPrimary, foregroundColor: Colors.white, elevation: 0, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))))
                     ]),
                     Row(children: [
                       IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['id', 'redis_token', 'car', 'client', 'amount', 'status'], onExport: (fmt, fields) async {})),
