@@ -78,3 +78,10 @@ local-*
 .z-ai-config
 /skills/
 prompt
+
+# Tool results (temporary)
+tool-results/
+
+# Screenshots (not needed in repo)
+*.zip
+upload/*.zip
