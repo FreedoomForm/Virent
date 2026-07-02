@@ -102,7 +102,7 @@ class PromoSeriesPage extends ConsumerWidget {
     );
   }
 
-  Widget _seriesRow(context, BuildContext context, String id, String name, bool isActive) {
+  Widget _seriesRow(BuildContext context, String id, String name, bool isActive) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

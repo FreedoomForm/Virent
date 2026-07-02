@@ -117,7 +117,7 @@ class ClientGroupsPage extends ConsumerWidget {
     );
   }
 
-  Widget _groupRow(context, BuildContext context, String id, String desc) {
+  Widget _groupRow(BuildContext context, String id, String desc) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

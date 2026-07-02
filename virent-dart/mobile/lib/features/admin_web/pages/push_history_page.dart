@@ -135,7 +135,7 @@ class PushHistoryPage extends ConsumerWidget {
     );
   }
 
-  Widget _pushRow(context, BuildContext context, String id, String client, String text, String isRead, String deleted, String created, String clientId, String clientName) {
+  Widget _pushRow(BuildContext context, String id, String client, String text, String isRead, String deleted, String created, String clientId, String clientName) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

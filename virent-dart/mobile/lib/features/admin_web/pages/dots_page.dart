@@ -128,7 +128,7 @@ class DotsPage extends ConsumerWidget {
     );
   }
 
-  Widget _dotRow(context, BuildContext context, String id, String name, String lat, String lon, String type, String radius, String active, String desc) {
+  Widget _dotRow(BuildContext context, String id, String name, String lat, String lon, String type, String radius, String active, String desc) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

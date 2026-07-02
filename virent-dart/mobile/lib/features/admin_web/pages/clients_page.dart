@@ -145,7 +145,7 @@ class ClientsPage extends ConsumerWidget {
     );
   }
 
-  static Widget _clientRow(context, BuildContext context, String id, String phone, String data, String debt, bool active, bool blocked, String comment) {
+  static Widget _clientRow(BuildContext context, String id, String phone, String data, String debt, bool active, bool blocked, String comment) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -194,7 +194,7 @@ class ClientsPage extends ConsumerWidget {
     );
   }
 
-  static Widget _input(context, BuildContext context, double w) {
+  static Widget _input(BuildContext context, double w) {
     return SizedBox(
       width: w,
       height: 28,

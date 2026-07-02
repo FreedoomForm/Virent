@@ -230,7 +230,7 @@ class ScootersPage extends ConsumerWidget {
     );
   }
 
-  Widget _actionLink(context, BuildContext context, String label) {
+  Widget _actionLink(BuildContext context, String label) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: InkWell(
@@ -240,7 +240,7 @@ class ScootersPage extends ConsumerWidget {
     );
   }
 
-  Widget _miniChip(context, BuildContext context, String label, Color color) {
+  Widget _miniChip(BuildContext context, String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),

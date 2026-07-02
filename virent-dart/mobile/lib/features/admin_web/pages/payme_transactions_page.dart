@@ -122,7 +122,7 @@ class PaymeTransactionsPage extends ConsumerWidget {
     );
   }
 
-  Widget _paymeRow(context, BuildContext context, String id, String payme, String merch, String paymeTime, String create, String perform, String cancel, String stateDesc, bool isError, String state, String amount, String phone, String client, String reason, {bool isWarning = false, bool isSuccess = false}) {
+  Widget _paymeRow(BuildContext context, String id, String payme, String merch, String paymeTime, String create, String perform, String cancel, String stateDesc, bool isError, String state, String amount, String phone, String client, String reason, {bool isWarning = false, bool isSuccess = false}) {
     Color stateColor;
     Color textColor = Colors.white;
     if (isError) {
@@ -179,7 +179,7 @@ class PaymeTransactionsPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),

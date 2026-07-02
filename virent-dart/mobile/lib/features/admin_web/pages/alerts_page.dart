@@ -147,7 +147,7 @@ class AlertsPage extends ConsumerWidget {
     );
   }
 
-  Widget _filterButton(context, BuildContext context, String label, Color color) {
+  Widget _filterButton(BuildContext context, String label, Color color) {
     return ElevatedButton(
       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       style: ElevatedButton.styleFrom(

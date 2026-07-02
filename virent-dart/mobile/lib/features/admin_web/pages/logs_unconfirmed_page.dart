@@ -115,7 +115,7 @@ class LogsUnconfirmedPage extends ConsumerWidget {
     );
   }
 
-  Widget _unconfirmedRow(context, BuildContext context, String id, String phone, String smsCode, String count, String countAll, String tryLogin, String createTime, String lastAttempt, String checkKey) {
+  Widget _unconfirmedRow(BuildContext context, String id, String phone, String smsCode, String count, String countAll, String tryLogin, String createTime, String lastAttempt, String checkKey) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

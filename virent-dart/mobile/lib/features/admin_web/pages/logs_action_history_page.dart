@@ -217,7 +217,7 @@ class LogsActionHistoryPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(

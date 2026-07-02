@@ -119,7 +119,7 @@ class AdminAgreementsPage extends ConsumerWidget {
     );
   }
 
-  Widget _agreementRow(context, BuildContext context, String file, String urlLabel, String htmlFile) {
+  Widget _agreementRow(BuildContext context, String file, String urlLabel, String htmlFile) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

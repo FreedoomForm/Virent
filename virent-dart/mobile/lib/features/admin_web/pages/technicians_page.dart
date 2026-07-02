@@ -131,7 +131,7 @@ class TechniciansPage extends ConsumerWidget {
     );
   }
 
-  Widget _techRow(context, BuildContext context, String id, String name, String login, String companies, String techKey, String apiToken, String permissions, String admin, String pass, String curComp) {
+  Widget _techRow(BuildContext context, String id, String name, String login, String companies, String techKey, String apiToken, String permissions, String admin, String pass, String curComp) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

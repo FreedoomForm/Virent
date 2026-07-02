@@ -127,7 +127,7 @@ class PrepaidOrdersPage extends ConsumerWidget {
     );
   }
 
-  Widget _prepaidRow(context, BuildContext context, String id, String token, String car, String client, String company, String abon, String amount, String status, String trans, String order, String created, String type) {
+  Widget _prepaidRow(BuildContext context, String id, String token, String car, String client, String company, String abon, String amount, String status, String trans, String order, String created, String type) {
     final bool isClick = type == 'CLICK';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -174,7 +174,7 @@ class PrepaidOrdersPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),

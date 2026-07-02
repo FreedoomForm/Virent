@@ -166,7 +166,7 @@ class OrdersPage extends ConsumerWidget {
     );
   }
 
-  Widget _orderRow(context, BuildContext context, String id, String clientId, String clientName, String car, String tariff, String abon, String dur, String status, String mileage, String start, String finish, String cost) {
+  Widget _orderRow(BuildContext context, String id, String clientId, String clientName, String car, String tariff, String abon, String dur, String status, String mileage, String start, String finish, String cost) {
     Color statusColor;
     switch (status) {
       case 'Завершено':
@@ -250,7 +250,7 @@ class OrdersPage extends ConsumerWidget {
     );
   }
 
-  static Widget _input(context, BuildContext context, double w) {
+  static Widget _input(BuildContext context, double w) {
     return SizedBox(
       width: w,
       height: 28,

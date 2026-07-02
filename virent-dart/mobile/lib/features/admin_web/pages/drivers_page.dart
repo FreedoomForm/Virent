@@ -119,7 +119,7 @@ class DriversPage extends ConsumerWidget {
     );
   }
 
-  Widget _driverRow(context, BuildContext context, String id, String desc, String type) {
+  Widget _driverRow(BuildContext context, String id, String desc, String type) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

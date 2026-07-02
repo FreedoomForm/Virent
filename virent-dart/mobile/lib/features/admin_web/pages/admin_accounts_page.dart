@@ -140,7 +140,7 @@ class AdminAccountsPage extends ConsumerWidget {
     );
   }
 
-  Widget _adminRow(context, BuildContext context, String id, String name, String email, String utc, String roles) {
+  Widget _adminRow(BuildContext context, String id, String name, String email, String utc, String roles) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

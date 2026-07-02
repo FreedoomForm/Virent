@@ -106,7 +106,7 @@ class PromoCodesPage extends ConsumerWidget {
     );
   }
 
-  Widget _promoRow(context, BuildContext context, String id, String code, String bonus, String usage, String group, bool isActive, String expires) {
+  Widget _promoRow(BuildContext context, String id, String code, String bonus, String usage, String group, bool isActive, String expires) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

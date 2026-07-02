@@ -107,7 +107,7 @@ class _SettingsDriversPageState extends ConsumerState<SettingsDriversPage> {
     ]);
   }
 
-  Widget _buildBulkActionBar(context, BuildContext context) {
+  Widget _buildBulkActionBar(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: adminBgLight,

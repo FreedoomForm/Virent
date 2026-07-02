@@ -107,7 +107,7 @@ class TariffPricesPage extends ConsumerWidget {
     );
   }
 
-  Widget _priceRow(context, BuildContext context, String name, String timeUnit) {
+  Widget _priceRow(BuildContext context, String name, String timeUnit) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

@@ -122,7 +122,7 @@ class AdminCompaniesPage extends ConsumerWidget {
     );
   }
 
-  Widget _companyRow(context, BuildContext context, String id, String name, String cpPub) {
+  Widget _companyRow(BuildContext context, String id, String name, String cpPub) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

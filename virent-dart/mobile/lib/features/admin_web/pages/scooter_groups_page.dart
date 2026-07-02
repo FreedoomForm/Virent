@@ -127,7 +127,7 @@ class ScooterGroupsPage extends ConsumerWidget {
     );
   }
 
-  Widget _groupRow(context, BuildContext context, String id, String desc, String trigger) {
+  Widget _groupRow(BuildContext context, String id, String desc, String trigger) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
