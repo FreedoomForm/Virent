@@ -9,7 +9,9 @@
 // On subsequent runs: loads all data into memory for the embedded server.
 
 import 'dart:convert';
+import 'dart:io' show Platform;
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
 import '../../utils/logger.dart';
 
@@ -26,6 +28,14 @@ class VirentDatabase {
   /// Initialise the database — creates tables and seed data on first run.
   static Future<void> init(String dbPath) async {
     if (_initialised) return;
+
+    // On desktop platforms (Windows/macOS/Linux), use FFI implementation
+    // because sqflite only works on mobile (Android/iOS) by default.
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+      AppLogger.info('Using sqflite_common_ffi for desktop database', tag: 'DB');
+    }
 
     _db = await openDatabase(
       dbPath,

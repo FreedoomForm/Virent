@@ -52,6 +52,7 @@ dependencies:
   shelf_cors_headers: ^0.1.0
   mqtt_client: ^10.0.0
   sqflite: ^2.3.0
+  sqflite_common_ffi: ^2.3.3
 
 dev_dependencies:
   flutter_test:
