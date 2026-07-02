@@ -126,6 +126,7 @@ class _AppSidebarState extends State<AppSidebar> {
     ]),
     SidebarItem(index: 18, icon: Icons.chat_bubble_outline, title: 'Чат', children: [
       SidebarSubItem(index: 18, title: 'Чат'),
+      SidebarSubItem(index: 19, title: 'Журнал чата'),
     ]),
   ];
 
