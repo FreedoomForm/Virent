@@ -101,7 +101,7 @@ class BonusPackagesPage extends ConsumerWidget {
     );
   }
 
-  Widget _packageRow(BuildContext context, String bonus, String cost, bool isActive) {
+  Widget _packageRow(context, BuildContext context, String bonus, String cost, bool isActive) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

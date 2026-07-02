@@ -155,7 +155,7 @@ class InspectionDamagesPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(BuildContext context, String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),

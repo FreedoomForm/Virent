@@ -160,7 +160,7 @@ class _BulkPrepaidPageState extends ConsumerState<BulkPrepaidPage> {
     );
   }
 
-  void _generate() {
+  void _generate(context, BuildContext context) {
     final count = int.tryParse(_countCtrl.text) ?? 10;
     final value = int.tryParse(_valueCtrl.text) ?? 50000;
     final prefix = _prefixCtrl.text.isNotEmpty ? _prefixCtrl.text.toUpperCase() : 'VIRENT';

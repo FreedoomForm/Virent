@@ -141,7 +141,7 @@ class GeozonesPage extends ConsumerWidget {
     );
   }
 
-  Widget _filterButton(BuildContext context, String text, {bool isPurple = false, bool isLightBg = false}) {
+  Widget _filterButton(context, BuildContext context, String text, {bool isPurple = false, bool isLightBg = false}) {
     Color bg = isPurple ? adminPrimary : (isLightBg ? const Color(0xFFE8EAF6) : Colors.transparent);
     Color textColor = isPurple ? Colors.white : (isLightBg ? adminPrimary : Colors.black);
     return InkWell(
@@ -158,7 +158,7 @@ class GeozonesPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(BuildContext context, String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
@@ -182,7 +182,7 @@ class GeozonesPage extends ConsumerWidget {
     );
   }
 
-  Widget _geozoneRow(BuildContext context, String id, String name, String fill, String stroke, String groups, String opFill, String opStroke, String cmds, String minScooters, bool rUsed, bool reqPark, bool disPark) {
+  Widget _geozoneRow(context, BuildContext context, String id, String name, String fill, String stroke, String groups, String opFill, String opStroke, String cmds, String minScooters, bool rUsed, bool reqPark, bool disPark) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

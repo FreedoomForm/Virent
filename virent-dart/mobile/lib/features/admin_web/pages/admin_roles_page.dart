@@ -121,7 +121,7 @@ class AdminRolesPage extends ConsumerWidget {
     );
   }
 
-  Widget _roleRow(BuildContext context, String name, String permissions) {
+  Widget _roleRow(context, BuildContext context, String name, String permissions) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

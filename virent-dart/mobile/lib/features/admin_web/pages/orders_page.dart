@@ -73,13 +73,13 @@ class OrdersPage extends ConsumerWidget {
                       const SizedBox(width: 4),
                       _input(context, 80),
                       const SizedBox(width: 4),
-                      _closeIcon(),
+                      _closeIcon(context, ),
                       const SizedBox(width: 8),
                       const Text('ID клиента', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
                       _input(context, 80),
                       const SizedBox(width: 4),
-                      _closeIcon(),
+                      _closeIcon(context, ),
                       const SizedBox(width: 8),
                       const Text('Дата', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
@@ -89,7 +89,7 @@ class OrdersPage extends ConsumerWidget {
                       const SizedBox(width: 4),
                       _input(context, 80),
                       const SizedBox(width: 4),
-                      _closeIcon(),
+                      _closeIcon(context, ),
                       const SizedBox(width: 8),
                       _chip('Без абонемента', adminSuccess),
                       _chip('С абонементом', adminSuccess),
@@ -166,7 +166,7 @@ class OrdersPage extends ConsumerWidget {
     );
   }
 
-  Widget _orderRow(BuildContext context, String id, String clientId, String clientName, String car, String tariff, String abon, String dur, String status, String mileage, String start, String finish, String cost) {
+  Widget _orderRow(context, BuildContext context, String id, String clientId, String clientName, String car, String tariff, String abon, String dur, String status, String mileage, String start, String finish, String cost) {
     Color statusColor;
     switch (status) {
       case 'Завершено':
@@ -250,7 +250,7 @@ class OrdersPage extends ConsumerWidget {
     );
   }
 
-  static Widget _input(BuildContext context, double w) {
+  static Widget _input(context, BuildContext context, double w) {
     return SizedBox(
       width: w,
       height: 28,
@@ -266,7 +266,7 @@ class OrdersPage extends ConsumerWidget {
     );
   }
 
-  static Widget _closeIcon() {
+  static Widget _closeIcon(context, BuildContext context) {
     return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 

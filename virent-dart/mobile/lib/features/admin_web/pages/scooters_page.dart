@@ -110,30 +110,30 @@ class ScootersPage extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       child: Row(
                         children: [
-                          _hdr('ID', 40),
-                          _hdr('Gosnomer', 70),
-                          _hdr('Fake groups', 160),
-                          _hdr('Cur order', 70),
+                          _hdr(context, 'ID', 40),
+                          _hdr(context, 'Gosnomer', 70),
+                          _hdr(context, 'Fake groups', 160),
+                          _hdr(context, 'Cur order', 70),
                           _ico(Icons.wifi, 30),
                           _ico(Icons.delete, 30),
                           _ico(Icons.videocam, 30),
                           _ico(Icons.refresh, 30),
                           _ico(Icons.dark_mode, 30),
                           _ico(Icons.settings, 30),
-                          _hdr('', 60), // battery icon area
-                          _hdr('', 50), // speed
-                          _hdr('', 60), // % bar
-                          _hdr('int', 30),
-                          _hdr('', 60), // Volt
-                          _hdr('Режим Raider', 80),
-                          _hdr('Raider Tech', 70),
-                          _hdr('Alerting', 60),
-                          _hdr('Внимание', 60),
-                          _hdr('', 30),
-                          _hdr('Company', 120),
-                          _hdr('Model', 50),
-                          _hdr('Geozones', 120),
-                          _hdr('Действия', 200),
+                          _hdr(context, '', 60), // battery icon area
+                          _hdr(context, '', 50), // speed
+                          _hdr(context, '', 60), // % bar
+                          _hdr(context, 'int', 30),
+                          _hdr(context, '', 60), // Volt
+                          _hdr(context, 'Режим Raider', 80),
+                          _hdr(context, 'Raider Tech', 70),
+                          _hdr(context, 'Alerting', 60),
+                          _hdr(context, 'Внимание', 60),
+                          _hdr(context, '', 30),
+                          _hdr(context, 'Company', 120),
+                          _hdr(context, 'Model', 50),
+                          _hdr(context, 'Geozones', 120),
+                          _hdr(context, 'Действия', 200),
                         ],
                       ),
                     ),
@@ -142,7 +142,7 @@ class ScootersPage extends ConsumerWidget {
                       child: ListView.builder(
                         itemCount: items.length,
                         itemBuilder: (context, i) {
-                          return _scooterRow(789 + i, '05-${(i + 1).toString().padLeft(4, '0')}');
+                          return _scooterRow(context, 789 + i, '05-${(i + 1).toString().padLeft(4, '0')}');
                         },
                       ),
                     ),
@@ -158,7 +158,7 @@ class ScootersPage extends ConsumerWidget {
     );
   }
 
-  Widget _scooterRow(int id, String gos) {
+  Widget _scooterRow(context, BuildContext context, int id, String gos) {
     final isOffline = id % 5 == 0;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -230,7 +230,7 @@ class ScootersPage extends ConsumerWidget {
     );
   }
 
-  Widget _actionLink(BuildContext context, String label) {
+  Widget _actionLink(context, BuildContext context, String label) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: InkWell(
@@ -240,7 +240,7 @@ class ScootersPage extends ConsumerWidget {
     );
   }
 
-  Widget _miniChip(BuildContext context, String label, Color color) {
+  Widget _miniChip(context, BuildContext context, String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),
@@ -248,7 +248,7 @@ class ScootersPage extends ConsumerWidget {
     );
   }
 
-  Widget _hdr(String label, double w) {
+  Widget _hdr(context, BuildContext context, String label, double w) {
     return SizedBox(width: w, child: Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600)));
   }
 

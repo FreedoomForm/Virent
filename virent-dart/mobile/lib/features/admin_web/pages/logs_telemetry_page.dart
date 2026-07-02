@@ -149,7 +149,7 @@ class LogsTelemetryPage extends ConsumerWidget {
     );
   }
 
-  Widget _telemetryRow(BuildContext context, String id, String carId, String gosnomer, String mileage, String ecuErr, String ecuErrType, String orderId, bool icon1, bool icon2, bool icon3, bool icon4, bool isMotion, String val1, String val2, String val3, String val4, String val5, String val6, String eventTime, String serverTime) {
+  Widget _telemetryRow(context, BuildContext context, String id, String carId, String gosnomer, String mileage, String ecuErr, String ecuErrType, String orderId, bool icon1, bool icon2, bool icon3, bool icon4, bool isMotion, String val1, String val2, String val3, String val4, String val5, String val6, String eventTime, String serverTime) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -202,7 +202,7 @@ class LogsTelemetryPage extends ConsumerWidget {
     );
   }
 
-  Widget _dropdown(BuildContext context, String label) {
+  Widget _dropdown(context, BuildContext context, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -214,7 +214,7 @@ class LogsTelemetryPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(BuildContext context, String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(

@@ -113,7 +113,7 @@ class BankCardsPage extends ConsumerWidget {
     );
   }
 
-  Widget _cardRow(BuildContext context, String id, String client, String holder, String bank, String country, String card, String token, String type, String deleted) {
+  Widget _cardRow(context, BuildContext context, String id, String client, String holder, String bank, String country, String card, String token, String type, String deleted) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

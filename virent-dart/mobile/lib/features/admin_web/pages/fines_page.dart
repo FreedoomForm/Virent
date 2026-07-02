@@ -152,7 +152,7 @@ class FinesPage extends ConsumerWidget {
     );
   }
 
-  static Widget _closeIcon(BuildContext context) {
+  static Widget _closeIcon(context, BuildContext context) {
     return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 }

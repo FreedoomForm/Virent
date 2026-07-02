@@ -124,7 +124,7 @@ class AdminContactsPage extends ConsumerWidget {
     );
   }
 
-  Widget _contactRow(BuildContext context, String city, String phone, String email, String tg, String wp, String faq, String company) {
+  Widget _contactRow(context, BuildContext context, String city, String phone, String email, String tg, String wp, String faq, String company) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

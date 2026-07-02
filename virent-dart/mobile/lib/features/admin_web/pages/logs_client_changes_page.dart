@@ -136,7 +136,7 @@ class LogsClientChangesPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(BuildContext context, String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(

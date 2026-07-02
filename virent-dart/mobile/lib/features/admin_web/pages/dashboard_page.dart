@@ -62,7 +62,7 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatsGrid(BuildContext context) {
+  Widget _buildStatsGrid(context, BuildContext context) {
     return Column(
       children: [
         // Row 1: Всего, На линии, Не на линии
@@ -201,7 +201,7 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildControlPanel(BuildContext context) {
+  Widget _buildControlPanel(context, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -289,7 +289,7 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildPushPanel(BuildContext context) {
+  Widget _buildPushPanel(context, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -362,7 +362,7 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _colorButton(BuildContext context, String label, Color color, {Color textColor = Colors.white}) {
+  Widget _colorButton(context, BuildContext context, String label, Color color, {Color textColor = Colors.white}) {
     return ElevatedButton(
       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       style: ElevatedButton.styleFrom(

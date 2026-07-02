@@ -121,7 +121,7 @@ class ClickTransactionsPage extends ConsumerWidget {
     );
   }
 
-  Widget _clickRow(BuildContext context, String id, String trans, String paydoc, String merchTrans, String merchPrep, String merchConf, String amount, String action, String status, String error, String errorNote, String sign, String created, String updated) {
+  Widget _clickRow(context, BuildContext context, String id, String trans, String paydoc, String merchTrans, String merchPrep, String merchConf, String amount, String action, String status, String error, String errorNote, String sign, String created, String updated) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -158,7 +158,7 @@ class ClickTransactionsPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(BuildContext context, String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(

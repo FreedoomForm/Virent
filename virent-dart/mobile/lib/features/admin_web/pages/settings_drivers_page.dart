@@ -92,7 +92,7 @@ class _SettingsDriversPageState extends ConsumerState<SettingsDriversPage> {
     );
   }
 
-  DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
+  DataRow _buildRow(context, BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
     return DataRow(cells: [
       DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
       DataCell(Text('${item['id'] ?? ''}')),
@@ -107,7 +107,7 @@ class _SettingsDriversPageState extends ConsumerState<SettingsDriversPage> {
     ]);
   }
 
-  Widget _buildBulkActionBar(BuildContext context) {
+  Widget _buildBulkActionBar(context, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: adminBgLight,

@@ -119,7 +119,7 @@ class AdminPermissionsPage extends ConsumerWidget {
     );
   }
 
-  Widget _permRow(BuildContext context, String name, String title) {
+  Widget _permRow(context, BuildContext context, String name, String title) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

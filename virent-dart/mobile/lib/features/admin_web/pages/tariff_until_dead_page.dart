@@ -86,7 +86,7 @@ class TariffUntilDeadPage extends ConsumerWidget {
     );
   }
 
-  Widget _tariffRow(BuildContext context, String appName, String adminName, String duration, String insurance, String cost, String batteryLevel) {
+  Widget _tariffRow(context, BuildContext context, String appName, String adminName, String duration, String insurance, String cost, String batteryLevel) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

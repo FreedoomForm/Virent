@@ -130,7 +130,7 @@ class BillingInvoicesPage extends ConsumerWidget {
     );
   }
 
-  Widget _invoiceRow(BuildContext context, String id, String hold, String company, String operator, String order, String amount, String client, String redis, String status, String created, String resultCode, String type, String trans, String uzcard, String cardPan, String codeMsg, bool showReturn, bool showCreate) {
+  Widget _invoiceRow(context, BuildContext context, String id, String hold, String company, String operator, String order, String amount, String client, String redis, String status, String created, String resultCode, String type, String trans, String uzcard, String cardPan, String codeMsg, bool showReturn, bool showCreate) {
     Color? statusColor;
     if (status == 'confirmed') statusColor = adminSuccess;
     if (status == 'HOLD') statusColor = adminWarning;
@@ -185,7 +185,7 @@ class BillingInvoicesPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(BuildContext context, String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),

@@ -116,7 +116,7 @@ class TariffOffersPage extends ConsumerWidget {
     );
   }
 
-  Widget _tariffRow(BuildContext context, String adminName, String appName, String hold) {
+  Widget _tariffRow(context, BuildContext context, String adminName, String appName, String hold) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

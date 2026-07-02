@@ -55,7 +55,7 @@ class ClientsPage extends ConsumerWidget {
                       const SizedBox(width: 4),
                       _input(context, 100),
                       const SizedBox(width: 4),
-                      _closeIcon(),
+                      _closeIcon(context, ),
                       const SizedBox(width: 8),
                       const Text('Телефон', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
@@ -74,7 +74,7 @@ class ClientsPage extends ConsumerWidget {
                       const SizedBox(width: 4),
                       _input(context, 120),
                       const SizedBox(width: 4),
-                      _closeIcon(),
+                      _closeIcon(context, ),
                       const SizedBox(width: 8),
                       _chip('Очистить фильтры', adminPrimary),
                     ],
@@ -145,7 +145,7 @@ class ClientsPage extends ConsumerWidget {
     );
   }
 
-  static Widget _clientRow(BuildContext context, String id, String phone, String data, String debt, bool active, bool blocked, String comment) {
+  static Widget _clientRow(context, BuildContext context, String id, String phone, String data, String debt, bool active, bool blocked, String comment) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -194,7 +194,7 @@ class ClientsPage extends ConsumerWidget {
     );
   }
 
-  static Widget _input(BuildContext context, double w) {
+  static Widget _input(context, BuildContext context, double w) {
     return SizedBox(
       width: w,
       height: 28,
@@ -210,7 +210,7 @@ class ClientsPage extends ConsumerWidget {
     );
   }
 
-  static Widget _closeIcon() {
+  static Widget _closeIcon(context, BuildContext context) {
     return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 
