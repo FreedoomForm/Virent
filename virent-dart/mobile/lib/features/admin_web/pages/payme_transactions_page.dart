@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
-import './widgets/admin_dialogs.dart';
+import '../widgets/admin_dialogs.dart';
 
 class PaymeTransactionsPage extends ConsumerWidget {
   const PaymeTransactionsPage({super.key});
