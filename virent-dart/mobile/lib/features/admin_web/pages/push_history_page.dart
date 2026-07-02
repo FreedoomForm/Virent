@@ -1,151 +1,130 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
-import '../widgets/admin_colors.dart';
 import '../widgets/admin_dialogs.dart';
+import '../widgets/admin_export.dart';
+import '../widgets/admin_status_tabs.dart';
+import '../widgets/admin_colors.dart';
 
-class PushHistoryPage extends ConsumerWidget {
+class PushHistoryPage extends ConsumerStatefulWidget {
   const PushHistoryPage({super.key});
+  @override
+  ConsumerState<PushHistoryPage> createState() => _PushHistoryPageState();
+}
+
+class _PushHistoryPageState extends ConsumerState<PushHistoryPage> {
+  final _searchController = TextEditingController();
+  final _selectedIds = <dynamic>{};
+  String _query = '';
+  int _currentPage = 1;
+  static const int _pageSize = 20;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final async = ref.watch(pushHistoryListProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      error: (e, _) => Center(child: Text('Ошибка: $e')),
       data: (items) {
+        var filtered = items;
+        if (_query.isNotEmpty) {
+          filtered = filtered.where((i) => i.values.any((v) => v != null && v.toString().toLowerCase().contains(_query.toLowerCase()))).toList();
+        }
+        final totalPages = (filtered.length / _pageSize).ceil().clamp(1, 9999);
+        final pageItems = filtered.skip((_currentPage - 1) * _pageSize).take(_pageSize).toList();
         return Container(
-      color: const Color(0xFFFFFFFF),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
-                      children: [
-                        Text('История Push', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
-                        SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 1,274,438 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        const Text('История push', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
+                        const SizedBox(width: 12),
+                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                    SizedBox(
-                      width: 200,
-                      height: 32,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Поиск:',
-                          hintStyle: const TextStyle(fontSize: 11),
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-                        style: const TextStyle(fontSize: 11))),
-                  ]),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    const Text('ID клиента', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                    const SizedBox(width: 4),
-                    SizedBox(
-                      width: 100,
-                      height: 28,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-                        style: const TextStyle(fontSize: 11))),
-                    const SizedBox(width: 4),
-                    InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-                  ]),
-              ])),
-          const SizedBox(height: 8),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: 1500,
-                child: Column(
-                  children: [
-                    Container(
-                      color: const Color(0xFFFAFAFA),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      child: const Row(
-                        children: [
-                          SizedBox(width: 80, child: Text('Id', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 80, child: Text('Client', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 120, child: Text('Client mass', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 80, child: Text('Text', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Is read', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 70, child: Text('Deleted', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 160, child: Text('Created', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          Expanded(child: Text('Client', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ])),
-                    const Divider(height: 1),
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          _pushRow(context, '1274813', '63616', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:10', '063616', 'surname mamurjan'),
-                          _pushRow(context, '1274812', '63615', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063615', 'surname Sardor'),
-                          _pushRow(context, '1274811', '63614', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063614', 'surname нур'),
-                          _pushRow(context, '1274810', '63613', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063613', 'surname Комил'),
-                          _pushRow(context, '1274809', '63612', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063612', 'surname Abdulbosit'),
-                          _pushRow(context, '1274808', '63611', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063611', 'surname Игнат'),
-                          _pushRow(context, '1274807', '63610', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063610', 'surname abuken'),
-                          _pushRow(context, '1274806', '63609', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063609', 'surname Islom'),
-                          _pushRow(context, '1274805', '63606', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063606', 'surname Cemil'),
-                          _pushRow(context, '1274804', '63604', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063604', 'surname s'),
-                          _pushRow(context, '1274803', '63603', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063603', 'surname Аброрбек'),
-                          _pushRow(context, '1274802', '63602', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063602', 'surname Муhammadbobur'),
-                          _pushRow(context, '1274801', '63601', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063601', 'surname firdavs'),
-                          _pushRow(context, '1274800', '63599', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063599', 'surname dilshod'),
-                          _pushRow(context, '1274799', '63598', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063598', 'surname baxa'),
-                        ])),
-                  ])))),
-        ]));
+                      const SizedBox.shrink()
+                    ]),
+                    Row(children: [
+                      IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['id', 'client', 'text', 'created'], onExport: (fmt, fields) async {})),
+                      IconButton(icon: const Icon(Icons.filter_list, size: 18, color: adminTextSecondary), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'client_id', label: 'ID клиента'), AdminField(key: 'text', label: 'Текст')], onApply: (v) async {})),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                    ]),
+                  ])),
+              const SizedBox(height: 8),
+              AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: adminPrimary)]),
+              const SizedBox(height: 8),
+              if (_selectedIds.isNotEmpty) _buildBulkActionBar(context),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: adminBorder)), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
+            dataRowColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return adminBgLight;
+              return Colors.white;
+            }),
+            dataRowMinHeight: 40,
+            dataRowMaxHeight: 40,
+            columnSpacing: 24,
+            horizontalMargin: 12,
+                    headingRowColor: WidgetStateProperty.all(adminBgLight), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('Id')), const DataColumn(label: Text('Client')), const DataColumn(label: Text('Client mass')), const DataColumn(label: Text('Text')), const DataColumn(label: Text('Is read')), const DataColumn(label: Text('Deleted')), const DataColumn(label: Text('Created')), const DataColumn(label: Text('Действия'))], rows: pageItems.map<DataRow>((i) => _buildRow(context, ref, i)).toList())))),
+              _buildPaginationBar(filtered.length, totalPages),
+            ]));
       });
   }
 
-  Widget _pushRow(BuildContext context, String id, String client, String text, String isRead, String deleted, String created, String clientId, String clientName) {
+  DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
+    final isRead = item['is_read'] == true || item['is_read'] == 1 || item['is_read'] == '1';
+    final deleted = item['deleted'] == true || item['deleted'] == 1 || item['deleted'] == '1';
+    return DataRow(cells: [
+      DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
+      DataCell(Text("${item['id'] ?? ''}")),
+      DataCell(Text("${item['client_id'] ?? item['client'] ?? ''}")),
+      DataCell(Text("${item['client_mass'] ?? item['mass'] ?? ''}")),
+      DataCell(Text("${item['text'] ?? item['message'] ?? ''}", overflow: TextOverflow.ellipsis)),
+      DataCell(Icon(isRead ? Icons.check_box : Icons.check_box_outline_blank, size: 14, color: isRead ? adminSuccess : adminTextGray)),
+      DataCell(Icon(deleted ? Icons.check_box : Icons.check_box_outline_blank, size: 14, color: deleted ? adminDanger : adminTextGray)),
+      DataCell(Text("${item['created'] ?? item['created_at'] ?? ''}")),
+      DataCell(Row(children: [
+        TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: adminInfo), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'text', label: 'Текст', initial: "${item['text'] ?? item['message'] ?? ''}", multiline: true)], onSubmit: (v) async { ref.invalidate(pushHistoryListProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: adminInfo), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'Push-уведомление', onDelete: () async { ref.invalidate(pushHistoryListProvider); }), icon: const Icon(Icons.delete, size: 12, color: adminDanger), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))),
+      ])),
+    ]);
+  }
+
+  Widget _buildBulkActionBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
-      child: Row(
-        children: [
-          SizedBox(width: 80, child: Text(id, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 80, child: Text(client, style: const TextStyle(fontSize: 11))),
-          const SizedBox(width: 120),
-          SizedBox(width: 80, child: Text(text, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 60, child: Text(isRead, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 70, child: Text(deleted, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 160, child: Text(created, style: const TextStyle(fontSize: 11))),
-          Expanded(
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                  decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.circular(2)),
-                  child: Text(clientId, style: const TextStyle(fontSize: 9, color: Colors.white))),
-                const SizedBox(width: 6),
-                Text(clientName, style: const TextStyle(fontSize: 11, color: adminInfo)),
-              ])),
-          SizedBox(
-            width: 100,
-            child: InkWell(
-              onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-              child: Row(
-                children: [
-                  const Icon(Icons.visibility, size: 12, color: adminInfo),
-                  const SizedBox(width: 4),
-                  const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
-                ]))),
-        ]));
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: adminBgLight,
+      child: Row(children: [
+        Text('Выбрано: ${_selectedIds.length}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+        const SizedBox(width: 16),
+        TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные уведомления?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: adminDanger), label: const Text('Удалить', style: TextStyle(color: adminDanger, fontSize: 11))),
+        const Spacer(),
+        TextButton(onPressed: () => setState(() => _selectedIds.clear()), child: const Text('Отменить', style: TextStyle(fontSize: 11))),
+      ]));
+  }
+
+  Widget _buildPaginationBar(int total, int totalPages) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
+        Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: adminTextGray)),
+        Row(children: [
+          IconButton(tooltip: 'Предыдущая страница', icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
+          Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
+          IconButton(tooltip: 'Следующая страница', icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
+        ]),
+      ]));
   }
 }

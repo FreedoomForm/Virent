@@ -1,101 +1,124 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
-import '../widgets/admin_colors.dart';
 import '../widgets/admin_dialogs.dart';
+import '../widgets/admin_export.dart';
+import '../widgets/admin_status_tabs.dart';
+import '../widgets/admin_colors.dart';
 
-class LogsPaymentsPage extends ConsumerWidget {
+class LogsPaymentsPage extends ConsumerStatefulWidget {
   const LogsPaymentsPage({super.key});
+  @override
+  ConsumerState<LogsPaymentsPage> createState() => _LogsPaymentsPageState();
+}
+
+class _LogsPaymentsPageState extends ConsumerState<LogsPaymentsPage> {
+  final _searchController = TextEditingController();
+  final _selectedIds = <dynamic>{};
+  String _query = '';
+  int _currentPage = 1;
+  static const int _pageSize = 20;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final async = ref.watch(logsPaymentsProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      error: (e, _) => Center(child: Text('Ошибка: $e')),
       data: (items) {
+        var filtered = items;
+        if (_query.isNotEmpty) {
+          filtered = filtered.where((i) => i.values.any((v) => v != null && v.toString().toLowerCase().contains(_query.toLowerCase()))).toList();
+        }
+        final totalPages = (filtered.length / _pageSize).ceil().clamp(1, 9999);
+        final pageItems = filtered.skip((_currentPage - 1) * _pageSize).take(_pageSize).toList();
         return Container(
-      color: const Color(0xFFFFFFFF),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
-                      children: [
-                        Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
-                        SizedBox(width: 12),
-                        Text('Показано 0 до 0 из 0 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        const Text('Логи платежей', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
+                        const SizedBox(width: 12),
+                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                    const SizedBox(height: 12),
-                    ElevatedButton.icon(
-                      onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-                      icon: const Icon(Icons.add, size: 14, color: Colors.white),
-                      label: const Text('Добавить entry', style: TextStyle(fontSize: 11, color: Colors.white)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: adminPrimary,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
-                  ]),
-                SizedBox(
-                  width: 200,
-                  height: 32,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Поиск:',
-                      hintStyle: const TextStyle(fontSize: 11),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-                    style: const TextStyle(fontSize: 11))),
-              ])),
-          const SizedBox(height: 16),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: 1600,
-                child: Column(
-                  children: [
-                    Container(
-                      color: const Color(0xFFFAFAFA),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          _col('Key1'), _col('Key2'), _col('Key3'), _col('Key4'), _col('Key5'), _col('Key6'), _col('Key7'), _col('Key8'), _col('Key9'), _col('Key10'), _col('Key11'), _col('Key12'),
-                          const Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ])),
-                    const Divider(height: 1),
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 24),
-                      child: const Center(
-                        child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)))),
-                    const Divider(height: 1),
-                    Container(
-                      color: const Color(0xFFFAFAFA),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          _col('Key1'), _col('Key2'), _col('Key3'), _col('Key4'), _col('Key5'), _col('Key6'), _col('Key7'), _col('Key8'), _col('Key9'), _col('Key10'), _col('Key11'), _col('Key12'),
-                          const Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ])),
-                    const Divider(height: 1),
-                    const Expanded(child: SizedBox()),
-                  ])))),
-        ]));
+                      const SizedBox.shrink()
+                    ]),
+                    Row(children: [
+                      IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['key1', 'key2', 'key3'], onExport: (fmt, fields) async {})),
+                      IconButton(icon: const Icon(Icons.filter_list, size: 18, color: adminTextSecondary), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'key1', label: 'Key1'), AdminField(key: 'key2', label: 'Key2')], onApply: (v) async {})),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                    ]),
+                  ])),
+              const SizedBox(height: 8),
+              AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: adminPrimary)]),
+              const SizedBox(height: 8),
+              if (_selectedIds.isNotEmpty) _buildBulkActionBar(context),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: adminBorder)), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
+            dataRowColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return adminBgLight;
+              return Colors.white;
+            }),
+            dataRowMinHeight: 40,
+            dataRowMaxHeight: 40,
+            columnSpacing: 24,
+            horizontalMargin: 12,
+                    headingRowColor: WidgetStateProperty.all(adminBgLight), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('Key1')), const DataColumn(label: Text('Key2')), const DataColumn(label: Text('Key3')), const DataColumn(label: Text('Действия'))], rows: pageItems.map<DataRow>((i) => _buildRow(context, ref, i)).toList())))),
+              _buildPaginationBar(filtered.length, totalPages),
+            ]));
       });
   }
 
-  Widget _col(String text) {
-    return SizedBox(
-      width: 100, // Reduced width since there's 12 keys
-      child: Text(text, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)));
+  DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
+    return DataRow(cells: [
+      DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
+      DataCell(Text("${item['key1'] ?? ''}")),
+      DataCell(Text("${item['key2'] ?? ''}")),
+      DataCell(Text("${item['key3'] ?? ''}")),
+      DataCell(Row(children: [
+        TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: adminInfo), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'key1', label: 'Key1', initial: "${item['key1'] ?? ''}"), AdminField(key: 'key2', label: 'Key2', initial: "${item['key2'] ?? ''}"), AdminField(key: 'key3', label: 'Key3', initial: "${item['key3'] ?? ''}")], onSubmit: (v) async { ref.invalidate(logsPaymentsProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: adminInfo), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'Логи платежей', onDelete: () async { ref.invalidate(logsPaymentsProvider); }), icon: const Icon(Icons.delete, size: 12, color: adminDanger), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))),
+      ])),
+    ]);
+  }
+
+  Widget _buildBulkActionBar(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: adminBgLight,
+      child: Row(children: [
+        Text('Выбрано: ${_selectedIds.length}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+        const SizedBox(width: 16),
+        TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: adminDanger), label: const Text('Удалить', style: TextStyle(color: adminDanger, fontSize: 11))),
+        const Spacer(),
+        TextButton(onPressed: () => setState(() => _selectedIds.clear()), child: const Text('Отменить', style: TextStyle(fontSize: 11))),
+      ]));
+  }
+
+  Widget _buildPaginationBar(int total, int totalPages) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
+        Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: adminTextGray)),
+        Row(children: [
+          IconButton(tooltip: 'Предыдущая страница', icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
+          Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
+          IconButton(tooltip: 'Следующая страница', icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
+        ]),
+      ]));
   }
 }

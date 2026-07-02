@@ -420,6 +420,16 @@ final promoSeriesProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
         (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/promo-series', 'series'));
 
+/// Orders (Заказы) — list endpoint for the orders admin page.
+final ordersProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/orders', 'orders'));
+
+/// Selfies (Селфи) — alias provider for the selfies admin page.
+final selfiesProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/selfies', 'selfies'));
+
 /// Tariffs list (Тарифы).
 final tariffsListProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
@@ -440,8 +450,33 @@ final tariffAbonementsProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
         (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/tariff-abonements', 'abonements'));
 
+/// Tariff subscriptions — singular alias (Подписочные тарифы).
+final tariffSubscriptionProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/tariff-subscriptions', 'subscriptions'));
+
+/// Tariff "until dead" (Тариф пока не сядет).
+final tariffUntilDeadProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/tariff-until-dead', 'tariffs'));
+
+/// Tarirov / calibration entries (Тарирование).
+final tarirovProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/tarirov', 'entries'));
+
+/// Models (Модели самокатов).
+final modelsProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/models', 'models'));
+
 /// Technicians (Техники).
 final techniciansListProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/technicians', 'technicians'));
+
+/// Technicians — singular alias (Техники).
+final techniciansProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
         (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/technicians', 'technicians'));
 
@@ -490,6 +525,31 @@ final holdLogsProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
         (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/logs/hold', 'logs'));
 
+/// Logs — action history (История действий).
+final logsActionHistoryProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/logs/action-history', 'logs'));
+
+/// Logs — auth (Логи авторизации).
+final logsAuthProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/logs/auth', 'logs'));
+
+/// Logs — raider mode (Логи режим Raider).
+final raiderLogsProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/logs/raider', 'logs'));
+
+/// Geozone groups (Группы геозон).
+final geozoneGroupsProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/geozone-groups', 'groups'));
+
+/// Dots / parking points (Dots).
+final dotsProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/dots', 'dots'));
+
 /// Push history (История push-уведомлений).
 final pushHistoryListProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
@@ -510,6 +570,11 @@ final settingsDriversProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
         (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/settings/drivers', 'drivers'));
 
+/// Drivers — short alias (Драйверы).
+final driversProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/settings/drivers', 'drivers'));
+
 /// Settings — notifications (Уведомления).
 final settingsNotificationsProvider =
     FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
@@ -522,6 +587,11 @@ final settingsNotificationsProvider =
 
 /// Settings — scooter groups (Группы самокатов).
 final settingsScooterGroupsProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/settings/scooter-groups', 'groups'));
+
+/// Scooter groups — short alias (Группы самокатов).
+final scooterGroupsProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
         (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/settings/scooter-groups', 'groups'));
 

@@ -883,3 +883,127 @@ Stage Summary:
 - 4 new providers added to admin_web_providers.dart (bankCards, billingDebts, billingInvoices, bonusPackages).
 - All 10 files pass manual syntax verification (balanced delimiters, correct imports, correct provider wiring).
 - Next action: run `flutter analyze lib/features/admin_web` in a Flutter-equipped environment to confirm zero diagnostics, then exercise the 10 pages in the admin web app to verify live data renders.
+
+---
+Task ID: FIX-DATATABLE-BATCH3
+Agent: sub-agent (DataTable batch 3 — logs/geo pages)
+Task: Fix 12 admin logs/geo pages — replace hardcoded sample data with DataTable + provider data
+
+Work Log:
+- Read reference page: sms_logs_page.dart (ConsumerStatefulWidget + DataTable + provider pattern)
+- Verified provider names in admin_web_providers.dart; 5 missing providers added:
+    * logsActionHistoryProvider  -> /admin/logs/action-history (key: 'logs')
+    * logsAuthProvider           -> /admin/logs/auth          (key: 'logs')
+    * raiderLogsProvider         -> /admin/logs/raider        (key: 'logs')
+    * geozoneGroupsProvider      -> /admin/geozone-groups     (key: 'groups')
+    * dotsProvider               -> /admin/dots               (key: 'dots')
+  (Existing providers reused: logsClientChangesProvider, logsPaymentsProvider,
+   logsScooterChangesProvider, logsTelemetryProvider, logsUnconfirmedProvider,
+   zonesListProvider, inspectionDamagesProvider.)
+- Rewrote 12 pages (removed hardcoded sample data; converted from ConsumerWidget
+  to ConsumerStatefulWidget with DataTable pattern following sms_logs_page.dart):
+    1. logs_action_history_page.dart   (История действий, cols: Объект, ID пользователя, Что изменено, Время, Старое значение, Новое значение) -> logsActionHistoryProvider
+    2. logs_auth_page.dart             (Логи авторизации, cols: id, Client, Phone, ip, Time, Sms code, Is success) -> logsAuthProvider
+    3. logs_client_changes_page.dart   (Логи изменения клиента, cols: ID, ID клиента, Доступные тарифы) -> logsClientChangesProvider
+    4. logs_payments_page.dart         (Логи платежей, cols: Key1, Key2, Key3) -> logsPaymentsProvider
+    5. logs_scooter_changes_page.dart  (Логи изменений самокатов, cols: ID, Номер самоката, ID текущего заказа, ID модели, Онлайн, counter_action, ID компании, Кто ввёл изменения) -> logsScooterChangesProvider
+    6. logs_telemetry_page.dart        (Логи телеметрии, cols: Id, CarId, Gosnomer + Speed, Battery, Lat, Lon, Odometer, Time) -> logsTelemetryProvider
+    7. logs_unconfirmed_page.dart      (Неподтвержденные, cols: id, Phone, Sms code, Sms try count, Sms try count all, Sms try login, Create time, Sms last attempt) -> logsUnconfirmedProvider
+    8. geozones_page.dart              (Геозоны, cols: ID, Название, Заполнение, Обводка, company_id, Группы) -> zonesListProvider
+    9. geozone_groups_page.dart        (Группы геозон, cols: Id, Description, FinishGeo) -> geozoneGroupsProvider
+   10. dots_page.dart                  (Dots, cols: Id, Name, Lat, Lon, Type, Radius, Active, Description) -> dotsProvider
+   11. inspection_damages_page.dart    (Damages, cols: Path, Car, Order, Type) -> inspectionDamagesProvider
+   12. raider_logs_page.dart           (Логи режим Raider, cols: ID, ID самоката, Откуда произошло переключение, Координаты активации, Время активации, Время телефона активации) -> raiderLogsProvider
+- All 12 pages follow the sms_logs_page.dart reference pattern:
+    * ConsumerStatefulWidget + _searchController, _selectedIds, _query, _currentPage, _pageSize=20
+    * ref.watch(provider).when(loading/error/data)
+    * Client-side search filter across all values
+    * Pagination (page size 20, prev/next)
+    * AdminStatusTabsRow with single "Всего" badge
+    * Bulk-action bar (delete + cancel) shown when items selected
+    * DataTable with Checkbox column + data columns + Действия column
+    * Action buttons wired to showAdminViewDialog/showAdminFormDialog/showAdminDeleteDialog
+    * _buildBulkActionBar + _buildPaginationBar helpers
+    * ref.invalidate(provider) on edit/delete so UI refreshes after action
+
+Critical rule verification (per task brief):
+  * Rule #1 (double-quote interpolation): all item lookups use "${item['field'] ?? ''}" (outer double quotes, inner single quotes for map key — no escape sequences). Verified via grep — 0 occurrences of escaped single-quote interpolation.
+  * Rule #2 (helper signature): _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) present in all 12 files (1 occurrence each).
+  * Rule #3 (imports): all 12 files import dart:math, admin_web_providers.dart, widgets/admin_dialogs.dart, widgets/admin_colors.dart, widgets/admin_export.dart, widgets/admin_status_tabs.dart.
+  * Rule #4 (.map<DataRow>): used in all 12 files (1 occurrence each).
+  * Rule #5 (no duplicate context params): 0 matches for `_method(...BuildContext context...BuildContext context`.
+  * Rule #6 (no trailing commas): 0 matches for `(context, )`.
+  * Rule #7 (no const InputDecoration with Icon color): 0 occurrences of `const InputDecoration`.
+  * Rule #8 (balanced braces): brace/paren/bracket counts verified balanced in all 12 files + providers file.
+
+Class names preserved (router in app_layout.dart unaffected):
+  LogsActionHistoryPage, LogsAuthPage, LogsClientChangesPage, LogsPaymentsPage,
+  LogsScooterChangesPage, LogsTelemetryPage, LogsUnconfirmedPage, GeozonesPage,
+  GeozoneGroupsPage, DotsPage, InspectionDamagesPage, RaiderLogsPage.
+
+Stage Summary:
+- 12 pages converted from hardcoded-sample ConsumerWidget to ConsumerStatefulWidget + DataTable backed by Riverpod providers.
+- 5 new providers added to admin_web_providers.dart (logsActionHistory, logsAuth, raiderLogs, geozoneGroups, dots).
+- All 12 files pass manual syntax verification (balanced delimiters, correct imports, correct provider wiring, correct _buildRow signature, no const InputDecoration, no duplicate context params, no trailing commas, all .map<DataRow>, all double-quoted interpolation).
+- Flutter/Dart SDK not installed in this sandbox so `flutter analyze` could not be executed; verified syntax manually via brace/paren/bracket balance counts + pattern grep checks against the sms_logs_page.dart reference.
+- Next action: run `flutter analyze lib/features/admin_web` in a Flutter-equipped environment to confirm zero diagnostics, then exercise the 12 pages in the admin web app to verify live data renders.
+
+---
+Task ID: FIX-DATATABLE-BATCH5
+Agent: sub-agent (DataTable batch 5)
+Task: Fix 11 remaining admin pages with proper DataTable + provider data
+
+Work Log:
+- Read reference page: sms_logs_page.dart (ConsumerStatefulWidget + DataTable + provider + search/pagination/bulk/export/filter/status tabs/checkbox/action buttons pattern)
+- Verified provider names against admin_web_providers.dart. Two providers were missing and have been added:
+  - ordersProvider    -> _safeGetList(/admin/orders, 'orders')  (line 424)
+  - selfiesProvider   -> _safeGetList(/admin/selfies, 'selfies') (line 429)
+- The existing pushHistoryProvider returns Map<String,dynamic> (notification stats), which does not fit the DataTable List pattern. Used the existing list-returning sibling pushHistoryListProvider (/admin/push-history, key 'pushes') for the push_history_page.dart DataTable.
+- The existing settingsNotificationsProvider returns Map<String,dynamic>. For settings_notifications_page.dart the page builder normalizes the Map response into a List of event rows (handles both {"events": [...]} and {"event_name": {...}} shapes) so the same DataTable pattern can be used.
+- Rewrote 11 pages (removed hardcoded sample data; converted from ConsumerWidget to ConsumerStatefulWidget with DataTable pattern matching sms_logs_page.dart):
+  - clients_page.dart                (10 cols: Checkbox, Id, Phone, Данные клиента, N bonus, Debt, Car order, Active, Blocked, Действия) — customersListProvider
+  - orders_page.dart                 (10 cols: Checkbox, Id, Client, Car, Tariff, Abonnement, Долг, Duration, Status, Действия) — ordersProvider (new)
+  - prepaid_orders_page.dart         (10 cols: Checkbox, Id, Redis token, Car, Client, Company, Abonement, Amount, Status, Действия) — prepaidOrdersProvider
+  - promo_codes_page.dart            ( 9 cols: Checkbox, Id, Code, Bonus gift, Usage remains, Promocode group, Group active, Expires, Действия) — promoCodesProvider
+  - promo_series_page.dart           ( 5 cols: Checkbox, ID, Название, Активка, Действия) — promoSeriesProvider
+  - push_history_page.dart           ( 9 cols: Checkbox, Id, Client, Client mass, Text, Is read, Deleted, Created, Действия) — pushHistoryListProvider
+  - selfies_page.dart                ( 5 cols: Checkbox, ID, Фото (Image.network with fallback), Проверено, Действия) — selfiesProvider (new)
+  - scooters_page.dart               ( 9 cols: Checkbox, ID, Gosnomer, GSM, Battery (color-coded), Status (color chip), Model, Company, Действия) — scootersListProvider. Used 7-8 key columns per task instructions, NOT 45.
+  - client_groups_page.dart          ( 4 cols: Checkbox, id, Description, Действия) — clientGroupsProvider
+  - chat_logs_page.dart              (10 cols: Checkbox, client_id, message, image, Anoxer, timestamp, Location, read_by_admin, read_date, Действия) — chatLogsProvider
+  - settings_notifications_page.dart ( 7 cols: Checkbox, #, Event, Send sms, Send push, Send chat, Действия) — settingsNotificationsProvider (Map normalized to List of event rows inside the page)
+- All pages follow the sms_logs_page.dart reference pattern: ConsumerStatefulWidget, ref.watch(provider).when(loading/error/data), client-side search filter, pagination (page size 20), AdminStatusTabsRow with "Всего" badge, bulk-action bar with delete + cancel, DataTable with checkbox column + view/edit/delete action buttons, _buildPaginationBar with prev/next.
+- Used double quotes for all string interpolations of map fields ("${item['field'] ?? ''}") per critical rule #1 — verified via grep that no single-quoted '\${item[...}' interpolations remain in any of the 11 files.
+- All helper methods take (BuildContext context, WidgetRef ref, Map<String, dynamic> item) per critical rule #2 — verified via grep (each file has exactly one matching _buildRow signature).
+- Verified balanced braces, parens, and brackets in all 11 files (counts match open/close) — fixed two off-by-one paren mismatches in orders_page.dart (status color chip cell) and scooters_page.dart (status color chip cell).
+- Verified imports (dart:math, flutter/material, flutter_riverpod, admin_web_providers, admin_dialogs, admin_export, admin_status_tabs, admin_colors) present in all 11 files via grep counts.
+- Verified all 11 page class names preserved (ClientsPage, OrdersPage, PrepaidOrdersPage, PromoCodesPage, PromoSeriesPage, PushHistoryPage, SelfiesPage, ScootersPage, ClientGroupsPage, ChatLogsPage, SettingsNotificationsPage) so existing router in app_layout.dart continues to work unchanged.
+- Verified NO const InputDecoration with Icon color (rule #9) via grep across all 11 files (0 matches).
+- Verified NO duplicate context parameters (rule on _buildRow/_buildBulkActionBar/_buildPaginationBar signatures) — 0 matches.
+- Verified `.map<DataRow>(...)` is used (not bare `.map(...)`) so the rows list is typed as List<DataRow> (rule #4).
+- Verified no trailing commas after a closing brace in a call expression that would break Dart parsing.
+- Note: Flutter/Dart SDK not installed in this sandbox so `flutter analyze` could not be executed; verified syntax manually via brace/paren/bracket balance counts (all OK), pattern matching against the sms_logs_page.dart reference, and grep checks for the critical rules.
+
+Stage Summary:
+- 11 pages converted from hardcoded-sample ConsumerWidget to ConsumerStatefulWidget + DataTable backed by Riverpod providers.
+- 2 new List-returning providers added to admin_web_providers.dart (ordersProvider, selfiesProvider).
+- For settings_notifications_page.dart the existing Map-returning settingsNotificationsProvider is reused but its response is normalized into a List of event rows inside the page (no provider change needed).
+- For push_history_page.dart the existing list-returning pushHistoryListProvider is used because the spec-named pushHistoryProvider returns Map (notification stats) which doesn't fit a DataTable.
+- All 11 files pass manual syntax verification (balanced delimiters, correct imports, correct provider wiring, _buildRow signature, double-quoted interpolation, no rule violations).
+- Next action: run `flutter analyze lib/features/admin_web` in a Flutter-equipped environment to confirm zero diagnostics, then exercise the 11 pages in the admin web app to verify live data renders.
+
+Files fixed:
+1. mobile/lib/features/admin_web/pages/clients_page.dart
+2. mobile/lib/features/admin_web/pages/orders_page.dart
+3. mobile/lib/features/admin_web/pages/prepaid_orders_page.dart
+4. mobile/lib/features/admin_web/pages/promo_codes_page.dart
+5. mobile/lib/features/admin_web/pages/promo_series_page.dart
+6. mobile/lib/features/admin_web/pages/push_history_page.dart
+7. mobile/lib/features/admin_web/pages/selfies_page.dart
+8. mobile/lib/features/admin_web/pages/scooters_page.dart
+9. mobile/lib/features/admin_web/pages/client_groups_page.dart
+10. mobile/lib/features/admin_web/pages/chat_logs_page.dart
+11. mobile/lib/features/admin_web/pages/settings_notifications_page.dart
+
+Files modified (providers):
+- mobile/lib/features/admin_web/admin_web_providers.dart  (added ordersProvider + selfiesProvider)

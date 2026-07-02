@@ -1,149 +1,129 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
-import '../widgets/admin_colors.dart';
 import '../widgets/admin_dialogs.dart';
+import '../widgets/admin_export.dart';
+import '../widgets/admin_status_tabs.dart';
+import '../widgets/admin_colors.dart';
 
-class LogsScooterChangesPage extends ConsumerWidget {
+class LogsScooterChangesPage extends ConsumerStatefulWidget {
   const LogsScooterChangesPage({super.key});
+  @override
+  ConsumerState<LogsScooterChangesPage> createState() => _LogsScooterChangesPageState();
+}
+
+class _LogsScooterChangesPageState extends ConsumerState<LogsScooterChangesPage> {
+  final _searchController = TextEditingController();
+  final _selectedIds = <dynamic>{};
+  String _query = '';
+  int _currentPage = 1;
+  static const int _pageSize = 20;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final async = ref.watch(logsScooterChangesProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      error: (e, _) => Center(child: Text('Ошибка: $e')),
       data: (items) {
+        var filtered = items;
+        if (_query.isNotEmpty) {
+          filtered = filtered.where((i) => i.values.any((v) => v != null && v.toString().toLowerCase().contains(_query.toLowerCase()))).toList();
+        }
+        final totalPages = (filtered.length / _pageSize).ceil().clamp(1, 9999);
+        final pageItems = filtered.skip((_currentPage - 1) * _pageSize).take(_pageSize).toList();
         return Container(
-      color: const Color(0xFFFFFFFF),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
-                      children: [
-                        Text('Логи Изменений Самокатов', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
-                        SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        const Text('Логи изменений самокатов', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
+                        const SizedBox(width: 12),
+                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                    const SizedBox(height: 12),
-                    _labeledInput(context, 'Номер', 150),
-                  ]),
-                SizedBox(
-                  width: 200,
-                  height: 32,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Поиск:',
-                      hintStyle: const TextStyle(fontSize: 11),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-                    style: const TextStyle(fontSize: 11))),
-              ])),
-          const SizedBox(height: 16),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: 2000,
-                child: Column(
-                  children: [
-                    Container(
-                      color: const Color(0xFFFAFAFA),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: const Row(
-                        children: [
-                          SizedBox(width: 150, child: Text('ID', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('Номер самоката', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 120, child: Text('ID текущего заказа', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 80, child: Text('ID модели', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 80, child: Text('Онлайн', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 250, child: Text('columns.elastic_car_change_log.scooter_action', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('ID компании', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 120, child: Text('Кто внёс изменения', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 200, child: Text('Геозоны', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 150, child: Text('Время обновления', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 150, child: Text('Время создания', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('Флеспи ID', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 120, child: Text('Imei', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 200, child: Text('Время завершения последнего заказа', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          Expanded(child: Text('Описание', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ])),
-                    const Divider(height: 1),
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          _scooterLog('Y_4f354BotTmlSvb--dq', '1759', '', '7', '1', '16', 'node', '[22,147,221,400,419,420,421]', '19 июн 2026, 14:04', '11 дек 2023, 23:57:11', '5647690', '867844062312833', '16 июн 2026, 20:43:47'),
-                          _scooterLog('Sf4f354BotTmlSvb7-fv', '977', '769208', '7', '1', '16', 'node', '[22,147,215,400,419,420,421]', '19 июн 2026, 14:04', '09 мая 2023, 03:04:27', '5243381', '867844060831255', '19 июн 2026, 13:01:58'),
-                          _scooterLog('Rv4f354BotTmlSvb7-ez', '806', '769209', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:04', '08 мая 2023, 23:55:39', '5335877', '867844060823575', '18 июн 2026, 04:29:29'),
-                          _scooterLog('yP4f354BotTmlSvbteap', '904', '', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:04', '09 мая 2023, 01:44:39', '5243236', '867844060829424', '19 июн 2026, 02:49:36'),
-                          _scooterLog('xv4f354BotTmlSvbteaT', '1757', '', '7', '1', '16', 'node', '[22,69,147,215,400,419,420,421]', '19 июн 2026, 14:04', '11 дек 2023, 23:57:11', '5647699', '867844062289908', '19 июн 2026, 06:26:31'),
-                          _scooterLog('xP4f354BotTmlSvbteZ9', '806', '769209', '7', '1', '16', 'node', '[22,147,293,400,419,420,421]', '19 июн 2026, 14:04', '08 мая 2023, 23:55:39', '5335877', '867844060823575', '18 июн 2026, 04:29:29'),
-                          _scooterLog('jf4f354BotTmlSvboebM', '977', '769208', '7', '1', '16', 'node', '[22,69,147,215,400,419,420,421]', '19 июн 2026, 14:04', '09 мая 2023, 03:04:27', '5243381', '867844060831255', '19 июн 2026, 13:01:58'),
-                          _scooterLog('HP4f354BotTmlSvbduaX', '806', '769209', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:04', '08 мая 2023, 23:55:39', '5335877', '867844060823575', '18 июн 2026, 04:29:29'),
-                          _scooterLog('_4f354BotTmlSvbZ-Up', '977', '769208', '7', '1', '16', 'node', '[22,69,147,400,419,420,421]', '19 июн 2026, 14:03', '09 мая 2023, 03:04:27', '5243381', '867844060831255', '19 июн 2026, 13:01:58'),
-                          _scooterLog('Iv4f354BotTmlSvbDeWB', '945', '', '7', '1', '16', 'node', '[22,147,221,400,419,420,421]', '19 июн 2026, 14:03', '09 мая 2023, 02:42:02', '5243328', '867844060829903', '16 июн 2026, 08:05:08'),
-                          _scooterLog('9f4e354BotTmlSvb9eTk', '976', '', '7', '1', '16', 'node', '[22,147,221,400,419,420,421]', '19 июн 2026, 14:03', '09 мая 2023, 03:04:09', '5243380', '867844060823500', '19 июн 2026, 06:22:46'),
-                          _scooterLog('Ov4e354BotTmlSvb5uRq', '976', '', '7', '1', '16', 'node', '[22,147,221,400,419,420,421]', '19 июн 2026, 14:03', '09 мая 2023, 03:04:09', '5243380', '867844060823500', '19 июн 2026, 06:22:46'),
-                          _scooterLog('hf4e354BotTmlSvbXuti', '977', '769208', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:03', '09 мая 2023, 03:04:27', '5243381', '867844060831255', '19 июн 2026, 13:01:58'),
-                          _scooterLog('E_4e354BotTmlSvbl-S7', '1790', '769207', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:03', '11 дек 2023, 23:57:11', '5647774', '867844062311694', '19 июн 2026, 00:50:43'),
-                          _scooterLog('1f4e354BotTmlSvbB-kT', '1734', '769205', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:02', '11 дек 2023, 23:57:11', '5647760', '868070043236367', '19 июн 2026, 01:32:58'),
-                        ])),
-                  ])))),
-        ]));
+                      const SizedBox.shrink()
+                    ]),
+                    Row(children: [
+                      IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['scooter_number', 'company_id', 'changed_by'], onExport: (fmt, fields) async {})),
+                      IconButton(icon: const Icon(Icons.filter_list, size: 18, color: adminTextSecondary), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'scooter_number', label: 'Номер самоката'), AdminField(key: 'company_id', label: 'ID компании')], onApply: (v) async {})),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                    ]),
+                  ])),
+              const SizedBox(height: 8),
+              AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: adminPrimary)]),
+              const SizedBox(height: 8),
+              if (_selectedIds.isNotEmpty) _buildBulkActionBar(context),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: adminBorder)), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
+            dataRowColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return adminBgLight;
+              return Colors.white;
+            }),
+            dataRowMinHeight: 40,
+            dataRowMaxHeight: 40,
+            columnSpacing: 24,
+            horizontalMargin: 12,
+                    headingRowColor: WidgetStateProperty.all(adminBgLight), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('ID')), const DataColumn(label: Text('Номер самоката')), const DataColumn(label: Text('ID текущего заказа')), const DataColumn(label: Text('ID модели')), const DataColumn(label: Text('Онлайн')), const DataColumn(label: Text('counter_action')), const DataColumn(label: Text('ID компании')), const DataColumn(label: Text('Кто ввёл изменения')), const DataColumn(label: Text('Действия'))], rows: pageItems.map<DataRow>((i) => _buildRow(context, ref, i)).toList())))),
+              _buildPaginationBar(filtered.length, totalPages),
+            ]));
       });
   }
 
-  Widget _scooterLog(String id, String num, String orderId, String model, String online, String compId, String user, String geo, String updTime, String creTime, String flespi, String imei, String lastOrder) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
-      child: Row(
-        children: [
-          SizedBox(width: 150, child: Text(id, style: const TextStyle(fontSize: 11, color: adminPrimary))),
-          SizedBox(width: 100, child: Text(num, style: const TextStyle(fontSize: 11, color: adminPrimary))),
-          SizedBox(width: 120, child: Text(orderId, style: const TextStyle(fontSize: 11, color: adminPrimary))),
-          SizedBox(width: 80, child: Text(model, style: const TextStyle(fontSize: 11, color: adminPrimary))),
-          SizedBox(width: 80, child: Text(online, style: const TextStyle(fontSize: 11))),
-          const SizedBox(width: 250, child: Text('', style: TextStyle(fontSize: 11))), // empty action col
-          SizedBox(width: 100, child: Text(compId, style: const TextStyle(fontSize: 11, color: adminPrimary))),
-          SizedBox(width: 120, child: Text(user, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 200, child: Text(geo, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 150, child: Text(updTime, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 150, child: Text(creTime, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 100, child: Text(flespi, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 120, child: Text(imei, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 200, child: Text(lastOrder, style: const TextStyle(fontSize: 11))),
-          const Expanded(child: Text('', style: TextStyle(fontSize: 11))), // Description
-        ]));
+  DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
+    return DataRow(cells: [
+      DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
+      DataCell(Text("${item['id'] ?? ''}")),
+      DataCell(Text("${item['scooter_number'] ?? ''}")),
+      DataCell(Text("${item['current_order_id'] ?? ''}")),
+      DataCell(Text("${item['model_id'] ?? ''}")),
+      DataCell(Text("${item['online'] ?? ''}")),
+      DataCell(Text("${item['counter_action'] ?? ''}")),
+      DataCell(Text("${item['company_id'] ?? ''}")),
+      DataCell(Text("${item['changed_by'] ?? ''}")),
+      DataCell(Row(children: [
+        TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: adminInfo), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'scooter_number', label: 'Номер самоката', initial: "${item['scooter_number'] ?? ''}"), AdminField(key: 'company_id', label: 'ID компании', initial: "${item['company_id'] ?? ''}"), AdminField(key: 'changed_by', label: 'Кто ввёл изменения', initial: "${item['changed_by'] ?? ''}")], onSubmit: (v) async { ref.invalidate(logsScooterChangesProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: adminInfo), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'Логи изменений самокатов', onDelete: () async { ref.invalidate(logsScooterChangesProvider); }), icon: const Icon(Icons.delete, size: 12, color: adminDanger), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))),
+      ])),
+    ]);
   }
 
-  Widget _labeledInput(BuildContext context, String label, double width) {
-    return Row(
-      children: [
-        SizedBox(
-          width: width,
-          height: 28,
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: adminTextGray),
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-            style: const TextStyle(fontSize: 11))),
-        const SizedBox(width: 4),
-        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ]);
+  Widget _buildBulkActionBar(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: adminBgLight,
+      child: Row(children: [
+        Text('Выбрано: ${_selectedIds.length}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+        const SizedBox(width: 16),
+        TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: adminDanger), label: const Text('Удалить', style: TextStyle(color: adminDanger, fontSize: 11))),
+        const Spacer(),
+        TextButton(onPressed: () => setState(() => _selectedIds.clear()), child: const Text('Отменить', style: TextStyle(fontSize: 11))),
+      ]));
+  }
+
+  Widget _buildPaginationBar(int total, int totalPages) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
+        Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: adminTextGray)),
+        Row(children: [
+          IconButton(tooltip: 'Предыдущая страница', icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
+          Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
+          IconButton(tooltip: 'Следующая страница', icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
+        ]),
+      ]));
   }
 }

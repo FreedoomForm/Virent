@@ -1,246 +1,134 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
-import '../widgets/admin_colors.dart';
 import '../widgets/admin_dialogs.dart';
+import '../widgets/admin_export.dart';
+import '../widgets/admin_status_tabs.dart';
+import '../widgets/admin_colors.dart';
 
-class OrdersPage extends ConsumerWidget {
+class OrdersPage extends ConsumerStatefulWidget {
   const OrdersPage({super.key});
+  @override
+  ConsumerState<OrdersPage> createState() => _OrdersPageState();
+}
+
+class _OrdersPageState extends ConsumerState<OrdersPage> {
+  final _searchController = TextEditingController();
+  final _selectedIds = <dynamic>{};
+  String _query = '';
+  int _currentPage = 1;
+  static const int _pageSize = 20;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(prepaidOrdersProvider);
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final async = ref.watch(ordersProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      error: (e, _) => Center(child: Text('Ошибка: $e')),
       data: (items) {
+        var filtered = items;
+        if (_query.isNotEmpty) {
+          filtered = filtered.where((i) => i.values.any((v) => v != null && v.toString().toLowerCase().contains(_query.toLowerCase()))).toList();
+        }
+        final totalPages = (filtered.length / _pageSize).ceil().clamp(1, 9999);
+        final pageItems = filtered.skip((_currentPage - 1) * _pageSize).take(_pageSize).toList();
         return Container(
-      color: const Color(0xFFFFFFFF),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
-                      children: [
-                        Text('Заказы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
-                        SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 435,693 совпадений (отфильтровано из 769,200 совпадений)',
-                            style: TextStyle(fontSize: 11, color: adminTextGray)),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        const Text('Заказы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
+                        const SizedBox(width: 12),
+                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                    SizedBox(
-                      width: 200,
-                      height: 32,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Поиск:',
-                          hintStyle: const TextStyle(fontSize: 11),
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-                        style: const TextStyle(fontSize: 11))),
-                  ]),
-                const SizedBox(height: 10),
-                // Status filter buttons
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _statusBtn('Отложено', adminWarning, true),
-                      _statusBtn('Бронь', adminBorder, true),
-                      const SizedBox(width: 4),
-                      _statusBtn('Осмотр', Colors.white, false, textColor: adminTextGray),
-                      _statusBtn('Осмотр платный', Colors.white, false, textColor: adminTextGray),
-                      _statusBtn('Парковка', Colors.white, false, textColor: adminTextGray),
-                      _statusBtn('Завершён', Colors.white, false, textColor: adminTextGray),
-                      const SizedBox(width: 4),
-                      _statusBtn('В аренду', adminTextDark, true),
-                      _statusBtn('Активный', adminPrimary, true),
-                      const SizedBox(width: 8),
-                      const Text('Номер', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      const SizedBox(width: 4),
-                      _input(context, 80),
-                      const SizedBox(width: 4),
-                      _closeIcon(context),
-                      const SizedBox(width: 8),
-                      const Text('ID клиента', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      const SizedBox(width: 4),
-                      _input(context, 80),
-                      const SizedBox(width: 4),
-                      _closeIcon(context),
-                      const SizedBox(width: 8),
-                      const Text('Дата', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      const SizedBox(width: 4),
-                      _chip('Не оплачен', adminDanger),
-                      const SizedBox(width: 4),
-                      const Text('ID самоката', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      const SizedBox(width: 4),
-                      _input(context, 80),
-                      const SizedBox(width: 4),
-                      _closeIcon(context),
-                      const SizedBox(width: 8),
-                      _chip('Без абонемента', adminSuccess),
-                      _chip('С абонементом', adminSuccess),
-                      _chip('Тариф ▼', adminPrimary),
-                      _chip('Абонемент ▼', adminPrimary),
-                      _chip('Компания ▼', adminPrimary),
-                    ])),
-              ])),
-          const SizedBox(height: 8),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: 2200,
-                child: Column(
-                  children: [
-                    Container(
-                      color: const Color(0xFFFAFAFA),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      child: const Row(
-                        children: [
-                          SizedBox(width: 60, child: Text('Id', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 80, child: Text('Client', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Car', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Tariff', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 80, child: Text('Abonement', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 50, child: Text('Долг', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 70, child: Text('Duration', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 70, child: Text('Status', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Mileage', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 130, child: Text('Start time', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 130, child: Text('Finish time', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 50, child: Text('Active', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Is payme', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Is click', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 80, child: Text('Total cost', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 80, child: Text('Remains pay', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 90, child: Text('GuardChanged', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 50, child: Text('Drift', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 160, child: Text('Redis token', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 120, child: Text('Company', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          Expanded(child: Text('Действия', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                        ])),
-                    const Divider(height: 1),
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          _orderRow(context, '769200', '343022', 'surname Daqavilus', '05-742', 'Minute', '', '00:01:55', 'Завершено', '1', '19 июн 2026, 13:48', '19 июн 2026, 13:50', '3 390.50 С.'),
-                          _orderRow(context, '769199', '334807', 'surname nodir', '05-790', 'Minute', '', '00:06:27', 'Поездка', '1', '19 июн 2026, 13:45', '', '7 169.00 С.'),
-                          _orderRow(context, '769198', '258352', 'surname латиф', '05-0161', 'Минутный[...]', '20 Ми[...]', '00:07:43', 'Поездка', '1', '19 июн 2026, 13:44', '', '14 900.00 С.'),
-                          _orderRow(context, '769197', '283732', 'surname Firdavs', '05-0114', 'Minute', '', '00:05:50', 'Завершено', '1', '19 июн 2026, 13:42', '19 июн 2026, 13:48', '9 340.50 С.'),
-                          _orderRow(context, '769196', '043378', 'surname Doston', '05-792', 'Minute', '', '00:12:25', 'Поездка', '3', '19 июн 2026, 13:39', '', '15 660.00 С.'),
-                          _orderRow(context, '769195', '324096', 'surname feruz', '05-0090', 'Minute', '', '00:08:32', 'Завершено', '2', '19 июн 2026, 13:32', '19 июн 2026, 13:40', '12 013.50 С.'),
-                          _orderRow(context, '769194', '286608', 'surname Behruz', '05-0002', 'Minute', '', '00:04:55', 'Завершено', '1', '19 июн 2026, 13:28', '19 июн 2026, 13:33', '8 433.00 С.'),
-                          _orderRow(context, '769193', '296600', 'surname Behruz', '05-0002', 'Minute', '', '00:00:00', 'Отложено', '0', '19 июн 2026, 13:28', '19 июн 2026, 13:28', '0.00 С.'),
-                        ])),
-                  ])))),
-        ]));
+                      const SizedBox.shrink()
+                    ]),
+                    Row(children: [
+                      IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['id', 'client', 'car', 'tariff', 'status'], onExport: (fmt, fields) async {})),
+                      IconButton(icon: const Icon(Icons.filter_list, size: 18, color: adminTextSecondary), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'client_id', label: 'ID клиента'), AdminField(key: 'car_id', label: 'ID самоката'), AdminField(key: 'status', label: 'Статус')], onApply: (v) async {})),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                    ]),
+                  ])),
+              const SizedBox(height: 8),
+              AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: adminPrimary)]),
+              const SizedBox(height: 8),
+              if (_selectedIds.isNotEmpty) _buildBulkActionBar(context),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: adminBorder)), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
+            dataRowColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return adminBgLight;
+              return Colors.white;
+            }),
+            dataRowMinHeight: 40,
+            dataRowMaxHeight: 40,
+            columnSpacing: 24,
+            horizontalMargin: 12,
+                    headingRowColor: WidgetStateProperty.all(adminBgLight), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('Id')), const DataColumn(label: Text('Client')), const DataColumn(label: Text('Car')), const DataColumn(label: Text('Tariff')), const DataColumn(label: Text('Abonnement')), const DataColumn(label: Text('Долг')), const DataColumn(label: Text('Duration')), const DataColumn(label: Text('Status')), const DataColumn(label: Text('Действия'))], rows: pageItems.map<DataRow>((i) => _buildRow(context, ref, i)).toList())))),
+              _buildPaginationBar(filtered.length, totalPages),
+            ]));
       });
   }
 
-  Widget _orderRow(BuildContext context, String id, String clientId, String clientName, String car, String tariff, String abon, String dur, String status, String mileage, String start, String finish, String cost) {
-    Color statusColor;
-    switch (status) {
-      case 'Завершено':
-        statusColor = adminSuccess;
-        break;
-      case 'Поездка':
-        statusColor = adminInfo;
-        break;
-      case 'Отложено':
-        statusColor = adminWarning;
-        break;
-      default:
-        statusColor = Colors.grey;
-    }
+  DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
+    final status = "${item['status'] ?? ''}";
+    Color statusColor = adminTextGray;
+    if (status.toLowerCase() == 'завершено' || status.toLowerCase() == 'completed') statusColor = adminSuccess;
+    else if (status.toLowerCase() == 'поездка' || status.toLowerCase() == 'active' || status.toLowerCase() == 'running') statusColor = adminInfo;
+    else if (status.toLowerCase() == 'отложено' || status.toLowerCase() == 'pending') statusColor = adminWarning;
+    return DataRow(cells: [
+      DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
+      DataCell(Text("${item['id'] ?? ''}")),
+      DataCell(Text("${item['client_id'] ?? item['client'] ?? ''}")),
+      DataCell(Text("${item['car_id'] ?? item['car'] ?? ''}")),
+      DataCell(Text("${item['tariff'] ?? item['tariff_name'] ?? ''}")),
+      DataCell(Text("${item['abonnement'] ?? item['abonement'] ?? ''}")),
+      DataCell(Text("${item['debt'] ?? ''}")),
+      DataCell(Text("${item['duration'] ?? ''}")),
+      DataCell(Container(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), decoration: BoxDecoration(color: statusColor, borderRadius: BorderRadius.circular(3)), child: Text(status, style: const TextStyle(fontSize: 10, color: Colors.white)))),
+      DataCell(Row(children: [
+        TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: adminInfo), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'status', label: 'Статус', initial: status), AdminField(key: 'tariff', label: 'Тариф', initial: "${item['tariff'] ?? item['tariff_name'] ?? ''}")], onSubmit: (v) async { ref.invalidate(ordersProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: adminInfo), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'Заказ', onDelete: () async { ref.invalidate(ordersProvider); }), icon: const Icon(Icons.delete, size: 12, color: adminDanger), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))),
+      ])),
+    ]);
+  }
+
+  Widget _buildBulkActionBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
-      child: Row(
-        children: [
-          SizedBox(width: 60, child: Text(id, style: const TextStyle(fontSize: 10, color: adminWarning))),
-          SizedBox(
-            width: 80,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-                  decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.circular(2)),
-                  child: Text(clientId, style: const TextStyle(fontSize: 8, color: Colors.white))),
-                Text(clientName, style: const TextStyle(fontSize: 9, color: adminInfo)),
-              ])),
-          SizedBox(width: 60, child: Text(car, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 60, child: Text(tariff, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 80, child: abon.isNotEmpty ? Text(abon, style: const TextStyle(fontSize: 10, color: adminInfo)) : const SizedBox()),
-          const SizedBox(width: 50),
-          SizedBox(width: 70, child: Text(dur, style: const TextStyle(fontSize: 10))),
-          SizedBox(
-            width: 70,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-              decoration: BoxDecoration(color: statusColor, borderRadius: BorderRadius.circular(2)),
-              child: Text(status, style: const TextStyle(fontSize: 8, color: Colors.white), textAlign: TextAlign.center))),
-          SizedBox(width: 60, child: Text(mileage, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 130, child: Text(start, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 130, child: Text(finish, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 50, child: Icon(Icons.check_box, size: 14, color: Colors.green.shade400)),
-          SizedBox(width: 60, child: Icon(Icons.check_box_outline_blank, size: 14, color: adminTextGray)),
-          SizedBox(width: 60, child: Icon(Icons.check_box_outline_blank, size: 14, color: adminTextGray)),
-          SizedBox(width: 80, child: Text(cost, style: const TextStyle(fontSize: 10))),
-          const SizedBox(width: 80),
-          const SizedBox(width: 90),
-          const SizedBox(width: 50),
-          const SizedBox(width: 160),
-          const SizedBox(width: 120, child: Text('ИП Асилбеков Шерзод', style: TextStyle(fontSize: 9))),
-          Expanded(
-            child: InkWell(
-              onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-              child: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)))),
-        ]));
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: adminBgLight,
+      child: Row(children: [
+        Text('Выбрано: ${_selectedIds.length}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+        const SizedBox(width: 16),
+        TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные заказы?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: adminDanger), label: const Text('Удалить', style: TextStyle(color: adminDanger, fontSize: 11))),
+        const Spacer(),
+        TextButton(onPressed: () => setState(() => _selectedIds.clear()), child: const Text('Отменить', style: TextStyle(fontSize: 11))),
+      ]));
   }
 
-  static Widget _statusBtn(String label, Color color, bool filled, {Color textColor = Colors.white}) {
-    return Container(
-      margin: const EdgeInsets.only(right: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: filled ? color : Colors.white,
-        borderRadius: BorderRadius.circular(3),
-        border: filled ? null : Border.all(color: adminBorder)),
-      child: Text(label, style: TextStyle(color: filled ? textColor : adminTextGray, fontSize: 10, fontWeight: FontWeight.w500)));
-  }
-
-  static Widget _input(BuildContext context, double w) {
-    return SizedBox(
-      width: w,
-      height: 28,
-      child: TextField(
-        decoration: InputDecoration(
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-        style: const TextStyle(fontSize: 11)));
-  }
-
-  static Widget _closeIcon(BuildContext context) {
-    return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
-  }
-
-  static Widget _chip(String label, Color color) {
-    return Container(
-      margin: const EdgeInsets.only(right: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)));
+  Widget _buildPaginationBar(int total, int totalPages) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
+        Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: adminTextGray)),
+        Row(children: [
+          IconButton(tooltip: 'Предыдущая страница', icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
+          Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
+          IconButton(tooltip: 'Следующая страница', icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
+        ]),
+      ]));
   }
 }

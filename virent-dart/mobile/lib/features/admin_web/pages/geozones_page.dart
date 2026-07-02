@@ -1,217 +1,127 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
-import '../widgets/admin_colors.dart';
 import '../widgets/admin_dialogs.dart';
+import '../widgets/admin_export.dart';
+import '../widgets/admin_status_tabs.dart';
+import '../widgets/admin_colors.dart';
 
-class GeozonesPage extends ConsumerWidget {
+class GeozonesPage extends ConsumerStatefulWidget {
   const GeozonesPage({super.key});
+  @override
+  ConsumerState<GeozonesPage> createState() => _GeozonesPageState();
+}
+
+class _GeozonesPageState extends ConsumerState<GeozonesPage> {
+  final _searchController = TextEditingController();
+  final _selectedIds = <dynamic>{};
+  String _query = '';
+  int _currentPage = 1;
+  static const int _pageSize = 20;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final async = ref.watch(zonesListProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      error: (e, _) => Center(child: Text('Ошибка: $e')),
       data: (items) {
+        var filtered = items;
+        if (_query.isNotEmpty) {
+          filtered = filtered.where((i) => i.values.any((v) => v != null && v.toString().toLowerCase().contains(_query.toLowerCase()))).toList();
+        }
+        final totalPages = (filtered.length / _pageSize).ceil().clamp(1, 9999);
+        final pageItems = filtered.skip((_currentPage - 1) * _pageSize).take(_pageSize).toList();
         return Container(
-      color: const Color(0xFFFFFFFF),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
-                      children: [
-                        Text('Геозоны', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
-                        SizedBox(width: 12),
-                        Text('Показано 1 до 4 из 4 совпадений (отфильтровано из 239 совпадений)', style: TextStyle(fontSize: 11, color: adminTextGray)),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        const Text('Геозоны', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
+                        const SizedBox(width: 12),
+                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                    const SizedBox(height: 12),
-                    ElevatedButton.icon(
-                      onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-                      icon: const Icon(Icons.add, size: 14, color: Colors.white),
-                      label: const Text('Добавить геозону', style: TextStyle(fontSize: 11, color: Colors.white)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: adminPrimary,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        _labeledInput(context, 'ID', 80),
-                        const SizedBox(width: 8),
-                        _filterButton(context, 'Группы ▼', isPurple: true),
-                        const SizedBox(width: 8),
-                        _filterButton(context, 'Разр.Использование', isPurple: false, isLightBg: true),
-                        const SizedBox(width: 8),
-                        _filterButton(context, 'Завершение аренды', isPurple: true),
-                        const SizedBox(width: 8),
-                        _filterButton(context, 'Запрет движения', isPurple: true),
-                        const SizedBox(width: 8),
-                        _filterButton(context, 'Ограничение движения', isPurple: true),
-                        const SizedBox(width: 8),
-                        _filterButton(context, 'Зона запрета завершения', isPurple: true),
-                        const SizedBox(width: 8),
-                        _filterButton(context, '⊘ Очистить фильтры', isPurple: true),
-                      ]),
-                  ]),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: SizedBox(
-                    width: 200,
-                    height: 32,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Поиск:',
-                        hintStyle: const TextStyle(fontSize: 11),
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-                      style: const TextStyle(fontSize: 11)))),
-              ])),
-          const SizedBox(height: 16),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: 2200,
-                child: Column(
-                  children: [
-                    Container(
-                      color: const Color(0xFFFAFAFA),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: const Row(
-                        children: [
-                          SizedBox(width: 40, child: Text('ID', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 150, child: Text('Название', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('Заполнение', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('Обводка', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 200, child: Text('columns.geozone.company_id', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('Группы', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('кэф.проз.геозоны', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('кэф.ярк.обводки', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 250, child: Text('Команды', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 200, child: Text('Минимальное количество самокатов', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 250, child: Text('Зона Разрешенного Использования', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 200, child: Text('Зона Завершения Аренды', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('Зона Ог...', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ])),
-                    const Divider(height: 1),
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          _geozoneRow(context, '1', 'Main (0)', '#cc62dc', '#1bffca', '-', '30 %', '30 %', 'unlockWheel,switchDriveModeSport', '0', true, false, false),
-                          _geozoneRow(context, '10', 'Donute test geozone (0)', '#e82f17', '#7a3a00', '-', '75 %', '90 %', 'switchDriveModeEco,switchDriveModeSport', '0', true, false, false),
-                          _geozoneRow(context, '420', 'ЗИ ТАШКЕНТ НОВАЯ (1)', '#16FF17', '#ED0505', 'Города (ЗИ)', '50 %', '100 %', 'speedModeOn,switchDriveModeSport,setSpee[...]', '0', true, false, false),
-                          _geozoneRow(context, '466', 'SAMARKAND (1)', '#00EB27', '#00EB27', 'Города (ЗИ)', '1 %', '100 %', 'speedModeOn,switchDriveModeSport,setSpee[...]', '0', true, false, false),
-                        ])),
-                  ])))),
-        ]));
+                      const SizedBox.shrink()
+                    ]),
+                    Row(children: [
+                      IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['name', 'company_id', 'groups'], onExport: (fmt, fields) async {})),
+                      IconButton(icon: const Icon(Icons.filter_list, size: 18, color: adminTextSecondary), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'name', label: 'Название'), AdminField(key: 'company_id', label: 'company_id')], onApply: (v) async {})),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                    ]),
+                  ])),
+              const SizedBox(height: 8),
+              AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: adminPrimary)]),
+              const SizedBox(height: 8),
+              if (_selectedIds.isNotEmpty) _buildBulkActionBar(context),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: adminBorder)), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
+            dataRowColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return adminBgLight;
+              return Colors.white;
+            }),
+            dataRowMinHeight: 40,
+            dataRowMaxHeight: 40,
+            columnSpacing: 24,
+            horizontalMargin: 12,
+                    headingRowColor: WidgetStateProperty.all(adminBgLight), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('ID')), const DataColumn(label: Text('Название')), const DataColumn(label: Text('Заполнение')), const DataColumn(label: Text('Обводка')), const DataColumn(label: Text('company_id')), const DataColumn(label: Text('Группы')), const DataColumn(label: Text('Действия'))], rows: pageItems.map<DataRow>((i) => _buildRow(context, ref, i)).toList())))),
+              _buildPaginationBar(filtered.length, totalPages),
+            ]));
       });
   }
 
-  Widget _filterButton(BuildContext context, String text, {bool isPurple = false, bool isLightBg = false}) {
-    Color bg = isPurple ? adminPrimary : (isLightBg ? const Color(0xFFE8EAF6) : Colors.transparent);
-    Color textColor = isPurple ? Colors.white : (isLightBg ? adminPrimary : Colors.black);
-    return InkWell(
-      onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: bg,
-          border: isLightBg ? null : (isPurple ? null : Border.all(color: adminTextGray)),
-          borderRadius: BorderRadius.circular(3)),
-        child: Text(text, style: TextStyle(fontSize: 11, color: textColor))));
+  DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
+    return DataRow(cells: [
+      DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
+      DataCell(Text("${item['id'] ?? ''}")),
+      DataCell(Text("${item['name'] ?? ''}")),
+      DataCell(Text("${item['fill'] ?? ''}")),
+      DataCell(Text("${item['stroke'] ?? ''}")),
+      DataCell(Text("${item['company_id'] ?? ''}")),
+      DataCell(Text("${item['groups'] ?? ''}")),
+      DataCell(Row(children: [
+        TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: adminInfo), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'name', label: 'Название', initial: "${item['name'] ?? ''}"), AdminField(key: 'company_id', label: 'company_id', initial: "${item['company_id'] ?? ''}"), AdminField(key: 'groups', label: 'Группы', initial: "${item['groups'] ?? ''}")], onSubmit: (v) async { ref.invalidate(zonesListProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: adminInfo), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'Геозона', onDelete: () async { ref.invalidate(zonesListProvider); }), icon: const Icon(Icons.delete, size: 12, color: adminDanger), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))),
+      ])),
+    ]);
   }
 
-  Widget _labeledInput(BuildContext context, String label, double width) {
-    return Row(
-      children: [
-        SizedBox(
-          width: width,
-          height: 28,
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: label,
-              hintStyle: const TextStyle(fontSize: 11, color: adminTextGray),
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-            style: const TextStyle(fontSize: 11))),
-        const SizedBox(width: 4),
-        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ]);
-  }
-
-  Widget _geozoneRow(BuildContext context, String id, String name, String fill, String stroke, String groups, String opFill, String opStroke, String cmds, String minScooters, bool rUsed, bool reqPark, bool disPark) {
+  Widget _buildBulkActionBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
-      child: Row(
-        children: [
-          SizedBox(width: 40, child: Text(id, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 150, child: Text(name, style: const TextStyle(fontSize: 11, color: adminPrimary))),
-          SizedBox(width: 100, child: Text(fill, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 100, child: Text(stroke, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 200, child: Text('-', style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 100, child: Text(groups, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 100, child: Text(opFill, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 100, child: Text(opStroke, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 250, child: Text(cmds, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 200, child: Text(minScooters, style: const TextStyle(fontSize: 11))),
-          SizedBox(
-            width: 250,
-            child: Row(
-              children: [
-                _checkBox(rUsed, isGreen: true),
-              ])),
-          SizedBox(
-            width: 200,
-            child: Row(
-              children: [
-                _checkBox(reqPark, isRed: true),
-              ])),
-          SizedBox(
-            width: 100,
-            child: Row(
-              children: [
-                _checkBox(disPark, isRed: true),
-              ])),
-          SizedBox(
-            width: 200,
-            child: Row(
-              children: [
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.visibility, size: 12, color: adminInfo), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))])),
-                const SizedBox(width: 12),
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
-                const SizedBox(width: 12),
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
-              ])),
-        ]));
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: adminBgLight,
+      child: Row(children: [
+        Text('Выбрано: ${_selectedIds.length}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+        const SizedBox(width: 16),
+        TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: adminDanger), label: const Text('Удалить', style: TextStyle(color: adminDanger, fontSize: 11))),
+        const Spacer(),
+        TextButton(onPressed: () => setState(() => _selectedIds.clear()), child: const Text('Отменить', style: TextStyle(fontSize: 11))),
+      ]));
   }
 
-  Widget _checkBox(bool isChecked, {bool isGreen = false, bool isRed = false}) {
-    IconData icon = isChecked ? Icons.check_box : Icons.check_box_outline_blank;
-    Color color = isChecked ? (isGreen ? adminSuccess : (isRed ? adminDanger : Colors.grey)) : (isGreen ? adminSuccess : (isRed ? adminDanger : Colors.grey));
-    // The screenshot has the checkbox outline in color even when empty.
-    if (!isChecked && isGreen) icon = Icons.check_box_outline_blank;
-    if (!isChecked && isRed) icon = Icons.check_box_outline_blank;
-    if (isChecked) {
-       // if it's checked in the screenshot, it's a square with a check mark inside
-       // actually using icons is fine
-       icon = Icons.check_box_outlined;
-    }
-    
-    return Icon(icon, size: 16, color: color);
+  Widget _buildPaginationBar(int total, int totalPages) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
+        Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: adminTextGray)),
+        Row(children: [
+          IconButton(tooltip: 'Предыдущая страница', icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
+          Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
+          IconButton(tooltip: 'Следующая страница', icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
+        ]),
+      ]));
   }
 }
