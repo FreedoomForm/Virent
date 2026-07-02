@@ -49,9 +49,7 @@ class MapPage extends StatelessWidget {
                       _filterChip('Тревоги включены', adminSuccess),
                       _filterChip('карта на весь экран', adminSuccess),
                       _filterChip('Режим Raider', adminDanger, outlined: true),
-                    ],
-                  ),
-                ),
+                    ])),
                 const SizedBox(height: 8),
                 // Row 2: Cities
                 Row(
@@ -59,11 +57,8 @@ class MapPage extends StatelessWidget {
                     _filterChip('Ташкент', adminPrimary),
                     _filterChip('Самарканд', adminPrimary),
                     _filterChip('Фергана', adminTextDark),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                  ]),
+              ])),
           // Map type tabs
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -78,11 +73,8 @@ class MapPage extends StatelessWidget {
                     _tabButton('Тепловая карта', false),
                     _tabButton('Частота аренд', false),
                     _tabButton('Группирование самокатов', false),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                  ]),
+              ])),
           // Map placeholder + sidebar
           Expanded(
             child: Row(
@@ -94,8 +86,7 @@ class MapPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: const Color(0xFFE8E0D8),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: adminBorder),
-                    ),
+                      border: Border.all(color: adminBorder)),
                     child: Stack(
                       children: [
                         const Center(
@@ -106,9 +97,7 @@ class MapPage extends StatelessWidget {
                               SizedBox(height: 8),
                               Text('Карта (Leaflet)', style: TextStyle(color: Colors.grey, fontSize: 14)),
                               Text('Ташкент', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                            ],
-                          ),
-                        ),
+                            ])),
                         Positioned(
                           left: 10,
                           top: 10,
@@ -116,20 +105,13 @@ class MapPage extends StatelessWidget {
                             children: [
                               Container(
                                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(2), border: Border.all(color: adminTextGray)),
-                                child: const SizedBox(width: 28, height: 28, child: Center(child: Icon(Icons.add, size: 16))),
-                              ),
+                                child: const SizedBox(width: 28, height: 28, child: Center(child: Icon(Icons.add, size: 16)))),
                               const SizedBox(height: 2),
                               Container(
                                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(2), border: Border.all(color: adminTextGray)),
-                                child: const SizedBox(width: 28, height: 28, child: Center(child: Icon(Icons.remove, size: 16))),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                                child: const SizedBox(width: 28, height: 28, child: Center(child: Icon(Icons.remove, size: 16)))),
+                            ])),
+                      ]))),
                 // Right info panel
                 Container(
                   width: 220,
@@ -138,8 +120,7 @@ class MapPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: adminBorder),
-                  ),
+                    border: Border.all(color: adminBorder)),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,20 +130,12 @@ class MapPage extends StatelessWidget {
                             Icon(Icons.check_box, color: Colors.blue, size: 14),
                             const SizedBox(width: 4),
                             const Text('Показывать геозоны', style: TextStyle(fontSize: 11)),
-                          ],
-                        ),
+                          ]),
                         const SizedBox(height: 8),
                         ..._infoFields(),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+                      ]))),
+              ])),
+        ]));
   }
 
   List<Widget> _infoFields() {
@@ -176,9 +149,7 @@ class MapPage extends StatelessWidget {
               const Icon(Icons.circle, size: 8, color: Colors.grey),
               const SizedBox(width: 6),
               Expanded(child: Divider(color: adminBorder)),
-            ],
-          ),
-        );
+            ]));
       }
       return Padding(
         padding: const EdgeInsets.only(bottom: 4),
@@ -187,9 +158,7 @@ class MapPage extends StatelessWidget {
           children: [
             Text(f, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: adminTextDark)),
             const Divider(height: 8),
-          ],
-        ),
-      );
+          ]));
     }).toList();
   }
 
@@ -200,10 +169,8 @@ class MapPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: outlined ? Colors.transparent : color,
         borderRadius: BorderRadius.circular(3),
-        border: outlined ? Border.all(color: color) : null,
-      ),
-      child: Text(label, style: TextStyle(color: outlined ? color : Colors.white, fontSize: 11, fontWeight: FontWeight.w500)),
-    );
+        border: outlined ? Border.all(color: color) : null),
+      child: Text(label, style: TextStyle(color: outlined ? color : Colors.white, fontSize: 11, fontWeight: FontWeight.w500)));
   }
 
   Widget _smallInput(String hint, double width) {
@@ -217,11 +184,8 @@ class MapPage extends StatelessWidget {
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-        ),
-        style: const TextStyle(fontSize: 11),
-      ),
-    );
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+        style: const TextStyle(fontSize: 11)));
   }
 
   Widget _tabButton(String label, bool active) {
@@ -231,9 +195,7 @@ class MapPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: active ? adminPrimary : Colors.white,
         borderRadius: BorderRadius.circular(3),
-        border: Border.all(color: active ? adminPrimary : adminBorder),
-      ),
-      child: Text(label, style: TextStyle(fontSize: 11, color: active ? Colors.white : adminTextGray)),
-    );
+        border: Border.all(color: active ? adminPrimary : adminBorder)),
+      child: Text(label, style: TextStyle(fontSize: 11, color: active ? Colors.white : adminTextGray)));
   }
 }

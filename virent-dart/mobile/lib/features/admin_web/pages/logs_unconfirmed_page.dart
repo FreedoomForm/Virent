@@ -29,8 +29,7 @@ class LogsUnconfirmedPage extends ConsumerWidget {
                     Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 15,114 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                  ],
-                ),
+                  ]),
                 SizedBox(
                   width: 200,
                   height: 32,
@@ -41,14 +40,9 @@ class LogsUnconfirmedPage extends ConsumerWidget {
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                    ),
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                    style: const TextStyle(fontSize: 11))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
@@ -74,9 +68,7 @@ class LogsUnconfirmedPage extends ConsumerWidget {
                           SizedBox(width: 100, child: Text('Api token', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 80, child: Text('Sms req', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -100,22 +92,13 @@ class LogsUnconfirmedPage extends ConsumerWidget {
                           _unconfirmedRow(context, '314575', '79149377167', '592521', '0', '3', '0', '17 июн 2026, 19:23', '17 июн 2026, 21:40', '9eaa4523f3352fafab4d6cdd4c7806b623c705e8[...]'),
                           _unconfirmedRow(context, '314572', '905387424523', '540166', '0', '2', '0', '17 июн 2026, 18:25', '17 июн 2026, 18:26', '9c55284b1f0f8d671f6ff5945b5db56d8cb16684[...]'),
                           _unconfirmedRow(context, '314554', '998882540501', '484921', '0', '2', '0', '17 июн 2026, 11:20', '17 июн 2026, 11:21', 'f222b594b32aa67fc7ba4731843b199f4b6f92ed[...]'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _unconfirmedRow(context, BuildContext context, String id, String phone, String smsCode, String count, String countAll, String tryLogin, String createTime, String lastAttempt, String checkKey) {
+  Widget _unconfirmedRow(BuildContext context, String id, String phone, String smsCode, String count, String countAll, String tryLogin, String createTime, String lastAttempt, String checkKey) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -138,11 +121,7 @@ class LogsUnconfirmedPage extends ConsumerWidget {
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 }

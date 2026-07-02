@@ -32,8 +32,7 @@ class ModelsPage extends ConsumerWidget {
                         Text('Entries', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 4 из 4 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -42,11 +41,8 @@ class ModelsPage extends ConsumerWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: adminPrimary,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                      ),
-                    ),
-                  ],
-                ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
+                  ]),
                 Align(
                   alignment: Alignment.topRight,
                   child: SizedBox(
@@ -59,15 +55,9 @@ class ModelsPage extends ConsumerWidget {
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      ),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                      style: const TextStyle(fontSize: 11)))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: Column(
@@ -84,9 +74,7 @@ class ModelsPage extends ConsumerWidget {
                       Expanded(child: Text('Model', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Device type', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
@@ -95,9 +83,7 @@ class ModelsPage extends ConsumerWidget {
                       _modelRow(context, '3', true, 'api/modelImage/', 'Ninebot', 'MAX', ''),
                       _modelRow(context, '7', true, 'api/modelImage/', 'OKAI', 'ES400a', ''),
                       _modelRow(context, '10', true, 'api/modelImage/', 'OKAI', 'ES600', '2,156'),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Container(
                   color: const Color(0xFFFAFAFA),
@@ -111,21 +97,14 @@ class ModelsPage extends ConsumerWidget {
                       Expanded(child: Text('Model', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Device type', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+              ])),
+        ]));
+      });
   }
 
-  Widget _modelRow(context, BuildContext context, String id, bool isPublic, String image, String brand, String model, String deviceType) {
+  Widget _modelRow(BuildContext context, String id, bool isPublic, String image, String brand, String model, String deviceType) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -138,9 +117,7 @@ class ModelsPage extends ConsumerWidget {
             child: Row(
               children: [
                 Icon(isPublic ? Icons.check_box_outlined : Icons.check_box_outline_blank, size: 16, color: adminSuccess),
-              ],
-            ),
-          ),
+              ])),
           Expanded(child: Text(image, style: const TextStyle(fontSize: 11))),
           Expanded(child: Text(brand, style: const TextStyle(fontSize: 11))),
           Expanded(child: Text(model, style: const TextStyle(fontSize: 11))),
@@ -154,11 +131,7 @@ class ModelsPage extends ConsumerWidget {
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 }

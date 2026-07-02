@@ -33,14 +33,11 @@ class CitiesPage extends ConsumerWidget {
             await ref.read(genericCreateAction)(
               '/admin/cities',
               values,
-              citiesListProvider,
-            );
-          },
-        ),
+              citiesListProvider);
+          }),
         icon: const Icon(Icons.add, size: 16),
         label: const Text('Добавить город'),
-        style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-      ),
+        style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground)),
       columns: const [
         DataColumn(label: Text('ID')),
         DataColumn(label: Text('Название')),
@@ -63,8 +60,7 @@ class CitiesPage extends ConsumerWidget {
           DataCell(Text(isActive ? 'Да' : 'Нет',
               style: TextStyle(color: isActive ? Colors.green : Colors.red, fontWeight: FontWeight.bold))),
         ]);
-      },
-    );
+      });
   }
 }
 

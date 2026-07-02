@@ -30,8 +30,7 @@ class BillingDebtsPage extends ConsumerWidget {
                     SizedBox(width: 12),
                     Text('Показано 0 до 0 из 0 совпадений (отфильтровано из 3 совпадений)',
                         style: TextStyle(fontSize: 11, color: adminDanger)),
-                  ],
-                ),
+                  ]),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -46,8 +45,7 @@ class BillingDebtsPage extends ConsumerWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(color: adminWarning, borderRadius: BorderRadius.circular(3)),
-                        child: const Text('Завершённые', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
-                      ),
+                        child: const Text('Завершённые', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500))),
                       const SizedBox(width: 8),
                       const Text('Попыток списания:', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
@@ -61,11 +59,8 @@ class BillingDebtsPage extends ConsumerWidget {
                             isDense: true,
                             contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          ),
-                          style: const TextStyle(fontSize: 10),
-                        ),
-                      ),
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                          style: const TextStyle(fontSize: 10))),
                       const SizedBox(width: 4),
                       SizedBox(
                         width: 60,
@@ -77,25 +72,17 @@ class BillingDebtsPage extends ConsumerWidget {
                             isDense: true,
                             contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          ),
-                          style: const TextStyle(fontSize: 10),
-                        ),
-                      ),
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                          style: const TextStyle(fontSize: 10))),
                       const SizedBox(width: 4),
                       InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
                       const SizedBox(width: 12),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(color: adminDanger, borderRadius: BorderRadius.circular(3)),
-                        child: const Text('Очистить фильтры', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        child: const Text('Очистить фильтры', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500))),
+                    ])),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: SingleChildScrollView(
@@ -123,15 +110,11 @@ class BillingDebtsPage extends ConsumerWidget {
                           SizedBox(width: 120, child: Text('Updated', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
                           SizedBox(width: 100, child: Text('Company', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Действия', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     const Expanded(
                       child: Center(
-                        child: Text('Совпадений не найдено', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                      ),
-                    ),
+                        child: Text('Совпадений не найдено', style: TextStyle(fontSize: 12, color: Colors.grey)))),
                     const Divider(height: 1),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -142,31 +125,20 @@ class BillingDebtsPage extends ConsumerWidget {
                             onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                             icon: const Icon(Icons.download, size: 14),
                             label: const Text('Экспорт ▼', style: TextStyle(fontSize: 11)),
-                            style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6)),
-                          ),
+                            style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6))),
                           const SizedBox(width: 8),
                           OutlinedButton.icon(
                             onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                             icon: const Icon(Icons.view_column, size: 14),
                             label: const Text('Видимость колонок ▼', style: TextStyle(fontSize: 11)),
-                            style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                            style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6))),
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
@@ -179,14 +151,10 @@ class BillingDebtsPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

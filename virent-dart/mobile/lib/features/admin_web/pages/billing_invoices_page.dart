@@ -32,8 +32,7 @@ class BillingInvoicesPage extends ConsumerWidget {
                         Text('Счета', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 3,052,330 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     SizedBox(
                       width: 200,
                       height: 32,
@@ -44,13 +43,9 @@ class BillingInvoicesPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  ],
-                ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
+                  ]),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -64,15 +59,10 @@ class BillingInvoicesPage extends ConsumerWidget {
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        textStyle: const TextStyle(fontSize: 11),
-                      ),
-                      child: const Text('Export'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                        textStyle: const TextStyle(fontSize: 11)),
+                      child: const Text('Export')),
+                  ]),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: SingleChildScrollView(
@@ -103,9 +93,7 @@ class BillingInvoicesPage extends ConsumerWidget {
                           SizedBox(width: 60, child: Text('Card pan', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
                           SizedBox(width: 130, child: Text('Code message confirm', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Действия', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -115,22 +103,13 @@ class BillingInvoicesPage extends ConsumerWidget {
                           _invoiceRow(context, '6a3503bd7aa...', '2331347', '16', 'myuzcard', '769199', '500000', '234807', '17964243480...', 'cancelled', '19 июн, 13:54', '', 'money', '55916504', '', '', '', false, false),
                           _invoiceRow(context, '6a3503bd7aa...', '', '16', '', '769199', '500000', '234807', '17964243480...', 'not enough bonus', '19 июн, 13:54', '', 'bonus', '', '', '', '', false, false),
                           _invoiceRow(context, '6a35037653b...', '2331346', '16', 'myuzcard', '769201', '500000', '224449', '17252424444...', 'HOLD', '19 июн, 13:53', '', 'money', '55916461', '', '', '', false, false),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _invoiceRow(context, BuildContext context, String id, String hold, String company, String operator, String order, String amount, String client, String redis, String status, String created, String resultCode, String type, String trans, String uzcard, String cardPan, String codeMsg, bool showReturn, bool showCreate) {
+  Widget _invoiceRow(BuildContext context, String id, String hold, String company, String operator, String order, String amount, String client, String redis, String status, String created, String resultCode, String type, String trans, String uzcard, String cardPan, String codeMsg, bool showReturn, bool showCreate) {
     Color? statusColor;
     if (status == 'confirmed') statusColor = adminSuccess;
     if (status == 'HOLD') statusColor = adminWarning;
@@ -166,26 +145,20 @@ class BillingInvoicesPage extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                     decoration: BoxDecoration(color: adminWarning, borderRadius: BorderRadius.circular(2)),
-                    child: const Text('Вернуть платеж', style: TextStyle(fontSize: 8, color: Colors.white)),
-                  ),
+                    child: const Text('Вернуть платеж', style: TextStyle(fontSize: 8, color: Colors.white))),
                 ],
                 if (showCreate) ...[
                   const SizedBox(width: 4),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                     decoration: BoxDecoration(color: adminSuccess, borderRadius: BorderRadius.circular(2)),
-                    child: const Text('Создать чек', style: TextStyle(fontSize: 8, color: Colors.white)),
-                  ),
+                    child: const Text('Создать чек', style: TextStyle(fontSize: 8, color: Colors.white))),
                 ],
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
@@ -198,14 +171,10 @@ class BillingInvoicesPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

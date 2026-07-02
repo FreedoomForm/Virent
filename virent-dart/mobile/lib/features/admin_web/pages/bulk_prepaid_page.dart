@@ -60,22 +60,18 @@ class _BulkPrepaidPageState extends ConsumerState<BulkPrepaidPage> {
               child: Column(children: [
                 Row(children: [
                   Expanded(
-                    child: _field('Количество', _countCtrl, '10', Icons.numbers),
-                  ),
+                    child: _field('Количество', _countCtrl, '10', Icons.numbers)),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: _field('Номинал (сум)', _valueCtrl, '50000', Icons.monetization_on),
-                  ),
+                    child: _field('Номинал (сум)', _valueCtrl, '50000', Icons.monetization_on)),
                 ]),
                 const SizedBox(height: 12),
                 Row(children: [
                   Expanded(
-                    child: _field('Префикс', _prefixCtrl, 'VIRENT', Icons.label),
-                  ),
+                    child: _field('Префикс', _prefixCtrl, 'VIRENT', Icons.label)),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: _field('Действует до', _expiryCtrl, '2026-12-31', Icons.calendar_today),
-                  ),
+                    child: _field('Действует до', _expiryCtrl, '2026-12-31', Icons.calendar_today)),
                 ]),
                 const SizedBox(height: 16),
                 SizedBox(
@@ -90,13 +86,8 @@ class _BulkPrepaidPageState extends ConsumerState<BulkPrepaidPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A1A2E),
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    ),
-                  ),
-                ),
-              ]),
-            ),
-          ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))))),
+              ]))),
           const SizedBox(height: 24),
 
           // ── Generated cards ──
@@ -109,8 +100,7 @@ class _BulkPrepaidPageState extends ConsumerState<BulkPrepaidPage> {
                 data: _generated,
                 filename: 'prepaid_cards.csv',
                 columns: const ['code', 'value', 'prefix', 'expiry'],
-                label: 'CSV',
-              ),
+                label: 'CSV'),
             ]),
             const SizedBox(height: 8),
             Card(
@@ -132,17 +122,10 @@ class _BulkPrepaidPageState extends ConsumerState<BulkPrepaidPage> {
                         title: Text(c['code']?.toString() ?? '-',
                             style: const TextStyle(fontFamily: 'monospace', fontSize: 14, fontWeight: FontWeight.w600)),
                         subtitle: Text('${c['value']} сум • до ${c['expiry'] ?? '-'}',
-                            style: TextStyle(fontSize: 11, color: Colors.grey[600])),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
+                            style: TextStyle(fontSize: 11, color: Colors.grey[600])));
+                    })))),
           ],
-        ],
-      ),
-    );
+        ]));
   }
 
   Widget _field(String label, TextEditingController ctrl, String hint, IconData icon) {
@@ -155,12 +138,10 @@ class _BulkPrepaidPageState extends ConsumerState<BulkPrepaidPage> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         filled: true,
         fillColor: const Color(0xFFF9FAFB),
-        isDense: true,
-      ),
-    );
+        isDense: true));
   }
 
-  void _generate(context, BuildContext context) {
+  void _generate(BuildContext context) {
     final count = int.tryParse(_countCtrl.text) ?? 10;
     final value = int.tryParse(_valueCtrl.text) ?? 50000;
     final prefix = _prefixCtrl.text.isNotEmpty ? _prefixCtrl.text.toUpperCase() : 'VIRENT';

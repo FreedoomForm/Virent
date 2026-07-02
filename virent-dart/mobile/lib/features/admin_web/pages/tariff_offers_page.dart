@@ -32,8 +32,7 @@ class TariffOffersPage extends ConsumerWidget {
                         Text('Тарифы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 23 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -42,11 +41,8 @@ class TariffOffersPage extends ConsumerWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: adminPrimary,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                      ),
-                    ),
-                  ],
-                ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
+                  ]),
                 SizedBox(
                   width: 200,
                   height: 32,
@@ -57,14 +53,9 @@ class TariffOffersPage extends ConsumerWidget {
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                    ),
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                    style: const TextStyle(fontSize: 11))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: Column(
@@ -78,9 +69,7 @@ class TariffOffersPage extends ConsumerWidget {
                       SizedBox(width: 300, child: Text('Название в мобильном приложении', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 150, child: Text('Hold', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
@@ -103,20 +92,13 @@ class TariffOffersPage extends ConsumerWidget {
                       _tariffRow(context, 'для 30мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
                       _tariffRow(context, 'для 60мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
                       _tariffRow(context, 'Для 20мин ИП Pахматбоев О', 'Минутный', '500000 Тийны'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                    ])),
+              ])),
+        ]));
+      });
   }
 
-  Widget _tariffRow(context, BuildContext context, String adminName, String appName, String hold) {
+  Widget _tariffRow(BuildContext context, String adminName, String appName, String hold) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -135,11 +117,7 @@ class TariffOffersPage extends ConsumerWidget {
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 }

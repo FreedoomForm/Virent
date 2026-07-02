@@ -32,8 +32,7 @@ class GeozonesPage extends ConsumerWidget {
                         Text('Геозоны', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 4 из 4 совпадений (отфильтровано из 239 совпадений)', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -42,9 +41,7 @@ class GeozonesPage extends ConsumerWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: adminPrimary,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                      ),
-                    ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -63,10 +60,8 @@ class GeozonesPage extends ConsumerWidget {
                         _filterButton(context, 'Зона запрета завершения', isPurple: true),
                         const SizedBox(width: 8),
                         _filterButton(context, '⊘ Очистить фильтры', isPurple: true),
-                      ],
-                    ),
-                  ],
-                ),
+                      ]),
+                  ]),
                 Align(
                   alignment: Alignment.topRight,
                   child: SizedBox(
@@ -79,15 +74,9 @@ class GeozonesPage extends ConsumerWidget {
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      ),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                      style: const TextStyle(fontSize: 11)))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
@@ -115,9 +104,7 @@ class GeozonesPage extends ConsumerWidget {
                           SizedBox(width: 200, child: Text('Зона Завершения Аренды', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 100, child: Text('Зона Ог...', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -126,22 +113,13 @@ class GeozonesPage extends ConsumerWidget {
                           _geozoneRow(context, '10', 'Donute test geozone (0)', '#e82f17', '#7a3a00', '-', '75 %', '90 %', 'switchDriveModeEco,switchDriveModeSport', '0', true, false, false),
                           _geozoneRow(context, '420', 'ЗИ ТАШКЕНТ НОВАЯ (1)', '#16FF17', '#ED0505', 'Города (ЗИ)', '50 %', '100 %', 'speedModeOn,switchDriveModeSport,setSpee[...]', '0', true, false, false),
                           _geozoneRow(context, '466', 'SAMARKAND (1)', '#00EB27', '#00EB27', 'Города (ЗИ)', '1 %', '100 %', 'speedModeOn,switchDriveModeSport,setSpee[...]', '0', true, false, false),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _filterButton(context, BuildContext context, String text, {bool isPurple = false, bool isLightBg = false}) {
+  Widget _filterButton(BuildContext context, String text, {bool isPurple = false, bool isLightBg = false}) {
     Color bg = isPurple ? adminPrimary : (isLightBg ? const Color(0xFFE8EAF6) : Colors.transparent);
     Color textColor = isPurple ? Colors.white : (isLightBg ? adminPrimary : Colors.black);
     return InkWell(
@@ -151,14 +129,11 @@ class GeozonesPage extends ConsumerWidget {
         decoration: BoxDecoration(
           color: bg,
           border: isLightBg ? null : (isPurple ? null : Border.all(color: adminTextGray)),
-          borderRadius: BorderRadius.circular(3),
-        ),
-        child: Text(text, style: TextStyle(fontSize: 11, color: textColor)),
-      ),
-    );
+          borderRadius: BorderRadius.circular(3)),
+        child: Text(text, style: TextStyle(fontSize: 11, color: textColor))));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
@@ -171,18 +146,14 @@ class GeozonesPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 
-  Widget _geozoneRow(context, BuildContext context, String id, String name, String fill, String stroke, String groups, String opFill, String opStroke, String cmds, String minScooters, bool rUsed, bool reqPark, bool disPark) {
+  Widget _geozoneRow(BuildContext context, String id, String name, String fill, String stroke, String groups, String opFill, String opStroke, String cmds, String minScooters, bool rUsed, bool reqPark, bool disPark) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -203,25 +174,19 @@ class GeozonesPage extends ConsumerWidget {
             child: Row(
               children: [
                 _checkBox(rUsed, isGreen: true),
-              ],
-            ),
-          ),
+              ])),
           SizedBox(
             width: 200,
             child: Row(
               children: [
                 _checkBox(reqPark, isRed: true),
-              ],
-            ),
-          ),
+              ])),
           SizedBox(
             width: 100,
             child: Row(
               children: [
                 _checkBox(disPark, isRed: true),
-              ],
-            ),
-          ),
+              ])),
           SizedBox(
             width: 200,
             child: Row(
@@ -231,12 +196,8 @@ class GeozonesPage extends ConsumerWidget {
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 
   Widget _checkBox(bool isChecked, {bool isGreen = false, bool isRed = false}) {

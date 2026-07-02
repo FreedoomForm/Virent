@@ -30,8 +30,7 @@ class ScootersPage extends ConsumerWidget {
                     Text('Самокаты', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 300 совпадений (отфильтровано из 663 совпадений)', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                  ],
-                ),
+                  ]),
                 const SizedBox(height: 8),
                 // Add button
                 ElevatedButton.icon(
@@ -44,9 +43,7 @@ class ScootersPage extends ConsumerWidget {
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     textStyle: const TextStyle(fontSize: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                  ),
-                ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
                 const SizedBox(height: 10),
                 // Filters
                 SingleChildScrollView(
@@ -57,20 +54,20 @@ class ScootersPage extends ConsumerWidget {
                       const SizedBox(width: 4),
                       _input(100),
                       const SizedBox(width: 4),
-                      _closeIcon(),
+                      _closeIcon(context),
                       const SizedBox(width: 8),
                       const Text('Комментарий', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
                       _input(140),
                       const SizedBox(width: 4),
-                      _closeIcon(),
+                      _closeIcon(context),
                       const SizedBox(width: 8),
                       const Text('Батарея:', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
                       _input(60),
                       _input(60),
                       const SizedBox(width: 4),
-                      _closeIcon(),
+                      _closeIcon(context),
                       const SizedBox(width: 12),
                       _chip('Модель ▼', adminPrimary),
                       _chip('Группы ▼', adminPrimary),
@@ -89,12 +86,8 @@ class ScootersPage extends ConsumerWidget {
                       _chip('Не на линии', adminDanger),
                       _chip('Статус Raider', adminSuccess),
                       _chip('Отключение АКБ', adminWarning),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+                    ])),
+              ])),
           const SizedBox(height: 8),
           // Table
           Expanded(
@@ -134,37 +127,25 @@ class ScootersPage extends ConsumerWidget {
                           _hdr(context, 'Model', 50),
                           _hdr(context, 'Geozones', 120),
                           _hdr(context, 'Действия', 200),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView.builder(
                         itemCount: items.length,
                         itemBuilder: (context, i) {
                           return _scooterRow(context, 789 + i, '05-${(i + 1).toString().padLeft(4, '0')}');
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        })),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _scooterRow(context, BuildContext context, int id, String gos) {
+  Widget _scooterRow(BuildContext context, int id, String gos) {
     final isOffline = id % 5 == 0;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: adminBorder)),
-      ),
+        border: Border(bottom: BorderSide(color: adminBorder))),
       child: Row(
         children: [
           SizedBox(width: 40, child: Text('$id', style: const TextStyle(fontSize: 11))),
@@ -179,9 +160,7 @@ class ScootersPage extends ConsumerWidget {
                 _miniChip(context, 'на линии', Colors.blue),
                 const SizedBox(width: 2),
                 _miniChip(context, 'Группы', Colors.grey),
-              ],
-            ),
-          ),
+              ])),
           // Cur order
           const SizedBox(width: 70),
           // Icons columns
@@ -222,33 +201,26 @@ class ScootersPage extends ConsumerWidget {
                 _actionLink(context, 'Просмотр'),
                 _actionLink(context, 'Редактировать'),
                 _actionLink(context, 'Удалить'),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 
-  Widget _actionLink(context, BuildContext context, String label) {
+  Widget _actionLink(BuildContext context, String label) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: InkWell(
         onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-        child: Text(label, style: const TextStyle(fontSize: 10, color: adminInfo)),
-      ),
-    );
+        child: Text(label, style: const TextStyle(fontSize: 10, color: adminInfo))));
   }
 
-  Widget _miniChip(context, BuildContext context, String label, Color color) {
+  Widget _miniChip(BuildContext context, String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),
-      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 8)),
-    );
+      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 8)));
   }
 
-  Widget _hdr(context, BuildContext context, String label, double w) {
+  Widget _hdr(BuildContext context, String label, double w) {
     return SizedBox(width: w, child: Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600)));
   }
 
@@ -265,14 +237,11 @@ class ScootersPage extends ConsumerWidget {
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-        ),
-        style: const TextStyle(fontSize: 11),
-      ),
-    );
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+        style: const TextStyle(fontSize: 11)));
   }
 
-  Widget _closeIcon() {
+  Widget _closeIcon(BuildContext context) {
     return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 
@@ -281,7 +250,6 @@ class ScootersPage extends ConsumerWidget {
       margin: const EdgeInsets.only(right: 4),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
-    );
+      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)));
   }
 }

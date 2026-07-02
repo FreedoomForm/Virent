@@ -23,8 +23,7 @@ class DashboardPage extends ConsumerWidget {
           children: [
             const Text(
               'Панель управления',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark),
-            ),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
             const SizedBox(height: 20),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,32 +36,23 @@ class DashboardPage extends ConsumerWidget {
                       _buildStatsGrid(context),
                       const SizedBox(height: 20),
                       _buildRentalLists(),
-                    ],
-                  ),
-                ),
+                    ])),
                 const SizedBox(width: 20),
                 // Right: Control + Push
                 Expanded(
                   flex: 2,
                   child: Column(
                     children: [
-                      _buildControlPanel(context, ),
+                      _buildControlPanel(context),
                       const SizedBox(height: 20),
-                      _buildPushPanel(context, ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-      },
-    );
+                      _buildPushPanel(context),
+                    ])),
+              ]),
+          ])));
+      });
   }
 
-  Widget _buildStatsGrid(context, BuildContext context) {
+  Widget _buildStatsGrid(BuildContext context) {
     return Column(
       children: [
         // Row 1: Всего, На линии, Не на линии
@@ -73,8 +63,7 @@ class DashboardPage extends ConsumerWidget {
             _statCard('На линии', '241', adminSuccess),
             const SizedBox(width: 12),
             _statCard('Не на линии', '59', adminTextGray),
-          ],
-        ),
+          ]),
         const SizedBox(height: 12),
         // Row 2: На складе, В техничке, Свободно
         Row(
@@ -84,8 +73,7 @@ class DashboardPage extends ConsumerWidget {
             _statCard('В техничке', '50', adminWarning),
             const SizedBox(width: 12),
             _statCard('Свободно', '237', adminInfo),
-          ],
-        ),
+          ]),
         const SizedBox(height: 12),
         // Row 3: Бронь, В аренде, Онлайн
         Row(
@@ -95,8 +83,7 @@ class DashboardPage extends ConsumerWidget {
             _statCard('В аренде', '4', adminPrimary),
             const SizedBox(width: 12),
             _statCard('Онлайн', '268', adminSuccess),
-          ],
-        ),
+          ]),
         const SizedBox(height: 12),
         // Row 4: Не онлайн
         Row(
@@ -106,10 +93,8 @@ class DashboardPage extends ConsumerWidget {
             const Expanded(child: SizedBox()),
             const SizedBox(width: 12),
             const Expanded(child: SizedBox()),
-          ],
-        ),
-      ],
-    );
+          ]),
+      ]);
   }
 
   Widget _statCard(String title, String value, Color color) {
@@ -118,18 +103,14 @@ class DashboardPage extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(8),
-        ),
+          borderRadius: BorderRadius.circular(8)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w400)),
             const SizedBox(height: 12),
             Text(value, style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ),
-    );
+          ])));
   }
 
   Widget _buildRentalLists() {
@@ -142,8 +123,7 @@ class DashboardPage extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: adminPrimary,
-              borderRadius: BorderRadius.circular(8),
-            ),
+              borderRadius: BorderRadius.circular(8)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -152,10 +132,7 @@ class DashboardPage extends ConsumerWidget {
                 _rentalRow('Минутный ИП Асилбеков', '3'),
                 const SizedBox(height: 6),
                 _rentalRow('Для 30мин ИП Асилбеков', '1'),
-              ],
-            ),
-          ),
-        ),
+              ]))),
         const SizedBox(width: 12),
         // Абонементы в аренде
         Expanded(
@@ -163,20 +140,15 @@ class DashboardPage extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: adminPrimary,
-              borderRadius: BorderRadius.circular(8),
-            ),
+              borderRadius: BorderRadius.circular(8)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Абонементы в аренде', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
                 const SizedBox(height: 12),
                 _rentalRow('30 Мин ИП Асилбеков', '1'),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
+              ]))),
+      ]);
   }
 
   Widget _rentalRow(String label, String count) {
@@ -185,8 +157,7 @@ class DashboardPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(3),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-      ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -194,21 +165,17 @@ class DashboardPage extends ConsumerWidget {
           CircleAvatar(
             radius: 11,
             backgroundColor: Colors.white.withValues(alpha: 0.3),
-            child: Text(count, style: const TextStyle(color: Colors.white, fontSize: 11)),
-          ),
-        ],
-      ),
-    );
+            child: Text(count, style: const TextStyle(color: Colors.white, fontSize: 11))),
+        ]));
   }
 
-  Widget _buildControlPanel(context, BuildContext context) {
+  Widget _buildControlPanel(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: adminBorder),
-      ),
+        border: Border.all(color: adminBorder)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -219,8 +186,7 @@ class DashboardPage extends ConsumerWidget {
               _colorButton(context, 'Обновление', adminPrimary),
               const SizedBox(width: 8),
               _colorButton(context, 'Режим техника', adminWarning),
-            ],
-          ),
+            ]),
           const SizedBox(height: 16),
           TextField(
             maxLines: 3,
@@ -229,10 +195,8 @@ class DashboardPage extends ConsumerWidget {
               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
               contentPadding: const EdgeInsets.all(10),
               filled: true,
-              fillColor: Colors.white,
-            ),
-            style: const TextStyle(fontSize: 13),
-          ),
+              fillColor: Colors.white),
+            style: const TextStyle(fontSize: 13)),
           const SizedBox(height: 12),
           Wrap(
             spacing: 6,
@@ -242,24 +206,20 @@ class DashboardPage extends ConsumerWidget {
               _colorButton(context, 'снять с публикации', adminBorder, textColor: Colors.black54),
               _colorButton(context, 'редактировать', adminInfo),
               _colorButton(context, 'статус', adminWarning, textColor: Colors.black87),
-            ],
-          ),
+            ]),
           const SizedBox(height: 16),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               color: adminPrimary,
-              borderRadius: BorderRadius.circular(3),
-            ),
+              borderRadius: BorderRadius.circular(3)),
             child: const Row(
               children: [
                 Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 18),
                 SizedBox(width: 6),
                 Expanded(child: Text('Сообщения пользователю по событиям', style: TextStyle(color: Colors.white, fontSize: 12))),
-              ],
-            ),
-          ),
+              ])),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -268,35 +228,27 @@ class DashboardPage extends ConsumerWidget {
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: adminBorder),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  textStyle: const TextStyle(fontSize: 12),
-                ),
-                child: const Text('Выключить аренды', style: TextStyle(color: Colors.black54)),
-              ),
+                  textStyle: const TextStyle(fontSize: 12)),
+                child: const Text('Выключить аренды', style: TextStyle(color: Colors.black54))),
               const SizedBox(width: 8),
               OutlinedButton(
                 onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: adminWarning),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  textStyle: const TextStyle(fontSize: 12),
-                ),
-                child: const Text('Получить клиентов', style: TextStyle(color: adminWarning)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+                  textStyle: const TextStyle(fontSize: 12)),
+                child: const Text('Получить клиентов', style: TextStyle(color: adminWarning))),
+            ]),
+        ]));
   }
 
-  Widget _buildPushPanel(context, BuildContext context) {
+  Widget _buildPushPanel(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: adminBorder),
-      ),
+        border: Border.all(color: adminBorder)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -309,10 +261,8 @@ class DashboardPage extends ConsumerWidget {
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
               isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            ),
-            style: const TextStyle(fontSize: 13),
-          ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10)),
+            style: const TextStyle(fontSize: 13)),
           const SizedBox(height: 12),
           const Text('Сообщение', style: TextStyle(fontSize: 12, color: adminTextGray)),
           const SizedBox(height: 4),
@@ -321,10 +271,8 @@ class DashboardPage extends ConsumerWidget {
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
               isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            ),
-            style: const TextStyle(fontSize: 13),
-          ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10)),
+            style: const TextStyle(fontSize: 13)),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -332,37 +280,28 @@ class DashboardPage extends ConsumerWidget {
                 onPressed: null,
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  textStyle: const TextStyle(fontSize: 11),
-                ),
-                child: const Text('PUSH'),
-              ),
+                  textStyle: const TextStyle(fontSize: 11)),
+                child: const Text('PUSH')),
               const SizedBox(width: 6),
               OutlinedButton(
                 onPressed: null,
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  textStyle: const TextStyle(fontSize: 11),
-                ),
-                child: const Text('РЕКОМЕНДАЦИИ ПО PUSH'),
-              ),
+                  textStyle: const TextStyle(fontSize: 11)),
+                child: const Text('РЕКОМЕНДАЦИИ ПО PUSH')),
               const SizedBox(width: 6),
               OutlinedButton(
                 onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.red),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  textStyle: const TextStyle(fontSize: 11),
-                ),
-                child: const Text('Прервать выполнение', style: TextStyle(color: Colors.red)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+                  textStyle: const TextStyle(fontSize: 11)),
+                child: const Text('Прервать выполнение', style: TextStyle(color: Colors.red))),
+            ]),
+        ]));
   }
 
-  Widget _colorButton(context, BuildContext context, String label, Color color, {Color textColor = Colors.white}) {
+  Widget _colorButton(BuildContext context, String label, Color color, {Color textColor = Colors.white}) {
     return ElevatedButton(
       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       style: ElevatedButton.styleFrom(
@@ -371,9 +310,7 @@ class DashboardPage extends ConsumerWidget {
         elevation: 0,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-        textStyle: const TextStyle(fontSize: 12),
-      ),
-      child: Text(label),
-    );
+        textStyle: const TextStyle(fontSize: 12)),
+      child: Text(label));
   }
 }

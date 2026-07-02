@@ -32,8 +32,7 @@ class DotsPage extends ConsumerWidget {
                         Text('Точки', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 1 из 1 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -42,11 +41,8 @@ class DotsPage extends ConsumerWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: adminPrimary,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                      ),
-                    ),
-                  ],
-                ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
+                  ]),
                 Align(
                   alignment: Alignment.topRight,
                   child: SizedBox(
@@ -59,15 +55,9 @@ class DotsPage extends ConsumerWidget {
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      ),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                      style: const TextStyle(fontSize: 11)))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: Column(
@@ -87,17 +77,13 @@ class DotsPage extends ConsumerWidget {
                       Expanded(child: Text('Description', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Карта', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
                     children: [
                       _dotRow(context, '185', 'Запрет выезда 1', '41.348114149279', '69.25863440402', 'select_field.dot.nodriving', '1', '1', 'Запрет выезда 1'),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Container(
                   color: const Color(0xFFFAFAFA),
@@ -114,21 +100,14 @@ class DotsPage extends ConsumerWidget {
                       Expanded(child: Text('Description', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Карта', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+              ])),
+        ]));
+      });
   }
 
-  Widget _dotRow(context, BuildContext context, String id, String name, String lat, String lon, String type, String radius, String active, String desc) {
+  Widget _dotRow(BuildContext context, String id, String name, String lat, String lon, String type, String radius, String active, String desc) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -148,9 +127,7 @@ class DotsPage extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-              child: const Text('Посмотреть на карте', style: TextStyle(fontSize: 11, color: adminPrimary)),
-            ),
-          ),
+              child: const Text('Посмотреть на карте', style: TextStyle(fontSize: 11, color: adminPrimary)))),
           SizedBox(
             width: 200,
             child: Row(
@@ -158,11 +135,7 @@ class DotsPage extends ConsumerWidget {
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 }

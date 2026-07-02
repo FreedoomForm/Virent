@@ -32,8 +32,7 @@ class AdminAgreementsPage extends ConsumerWidget {
                         Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 3 из 3 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -42,11 +41,8 @@ class AdminAgreementsPage extends ConsumerWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: adminPrimary,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                      ),
-                    ),
-                  ],
-                ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
+                  ]),
                 Align(
                   alignment: Alignment.topRight,
                   child: SizedBox(
@@ -59,15 +55,9 @@ class AdminAgreementsPage extends ConsumerWidget {
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      ),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                      style: const TextStyle(fontSize: 11)))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: Column(
@@ -81,9 +71,7 @@ class AdminAgreementsPage extends ConsumerWidget {
                       Expanded(child: Text('Url lable', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Html file', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
@@ -91,9 +79,7 @@ class AdminAgreementsPage extends ConsumerWidget {
                       _agreementRow(context, 'agreement/VIRENT_public_offer_uz.docx', 'Договор аренды (in Uzbek)', ''),
                       _agreementRow(context, 'agreement/Политика_обработки_персональных_данных_Uz.html', 'O\'zbekcha', ''),
                       _agreementRow(context, 'agreement/Политика_обработки_персональных_данных_Py.html', 'Русский', ''),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Container(
                   color: const Color(0xFFFAFAFA),
@@ -104,22 +90,15 @@ class AdminAgreementsPage extends ConsumerWidget {
                       Expanded(child: Text('Url lable', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Html file', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 const Expanded(child: SizedBox()),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+              ])),
+        ]));
+      });
   }
 
-  Widget _agreementRow(context, BuildContext context, String file, String urlLabel, String htmlFile) {
+  Widget _agreementRow(BuildContext context, String file, String urlLabel, String htmlFile) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -136,11 +115,7 @@ class AdminAgreementsPage extends ConsumerWidget {
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 }

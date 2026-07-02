@@ -32,8 +32,7 @@ class LogsTelemetryPage extends ConsumerWidget {
                         Text('Логи Телеметрии', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     SizedBox(
                       width: 200,
                       height: 32,
@@ -44,13 +43,9 @@ class LogsTelemetryPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  ],
-                ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
+                  ]),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -66,18 +61,13 @@ class LogsTelemetryPage extends ConsumerWidget {
                           Icon(Icons.warning_amber_rounded, size: 14, color: Colors.white),
                           SizedBox(width: 4),
                           Text('В тревоге', style: TextStyle(color: Colors.white, fontSize: 11)),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const SizedBox(width: 8),
                     _labeledInput(context, 'ID самоката', 100),
                     const SizedBox(width: 8),
                     _labeledInput(context, 'Id заказа', 100),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                  ]),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: SingleChildScrollView(
@@ -112,9 +102,7 @@ class LogsTelemetryPage extends ConsumerWidget {
                           SizedBox(width: 140, child: Text('EventTime', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 140, child: Text('ServerTime', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -134,22 +122,13 @@ class LogsTelemetryPage extends ConsumerWidget {
                           _telemetryRow(context, 'PP4e354BotTmlSvbqOQQ', '800', '050012', '33.50', '0000000000000000000', '0', '', true, false, true, false, false, '55 %', '0 км/ч', '30 %', 'sat', '49,152 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
                           _telemetryRow(context, 'O_4e354BotTmlSvbp-Ty', '1791', '05785', '34.50', '0000000000000000000', '0', '', true, true, true, false, true, '69 %', '0 км/ч', '17 %', '22 sat', '50,771 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:06'),
                           _telemetryRow(context, 'Ov4e354BotTmlSvbp-TT', '922', '050131', '33.00', '0000000000000000000', '0', '', true, false, true, true, false, '61 %', '0 км/ч', '29 %', 'sat', '49,895 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _telemetryRow(context, BuildContext context, String id, String carId, String gosnomer, String mileage, String ecuErr, String ecuErrType, String orderId, bool icon1, bool icon2, bool icon3, bool icon4, bool isMotion, String val1, String val2, String val3, String val4, String val5, String val6, String eventTime, String serverTime) {
+  Widget _telemetryRow(BuildContext context, String id, String carId, String gosnomer, String mileage, String ecuErr, String ecuErrType, String orderId, bool icon1, bool icon2, bool icon3, bool icon4, bool isMotion, String val1, String val2, String val3, String val4, String val5, String val6, String eventTime, String serverTime) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -174,9 +153,7 @@ class LogsTelemetryPage extends ConsumerWidget {
               children: [
                 Icon(Icons.sensors, size: 14, color: isMotion ? Colors.red : Colors.green),
                 Text(isMotion ? 'Motion' : 'No motion', style: TextStyle(fontSize: 8, color: isMotion ? Colors.red : Colors.green)),
-              ],
-            ),
-          ),
+              ])),
           SizedBox(width: 40, child: Text(val1, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 60, child: Text(val2, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 40, child: Text(val3, style: const TextStyle(fontSize: 11))),
@@ -193,28 +170,21 @@ class LogsTelemetryPage extends ConsumerWidget {
                   Icon(Icons.visibility, size: 12, color: adminInfo),
                   SizedBox(width: 4),
                   Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                ]))),
+        ]));
   }
 
-  Widget _dropdown(context, BuildContext context, String label) {
+  Widget _dropdown(BuildContext context, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: adminBorder),
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(label, style: const TextStyle(color: Colors.grey, fontSize: 11)),
-    );
+        borderRadius: BorderRadius.circular(3)),
+      child: Text(label, style: const TextStyle(color: Colors.grey, fontSize: 11)));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
@@ -227,14 +197,10 @@ class LogsTelemetryPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

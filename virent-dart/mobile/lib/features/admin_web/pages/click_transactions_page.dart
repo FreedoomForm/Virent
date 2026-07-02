@@ -32,8 +32,7 @@ class ClickTransactionsPage extends ConsumerWidget {
                         Text('Транзакции CLICK', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 5 из 5 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     SizedBox(
                       width: 200,
                       height: 32,
@@ -44,13 +43,9 @@ class ClickTransactionsPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  ],
-                ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
+                  ]),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -61,11 +56,8 @@ class ClickTransactionsPage extends ConsumerWidget {
                     _labeledInput(context, 'status', 100),
                     const SizedBox(width: 8),
                     _labeledInput(context, 'error', 100),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                  ]),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: SingleChildScrollView(
@@ -94,9 +86,7 @@ class ClickTransactionsPage extends ConsumerWidget {
                           SizedBox(width: 140, child: Text('Created', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 140, child: Text('Updated', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -106,22 +96,13 @@ class ClickTransactionsPage extends ConsumerWidget {
                           _clickRow(context, '3', '40366171', '', '55', '3', '3', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:30:20', '25 мая 2026, 17:30', '25 мая 2026, 17:30'),
                           _clickRow(context, '2', '663213541', '', '54', '2', '2', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:18:00', '25 мая 2026, 17:18', '25 мая 2026, 17:18'),
                           _clickRow(context, '1', '481383948', '', '53', '1', '1', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:17:12', '25 мая 2026, 17:17', '25 мая 2026, 17:17'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _clickRow(context, BuildContext context, String id, String trans, String paydoc, String merchTrans, String merchPrep, String merchConf, String amount, String action, String status, String error, String errorNote, String sign, String created, String updated) {
+  Widget _clickRow(BuildContext context, String id, String trans, String paydoc, String merchTrans, String merchPrep, String merchConf, String amount, String action, String status, String error, String errorNote, String sign, String created, String updated) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -149,16 +130,11 @@ class ClickTransactionsPage extends ConsumerWidget {
                   Icon(Icons.visibility, size: 12, color: adminInfo),
                   SizedBox(width: 4),
                   Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                ]))),
+        ]));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
@@ -171,14 +147,10 @@ class ClickTransactionsPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

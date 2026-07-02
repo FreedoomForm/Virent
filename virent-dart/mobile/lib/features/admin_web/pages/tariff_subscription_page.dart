@@ -32,8 +32,7 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
                         Text('Subscription_tariffs', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 0 до 0 из 0 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -42,13 +41,10 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: adminPrimary,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                      ),
-                    ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
                     const SizedBox(height: 12),
                     _labeledInput(context, 'ID подписки', 150),
-                  ],
-                ),
+                  ]),
                 Align(
                   alignment: Alignment.topRight,
                   child: SizedBox(
@@ -61,15 +57,9 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      ),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                      style: const TextStyle(fontSize: 11)))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: Column(
@@ -88,16 +78,12 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
                       SizedBox(width: 200, child: Text('Company', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Duration', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 24),
                   child: const Center(
-                    child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                  ),
-                ),
+                    child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)))),
                 const Divider(height: 1),
                 Container(
                   color: const Color(0xFFFAFAFA),
@@ -113,22 +99,15 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
                       SizedBox(width: 200, child: Text('Company', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Duration', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 const Expanded(child: SizedBox()),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+              ])),
+        ]));
+      });
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
@@ -141,14 +120,10 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

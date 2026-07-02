@@ -25,9 +25,7 @@ class ChatLogsPage extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Сообщения', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
-              ],
-            ),
-          ),
+              ])),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: Row(
@@ -43,13 +41,9 @@ class ChatLogsPage extends ConsumerWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: adminPrimary,
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                  ),
-                  child: const Text('Поиск по тексту', style: TextStyle(fontSize: 12, color: Colors.white)),
-                ),
-              ],
-            ),
-          ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))),
+                  child: const Text('Поиск по тексту', style: TextStyle(fontSize: 12, color: Colors.white))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: Column(
@@ -68,9 +62,7 @@ class ChatLogsPage extends ConsumerWidget {
                       SizedBox(width: 120, child: Text('read_by_admin', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 100, child: Text('read_date', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 160, child: Text('Управление', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
@@ -92,17 +84,10 @@ class ChatLogsPage extends ConsumerWidget {
                       _messageRow('296493', true, false, '18.06.2026 15:57:37'),
                       _messageRow('296493', true, false, '18.06.2026 15:57:26'),
                       _messageRow('296276', true, false, '18.06.2026 14:33:44'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                    ])),
+              ])),
+        ]));
+      });
   }
 
   Widget _buildFilterInput(String label, double width, {String hint = ''}) {
@@ -115,10 +100,8 @@ class ChatLogsPage extends ConsumerWidget {
             decoration: BoxDecoration(
               color: const Color(0xFFF0F0F0),
               border: Border.all(color: adminBorder),
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
-            ),
-            child: Text(label, style: const TextStyle(fontSize: 11)),
-          ),
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3))),
+            child: Text(label, style: const TextStyle(fontSize: 11))),
           Expanded(
             child: TextField(
               decoration: InputDecoration(
@@ -129,14 +112,9 @@ class ChatLogsPage extends ConsumerWidget {
                 border: OutlineInputBorder(borderRadius: const BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)), borderSide: BorderSide(color: adminBorder)),
                 enabledBorder: OutlineInputBorder(borderRadius: const BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)), borderSide: BorderSide(color: adminBorder)),
                 fillColor: Colors.white,
-                filled: true,
-              ),
-              style: const TextStyle(fontSize: 11),
-            ),
-          ),
-        ],
-      ),
-    );
+                filled: true),
+              style: const TextStyle(fontSize: 11))),
+        ]));
   }
 
   Widget _buildFilterDropdown(String label, double width, String hint) {
@@ -149,30 +127,22 @@ class ChatLogsPage extends ConsumerWidget {
             decoration: BoxDecoration(
               color: const Color(0xFFF0F0F0),
               border: Border.all(color: adminBorder),
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
-            ),
-            child: Text(label, style: const TextStyle(fontSize: 11)),
-          ),
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3))),
+            child: Text(label, style: const TextStyle(fontSize: 11))),
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: adminBorder),
-                borderRadius: const BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
-              ),
+                borderRadius: const BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3))),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(hint, style: const TextStyle(fontSize: 11, color: Colors.grey)),
                   const Icon(Icons.arrow_drop_down, size: 14),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                ]))),
+        ]));
   }
 
   Widget _messageRow(String clientId, bool hasMessage, bool hasImage, String timestamp) {
@@ -189,9 +159,7 @@ class ChatLogsPage extends ConsumerWidget {
                 Text(clientId, style: const TextStyle(fontSize: 11, color: adminInfo)),
                 const SizedBox(width: 4),
                 Container(width: 6, height: 6, decoration: const BoxDecoration(shape: BoxShape.circle, color: adminDanger)),
-              ],
-            ),
-          ),
+              ])),
           Expanded(
             child: hasMessage
                 ? Align(
@@ -199,15 +167,11 @@ class ChatLogsPage extends ConsumerWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                       decoration: BoxDecoration(color: adminWarning, borderRadius: BorderRadius.circular(3)),
-                      child: const Text('Прочитать новое сообщение', style: TextStyle(fontSize: 11, color: Colors.white)),
-                    ),
-                  )
-                : const SizedBox(),
-          ),
+                      child: const Text('Прочитать новое сообщение', style: TextStyle(fontSize: 11, color: Colors.white))))
+                : const SizedBox()),
           SizedBox(
             width: 80,
-            child: hasImage ? const Icon(Icons.image, size: 20) : const SizedBox(),
-          ),
+            child: hasImage ? const Icon(Icons.image, size: 20) : const SizedBox()),
           const SizedBox(width: 100),
           SizedBox(width: 140, child: Text(timestamp, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 100, child: Text('посмотреть', style: TextStyle(fontSize: 11, color: adminPrimary.withValues(alpha: 0.8)))),
@@ -220,12 +184,7 @@ class ChatLogsPage extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                 decoration: BoxDecoration(color: adminPrimary, borderRadius: BorderRadius.circular(3)),
-                child: const Text('Написать сообщение', style: TextStyle(fontSize: 11, color: Colors.white)),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                child: const Text('Написать сообщение', style: TextStyle(fontSize: 11, color: Colors.white))))),
+        ]));
   }
 }

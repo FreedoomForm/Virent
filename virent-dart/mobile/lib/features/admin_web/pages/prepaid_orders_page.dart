@@ -32,8 +32,7 @@ class PrepaidOrdersPage extends ConsumerWidget {
                         Text('Предоплаченные Заказы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 91 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     SizedBox(
                       width: 200,
                       height: 32,
@@ -44,13 +43,9 @@ class PrepaidOrdersPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  ],
-                ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
+                  ]),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -65,12 +60,8 @@ class PrepaidOrdersPage extends ConsumerWidget {
                       _labeledInput(context, 'transaction_id', 120),
                       const SizedBox(width: 8),
                       _labeledInput(context, 'order_id', 100),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+                    ])),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: SingleChildScrollView(
@@ -97,9 +88,7 @@ class PrepaidOrdersPage extends ConsumerWidget {
                           SizedBox(width: 140, child: Text('Created', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
                           SizedBox(width: 70, child: Text('Type', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Действия', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -112,22 +101,13 @@ class PrepaidOrdersPage extends ConsumerWidget {
                           _prepaidRow(context, '86', '895392693701506...', '895', '269370', '16', '39', '1,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'PAYME'),
                           _prepaidRow(context, '85', '174428269368140...', '1,744', '269368', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '14 июн 2026, 18:49', 'PAYME'),
                           _prepaidRow(context, '84', '815282693681406...', '815', '269368', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '14 июн 2026, 08:09', 'PAYME'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _prepaidRow(context, BuildContext context, String id, String token, String car, String client, String company, String abon, String amount, String status, String trans, String order, String created, String type) {
+  Widget _prepaidRow(BuildContext context, String id, String token, String car, String client, String company, String abon, String amount, String status, String trans, String order, String created, String type) {
     final bool isClick = type == 'CLICK';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -151,11 +131,8 @@ class PrepaidOrdersPage extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
                 color: isClick ? adminSuccess : adminPrimary,
-                borderRadius: BorderRadius.circular(2),
-              ),
-              child: Text(type, style: const TextStyle(fontSize: 9, color: Colors.white), textAlign: TextAlign.center),
-            ),
-          ),
+                borderRadius: BorderRadius.circular(2)),
+              child: Text(type, style: const TextStyle(fontSize: 9, color: Colors.white), textAlign: TextAlign.center))),
           Expanded(
             child: InkWell(
               onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -165,16 +142,11 @@ class PrepaidOrdersPage extends ConsumerWidget {
                   Icon(Icons.visibility, size: 12, color: adminInfo),
                   SizedBox(width: 4),
                   Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                ]))),
+        ]));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
@@ -187,14 +159,10 @@ class PrepaidOrdersPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

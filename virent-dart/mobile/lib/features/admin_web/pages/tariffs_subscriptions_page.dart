@@ -59,21 +59,18 @@ class _TariffsSubscriptionsPageState extends ConsumerState<TariffsSubscriptionsP
                       onPressed: () => showAdminFormDialog(context, title: 'Добавить подписочный тариф', fields: const [AdminField(key: 'name', label: 'Name'), AdminField(key: 'name_app', label: 'Name in app'), AdminField(key: 'price', label: 'Price'), AdminField(key: 'group', label: 'Group')], onSubmit: (v) async { ref.invalidate(tariffSubscriptionsProvider); }),
                       icon: const Icon(Icons.add, size: 14, color: Colors.white),
                       label: const Text('Добавить подписочный тариф', style: TextStyle(fontSize: 11, color: Colors.white)),
-                      style: ElevatedButton.styleFrom(backgroundColor: adminPrimary, foregroundColor: Colors.white, elevation: 0, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))),
-                    )
+                      style: ElevatedButton.styleFrom(backgroundColor: adminPrimary, foregroundColor: Colors.white, elevation: 0, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))))
                     ]),
                     Row(children: [
                       IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['name', 'name_app', 'price', 'group'], onExport: (fmt, fields) async {})),
                       IconButton(icon: const Icon(Icons.filter_list, size: 18, color: adminTextSecondary), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'name', label: 'Name'), AdminField(key: 'name_app', label: 'Name in app'), AdminField(key: 'price', label: 'Price'), AdminField(key: 'group', label: 'Group')], onApply: (v) async {})),
                       SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
                     ]),
-                  ],
-                ),
-              ),
+                  ])),
               const SizedBox(height: 8),
               AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: adminPrimary)]),
               const SizedBox(height: 8),
-              if (_selectedIds.isNotEmpty) _buildBulkActionBar(context, ),
+              if (_selectedIds.isNotEmpty) _buildBulkActionBar(context),
               Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: adminBorder)), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
             dataRowColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.hovered)) return adminBgLight;
@@ -83,16 +80,13 @@ class _TariffsSubscriptionsPageState extends ConsumerState<TariffsSubscriptionsP
             dataRowMaxHeight: 40,
             columnSpacing: 24,
             horizontalMargin: 12,
-                    headingRowColor: WidgetStateProperty.all(adminBgLight), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('Name')), const DataColumn(label: Text('Name in app')), const DataColumn(label: Text('Price')), const DataColumn(label: Text('Group')), const DataColumn(label: Text('Active')), const DataColumn(label: Text('Действия'))], rows: pageItems.map((i) => _buildRow(context, ref, i)).toList())))),
+                    headingRowColor: WidgetStateProperty.all(adminBgLight), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('Name')), const DataColumn(label: Text('Name in app')), const DataColumn(label: Text('Price')), const DataColumn(label: Text('Group')), const DataColumn(label: Text('Active')), const DataColumn(label: Text('Действия'))], rows: pageItems.map<DataRow>((i) => _buildRow(context, ref, i)).toList())))),
               _buildPaginationBar(filtered.length, totalPages),
-            ],
-          ),
-        );
-      },
-    );
+            ]));
+      });
   }
 
-  DataRow _buildRow(context, BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
+  DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
     return DataRow(cells: [
       DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
       DataCell(Text('${item['name'] ?? ''}')),
@@ -108,7 +102,7 @@ class _TariffsSubscriptionsPageState extends ConsumerState<TariffsSubscriptionsP
     ]);
   }
 
-  Widget _buildBulkActionBar(context, BuildContext context) {
+  Widget _buildBulkActionBar(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: adminBgLight,
@@ -118,8 +112,7 @@ class _TariffsSubscriptionsPageState extends ConsumerState<TariffsSubscriptionsP
         TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: adminDanger), label: const Text('Удалить', style: TextStyle(color: adminDanger, fontSize: 11))),
         const Spacer(),
         TextButton(onPressed: () => setState(() => _selectedIds.clear()), child: const Text('Отменить', style: TextStyle(fontSize: 11))),
-      ]),
-    );
+      ]));
   }
 
   Widget _buildPaginationBar(int total, int totalPages) {
@@ -132,7 +125,6 @@ class _TariffsSubscriptionsPageState extends ConsumerState<TariffsSubscriptionsP
           Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
           IconButton(tooltip: 'Следующая страница', icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
         ]),
-      ]),
-    );
+      ]));
   }
 }

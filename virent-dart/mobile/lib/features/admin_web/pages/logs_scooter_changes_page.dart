@@ -32,12 +32,10 @@ class LogsScooterChangesPage extends ConsumerWidget {
                         Text('Логи Изменений Самокатов', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     _labeledInput(context, 'Номер', 150),
-                  ],
-                ),
+                  ]),
                 SizedBox(
                   width: 200,
                   height: 32,
@@ -48,14 +46,9 @@ class LogsScooterChangesPage extends ConsumerWidget {
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                    ),
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                    style: const TextStyle(fontSize: 11))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
@@ -84,9 +77,7 @@ class LogsScooterChangesPage extends ConsumerWidget {
                           SizedBox(width: 120, child: Text('Imei', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 200, child: Text('Время завершения последнего заказа', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Описание', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -106,19 +97,10 @@ class LogsScooterChangesPage extends ConsumerWidget {
                           _scooterLog('hf4e354BotTmlSvbXuti', '977', '769208', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:03', '09 мая 2023, 03:04:27', '5243381', '867844060831255', '19 июн 2026, 13:01:58'),
                           _scooterLog('E_4e354BotTmlSvbl-S7', '1790', '769207', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:03', '11 дек 2023, 23:57:11', '5647774', '867844062311694', '19 июн 2026, 00:50:43'),
                           _scooterLog('1f4e354BotTmlSvbB-kT', '1734', '769205', '7', '1', '16', 'node', '[22,147,400,419,420,421]', '19 июн 2026, 14:02', '11 дек 2023, 23:57:11', '5647760', '868070043236367', '19 июн 2026, 01:32:58'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
   Widget _scooterLog(String id, String num, String orderId, String model, String online, String compId, String user, String geo, String updTime, String creTime, String flespi, String imei, String lastOrder) {
@@ -142,12 +124,10 @@ class LogsScooterChangesPage extends ConsumerWidget {
           SizedBox(width: 120, child: Text(imei, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 200, child: Text(lastOrder, style: const TextStyle(fontSize: 11))),
           const Expanded(child: Text('', style: TextStyle(fontSize: 11))), // Description
-        ],
-      ),
-    );
+        ]));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
@@ -160,14 +140,10 @@ class LogsScooterChangesPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

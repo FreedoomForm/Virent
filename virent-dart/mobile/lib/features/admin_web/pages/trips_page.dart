@@ -47,8 +47,7 @@ class TripsPage extends ConsumerWidget {
           DataCell(Text(cost)),
           DataCell(Text(status, style: TextStyle(color: statusColor, fontWeight: FontWeight.bold))),
         ]);
-      },
-    );
+      });
   }
 }
 

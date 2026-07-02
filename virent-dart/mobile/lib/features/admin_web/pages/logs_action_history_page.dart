@@ -32,8 +32,7 @@ class LogsActionHistoryPage extends ConsumerWidget {
                         Text('История Действий', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -50,12 +49,10 @@ class LogsActionHistoryPage extends ConsumerWidget {
                         _statusFilter('Открытие отсека батареи', false),
                         const SizedBox(width: 8),
                         const Text('...'), // ellipsis for other options to save space
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     _labeledInput(context, 'ID пользователя', 150),
-                  ],
-                ),
+                  ]),
                 Align(
                   alignment: Alignment.topRight,
                   child: SizedBox(
@@ -68,15 +65,9 @@ class LogsActionHistoryPage extends ConsumerWidget {
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      ),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                      style: const TextStyle(fontSize: 11)))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: Column(
@@ -90,9 +81,7 @@ class LogsActionHistoryPage extends ConsumerWidget {
                       SizedBox(width: 200, child: Text('ID пользователя', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Что изменено', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 150, child: Text('columns.activity_log.time_create', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
@@ -105,17 +94,10 @@ class LogsActionHistoryPage extends ConsumerWidget {
                       _actionRow('929', 'evgwhite@gmail.com', 'command', 'openakb', '', '19 июн 2026, 14:02', isTech: true),
                       _actionRow('224376', '', 'alive', '2026-06-19T09:02:12.498166Z', '2026-06-17 19:35:40', '19 июн 2026, 14:02'),
                       _actionRow('1779', 'evgwhite@gmail.com', 'command', 'openakb', '', '19 июн 2026, 14:02', isTech: true),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                    ])),
+              ])),
+        ]));
+      });
   }
 
   Widget _actionRow(String objectId, String userEmail, String key, String newVal, String oldVal, String date, {bool isTech = false}) {
@@ -135,15 +117,11 @@ class LogsActionHistoryPage extends ConsumerWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                           decoration: BoxDecoration(color: adminInfo, borderRadius: BorderRadius.circular(2)),
-                          child: const Text('Техничка', style: TextStyle(color: Colors.white, fontSize: 8)),
-                        ),
+                          child: const Text('Техничка', style: TextStyle(color: Colors.white, fontSize: 8))),
                         const SizedBox(width: 4),
                         Text(userEmail, style: const TextStyle(fontSize: 11, color: adminPrimary)),
-                      ],
-                    )
-                  : const SizedBox(),
-            ),
-          ),
+                      ])
+                  : const SizedBox())),
           Expanded(
             child: Row(
               children: [
@@ -157,8 +135,7 @@ class LogsActionHistoryPage extends ConsumerWidget {
                           width: double.infinity,
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
-                          child: const Text('Key', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                        ),
+                          child: const Text('Key', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold))),
                         Container(
                           padding: const EdgeInsets.all(8),
                           child: Row(
@@ -166,13 +143,8 @@ class LogsActionHistoryPage extends ConsumerWidget {
                               Text(key, style: const TextStyle(fontSize: 11)),
                               const SizedBox(width: 4),
                               const Icon(Icons.info_outline, size: 12, color: adminInfo),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                            ])),
+                      ]))),
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(border: Border(right: BorderSide(color: adminBorder))),
@@ -183,13 +155,9 @@ class LogsActionHistoryPage extends ConsumerWidget {
                           width: double.infinity,
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
-                          child: const Text('New', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                        ),
+                          child: const Text('New', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold))),
                         Container(padding: const EdgeInsets.all(8), child: Text(newVal, style: const TextStyle(fontSize: 11))),
-                      ],
-                    ),
-                  ),
-                ),
+                      ]))),
                 if (oldVal.isNotEmpty)
                   Expanded(
                     child: Container(
@@ -201,23 +169,15 @@ class LogsActionHistoryPage extends ConsumerWidget {
                             width: double.infinity,
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
-                            child: const Text('Old', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                          ),
+                            child: const Text('Old', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold))),
                           Container(padding: const EdgeInsets.all(8), child: Text(oldVal, style: const TextStyle(fontSize: 11))),
-                        ],
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
+                        ]))),
+              ])),
           Padding(padding: const EdgeInsets.only(left: 16, top: 16), child: SizedBox(width: 150, child: Text(date, style: const TextStyle(fontSize: 11)))),
-        ],
-      ),
-    );
+        ]));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
@@ -230,15 +190,11 @@ class LogsActionHistoryPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 
   Widget _statusFilter(String text, bool isSelected, {bool isYellow = false}) {
@@ -250,9 +206,7 @@ class LogsActionHistoryPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: borderColor, width: 1),
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(text, style: TextStyle(fontSize: 10, color: textColor)),
-    );
+        borderRadius: BorderRadius.circular(3)),
+      child: Text(text, style: TextStyle(fontSize: 10, color: textColor)));
   }
 }

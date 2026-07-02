@@ -32,8 +32,7 @@ class BonusesPage extends ConsumerWidget {
                         Text('Бонусы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 704 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -42,9 +41,7 @@ class BonusesPage extends ConsumerWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: adminPrimary,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                      ),
-                    ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -53,12 +50,9 @@ class BonusesPage extends ConsumerWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           decoration: BoxDecoration(color: adminPrimary, borderRadius: BorderRadius.circular(3)),
-                          child: const Text('Компания ▼', style: TextStyle(color: Colors.white, fontSize: 11)),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                          child: const Text('Компания ▼', style: TextStyle(color: Colors.white, fontSize: 11))),
+                      ]),
+                  ]),
                 Align(
                   alignment: Alignment.topRight,
                   child: SizedBox(
@@ -71,15 +65,9 @@ class BonusesPage extends ConsumerWidget {
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      ),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                      style: const TextStyle(fontSize: 11)))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: Column(
@@ -96,9 +84,7 @@ class BonusesPage extends ConsumerWidget {
                       SizedBox(width: 200, child: Text('Create time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Comment', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Company', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
@@ -118,17 +104,10 @@ class BonusesPage extends ConsumerWidget {
                       _bonusRow('692', 'surname михаил', '50 000.00 С.', 'ViRent Шерзод А...ов', '08 июн 2026, 23:45', '', 'ViRent'),
                       _bonusRow('691', 'surname исмаил', '24 900.00 С.', 'Call Oybek Mozirov', '08 июн 2026, 03:13', '', 'ViRent'),
                       _bonusRow('690', 'surname maf', '14 900.00 С.', 'Call Oybek Mozirov', '08 июн 2026, 02:25', '', 'ViRent'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                    ])),
+              ])),
+        ]));
+      });
   }
 
   Widget _bonusRow(String id, String client, String sum, String whoAdded, String created, String comment, String company) {
@@ -144,12 +123,10 @@ class BonusesPage extends ConsumerWidget {
           SizedBox(width: 200, child: Text(created, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 200, child: Text(comment, style: const TextStyle(fontSize: 11))),
           Expanded(child: Text(company, style: const TextStyle(fontSize: 11))),
-        ],
-      ),
-    );
+        ]));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
@@ -162,14 +139,10 @@ class BonusesPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

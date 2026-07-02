@@ -28,8 +28,7 @@ class LogsAuthPage extends ConsumerWidget {
                     Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 452,999 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                  ],
-                ),
+                  ]),
                 SizedBox(
                   width: 200,
                   height: 32,
@@ -40,14 +39,9 @@ class LogsAuthPage extends ConsumerWidget {
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                    ),
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                    style: const TextStyle(fontSize: 11))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: Column(
@@ -64,9 +58,7 @@ class LogsAuthPage extends ConsumerWidget {
                       SizedBox(width: 250, child: Text('Time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Sms code', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Is success', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
@@ -91,17 +83,10 @@ class LogsAuthPage extends ConsumerWidget {
                       _authRow('1072263', '', '998946371010', '172.64.198.105', '19 июн 2026, 11:53', '606734', true),
                       _authRow('1072262', '296595', '998933849227', '172.64.200.120', '19 июн 2026, 10:25', '116738', true),
                       _authRow('1072261', '', '998933849227', '172.69.155.209', '19 июн 2026, 10:25', '116738', true),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                    ])),
+              ])),
+        ]));
+      });
   }
 
   Widget _authRow(String id, String client, String phone, String ip, String time, String smsCode, bool isSuccess) {
@@ -122,12 +107,7 @@ class LogsAuthPage extends ConsumerWidget {
               child: Icon(
                 isSuccess ? Icons.check_box : Icons.check_box_outline_blank,
                 size: 14,
-                color: isSuccess ? Colors.green.shade400 : Colors.red.shade400,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                color: isSuccess ? Colors.green.shade400 : Colors.red.shade400))),
+        ]));
   }
 }

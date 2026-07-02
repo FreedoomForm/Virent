@@ -32,8 +32,7 @@ class AdminAccountsPage extends ConsumerWidget {
                         Text('Админы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 34 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -42,9 +41,7 @@ class AdminAccountsPage extends ConsumerWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: adminPrimary,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                      ),
-                    ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -65,10 +62,8 @@ class AdminAccountsPage extends ConsumerWidget {
                         _roleFilter('Бехзод', false),
                         const SizedBox(width: 8),
                         const Text('Дополнительные разрешения ▼', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                      ],
-                    ),
-                  ],
-                ),
+                      ]),
+                  ]),
                 Align(
                   alignment: Alignment.topRight,
                   child: SizedBox(
@@ -81,15 +76,9 @@ class AdminAccountsPage extends ConsumerWidget {
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      ),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                      style: const TextStyle(fontSize: 11)))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: Column(
@@ -105,9 +94,7 @@ class AdminAccountsPage extends ConsumerWidget {
                       SizedBox(width: 80, child: Text('UTC', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Роли', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
@@ -127,20 +114,13 @@ class AdminAccountsPage extends ConsumerWidget {
                       _adminRow(context, '478', 'CALL Хамидуллаев Жавoҳир Акром ўғли О', 'javahirxamidullaev337@gmail.com', '', '-'),
                       _adminRow(context, '479', 'Call Qudratilla', 'kudratbaniyazov@gmail.ru', '', '-'),
                       _adminRow(context, '480', 'Call Azamat', 'azamat11mirhoshimov@gmail.com', '', '-'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                    ])),
+              ])),
+        ]));
+      });
   }
 
-  Widget _adminRow(context, BuildContext context, String id, String name, String email, String utc, String roles) {
+  Widget _adminRow(BuildContext context, String id, String name, String email, String utc, String roles) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -159,12 +139,8 @@ class AdminAccountsPage extends ConsumerWidget {
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 
   Widget _roleFilter(String text, bool isSelected, {bool isYellow = false}) {
@@ -176,9 +152,7 @@ class AdminAccountsPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: borderColor, width: 1),
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(text, style: TextStyle(fontSize: 11, color: textColor)),
-    );
+        borderRadius: BorderRadius.circular(3)),
+      child: Text(text, style: TextStyle(fontSize: 11, color: textColor)));
   }
 }

@@ -32,8 +32,7 @@ class TechFeedbackPage extends ConsumerWidget {
                         Text('Фидбек', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 13,420 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -49,14 +48,10 @@ class TechFeedbackPage extends ConsumerWidget {
                             backgroundColor: adminPrimary,
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             minimumSize: const Size(0, 28),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                          ),
-                          child: const Text('Проверен', style: TextStyle(fontSize: 11, color: Colors.white)),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))),
+                          child: const Text('Проверен', style: TextStyle(fontSize: 11, color: Colors.white))),
+                      ]),
+                  ]),
                 Align(
                   alignment: Alignment.topRight,
                   child: SizedBox(
@@ -69,15 +64,9 @@ class TechFeedbackPage extends ConsumerWidget {
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      ),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                      style: const TextStyle(fontSize: 11)))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: Column(
@@ -97,9 +86,7 @@ class TechFeedbackPage extends ConsumerWidget {
                       SizedBox(width: 150, child: Text('created_at', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 150, child: Text('updated_at', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
@@ -119,17 +106,10 @@ class TechFeedbackPage extends ConsumerWidget {
                       _feedbackRow('13455', '799', '296464', '768255', 'Самокат включился, но не едет', '2026-06-18 04:07:06', '2026-06-18 04:07:06'),
                       _feedbackRow('13454', '1745', '296456', '768210', 'Самокат включился, но не едет', '2026-06-18 02:15:36', '2026-06-18 02:15:36'),
                       _feedbackRow('13453', '965', '106578', '768181', 'Самокат не включился', '2026-06-18 01:50:16', '2026-06-18 01:50:16'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                    ])),
+              ])),
+        ]));
+      });
   }
 
   Widget _feedbackRow(String id, String carId, String clientId, String orderId, String type, String createdAt, String updatedAt) {
@@ -150,11 +130,8 @@ class TechFeedbackPage extends ConsumerWidget {
                 Container(
                   width: 14,
                   height: 14,
-                  decoration: BoxDecoration(border: Border.all(color: Colors.red), borderRadius: BorderRadius.circular(2)),
-                ),
-              ],
-            ),
-          ),
+                  decoration: BoxDecoration(border: Border.all(color: Colors.red), borderRadius: BorderRadius.circular(2))),
+              ])),
           const SizedBox(width: 150, child: Text('', style: TextStyle(fontSize: 11))), // Who checked
           SizedBox(width: 150, child: Text(createdAt, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 150, child: Text(updatedAt, style: const TextStyle(fontSize: 11))),
@@ -167,15 +144,11 @@ class TechFeedbackPage extends ConsumerWidget {
                 const Text('Просмотр', style: TextStyle(fontSize: 11, color: adminInfo)),
                 const SizedBox(width: 12),
                 const Text('Проверить фидбэк', style: TextStyle(fontSize: 11, color: adminInfo)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
@@ -188,14 +161,10 @@ class TechFeedbackPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

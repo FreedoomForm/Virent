@@ -29,8 +29,7 @@ class BankCardsPage extends ConsumerWidget {
                     Text('Банковские Карты', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 246,192 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                  ],
-                ),
+                  ]),
                 SizedBox(
                   width: 200,
                   height: 32,
@@ -41,14 +40,9 @@ class BankCardsPage extends ConsumerWidget {
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                    ),
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                    style: const TextStyle(fontSize: 11))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
@@ -72,9 +66,7 @@ class BankCardsPage extends ConsumerWidget {
                           SizedBox(width: 100, child: Text('Card type', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 100, child: Text('Deleted', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -98,22 +90,13 @@ class BankCardsPage extends ConsumerWidget {
                           _cardRow(context, '31', 'AHMAD EGAMBERDIYEV', 'EGAMBERDIYEV AHMAD', '', 'uz', '860003042...5368', 'SLCCJTVLQB[...]', '', '0'),
                           _cardRow(context, '32', 'Наиль Насибулов', '', '', 'uz', '517425******3249', '75f81d368b[...]', '', '1'),
                           _cardRow(context, '33', 'Наиль Насибулов', '', '', 'uz', '517425******3249', '3b55a249a0[...]', '', '1'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _cardRow(context, BuildContext context, String id, String client, String holder, String bank, String country, String card, String token, String type, String deleted) {
+  Widget _cardRow(BuildContext context, String id, String client, String holder, String bank, String country, String card, String token, String type, String deleted) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -134,11 +117,7 @@ class BankCardsPage extends ConsumerWidget {
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.visibility, size: 12, color: adminInfo), SizedBox(width: 4), Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 }

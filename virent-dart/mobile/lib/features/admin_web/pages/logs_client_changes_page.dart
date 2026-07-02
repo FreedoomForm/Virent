@@ -29,8 +29,7 @@ class LogsClientChangesPage extends ConsumerWidget {
                     Text('Записи', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 10,000 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                  ],
-                ),
+                  ]),
                 SizedBox(
                   width: 200,
                   height: 32,
@@ -41,19 +40,13 @@ class LogsClientChangesPage extends ConsumerWidget {
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                    ),
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                    style: const TextStyle(fontSize: 11))),
+              ])),
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-            child: _labeledInput(context, 'ClientID', 150),
-          ),
+            child: _labeledInput(context, 'ClientID', 150)),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
@@ -78,9 +71,7 @@ class LogsClientChangesPage extends ConsumerWidget {
                           SizedBox(width: 100, child: Text('Удален', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 100, child: Text('Новый', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Время создания лога', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -99,19 +90,10 @@ class LogsClientChangesPage extends ConsumerWidget {
                           _clientLog('_v4Z354BotTmlSvbbtf4', '258151', '', '0ofiUSh06P8Wa7R9svsdqslpxS5Ac9bcGWsvVM[...]', '0', '', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 08:57'),
                           _clientLog('Jv4Z354BotTmlSvbHdcW', '249529', '[18,21,22,24,34,39]', 'O5Plkj4D5nzMWKG3UENfLANyBV9MuND9pYicXl0O[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 08:57'),
                           _clientLog('lf4Y354BotTmlSvbD9Uc', '249529', '[18,21,22,24,34,39]', 'O5Plkj4D5nzMWKG3UENfLANyBV9MuND9pYicXl0O[...]', '', '[]', 'Да', 'Нет', 'Нет', 'Нет', '19 июн 2026, 08:56'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
   Widget _clientLog(String id, String clientId, String tariffs, String token, String bonus, String groups, String isActive, String isBlocked, String isDeleted, String isNew, String date) {
@@ -131,12 +113,10 @@ class LogsClientChangesPage extends ConsumerWidget {
           SizedBox(width: 100, child: Text(isDeleted, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 100, child: Text(isNew, style: const TextStyle(fontSize: 11))),
           Expanded(child: Text(date, style: const TextStyle(fontSize: 11))),
-        ],
-      ),
-    );
+        ]));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
@@ -149,14 +129,10 @@ class LogsClientChangesPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

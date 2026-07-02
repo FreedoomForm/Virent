@@ -33,8 +33,7 @@ class SelfiesPage extends ConsumerWidget {
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 296,168 совпадений (отфильтровано из 296,496 совпадений)',
                             style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     SizedBox(
                       width: 200,
                       height: 32,
@@ -45,13 +44,9 @@ class SelfiesPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  ],
-                ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
+                  ]),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -69,20 +64,14 @@ class SelfiesPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
                     const SizedBox(width: 4),
                     InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
                     const SizedBox(width: 12),
                     _filterBtn('Очистить фильтры', adminWarning),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                  ]),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: Column(
@@ -95,9 +84,7 @@ class SelfiesPage extends ConsumerWidget {
                       SizedBox(width: 120, child: Text('ID', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Фото', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 120, child: Text('Проверено', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView.builder(
@@ -110,16 +97,13 @@ class SelfiesPage extends ConsumerWidget {
                           children: [
                             SizedBox(
                               width: 120,
-                              child: Text('2966[...]', style: const TextStyle(fontSize: 11, color: adminWarning)),
-                            ),
+                              child: Text('2966[...]', style: const TextStyle(fontSize: 11, color: adminWarning))),
                             Expanded(
                               child: Container(
                                 width: 24,
                                 height: 24,
                                 alignment: Alignment.centerLeft,
-                                child: Icon(Icons.broken_image, size: 20, color: adminTextGray),
-                              ),
-                            ),
+                                child: Icon(Icons.broken_image, size: 20, color: adminTextGray))),
                             SizedBox(
                               width: 120,
                               child: Row(
@@ -127,30 +111,18 @@ class SelfiesPage extends ConsumerWidget {
                                   Icon(Icons.check_box_outline_blank, size: 16, color: adminTextGray),
                                   const SizedBox(width: 4),
                                   Icon(Icons.play_arrow_outlined, size: 16, color: adminTextGray),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                                ])),
+                          ]));
+                    })),
+              ])),
+        ]));
+      });
   }
 
   Widget _filterBtn(String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w500)),
-    );
+      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w500)));
   }
 }

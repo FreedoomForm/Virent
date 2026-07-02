@@ -32,8 +32,7 @@ class TechniciansPage extends ConsumerWidget {
                         Text('Техники', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 17 из 17 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
                       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -42,11 +41,8 @@ class TechniciansPage extends ConsumerWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: adminPrimary,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                      ),
-                    ),
-                  ],
-                ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
+                  ]),
                 Align(
                   alignment: Alignment.topRight,
                   child: SizedBox(
@@ -59,15 +55,9 @@ class TechniciansPage extends ConsumerWidget {
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      ),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                      style: const TextStyle(fontSize: 11)))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
@@ -92,9 +82,7 @@ class TechniciansPage extends ConsumerWidget {
                           SizedBox(width: 250, child: Text('Пароль', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 150, child: Text('Current companies', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 250, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -116,22 +104,13 @@ class TechniciansPage extends ConsumerWidget {
                           _techRow(context, '341', 'Евгений', 'evgwhite@gmail.com', 'ИП Асилбеков Шерзод, ИП Асилбекова Нигор[...]', 'evgwhite@gmail.com:25078PCG3EG15', '1pHXLQpL2RQalxa5E9mRhU_19bEuEUyU1XLlBj3', '["open_akb"]', '0', '\$2y\$10\$q1hR5hrGfDYKZZa7gAjw8TQfCrjL[...]', ''),
                           _techRow(context, '343', 'Ночник', 'noch@gmail.com', 'ИП Асилбеков Шерзод, ИП Асилбекова Нигор[...]', 'noch@gmail.com:23049RAD8C15', 'jsCSKFzjtlHYt8DBuBRADmp8UU1FByj6VQ2lzHiv4', '["open_akb"]', '0', '\$2y\$10\$cZ2M2hR7gaA7ioNO0yEua6qDp6MD[...]', ''),
                           _techRow(context, '345', 'Ночь Акб', 'akbnight@gmail.com', 'ИП Асилбеков Шерзод', 'amn_noch@gmail.com:RNX394115', 'dxkqPkAFewhHLUUeHU2LQq2GjWNYJmXfTWYjXPsJ', '["open_akb"]', '0', '\$2y\$10\$H01u2zZk0gEZ2fillQsZqTQ2wutMweM[...]', ''),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _techRow(context, BuildContext context, String id, String name, String login, String companies, String techKey, String apiToken, String permissions, String admin, String pass, String curComp) {
+  Widget _techRow(BuildContext context, String id, String name, String login, String companies, String techKey, String apiToken, String permissions, String admin, String pass, String curComp) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -156,11 +135,7 @@ class TechniciansPage extends ConsumerWidget {
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
                 const SizedBox(width: 12),
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 }

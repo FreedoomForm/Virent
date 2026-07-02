@@ -78,14 +78,8 @@ class _PushComposerPageState extends ConsumerState<PushComposerPage> {
                       selectedColor: const Color(0xFF1A1A2E),
                       labelStyle: TextStyle(
                         color: _segment == e.key ? Colors.white : Colors.black87,
-                        fontSize: 12,
-                      ),
-                    )).toList(),
-                  ),
-                ],
-              ),
-            ),
-          ),
+                        fontSize: 12))).toList()),
+                ]))),
           const SizedBox(height: 16),
 
           // ── Title ──
@@ -96,9 +90,7 @@ class _PushComposerPageState extends ConsumerState<PushComposerPage> {
               hintText: 'Акция! Скидка 20% на все поездки',
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               filled: true,
-              fillColor: Colors.white,
-            ),
-          ),
+              fillColor: Colors.white)),
           const SizedBox(height: 12),
 
           // ── Body ──
@@ -111,9 +103,7 @@ class _PushComposerPageState extends ConsumerState<PushComposerPage> {
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               filled: true,
               fillColor: Colors.white,
-              alignLabelWithHint: true,
-            ),
-          ),
+              alignLabelWithHint: true)),
           const SizedBox(height: 16),
 
           // ── Actions ──
@@ -133,13 +123,8 @@ class _PushComposerPageState extends ConsumerState<PushComposerPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A1A2E),
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))))),
+            ]),
           const SizedBox(height: 12),
 
           // ── Test send ──
@@ -168,23 +153,14 @@ class _PushComposerPageState extends ConsumerState<PushComposerPage> {
                           filled: true,
                           fillColor: Colors.white,
                           isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                        ),
-                      ),
-                    ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)))),
                     const SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: _sendTest,
-                      child: const Text('Тест'),
-                    ),
+                      child: const Text('Тест')),
                   ]),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                ]))),
+        ]));
   }
 
   Future<void> _sendBroadcast() async {

@@ -30,8 +30,7 @@ class ClientsPage extends ConsumerWidget {
                     SizedBox(width: 12),
                     Text('Показано 1 до 20 из 129 совпадений (отфильтровано из 296,496 совпадений)',
                         style: TextStyle(fontSize: 11, color: adminTextGray)),
-                  ],
-                ),
+                  ]),
                 const SizedBox(height: 8),
                 ElevatedButton.icon(
                   onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -43,9 +42,7 @@ class ClientsPage extends ConsumerWidget {
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     textStyle: const TextStyle(fontSize: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                  ),
-                ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -55,7 +52,7 @@ class ClientsPage extends ConsumerWidget {
                       const SizedBox(width: 4),
                       _input(context, 100),
                       const SizedBox(width: 4),
-                      _closeIcon(context, ),
+                      _closeIcon(context),
                       const SizedBox(width: 8),
                       const Text('Телефон', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
@@ -74,15 +71,11 @@ class ClientsPage extends ConsumerWidget {
                       const SizedBox(width: 4),
                       _input(context, 120),
                       const SizedBox(width: 4),
-                      _closeIcon(context, ),
+                      _closeIcon(context),
                       const SizedBox(width: 8),
                       _chip('Очистить фильтры', adminPrimary),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+                    ])),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: SingleChildScrollView(
@@ -108,9 +101,7 @@ class ClientsPage extends ConsumerWidget {
                           SizedBox(width: 70, child: Text('Groups', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 130, child: Text('Comment', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -130,22 +121,13 @@ class ClientsPage extends ConsumerWidget {
                           _clientRow(context, '155097', '998979298338', 'Full name', '0.00 С.', true, false, 'не трогайте'),
                           _clientRow(context, '155191', '998942591700', 'Full name', '0.00 С.', false, false, ''),
                           _clientRow(context, '155218', '998904794872', 'Full name', '0.00 С.', true, false, 'ошибка когда'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  static Widget _clientRow(context, BuildContext context, String id, String phone, String data, String debt, bool active, bool blocked, String comment) {
+  static Widget _clientRow(BuildContext context, String id, String phone, String data, String debt, bool active, bool blocked, String comment) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -158,9 +140,7 @@ class ClientsPage extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(color: const Color(0xFF555555), borderRadius: BorderRadius.circular(2)),
-              child: Text(data, style: const TextStyle(fontSize: 10, color: Colors.white)),
-            ),
-          ),
+              child: Text(data, style: const TextStyle(fontSize: 10, color: Colors.white)))),
           const SizedBox(width: 80),
           SizedBox(width: 80, child: Text(debt, style: const TextStyle(fontSize: 11))),
           const SizedBox(width: 80),
@@ -174,10 +154,8 @@ class ClientsPage extends ConsumerWidget {
                 ? Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(color: adminPrimary, borderRadius: BorderRadius.circular(2)),
-                    child: Text(comment, style: const TextStyle(fontSize: 9, color: Colors.white), overflow: TextOverflow.ellipsis),
-                  )
-                : const SizedBox(),
-          ),
+                    child: Text(comment, style: const TextStyle(fontSize: 9, color: Colors.white), overflow: TextOverflow.ellipsis))
+                : const SizedBox()),
           Expanded(
             child: Row(
               children: [
@@ -186,15 +164,11 @@ class ClientsPage extends ConsumerWidget {
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Text('Статус', style: TextStyle(fontSize: 10, color: adminInfo))),
                 const SizedBox(width: 8),
                 InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 
-  static Widget _input(context, BuildContext context, double w) {
+  static Widget _input(BuildContext context, double w) {
     return SizedBox(
       width: w,
       height: 28,
@@ -203,14 +177,11 @@ class ClientsPage extends ConsumerWidget {
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-        ),
-        style: const TextStyle(fontSize: 11),
-      ),
-    );
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+        style: const TextStyle(fontSize: 11)));
   }
 
-  static Widget _closeIcon(context, BuildContext context) {
+  static Widget _closeIcon(BuildContext context) {
     return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 
@@ -219,7 +190,6 @@ class ClientsPage extends ConsumerWidget {
       margin: const EdgeInsets.only(right: 4),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
-    );
+      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)));
   }
 }

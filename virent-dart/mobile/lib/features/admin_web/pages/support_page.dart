@@ -41,8 +41,7 @@ class SupportPage extends ConsumerWidget {
           DataCell(Text(created)),
           DataCell(Text(status, style: TextStyle(color: statusColor, fontWeight: FontWeight.bold))),
         ]);
-      },
-    );
+      });
   }
 }
 

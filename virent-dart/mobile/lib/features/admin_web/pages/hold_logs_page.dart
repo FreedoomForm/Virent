@@ -34,13 +34,9 @@ class HoldLogsPage extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                       decoration: BoxDecoration(color: adminPrimary, borderRadius: BorderRadius.circular(3)),
-                      child: const Text('Фильтр', style: TextStyle(color: Colors.white, fontSize: 11)),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                      child: const Text('Фильтр', style: TextStyle(color: Colors.white, fontSize: 11))),
+                  ]),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
@@ -63,16 +59,12 @@ class HoldLogsPage extends ConsumerWidget {
                           Expanded(flex: 2, child: Text('request_source', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(flex: 2, child: Text('status_response_1', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(flex: 2, child: Text('type_request_2', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: const Center(
-                        child: Text('Нет записей...', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                      ),
-                    ),
+                        child: Text('Нет записей...', style: TextStyle(fontSize: 11, color: Colors.grey)))),
                     const Divider(height: 1),
                     Container(
                       color: const Color(0xFFFAFAFA),
@@ -88,21 +80,12 @@ class HoldLogsPage extends ConsumerWidget {
                           Expanded(flex: 2, child: Text('request_source', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(flex: 2, child: Text('status_response_1', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(flex: 2, child: Text('type_request_2', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     const Expanded(child: SizedBox()), // Fill remaining space
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                  ])))),
+        ]));
+      });
   }
 
   Widget _dateInput() {
@@ -112,16 +95,13 @@ class HoldLogsPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: adminBorder),
-        borderRadius: BorderRadius.circular(3),
-      ),
+        borderRadius: BorderRadius.circular(3)),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text('mm/dd/yyyy', style: TextStyle(fontSize: 11, color: Colors.grey)),
           Icon(Icons.calendar_today, size: 12, color: Colors.grey.shade600),
-        ],
-      ),
-    );
+        ]));
   }
 }

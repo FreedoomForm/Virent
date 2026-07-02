@@ -32,14 +32,11 @@ class JuicersPage extends ConsumerWidget {
             await ref.read(genericCreateAction)(
               '/admin/juicers',
               values,
-              juicersListProvider,
-            );
-          },
-        ),
+              juicersListProvider);
+          }),
         icon: const Icon(Icons.add, size: 16),
         label: const Text('Добавить джусера'),
-        style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground),
-      ),
+        style: ElevatedButton.styleFrom(backgroundColor: adminPrimaryColor, foregroundColor: adminPrimaryForeground)),
       columns: const [
         DataColumn(label: Text('ID')),
         DataColumn(label: Text('Имя')),
@@ -65,8 +62,7 @@ class JuicersPage extends ConsumerWidget {
           DataCell(Text(earned)),
           DataCell(Text(status, style: TextStyle(color: statusColor, fontWeight: FontWeight.bold))),
         ]);
-      },
-    );
+      });
   }
 }
 

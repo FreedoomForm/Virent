@@ -119,11 +119,8 @@ class SettingsConfigPage extends ConsumerWidget {
           _buildConfigRow('Visa', '200'),
           _buildConfigRow('MasterCard', '200'),
           _buildConfigRow('Maestro', '200'),
-        ],
-      ),
-    );
-      },
-    );
+        ]));
+      });
   }
 
   Widget _buildSectionTitle(String title) {
@@ -132,10 +129,8 @@ class SettingsConfigPage extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: const Color(0xFFFAFAFA),
-        border: Border.all(color: adminBorder),
-      ),
-      child: Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
-    );
+        border: Border.all(color: adminBorder)),
+      child: Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)));
   }
 
   Widget _buildSubtitle(String title) {
@@ -146,11 +141,8 @@ class SettingsConfigPage extends ConsumerWidget {
         color: Colors.white,
         border: Border(
           left: BorderSide(color: adminBorder),
-          right: BorderSide(color: adminBorder),
-        ),
-      ),
-      child: Text(title, style: const TextStyle(fontSize: 11)),
-    );
+          right: BorderSide(color: adminBorder))),
+      child: Text(title, style: const TextStyle(fontSize: 11)));
   }
 
   Widget _buildConfigRow(String label, String value, {String? suffix}) {
@@ -161,9 +153,7 @@ class SettingsConfigPage extends ConsumerWidget {
         border: Border(
           left: BorderSide(color: adminBorder),
           right: BorderSide(color: adminBorder),
-          bottom: BorderSide(color: adminBgLight),
-        ),
-      ),
+          bottom: BorderSide(color: adminBgLight))),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -181,20 +171,13 @@ class SettingsConfigPage extends ConsumerWidget {
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(1), borderSide: const BorderSide(color: Colors.black)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(1), borderSide: const BorderSide(color: Colors.black)),
-                    ),
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                ),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(1), borderSide: const BorderSide(color: Colors.black))),
+                    style: const TextStyle(fontSize: 11))),
                 if (suffix != null) ...[
                   const SizedBox(width: 8),
                   Text(suffix, style: const TextStyle(fontSize: 11, color: Colors.grey)),
                 ]
-              ],
-            ),
-          )
-        ],
-      ),
-    );
+              ]))
+        ]));
   }
 }

@@ -36,15 +36,9 @@ class RaiderLogsPage extends ConsumerWidget {
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                      ),
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                      style: const TextStyle(fontSize: 11)))),
+              ])),
           const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
@@ -72,26 +66,15 @@ class RaiderLogsPage extends ConsumerWidget {
                           SizedBox(width: 180, child: Text('Время телефона деактивации', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 80, child: Text('Action', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 150, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 24),
                       child: const Center(
-                        child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                      ),
-                    ),
+                        child: Text('В таблице нет доступных данных', style: TextStyle(fontSize: 11, color: Colors.grey)))),
                     const Divider(height: 1),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                  ])))),
+        ]));
+      });
   }
 }

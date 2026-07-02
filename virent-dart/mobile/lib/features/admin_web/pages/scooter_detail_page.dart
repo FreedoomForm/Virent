@@ -68,9 +68,7 @@ class ScooterDetailPage extends ConsumerWidget {
                   width: 12, height: 12,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: status == 'online' || status == 'active' ? Colors.green : Colors.grey,
-                  ),
-                ),
+                    color: status == 'online' || status == 'active' ? Colors.green : Colors.grey)),
                 const SizedBox(width: 8),
                 Text(name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                 const Spacer(),
@@ -146,19 +144,11 @@ class ScooterDetailPage extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: t['status'] == 'moving' ? Colors.green.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(t['status'] ?? '-', style: const TextStyle(fontSize: 11)),
-                      )),
-                    ])).toList(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+                          borderRadius: BorderRadius.circular(8)),
+                        child: Text(t['status'] ?? '-', style: const TextStyle(fontSize: 11)))),
+                    ])).toList()))),
+            ]));
+      });
   }
 
   Widget _statCard(String label, String value, Color color) {
@@ -168,21 +158,17 @@ class ScooterDetailPage extends ConsumerWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: const Color(0xFFE5E7EB)),
-        ),
+          border: Border.all(color: const Color(0xFFE5E7EB))),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(label, style: TextStyle(fontSize: 11, color: Colors.grey[500])),
             const SizedBox(height: 4),
             Text(value, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: color)),
-          ],
-        ),
-      ),
-    );
+          ])));
   }
 
-  Widget _cmdBtn(context, BuildContext context, String label, IconData icon, Color color) {
+  Widget _cmdBtn(BuildContext context, String label, IconData icon, Color color) {
     return ElevatedButton.icon(
       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       icon: Icon(icon, size: 14),
@@ -191,9 +177,7 @@ class ScooterDetailPage extends ConsumerWidget {
         backgroundColor: color.withValues(alpha: 0.1),
         foregroundColor: color,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))));
   }
 
   List<Map<String, String>> _mockTelemetry() => List.generate(20, (i) {

@@ -73,8 +73,7 @@ class _ZoneEditorPageState extends ConsumerState<ZoneEditorPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                  borderRadius: BorderRadius.circular(8)),
                 child: DropdownButton<String>(
                   value: _zoneType,
                   underline: const SizedBox(),
@@ -85,29 +84,22 @@ class _ZoneEditorPageState extends ConsumerState<ZoneEditorPage> {
                           decoration: BoxDecoration(color: _typeColors[t], shape: BoxShape.circle)),
                       const SizedBox(width: 8),
                       Text(_typeLabels[t] ?? t, style: const TextStyle(fontSize: 13)),
-                    ]),
-                  )).toList(),
-                  onChanged: (v) => setState(() => _zoneType = v ?? 'parking'),
-                ),
-              ),
+                    ]))).toList(),
+                  onChanged: (v) => setState(() => _zoneType = v ?? 'parking'))),
               const SizedBox(width: 8),
               OutlinedButton.icon(
                 onPressed: _points.length >= 3 ? _saveZone : null,
                 icon: _saving
                     ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
                     : const Icon(Icons.save, size: 16),
-                label: Text(_saving ? 'Сохранение...' : 'Сохранить зону'),
-              ),
+                label: Text(_saving ? 'Сохранение...' : 'Сохранить зону')),
               const SizedBox(width: 8),
               if (_points.isNotEmpty)
                 OutlinedButton.icon(
                   onPressed: () => setState(() => _points.clear()),
                   icon: const Icon(Icons.clear, size: 16),
-                  label: Text('${_points.length} точек'),
-                ),
-            ],
-          ),
-        ),
+                  label: Text('${_points.length} точек')),
+            ])),
 
         // ── Name input ──
         if (_points.length >= 3)
@@ -123,12 +115,8 @@ class _ZoneEditorPageState extends ConsumerState<ZoneEditorPage> {
                   decoration: const InputDecoration(
                     hintText: 'Например: Центр Ташкента',
                     border: InputBorder.none,
-                    isDense: true,
-                  ),
-                ),
-              ),
-            ]),
-          ),
+                    isDense: true))),
+            ])),
 
         // ── Map ──
         Expanded(
@@ -143,8 +131,7 @@ class _ZoneEditorPageState extends ConsumerState<ZoneEditorPage> {
                   maxZoom: 18,
                   onTap: (_, latlng) {
                     setState(() => _points.add(latlng));
-                  },
-                ),
+                  }),
                 children: [
                   cachedTileLayer(),
                   // Draw polygon
@@ -156,10 +143,8 @@ class _ZoneEditorPageState extends ConsumerState<ZoneEditorPage> {
                           color: color.withValues(alpha: 0.15),
                           borderColor: color,
                           borderStrokeWidth: 2.5,
-                          isFilled: true,
-                        ),
-                      ],
-                    ),
+                          isFilled: true),
+                      ]),
                   // Draw vertex markers
                   MarkerLayer(
                     markers: _points.asMap().entries.map((e) {
@@ -176,19 +161,12 @@ class _ZoneEditorPageState extends ConsumerState<ZoneEditorPage> {
                               color: i == 0 ? Colors.green : Colors.white,
                               shape: BoxShape.circle,
                               border: Border.all(color: color, width: 2),
-                              boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4)],
-                            ),
+                              boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4)]),
                             child: Center(
                               child: Text('${i + 1}',
-                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: i == 0 ? Colors.white : Colors.black)),
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
+                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: i == 0 ? Colors.white : Colors.black))))));
+                    }).toList()),
+                ]),
 
               // Help overlay when empty
               if (_points.isEmpty)
@@ -197,18 +175,12 @@ class _ZoneEditorPageState extends ConsumerState<ZoneEditorPage> {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Colors.black87,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                      borderRadius: BorderRadius.circular(12)),
                     child: const Text(
                       'Тапайте по карте чтобы добавить вершины полигона.\nМинимум 3 точки для зоны.',
                       style: TextStyle(color: Colors.white, fontSize: 14),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
+                      textAlign: TextAlign.center))),
+            ])),
 
         // ── Footer ──
         Container(
@@ -219,10 +191,8 @@ class _ZoneEditorPageState extends ConsumerState<ZoneEditorPage> {
             const SizedBox(width: 8),
             Text('Точки: ${_points.length}/3+ • Тап — добавить точку • Тап по точке — удалить',
                 style: TextStyle(fontSize: 11, color: Colors.grey[600])),
-          ]),
-        ),
-      ],
-    );
+          ])),
+      ]);
   }
 
   Future<void> _saveZone() async {

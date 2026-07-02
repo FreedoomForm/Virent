@@ -44,10 +44,8 @@ class ServerPage extends ConsumerWidget {
                   ref.invalidate(serverLogsProvider);
                 },
                 icon: const Icon(LucideIcons.refresh_cw, size: 16),
-                label: const Text('Обновить'),
-              ),
-            ],
-          ),
+                label: const Text('Обновить')),
+            ]),
           const SizedBox(height: 24),
 
           // Container status cards
@@ -69,17 +67,12 @@ class ServerPage extends ConsumerWidget {
                     maxCrossAxisExtent: 340,
                     childAspectRatio: 1.6,
                     crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
+                    mainAxisSpacing: 16),
                   itemCount: containers.length,
                   itemBuilder: (ctx, i) => _ContainerCard(
                     container: containers[i],
-                    onAction: (action) => _dockerAction(context, ref, containers[i]['name'], action),
-                  ),
-                );
-              },
-            ),
-          ),
+                    onAction: (action) => _dockerAction(context, ref, containers[i]['name'], action)));
+              })),
           const SizedBox(height: 16),
 
           // Server logs
@@ -88,8 +81,7 @@ class ServerPage extends ConsumerWidget {
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
-                side: const BorderSide(color: AppColors.border),
-              ),
+                side: const BorderSide(color: AppColors.border)),
               elevation: 0,
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -110,8 +102,7 @@ class ServerPage extends ConsumerWidget {
                           if (logs.isEmpty) {
                             return Center(
                               child: Text('Нет логов',
-                                  style: TextStyle(color: AppColors.textSecondary)),
-                            );
+                                  style: TextStyle(color: AppColors.textSecondary)));
                           }
                           return Container(
                             color: adminTextDark,
@@ -126,21 +117,10 @@ class ServerPage extends ConsumerWidget {
                                           color: adminPrimary,
                                           fontFamily: 'monospace',
                                           fontSize: 12));
-                                }).toList(),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                                }).toList())));
+                        })),
+                  ])))),
+        ]));
   }
 
   Future<void> _dockerAction(
@@ -150,15 +130,13 @@ class ServerPage extends ConsumerWidget {
       await ref.read(apiClientProvider).post('/admin/docker/$action', {'name': name});
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Команда "$action" выполнена для $name')),
-        );
+          SnackBar(content: Text('Команда "$action" выполнена для $name')));
         ref.invalidate(serverStatusProvider);
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ошибка: $e')),
-        );
+          SnackBar(content: Text('Ошибка: $e')));
       }
     }
   }
@@ -180,8 +158,7 @@ class _ContainerCard extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: AppColors.border),
-      ),
+        side: const BorderSide(color: AppColors.border)),
       elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -197,19 +174,15 @@ class _ContainerCard extends StatelessWidget {
                 Expanded(
                   child: Text(name,
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w700, fontFamily: 'Inter')),
-                ),
+                          fontSize: 16, fontWeight: FontWeight.w700, fontFamily: 'Inter'))),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: isRunning ? AppColors.success : AppColors.danger,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                    borderRadius: BorderRadius.circular(8)),
                   child: Text(status.toUpperCase(),
-                      style: const TextStyle(color: Colors.white, fontSize: 10)),
-                ),
-              ],
-            ),
+                      style: const TextStyle(color: Colors.white, fontSize: 10))),
+              ]),
             const SizedBox(height: 12),
             Text('CPU: $cpu%', style: const TextStyle(fontFamily: 'Inter', fontSize: 13)),
             Text('Память: ${mem}MB', style: const TextStyle(fontFamily: 'Inter', fontSize: 13)),
@@ -225,12 +198,8 @@ class _ContainerCard extends StatelessWidget {
                 _actionBtn('Рестарт', LucideIcons.refresh_cw, () => onAction('restart')),
                 _actionBtn('Бэкап', LucideIcons.download, () => onAction('backup')),
                 _actionBtn('Восстановить', LucideIcons.upload, () => onAction('restore')),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+              ]),
+          ])));
   }
 
   Widget _actionBtn(String label, IconData icon, VoidCallback onTap) {
@@ -240,9 +209,7 @@ class _ContainerCard extends StatelessWidget {
       label: Text(label, style: const TextStyle(fontSize: 12)),
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-      ),
-    );
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))));
   }
 }
 
@@ -263,9 +230,6 @@ class _ErrorBanner extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(child: Text(message)),
             TextButton(onPressed: onRetry, child: const Text('Повторить')),
-          ],
-        ),
-      ),
-    );
+          ])));
   }
 }

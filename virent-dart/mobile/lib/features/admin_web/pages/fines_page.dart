@@ -32,12 +32,9 @@ class FinesPage extends ConsumerWidget {
                     const SizedBox(width: 4),
                     _input(100),
                     const SizedBox(width: 4),
-                    _closeIcon(context, ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                    _closeIcon(context),
+                  ]),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: SingleChildScrollView(
@@ -65,9 +62,7 @@ class FinesPage extends ConsumerWidget {
                           SizedBox(width: 140, child: Text('UzcardTransactionId', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
                           SizedBox(width: 120, child: Text('updated_at', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Управление', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -78,19 +73,10 @@ class FinesPage extends ConsumerWidget {
                           _fineRow('6864bd738f558c267...', '253376', '1000000', '', '', '6864bd738f558c...', '', '02.07.2025 10:02:44', 'HOLD', '', '', '', showButtons: true),
                           _fineRow('6864bd61a249ce96...', '253376', '1000000', '', '', '6864bd61a249ce...', '', '02.07.2025 10:02:26', 'HOLD', '', '', '', showButtons: true),
                           _fineRow('6864bd564b411f33...', '253376', '1000000', '', '', '6864bd564b411f...', '', '02.07.2025 10:02:14', 'HOLD', '', '', '', showButtons: true),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
   Widget _fineRow(String id, String clientId, String amount, String holdId, String orderId, String billId, String desc, String timestamp, String status, String cardPan, String transId, String uzcardId, {bool showButtons = false}) {
@@ -119,21 +105,16 @@ class FinesPage extends ConsumerWidget {
                       _actionBtn('Подтвердить холд', adminSuccess),
                       const SizedBox(width: 4),
                       _actionBtn('Отменить холд', adminDanger),
-                    ],
-                  )
-                : const SizedBox(),
-          ),
-        ],
-      ),
-    );
+                    ])
+                : const SizedBox()),
+        ]));
   }
 
   Widget _actionBtn(String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 9)),
-    );
+      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 9)));
   }
 
   static Widget _input(double w) {
@@ -145,14 +126,11 @@ class FinesPage extends ConsumerWidget {
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-        ),
-        style: const TextStyle(fontSize: 11),
-      ),
-    );
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+        style: const TextStyle(fontSize: 11)));
   }
 
-  static Widget _closeIcon(context, BuildContext context) {
+  static Widget _closeIcon(BuildContext context) {
     return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 }

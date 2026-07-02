@@ -44,12 +44,8 @@ class OnlineChatPage extends ConsumerWidget {
                                   Container(height: 12, color: adminDanger),
                                   const SizedBox(height: 4),
                                   Container(height: 12, color: adminSuccess),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                                ])),
+                          ])),
                       const SizedBox(height: 12),
                       const Text('Клиенты', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
@@ -67,11 +63,7 @@ class OnlineChatPage extends ConsumerWidget {
                                     fillColor: Colors.white,
                                     filled: true,
                                     contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                                  ),
-                                ),
-                              ),
-                            ),
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none))))),
                             const SizedBox(width: 8),
                             ElevatedButton(
                               onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -79,16 +71,10 @@ class OnlineChatPage extends ConsumerWidget {
                                 backgroundColor: const Color(0xFF5CB85C),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                                minimumSize: const Size(0, 32),
-                              ),
-                              child: const Text('Найти', style: TextStyle(color: Colors.white, fontSize: 12)),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+                                minimumSize: const Size(0, 32)),
+                              child: const Text('Найти', style: TextStyle(color: Colors.white, fontSize: 12)))
+                          ]))
+                    ])),
                 // Client list
                 Expanded(
                   child: ListView(
@@ -107,12 +93,8 @@ class OnlineChatPage extends ConsumerWidget {
                       _clientItem('296431', '18.06.2026, 00:37', true),
                       _clientItem('296427', '18.06.2026, 00:23', true),
                       _clientItem('131969', '17.06.2026, 23:05', true),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
+                    ]))
+              ])),
           // Middle chat area
           Expanded(
             child: Padding(
@@ -123,10 +105,7 @@ class OnlineChatPage extends ConsumerWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        border: Border.all(color: adminTextGray),
-                      ),
-                    ),
-                  ),
+                        border: Border.all(color: adminTextGray)))),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -138,26 +117,17 @@ class OnlineChatPage extends ConsumerWidget {
                             filled: true,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: adminTextGray)),
                             enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: adminTextGray)),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                          ),
-                        ),
-                      ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12)))),
                       const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF5CB85C),
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        ),
-                        child: const Text('Отправить', style: TextStyle(color: Colors.white)),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                        child: const Text('Отправить', style: TextStyle(color: Colors.white)))
+                    ])
+                ]))),
           // Right sidebar (notifications)
           Container(
             width: 250,
@@ -167,14 +137,9 @@ class OnlineChatPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Уведомления', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-      },
-    );
+              ]))
+        ]));
+      });
   }
 
   Widget _clientItem(String id, String time, bool unread) {
@@ -183,8 +148,7 @@ class OnlineChatPage extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: unread ? const Color(0xFFFBE4D5) : Colors.white,
-        borderRadius: BorderRadius.circular(8),
-      ),
+        borderRadius: BorderRadius.circular(8)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -200,15 +164,10 @@ class OnlineChatPage extends ConsumerWidget {
                       const Icon(Icons.email, size: 12, color: Colors.black54),
                       const SizedBox(width: 4),
                       Text(time, style: const TextStyle(fontSize: 11, color: Colors.black54)),
-                    ],
-                  )
-                ],
-              ),
-            ],
-          ),
+                    ])
+                ]),
+            ]),
           const Icon(Icons.more_horiz, size: 16, color: Colors.black54),
-        ],
-      ),
-    );
+        ]));
   }
 }

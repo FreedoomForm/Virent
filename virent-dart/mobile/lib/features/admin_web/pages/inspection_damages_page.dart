@@ -33,8 +33,7 @@ class InspectionDamagesPage extends ConsumerWidget {
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 297 совпадений (отфильтровано из 156,150 совпадений)',
                             style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     SizedBox(
                       width: 200,
                       height: 32,
@@ -45,13 +44,9 @@ class InspectionDamagesPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  ],
-                ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
+                  ]),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -70,12 +65,8 @@ class InspectionDamagesPage extends ConsumerWidget {
                       _chipBtn('Фото при завершении', adminWarning),
                       const SizedBox(width: 8),
                       _chipBtn('Очистить фильтры', adminPrimary),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+                    ])),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: Column(
@@ -89,9 +80,7 @@ class InspectionDamagesPage extends ConsumerWidget {
                       SizedBox(width: 150, child: Text('Car', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       SizedBox(width: 150, child: Text('Order', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                       Expanded(child: Text('Type', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ],
-                  ),
-                ),
+                    ])),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
@@ -103,17 +92,10 @@ class InspectionDamagesPage extends ConsumerWidget {
                       _damageRow('05-714', '76919[...]', 'Завершение'),
                       _damageRow('05-0174', '76918[...]', 'Завершение'),
                       _damageRow('05-0002', '76919[...]', 'Завершение'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                    ])),
+              ])),
+        ]));
+      });
   }
 
   Widget _damageRow(String car, String order, String type) {
@@ -132,13 +114,9 @@ class InspectionDamagesPage extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: adminBorder,
                     borderRadius: BorderRadius.circular(3),
-                    border: Border.all(color: adminBorder),
-                  ),
-                  child: Icon(Icons.image, size: 30, color: adminTextGray),
-                ),
-              ],
-            ),
-          ),
+                    border: Border.all(color: adminBorder)),
+                  child: Icon(Icons.image, size: 30, color: adminTextGray)),
+              ])),
           SizedBox(width: 150, child: Text(car, style: const TextStyle(fontSize: 11))),
           SizedBox(width: 150, child: Text(order, style: const TextStyle(fontSize: 11, color: adminInfo))),
           Expanded(
@@ -147,15 +125,11 @@ class InspectionDamagesPage extends ConsumerWidget {
                 Icon(Icons.grid_view, size: 14, color: adminTextGray),
                 const SizedBox(width: 4),
                 Text(type, style: const TextStyle(fontSize: 11)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              ])),
+        ]));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
@@ -168,15 +142,11 @@ class InspectionDamagesPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 
   Widget _chipBtn(String label, Color color) {
@@ -184,7 +154,6 @@ class InspectionDamagesPage extends ConsumerWidget {
       margin: const EdgeInsets.only(right: 4),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
-    );
+      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)));
   }
 }

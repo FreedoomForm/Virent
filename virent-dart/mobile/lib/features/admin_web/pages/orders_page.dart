@@ -33,8 +33,7 @@ class OrdersPage extends ConsumerWidget {
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 435,693 совпадений (отфильтровано из 769,200 совпадений)',
                             style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     SizedBox(
                       width: 200,
                       height: 32,
@@ -45,13 +44,9 @@ class OrdersPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  ],
-                ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
+                  ]),
                 const SizedBox(height: 10),
                 // Status filter buttons
                 SingleChildScrollView(
@@ -73,13 +68,13 @@ class OrdersPage extends ConsumerWidget {
                       const SizedBox(width: 4),
                       _input(context, 80),
                       const SizedBox(width: 4),
-                      _closeIcon(context, ),
+                      _closeIcon(context),
                       const SizedBox(width: 8),
                       const Text('ID клиента', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
                       _input(context, 80),
                       const SizedBox(width: 4),
-                      _closeIcon(context, ),
+                      _closeIcon(context),
                       const SizedBox(width: 8),
                       const Text('Дата', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
@@ -89,19 +84,15 @@ class OrdersPage extends ConsumerWidget {
                       const SizedBox(width: 4),
                       _input(context, 80),
                       const SizedBox(width: 4),
-                      _closeIcon(context, ),
+                      _closeIcon(context),
                       const SizedBox(width: 8),
                       _chip('Без абонемента', adminSuccess),
                       _chip('С абонементом', adminSuccess),
                       _chip('Тариф ▼', adminPrimary),
                       _chip('Абонемент ▼', adminPrimary),
                       _chip('Компания ▼', adminPrimary),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+                    ])),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: SingleChildScrollView(
@@ -136,9 +127,7 @@ class OrdersPage extends ConsumerWidget {
                           SizedBox(width: 160, child: Text('Redis token', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
                           SizedBox(width: 120, child: Text('Company', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Действия', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -151,22 +140,13 @@ class OrdersPage extends ConsumerWidget {
                           _orderRow(context, '769195', '324096', 'surname feruz', '05-0090', 'Minute', '', '00:08:32', 'Завершено', '2', '19 июн 2026, 13:32', '19 июн 2026, 13:40', '12 013.50 С.'),
                           _orderRow(context, '769194', '286608', 'surname Behruz', '05-0002', 'Minute', '', '00:04:55', 'Завершено', '1', '19 июн 2026, 13:28', '19 июн 2026, 13:33', '8 433.00 С.'),
                           _orderRow(context, '769193', '296600', 'surname Behruz', '05-0002', 'Minute', '', '00:00:00', 'Отложено', '0', '19 июн 2026, 13:28', '19 июн 2026, 13:28', '0.00 С.'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _orderRow(context, BuildContext context, String id, String clientId, String clientName, String car, String tariff, String abon, String dur, String status, String mileage, String start, String finish, String cost) {
+  Widget _orderRow(BuildContext context, String id, String clientId, String clientName, String car, String tariff, String abon, String dur, String status, String mileage, String start, String finish, String cost) {
     Color statusColor;
     switch (status) {
       case 'Завершено':
@@ -195,12 +175,9 @@ class OrdersPage extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
                   decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.circular(2)),
-                  child: Text(clientId, style: const TextStyle(fontSize: 8, color: Colors.white)),
-                ),
+                  child: Text(clientId, style: const TextStyle(fontSize: 8, color: Colors.white))),
                 Text(clientName, style: const TextStyle(fontSize: 9, color: adminInfo)),
-              ],
-            ),
-          ),
+              ])),
           SizedBox(width: 60, child: Text(car, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 60, child: Text(tariff, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 80, child: abon.isNotEmpty ? Text(abon, style: const TextStyle(fontSize: 10, color: adminInfo)) : const SizedBox()),
@@ -211,9 +188,7 @@ class OrdersPage extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
               decoration: BoxDecoration(color: statusColor, borderRadius: BorderRadius.circular(2)),
-              child: Text(status, style: const TextStyle(fontSize: 8, color: Colors.white), textAlign: TextAlign.center),
-            ),
-          ),
+              child: Text(status, style: const TextStyle(fontSize: 8, color: Colors.white), textAlign: TextAlign.center))),
           SizedBox(width: 60, child: Text(mileage, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 130, child: Text(start, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 130, child: Text(finish, style: const TextStyle(fontSize: 10))),
@@ -229,12 +204,8 @@ class OrdersPage extends ConsumerWidget {
           Expanded(
             child: InkWell(
               onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-              child: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
-            ),
-          ),
-        ],
-      ),
-    );
+              child: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)))),
+        ]));
   }
 
   static Widget _statusBtn(String label, Color color, bool filled, {Color textColor = Colors.white}) {
@@ -244,13 +215,11 @@ class OrdersPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: filled ? color : Colors.white,
         borderRadius: BorderRadius.circular(3),
-        border: filled ? null : Border.all(color: adminBorder),
-      ),
-      child: Text(label, style: TextStyle(color: filled ? textColor : adminTextGray, fontSize: 10, fontWeight: FontWeight.w500)),
-    );
+        border: filled ? null : Border.all(color: adminBorder)),
+      child: Text(label, style: TextStyle(color: filled ? textColor : adminTextGray, fontSize: 10, fontWeight: FontWeight.w500)));
   }
 
-  static Widget _input(context, BuildContext context, double w) {
+  static Widget _input(BuildContext context, double w) {
     return SizedBox(
       width: w,
       height: 28,
@@ -259,14 +228,11 @@ class OrdersPage extends ConsumerWidget {
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-        ),
-        style: const TextStyle(fontSize: 11),
-      ),
-    );
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+        style: const TextStyle(fontSize: 11)));
   }
 
-  static Widget _closeIcon(context, BuildContext context) {
+  static Widget _closeIcon(BuildContext context) {
     return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 
@@ -275,7 +241,6 @@ class OrdersPage extends ConsumerWidget {
       margin: const EdgeInsets.only(right: 4),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
-    );
+      child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)));
   }
 }

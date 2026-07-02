@@ -32,8 +32,7 @@ class PushHistoryPage extends ConsumerWidget {
                         Text('История Push', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 1,274,438 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     SizedBox(
                       width: 200,
                       height: 32,
@@ -44,13 +43,9 @@ class PushHistoryPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  ],
-                ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
+                  ]),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -64,18 +59,12 @@ class PushHistoryPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
                     const SizedBox(width: 4),
                     InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                  ]),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: SingleChildScrollView(
@@ -98,9 +87,7 @@ class PushHistoryPage extends ConsumerWidget {
                           SizedBox(width: 160, child: Text('Created', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Client', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 100, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -120,22 +107,13 @@ class PushHistoryPage extends ConsumerWidget {
                           _pushRow(context, '1274801', '63601', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063601', 'surname firdavs'),
                           _pushRow(context, '1274800', '63599', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063599', 'surname dilshod'),
                           _pushRow(context, '1274799', '63598', 'TEST', 'Нет', 'Нет', '2026-01-27 22:31:09', '063598', 'surname baxa'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _pushRow(context, BuildContext context, String id, String client, String text, String isRead, String deleted, String created, String clientId, String clientName) {
+  Widget _pushRow(BuildContext context, String id, String client, String text, String isRead, String deleted, String created, String clientId, String clientName) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -154,13 +132,10 @@ class PushHistoryPage extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                   decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.circular(2)),
-                  child: Text(clientId, style: const TextStyle(fontSize: 9, color: Colors.white)),
-                ),
+                  child: Text(clientId, style: const TextStyle(fontSize: 9, color: Colors.white))),
                 const SizedBox(width: 6),
                 Text(clientName, style: const TextStyle(fontSize: 11, color: adminInfo)),
-              ],
-            ),
-          ),
+              ])),
           SizedBox(
             width: 100,
             child: InkWell(
@@ -170,12 +145,7 @@ class PushHistoryPage extends ConsumerWidget {
                   const Icon(Icons.visibility, size: 12, color: adminInfo),
                   const SizedBox(width: 4),
                   const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                ]))),
+        ]));
   }
 }

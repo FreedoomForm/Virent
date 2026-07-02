@@ -32,8 +32,7 @@ class BillingReceiptsPage extends ConsumerWidget {
                         Text('Чеки', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 711,062 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     SizedBox(
                       width: 200,
                       height: 32,
@@ -44,24 +43,17 @@ class BillingReceiptsPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  ],
-                ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
+                  ]),
                 const SizedBox(height: 10),
                 Row(
                   children: [
                     _labeledInput(context, 'columns.bonus.order_id', 120),
                     const SizedBox(width: 8),
                     _labeledInput(context, 'ID клиента', 100),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                  ]),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: SingleChildScrollView(
@@ -89,9 +81,7 @@ class BillingReceiptsPage extends ConsumerWidget {
                           SizedBox(width: 80, child: Text('Sendable', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 100, child: Text('Reason', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Status check after', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -106,19 +96,10 @@ class BillingReceiptsPage extends ConsumerWidget {
                           _receiptRow('712707', '029186026352', 'CLICK', '', '69e85a97a35ebbb104078e62', 'SUCCESS', '281315', '500000', '22 апр 2026, 10:22', '22', '', 'Нет'),
                           _receiptRow('712706', '029186019042', 'CLICK', '', '69e85a84f8d391df42066352', 'SUCCESS', '238145', '500000', '22 апр 2026, 10:22', '24', '', 'Нет'),
                           _receiptRow('712705', '6930612493', 'CLICK', '', '69e859fb27bd41d5b9025d62', 'SUCCESS', '288941', '1490000', '22 апр 2026, 10:17', '16', '', 'Нет'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
   Widget _receiptRow(String id, String uuid, String check, String providerUuid, String bill, String status, String client, String amount, String created, String company, String order, String sendable) {
@@ -141,12 +122,10 @@ class BillingReceiptsPage extends ConsumerWidget {
           SizedBox(width: 80, child: Text(sendable, style: const TextStyle(fontSize: 10))),
           const SizedBox(width: 100),
           const Expanded(child: SizedBox()),
-        ],
-      ),
-    );
+        ]));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
@@ -159,14 +138,10 @@ class BillingReceiptsPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

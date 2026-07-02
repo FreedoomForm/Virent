@@ -32,8 +32,7 @@ class PaymeTransactionsPage extends ConsumerWidget {
                         Text('Транзакции Payme', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
                         SizedBox(width: 12),
                         Text('Показано 1 до 20 из 39 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
-                      ],
-                    ),
+                      ]),
                     SizedBox(
                       width: 200,
                       height: 32,
@@ -44,13 +43,9 @@ class PaymeTransactionsPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  ],
-                ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 11))),
+                  ]),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -59,11 +54,8 @@ class PaymeTransactionsPage extends ConsumerWidget {
                     _labeledInput(context, 'payme_transaction_id', 150),
                     const SizedBox(width: 8),
                     _labeledInput(context, 'state', 100),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                  ]),
+              ])),
           const SizedBox(height: 8),
           Expanded(
             child: SingleChildScrollView(
@@ -91,9 +83,7 @@ class PaymeTransactionsPage extends ConsumerWidget {
                           SizedBox(width: 60, child: Text('Client', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           SizedBox(width: 60, child: Text('Reason', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
                           Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     Expanded(
                       child: ListView(
@@ -107,22 +97,13 @@ class PaymeTransactionsPage extends ConsumerWidget {
                           _paymeRow(context, '33', 'test-flow-727e9071c8380ff...', 'test-flow-727e9071c8380ff...', '2026-05-15 20:24:00', '2026-05-15 20:24:00', '2026-05-15 20:24:00', '—', 'Успешно оплачена (2)', false, '2', '2,490,000', '998901361576', '269370', '—', isSuccess: true),
                           _paymeRow(context, '32', 'test-flow-217b6d762990d7...', 'test-flow-217b6d762990d7...', '2026-05-15 19:53:34', '2026-05-15 19:53:42', '2026-05-15 19:53:42', '—', 'Успешно оплачена (2)', false, '2', '2,499,000', '79150213177', '22', '—', isSuccess: true),
                           _paymeRow(context, '31', 'test-flow-ed21c19ee75e86...', 'test-flow-ed21c19ee75e86...', '2026-05-15 19:44:55', '2026-05-15 19:45:08', '—', '—', 'Создана, ожидает оплату (1)', false, '1', '2,499,000', '79150213177', '22', '—', isWarning: true),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _paymeRow(context, BuildContext context, String id, String payme, String merch, String paymeTime, String create, String perform, String cancel, String stateDesc, bool isError, String state, String amount, String phone, String client, String reason, {bool isWarning = false, bool isSuccess = false}) {
+  Widget _paymeRow(BuildContext context, String id, String payme, String merch, String paymeTime, String create, String perform, String cancel, String stateDesc, bool isError, String state, String amount, String phone, String client, String reason, {bool isWarning = false, bool isSuccess = false}) {
     Color stateColor;
     Color textColor = Colors.white;
     if (isError) {
@@ -154,9 +135,7 @@ class PaymeTransactionsPage extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
               decoration: BoxDecoration(color: stateColor, borderRadius: BorderRadius.circular(2)),
-              child: Text(stateDesc, style: TextStyle(fontSize: 8, color: textColor, fontWeight: FontWeight.w600), textAlign: TextAlign.center),
-            ),
-          ),
+              child: Text(stateDesc, style: TextStyle(fontSize: 8, color: textColor, fontWeight: FontWeight.w600), textAlign: TextAlign.center))),
           SizedBox(width: 60, child: Text(state, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 80, child: Text(amount, style: const TextStyle(fontSize: 10))),
           SizedBox(width: 100, child: Text(phone, style: const TextStyle(fontSize: 10))),
@@ -170,16 +149,11 @@ class PaymeTransactionsPage extends ConsumerWidget {
                   Icon(Icons.visibility, size: 12, color: adminInfo),
                   SizedBox(width: 4),
                   Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                ]))),
+        ]));
   }
 
-  Widget _labeledInput(context, BuildContext context, String label, double width) {
+  Widget _labeledInput(BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
@@ -192,14 +166,10 @@ class PaymeTransactionsPage extends ConsumerWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-            ),
-            style: const TextStyle(fontSize: 11),
-          ),
-        ),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+            style: const TextStyle(fontSize: 11))),
         const SizedBox(width: 4),
         InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ],
-    );
+      ]);
   }
 }

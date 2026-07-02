@@ -39,11 +39,8 @@ class AlertsPage extends ConsumerWidget {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        ),
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
+                        style: const TextStyle(fontSize: 12))),
                     const SizedBox(width: 4),
                     InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 16, color: Colors.grey[500])),
                     const SizedBox(width: 12),
@@ -59,11 +56,8 @@ class AlertsPage extends ConsumerWidget {
                         decoration: InputDecoration(
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3)),
-                        ),
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3))),
+                        style: const TextStyle(fontSize: 12))),
                     const SizedBox(width: 12),
                     _filterButton(context, 'Открыта', adminSuccess),
                     const SizedBox(width: 6),
@@ -78,14 +72,9 @@ class AlertsPage extends ConsumerWidget {
                           Text('Сбросить фильтр', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
                           const SizedBox(width: 4),
                           Icon(Icons.close, size: 14, color: Colors.grey[500]),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                        ])),
+                  ]),
+              ])),
           const SizedBox(height: 16),
           // Table
           Expanded(
@@ -106,9 +95,7 @@ class AlertsPage extends ConsumerWidget {
                           Expanded(child: Text('alertType', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600))),
                           SizedBox(width: 200, child: Text('time', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600))),
                           SizedBox(width: 150, child: Text('status', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
+                        ])),
                     const Divider(height: 1),
                     // Rows
                     Expanded(
@@ -132,22 +119,13 @@ class AlertsPage extends ConsumerWidget {
                           _alertRow(Icons.check_box, Colors.green, '1779', 'Самокат без связи', '19.06.2026 13:37:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
                           _alertRow(Icons.check_box, Colors.green, '965', 'Разблокирован без заказа', '19.06.2026 13:37:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
                           _alertRow(Icons.check_box, Colors.green, '1720', 'Разблокирован без заказа', '19.06.2026 13:36:50', 'Тревога закрыта', const Color(0xFFD5F5E3)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-      },
-    );
+                        ])),
+                  ])))),
+        ]));
+      });
   }
 
-  Widget _filterButton(context, BuildContext context, String label, Color color) {
+  Widget _filterButton(BuildContext context, String label, Color color) {
     return ElevatedButton(
       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       style: ElevatedButton.styleFrom(
@@ -157,10 +135,8 @@ class AlertsPage extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         minimumSize: const Size(0, 32),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-        textStyle: const TextStyle(fontSize: 12),
-      ),
-      child: Text(label),
-    );
+        textStyle: const TextStyle(fontSize: 12)),
+      child: Text(label));
   }
 
   Widget _alertRow(IconData icon, Color iconColor, String scooterId, String type, String time, String status, Color bgColor) {
@@ -174,8 +150,6 @@ class AlertsPage extends ConsumerWidget {
           Expanded(child: Text(type, style: const TextStyle(fontSize: 12, color: adminTextDark))),
           SizedBox(width: 200, child: Text(time, style: const TextStyle(fontSize: 12, color: adminTextDark))),
           SizedBox(width: 150, child: Text(status, style: const TextStyle(fontSize: 12, color: adminTextDark))),
-        ],
-      ),
-    );
+        ]));
   }
 }
