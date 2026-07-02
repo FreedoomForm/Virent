@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class OrdersPage extends ConsumerWidget {
   const OrdersPage({super.key});
@@ -70,13 +71,13 @@ class OrdersPage extends ConsumerWidget {
                       const SizedBox(width: 8),
                       const Text('Номер', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
-                      _input(80),
+                      _input(context, 80),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
                       const Text('ID клиента', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
-                      _input(80),
+                      _input(context, 80),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
@@ -86,7 +87,7 @@ class OrdersPage extends ConsumerWidget {
                       const SizedBox(width: 4),
                       const Text('ID самоката', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
-                      _input(80),
+                      _input(context, 80),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
@@ -142,14 +143,14 @@ class OrdersPage extends ConsumerWidget {
                     Expanded(
                       child: ListView(
                         children: [
-                          _orderRow('769200', '343022', 'surname Daqavilus', '05-742', 'Minute', '', '00:01:55', 'Завершено', '1', '19 июн 2026, 13:48', '19 июн 2026, 13:50', '3 390.50 С.'),
-                          _orderRow('769199', '334807', 'surname nodir', '05-790', 'Minute', '', '00:06:27', 'Поездка', '1', '19 июн 2026, 13:45', '', '7 169.00 С.'),
-                          _orderRow('769198', '258352', 'surname латиф', '05-0161', 'Минутный[...]', '20 Ми[...]', '00:07:43', 'Поездка', '1', '19 июн 2026, 13:44', '', '14 900.00 С.'),
-                          _orderRow('769197', '283732', 'surname Firdavs', '05-0114', 'Minute', '', '00:05:50', 'Завершено', '1', '19 июн 2026, 13:42', '19 июн 2026, 13:48', '9 340.50 С.'),
-                          _orderRow('769196', '043378', 'surname Doston', '05-792', 'Minute', '', '00:12:25', 'Поездка', '3', '19 июн 2026, 13:39', '', '15 660.00 С.'),
-                          _orderRow('769195', '324096', 'surname feruz', '05-0090', 'Minute', '', '00:08:32', 'Завершено', '2', '19 июн 2026, 13:32', '19 июн 2026, 13:40', '12 013.50 С.'),
-                          _orderRow('769194', '286608', 'surname Behruz', '05-0002', 'Minute', '', '00:04:55', 'Завершено', '1', '19 июн 2026, 13:28', '19 июн 2026, 13:33', '8 433.00 С.'),
-                          _orderRow('769193', '296600', 'surname Behruz', '05-0002', 'Minute', '', '00:00:00', 'Отложено', '0', '19 июн 2026, 13:28', '19 июн 2026, 13:28', '0.00 С.'),
+                          _orderRow(context, '769200', '343022', 'surname Daqavilus', '05-742', 'Minute', '', '00:01:55', 'Завершено', '1', '19 июн 2026, 13:48', '19 июн 2026, 13:50', '3 390.50 С.'),
+                          _orderRow(context, '769199', '334807', 'surname nodir', '05-790', 'Minute', '', '00:06:27', 'Поездка', '1', '19 июн 2026, 13:45', '', '7 169.00 С.'),
+                          _orderRow(context, '769198', '258352', 'surname латиф', '05-0161', 'Минутный[...]', '20 Ми[...]', '00:07:43', 'Поездка', '1', '19 июн 2026, 13:44', '', '14 900.00 С.'),
+                          _orderRow(context, '769197', '283732', 'surname Firdavs', '05-0114', 'Minute', '', '00:05:50', 'Завершено', '1', '19 июн 2026, 13:42', '19 июн 2026, 13:48', '9 340.50 С.'),
+                          _orderRow(context, '769196', '043378', 'surname Doston', '05-792', 'Minute', '', '00:12:25', 'Поездка', '3', '19 июн 2026, 13:39', '', '15 660.00 С.'),
+                          _orderRow(context, '769195', '324096', 'surname feruz', '05-0090', 'Minute', '', '00:08:32', 'Завершено', '2', '19 июн 2026, 13:32', '19 июн 2026, 13:40', '12 013.50 С.'),
+                          _orderRow(context, '769194', '286608', 'surname Behruz', '05-0002', 'Minute', '', '00:04:55', 'Завершено', '1', '19 июн 2026, 13:28', '19 июн 2026, 13:33', '8 433.00 С.'),
+                          _orderRow(context, '769193', '296600', 'surname Behruz', '05-0002', 'Minute', '', '00:00:00', 'Отложено', '0', '19 июн 2026, 13:28', '19 июн 2026, 13:28', '0.00 С.'),
                         ],
                       ),
                     ),
@@ -165,7 +166,7 @@ class OrdersPage extends ConsumerWidget {
     );
   }
 
-  Widget _orderRow(String id, String clientId, String clientName, String car, String tariff, String abon, String dur, String status, String mileage, String start, String finish, String cost) {
+  Widget _orderRow(context, BuildContext context, String id, String clientId, String clientName, String car, String tariff, String abon, String dur, String status, String mileage, String start, String finish, String cost) {
     Color statusColor;
     switch (status) {
       case 'Завершено':
@@ -249,7 +250,7 @@ class OrdersPage extends ConsumerWidget {
     );
   }
 
-  static Widget _input(double w) {
+  static Widget _input(context, BuildContext context, double w) {
     return SizedBox(
       width: w,
       height: 28,

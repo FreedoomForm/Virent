@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class DriversPage extends ConsumerWidget {
   const DriversPage({super.key});
@@ -87,10 +88,10 @@ class DriversPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _driverRow('7', 'Ninebot', 'FLESPI'),
-                      _driverRow('10', 'OKAI 400', 'FLESPI'),
-                      _driverRow('11', 'ecu200', 'gospi'),
-                      _driverRow('12', 'ecu201', 'gospi'),
+                      _driverRow(context, '7', 'Ninebot', 'FLESPI'),
+                      _driverRow(context, '10', 'OKAI 400', 'FLESPI'),
+                      _driverRow(context, '11', 'ecu200', 'gospi'),
+                      _driverRow(context, '12', 'ecu201', 'gospi'),
                     ],
                   ),
                 ),
@@ -118,7 +119,7 @@ class DriversPage extends ConsumerWidget {
     );
   }
 
-  Widget _driverRow(String id, String desc, String type) {
+  Widget _driverRow(context, BuildContext context, String id, String desc, String type) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class BillingReceiptsPage extends ConsumerWidget {
   const BillingReceiptsPage({super.key});
@@ -53,9 +54,9 @@ class BillingReceiptsPage extends ConsumerWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    _labeledInput('columns.bonus.order_id', 120),
+                    _labeledInput(context, 'columns.bonus.order_id', 120),
                     const SizedBox(width: 8),
-                    _labeledInput('ID клиента', 100),
+                    _labeledInput(context, 'ID клиента', 100),
                   ],
                 ),
               ],
@@ -145,7 +146,7 @@ class BillingReceiptsPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),

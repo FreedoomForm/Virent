@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class TariffsSubscriptionsPage extends ConsumerWidget {
   const TariffsSubscriptionsPage({super.key});
@@ -45,7 +46,7 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    _labeledInput('ID подписки', 150),
+                    _labeledInput(context, 'ID подписки', 150),
                   ],
                 ),
                 Align(
@@ -127,7 +128,7 @@ class TariffsSubscriptionsPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(

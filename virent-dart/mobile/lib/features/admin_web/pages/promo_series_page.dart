@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class PromoSeriesPage extends ConsumerWidget {
   const PromoSeriesPage({super.key});
@@ -84,10 +85,10 @@ class PromoSeriesPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _seriesRow('5', 'test', true),
-                      _seriesRow('6', '1306', true),
-                      _seriesRow('7', '1 сентября', true),
-                      _seriesRow('8', 'OCTOBER', true),
+                      _seriesRow(context, '5', 'test', true),
+                      _seriesRow(context, '6', '1306', true),
+                      _seriesRow(context, '7', '1 сентября', true),
+                      _seriesRow(context, '8', 'OCTOBER', true),
                     ],
                   ),
                 ),
@@ -101,7 +102,7 @@ class PromoSeriesPage extends ConsumerWidget {
     );
   }
 
-  Widget _seriesRow(String id, String name, bool isActive) {
+  Widget _seriesRow(context, BuildContext context, String id, String name, bool isActive) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

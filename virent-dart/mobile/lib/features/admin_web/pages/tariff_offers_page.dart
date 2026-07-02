@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class TariffOffersPage extends ConsumerWidget {
   const TariffOffersPage({super.key});
@@ -84,24 +85,24 @@ class TariffOffersPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _tariffRow('Минутный ViRent Ташкент', 'Minute', '500000 Тийны'),
-                      _tariffRow('Минутный ИП Асилбеков', 'Minute', '500000 Тийны'),
-                      _tariffRow('TEST', 'test', '100000 Тийны'),
-                      _tariffRow('для 30мин ViRent Ташкент', 'Минутный', '500000 Тийны'),
-                      _tariffRow('для 60мин ViRent Ташкент', 'минутный', '500000 Тийны'),
-                      _tariffRow('Для 30мин ИП Асилбеков', 'Минутный', '500000 Тийны'),
-                      _tariffRow('Для 60мин ИП Асилбеков', 'Hour', '500000 Тийны'),
-                      _tariffRow('Минутный 600-самокаты', 'Минутный', '500000 Тийны'),
-                      _tariffRow('тест', 'тест', '500000 Тийны'),
-                      _tariffRow('для 10 минут', '10 Минут', '500000 Тийны'),
-                      _tariffRow('для абонементов 600', 'Минутный', '500000 Тийны'),
-                      _tariffRow('Минутный ИП Асилбекова Нигора', 'Minute', '500000 Тийны'),
-                      _tariffRow('Минутный ИП Pахматбоев Озод', 'Minute', '500000 Тийны'),
-                      _tariffRow('Минутный ИП Руфатова Зухра', 'Minute', '500000 Тийны'),
-                      _tariffRow('Для 20мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
-                      _tariffRow('для 30мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
-                      _tariffRow('для 60мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
-                      _tariffRow('Для 20мин ИП Pахматбоев О', 'Минутный', '500000 Тийны'),
+                      _tariffRow(context, 'Минутный ViRent Ташкент', 'Minute', '500000 Тийны'),
+                      _tariffRow(context, 'Минутный ИП Асилбеков', 'Minute', '500000 Тийны'),
+                      _tariffRow(context, 'TEST', 'test', '100000 Тийны'),
+                      _tariffRow(context, 'для 30мин ViRent Ташкент', 'Минутный', '500000 Тийны'),
+                      _tariffRow(context, 'для 60мин ViRent Ташкент', 'минутный', '500000 Тийны'),
+                      _tariffRow(context, 'Для 30мин ИП Асилбеков', 'Минутный', '500000 Тийны'),
+                      _tariffRow(context, 'Для 60мин ИП Асилбеков', 'Hour', '500000 Тийны'),
+                      _tariffRow(context, 'Минутный 600-самокаты', 'Минутный', '500000 Тийны'),
+                      _tariffRow(context, 'тест', 'тест', '500000 Тийны'),
+                      _tariffRow(context, 'для 10 минут', '10 Минут', '500000 Тийны'),
+                      _tariffRow(context, 'для абонементов 600', 'Минутный', '500000 Тийны'),
+                      _tariffRow(context, 'Минутный ИП Асилбекова Нигора', 'Minute', '500000 Тийны'),
+                      _tariffRow(context, 'Минутный ИП Pахматбоев Озод', 'Minute', '500000 Тийны'),
+                      _tariffRow(context, 'Минутный ИП Руфатова Зухра', 'Minute', '500000 Тийны'),
+                      _tariffRow(context, 'Для 20мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
+                      _tariffRow(context, 'для 30мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
+                      _tariffRow(context, 'для 60мин ИП Асилбекова H', 'Минутный', '500000 Тийны'),
+                      _tariffRow(context, 'Для 20мин ИП Pахматбоев О', 'Минутный', '500000 Тийны'),
                     ],
                   ),
                 ),
@@ -115,7 +116,7 @@ class TariffOffersPage extends ConsumerWidget {
     );
   }
 
-  Widget _tariffRow(String adminName, String appName, String hold) {
+  Widget _tariffRow(context, BuildContext context, String adminName, String appName, String hold) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

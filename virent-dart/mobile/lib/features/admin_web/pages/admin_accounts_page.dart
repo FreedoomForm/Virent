@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class AdminAccountsPage extends ConsumerWidget {
   const AdminAccountsPage({super.key});
@@ -111,21 +112,21 @@ class AdminAccountsPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _adminRow('27', 'toGo Viktor', '+Mag1c_MAn1pulAtOr@yandex.ru', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow('99', 'toGO Наталья Борисенко', 'R3v3ngg_Mts3r@bk.ru', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор'),
-                      _adminRow('278', 'toGO Nikita', 'C^yber\$PuIse@gmail.com', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow('284', 'toGO Крушевский Егор', 'T3ch!Ninj@icloud.com', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow('285', 'toGO Дмитрий Харитонов', 'Qu&ntum#X@gmail.com', '5', 'Техник, Партнер, Оператор, Helper, Техник, Оператор'),
-                      _adminRow('291', 'ViRent-Велесик Виктор', 'toostart2020@mail.ru', '5', '-'),
-                      _adminRow('317', 'ViRent Шерзод Асилбеков', 'e-motion-uz@gmail.com', '5', '-'),
-                      _adminRow('318', 'ViRent Наиль Хасибулов', 'nailamirkhanov192@gmail.com', '5', '-'),
-                      _adminRow('443', 'Ali Dexqonov', 'whilescooter@gmail.com', '5', '-'),
-                      _adminRow('474', 'ViRent-Дмитрий Велесик', 'velesikd@gmail.com', '', 'Техник, Техник, Оператор'),
-                      _adminRow('476', 'toGO Алексей', '%Pr0ph3t_Of_D00m@gmail.com', '', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow('477', 'CALL Аброров Сардор Дониёр ўғли Г.О', 'abrotov57@gmail.com', '', '-'),
-                      _adminRow('478', 'CALL Хамидуллаев Жавoҳир Акром ўғли О', 'javahirxamidullaev337@gmail.com', '', '-'),
-                      _adminRow('479', 'Call Qudratilla', 'kudratbaniyazov@gmail.ru', '', '-'),
-                      _adminRow('480', 'Call Azamat', 'azamat11mirhoshimov@gmail.com', '', '-'),
+                      _adminRow(context, '27', 'toGo Viktor', '+Mag1c_MAn1pulAtOr@yandex.ru', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
+                      _adminRow(context, '99', 'toGO Наталья Борисенко', 'R3v3ngg_Mts3r@bk.ru', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор'),
+                      _adminRow(context, '278', 'toGO Nikita', 'C^yber\$PuIse@gmail.com', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
+                      _adminRow(context, '284', 'toGO Крушевский Егор', 'T3ch!Ninj@icloud.com', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
+                      _adminRow(context, '285', 'toGO Дмитрий Харитонов', 'Qu&ntum#X@gmail.com', '5', 'Техник, Партнер, Оператор, Helper, Техник, Оператор'),
+                      _adminRow(context, '291', 'ViRent-Велесик Виктор', 'toostart2020@mail.ru', '5', '-'),
+                      _adminRow(context, '317', 'ViRent Шерзод Асилбеков', 'e-motion-uz@gmail.com', '5', '-'),
+                      _adminRow(context, '318', 'ViRent Наиль Хасибулов', 'nailamirkhanov192@gmail.com', '5', '-'),
+                      _adminRow(context, '443', 'Ali Dexqonov', 'whilescooter@gmail.com', '5', '-'),
+                      _adminRow(context, '474', 'ViRent-Дмитрий Велесик', 'velesikd@gmail.com', '', 'Техник, Техник, Оператор'),
+                      _adminRow(context, '476', 'toGO Алексей', '%Pr0ph3t_Of_D00m@gmail.com', '', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
+                      _adminRow(context, '477', 'CALL Аброров Сардор Дониёр ўғли Г.О', 'abrotov57@gmail.com', '', '-'),
+                      _adminRow(context, '478', 'CALL Хамидуллаев Жавoҳир Акром ўғли О', 'javahirxamidullaev337@gmail.com', '', '-'),
+                      _adminRow(context, '479', 'Call Qudratilla', 'kudratbaniyazov@gmail.ru', '', '-'),
+                      _adminRow(context, '480', 'Call Azamat', 'azamat11mirhoshimov@gmail.com', '', '-'),
                     ],
                   ),
                 ),
@@ -139,7 +140,7 @@ class AdminAccountsPage extends ConsumerWidget {
     );
   }
 
-  Widget _adminRow(String id, String name, String email, String utc, String roles) {
+  Widget _adminRow(context, BuildContext context, String id, String name, String email, String utc, String roles) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

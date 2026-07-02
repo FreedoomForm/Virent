@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class TariffPricesPage extends ConsumerWidget {
   const TariffPricesPage({super.key});
@@ -84,15 +85,15 @@ class TariffPricesPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _priceRow('ViRent Ташкент', '60'),
-                      _priceRow('ViRent Самарканд', '60'),
-                      _priceRow('ViRent Motion', '60'),
-                      _priceRow('ИП Асилбеков', '60'),
-                      _priceRow('Минутный Ташкент Е600 самокаты', '60'),
-                      _priceRow('тест', '60'),
-                      _priceRow('Асилбекова Нигора', '60'),
-                      _priceRow('Раматбоев Озод', '60'),
-                      _priceRow('Руфатова Зухра', '60'),
+                      _priceRow(context, 'ViRent Ташкент', '60'),
+                      _priceRow(context, 'ViRent Самарканд', '60'),
+                      _priceRow(context, 'ViRent Motion', '60'),
+                      _priceRow(context, 'ИП Асилбеков', '60'),
+                      _priceRow(context, 'Минутный Ташкент Е600 самокаты', '60'),
+                      _priceRow(context, 'тест', '60'),
+                      _priceRow(context, 'Асилбекова Нигора', '60'),
+                      _priceRow(context, 'Раматбоев Озод', '60'),
+                      _priceRow(context, 'Руфатова Зухра', '60'),
                     ],
                   ),
                 ),
@@ -106,7 +107,7 @@ class TariffPricesPage extends ConsumerWidget {
     );
   }
 
-  Widget _priceRow(String name, String timeUnit) {
+  Widget _priceRow(context, BuildContext context, String name, String timeUnit) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

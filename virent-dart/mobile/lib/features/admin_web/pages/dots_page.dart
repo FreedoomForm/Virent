@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class DotsPage extends ConsumerWidget {
   const DotsPage({super.key});
@@ -93,7 +94,7 @@ class DotsPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _dotRow('185', 'Запрет выезда 1', '41.348114149279', '69.25863440402', 'select_field.dot.nodriving', '1', '1', 'Запрет выезда 1'),
+                      _dotRow(context, '185', 'Запрет выезда 1', '41.348114149279', '69.25863440402', 'select_field.dot.nodriving', '1', '1', 'Запрет выезда 1'),
                     ],
                   ),
                 ),
@@ -127,7 +128,7 @@ class DotsPage extends ConsumerWidget {
     );
   }
 
-  Widget _dotRow(String id, String name, String lat, String lon, String type, String radius, String active, String desc) {
+  Widget _dotRow(context, BuildContext context, String id, String name, String lat, String lon, String type, String radius, String active, String desc) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

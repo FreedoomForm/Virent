@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class LogsTelemetryPage extends ConsumerWidget {
   const LogsTelemetryPage({super.key});
@@ -53,9 +54,9 @@ class LogsTelemetryPage extends ConsumerWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    _dropdown('Конкретный день ▼'),
+                    _dropdown(context, 'Конкретный день ▼'),
                     const SizedBox(width: 8),
-                    _dropdown('Промежуток времени ▼'),
+                    _dropdown(context, 'Промежуток времени ▼'),
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -69,9 +70,9 @@ class LogsTelemetryPage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    _labeledInput('ID самоката', 100),
+                    _labeledInput(context, 'ID самоката', 100),
                     const SizedBox(width: 8),
-                    _labeledInput('Id заказа', 100),
+                    _labeledInput(context, 'Id заказа', 100),
                   ],
                 ),
               ],
@@ -118,21 +119,21 @@ class LogsTelemetryPage extends ConsumerWidget {
                     Expanded(
                       child: ListView(
                         children: [
-                          _telemetryRow('Sf4e354BotTmlSvbq-Rf', '1724', '05718', '35.00', '0000000000000000000', '0', '', true, true, true, true, false, '65 %', '0 км/ч', '31 %', '22 sat', '51,113 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
-                          _telemetryRow('SP4e354BotTmlSvbq-RT', '926', '050135', '26.50', '0000000000000000000', '0', '', true, false, true, true, false, '54 %', '0 км/ч', '31 %', 'sat', '52,951 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
-                          _telemetryRow('Rv4e354BotTmlSvbq-Q9', '834', '050045', '15.50', '0000000000000000000', '0', '', true, false, true, false, false, '27 %', '4 км/ч', '27 %', 'sat', '47,868 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
-                          _telemetryRow('Rf4e354BotTmlSvbq-Qy', '839', '050050', '25.00', '0000000000000000000', '0', '', true, true, true, true, false, '50 %', '0 км/ч', '31 %', 'sat', '51,295 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
-                          _telemetryRow('RP4e354BotTmlSvbq-Qm', '865', '050075', '12.50', '0000000000000000000', '0', '', true, false, true, true, false, '88 %', '2 км/ч', '31 %', 'sat', '53,818 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
-                          _telemetryRow('Q_4e354BotTmlSvbq-Qb', '1769', '05763', '24.00', '0000000000000000000', '0', '', true, true, true, true, false, '45 %', '0 км/ч', '25 %', '23 sat', '47,795 V', '4 V', '19 июн 2026, 14:03:09', '19 июн 2026, 14:03:09'),
-                          _telemetryRow('Qv4e354BotTmlSvbq-QH', '790', '050002', '22.00', '0000000000000000000', '0', '', true, false, true, true, false, '44 %', '0 км/ч', '31 %', 'sat', '47,898 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
-                          _telemetryRow('Qf4e354BotTmlSvbqOSd', '815', '050027', '35.50', '0000000000000000000', '0', '', true, false, true, true, false, '70 %', '0 км/ч', '25 %', 'sat', '50,731 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:08'),
-                          _telemetryRow('QP4e354BotTmlSvbqOSC', '913', '050122', '27.50', '0000000000000000004', '0', '', true, true, true, false, false, '55 %', '0 км/ч', '19 %', 'sat', '49,044 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
-                          _telemetryRow('P_4e354BotTmlSvbq0Rk', '813', '050025', '24.00', '0000000000000000000', '0', '', true, true, true, true, false, '46 %', '0 км/ч', '31 %', 'sat', '51,348 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
-                          _telemetryRow('Pv4e354BotTmlSvbq0Rk', '844', '050055', '31.00', '0000000000000000000', '0', '', true, true, true, true, false, '61 %', '0 км/ч', '26 %', 'sat', '50,547 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
-                          _telemetryRow('Pf4e354BotTmlSvbqOQu', '1711', '05705', '49.50', '0000000000000000000', '0', '', true, true, true, true, false, '90 %', '0 км/ч', '29 %', '23 sat', '53,200 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
-                          _telemetryRow('PP4e354BotTmlSvbqOQQ', '800', '050012', '33.50', '0000000000000000000', '0', '', true, false, true, false, false, '55 %', '0 км/ч', '30 %', 'sat', '49,152 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
-                          _telemetryRow('O_4e354BotTmlSvbp-Ty', '1791', '05785', '34.50', '0000000000000000000', '0', '', true, true, true, false, true, '69 %', '0 км/ч', '17 %', '22 sat', '50,771 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:06'),
-                          _telemetryRow('Ov4e354BotTmlSvbp-TT', '922', '050131', '33.00', '0000000000000000000', '0', '', true, false, true, true, false, '61 %', '0 км/ч', '29 %', 'sat', '49,895 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                          _telemetryRow(context, 'Sf4e354BotTmlSvbq-Rf', '1724', '05718', '35.00', '0000000000000000000', '0', '', true, true, true, true, false, '65 %', '0 км/ч', '31 %', '22 sat', '51,113 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow(context, 'SP4e354BotTmlSvbq-RT', '926', '050135', '26.50', '0000000000000000000', '0', '', true, false, true, true, false, '54 %', '0 км/ч', '31 %', 'sat', '52,951 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow(context, 'Rv4e354BotTmlSvbq-Q9', '834', '050045', '15.50', '0000000000000000000', '0', '', true, false, true, false, false, '27 %', '4 км/ч', '27 %', 'sat', '47,868 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow(context, 'Rf4e354BotTmlSvbq-Qy', '839', '050050', '25.00', '0000000000000000000', '0', '', true, true, true, true, false, '50 %', '0 км/ч', '31 %', 'sat', '51,295 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow(context, 'RP4e354BotTmlSvbq-Qm', '865', '050075', '12.50', '0000000000000000000', '0', '', true, false, true, true, false, '88 %', '2 км/ч', '31 %', 'sat', '53,818 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow(context, 'Q_4e354BotTmlSvbq-Qb', '1769', '05763', '24.00', '0000000000000000000', '0', '', true, true, true, true, false, '45 %', '0 км/ч', '25 %', '23 sat', '47,795 V', '4 V', '19 июн 2026, 14:03:09', '19 июн 2026, 14:03:09'),
+                          _telemetryRow(context, 'Qv4e354BotTmlSvbq-QH', '790', '050002', '22.00', '0000000000000000000', '0', '', true, false, true, true, false, '44 %', '0 км/ч', '31 %', 'sat', '47,898 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:09'),
+                          _telemetryRow(context, 'Qf4e354BotTmlSvbqOSd', '815', '050027', '35.50', '0000000000000000000', '0', '', true, false, true, true, false, '70 %', '0 км/ч', '25 %', 'sat', '50,731 V', '4 V', '19 июн 2026, 14:03:07', '19 июн 2026, 14:03:08'),
+                          _telemetryRow(context, 'QP4e354BotTmlSvbqOSC', '913', '050122', '27.50', '0000000000000000004', '0', '', true, true, true, false, false, '55 %', '0 км/ч', '19 %', 'sat', '49,044 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                          _telemetryRow(context, 'P_4e354BotTmlSvbq0Rk', '813', '050025', '24.00', '0000000000000000000', '0', '', true, true, true, true, false, '46 %', '0 км/ч', '31 %', 'sat', '51,348 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                          _telemetryRow(context, 'Pv4e354BotTmlSvbq0Rk', '844', '050055', '31.00', '0000000000000000000', '0', '', true, true, true, true, false, '61 %', '0 км/ч', '26 %', 'sat', '50,547 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                          _telemetryRow(context, 'Pf4e354BotTmlSvbqOQu', '1711', '05705', '49.50', '0000000000000000000', '0', '', true, true, true, true, false, '90 %', '0 км/ч', '29 %', '23 sat', '53,200 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                          _telemetryRow(context, 'PP4e354BotTmlSvbqOQQ', '800', '050012', '33.50', '0000000000000000000', '0', '', true, false, true, false, false, '55 %', '0 км/ч', '30 %', 'sat', '49,152 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
+                          _telemetryRow(context, 'O_4e354BotTmlSvbp-Ty', '1791', '05785', '34.50', '0000000000000000000', '0', '', true, true, true, false, true, '69 %', '0 км/ч', '17 %', '22 sat', '50,771 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:06'),
+                          _telemetryRow(context, 'Ov4e354BotTmlSvbp-TT', '922', '050131', '33.00', '0000000000000000000', '0', '', true, false, true, true, false, '61 %', '0 км/ч', '29 %', 'sat', '49,895 V', '4 V', '19 июн 2026, 14:03:06', '19 июн 2026, 14:03:08'),
                         ],
                       ),
                     ),
@@ -148,7 +149,7 @@ class LogsTelemetryPage extends ConsumerWidget {
     );
   }
 
-  Widget _telemetryRow(String id, String carId, String gosnomer, String mileage, String ecuErr, String ecuErrType, String orderId, bool icon1, bool icon2, bool icon3, bool icon4, bool isMotion, String val1, String val2, String val3, String val4, String val5, String val6, String eventTime, String serverTime) {
+  Widget _telemetryRow(context, BuildContext context, String id, String carId, String gosnomer, String mileage, String ecuErr, String ecuErrType, String orderId, bool icon1, bool icon2, bool icon3, bool icon4, bool isMotion, String val1, String val2, String val3, String val4, String val5, String val6, String eventTime, String serverTime) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -201,7 +202,7 @@ class LogsTelemetryPage extends ConsumerWidget {
     );
   }
 
-  Widget _dropdown(String label) {
+  Widget _dropdown(context, BuildContext context, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -213,7 +214,7 @@ class LogsTelemetryPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(

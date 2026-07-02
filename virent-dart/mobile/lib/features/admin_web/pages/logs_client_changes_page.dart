@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class LogsClientChangesPage extends ConsumerWidget {
   const LogsClientChangesPage({super.key});
@@ -51,7 +52,7 @@ class LogsClientChangesPage extends ConsumerWidget {
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-            child: _labeledInput('ClientID', 150),
+            child: _labeledInput(context, 'ClientID', 150),
           ),
           const SizedBox(height: 16),
           Expanded(
@@ -135,7 +136,7 @@ class LogsClientChangesPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(

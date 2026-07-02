@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class ClientGroupsPage extends ConsumerWidget {
   const ClientGroupsPage({super.key});
@@ -86,10 +87,10 @@ class ClientGroupsPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _groupRow('1', 'Техник'),
-                      _groupRow('2', 'Скрыто'),
-                      _groupRow('14', 'Райдер'),
-                      _groupRow('17', 'Тест'),
+                      _groupRow(context, '1', 'Техник'),
+                      _groupRow(context, '2', 'Скрыто'),
+                      _groupRow(context, '14', 'Райдер'),
+                      _groupRow(context, '17', 'Тест'),
                     ],
                   ),
                 ),
@@ -116,7 +117,7 @@ class ClientGroupsPage extends ConsumerWidget {
     );
   }
 
-  Widget _groupRow(String id, String desc) {
+  Widget _groupRow(context, BuildContext context, String id, String desc) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

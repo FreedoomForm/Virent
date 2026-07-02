@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class GeozoneGroupsPage extends ConsumerWidget {
   const GeozoneGroupsPage({super.key});
@@ -87,10 +88,10 @@ class GeozoneGroupsPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _groupRow('2', 'Ташкент', 'Ташкент 3ЗА Фри, 3ЗА ТАШКЕНТ НОВАЯ, СГБ РУз'),
-                      _groupRow('3', 'Самарканд', 'SAMARKAND - зона завершения аренды'),
-                      _groupRow('4', 'Города (ЗИ)', 'ЗИ ТАШКЕНТ НОВАЯ, SAMARKAND'),
-                      _groupRow('5', 'SILK ROAD SAMARKAND', '-'),
+                      _groupRow(context, '2', 'Ташкент', 'Ташкент 3ЗА Фри, 3ЗА ТАШКЕНТ НОВАЯ, СГБ РУз'),
+                      _groupRow(context, '3', 'Самарканд', 'SAMARKAND - зона завершения аренды'),
+                      _groupRow(context, '4', 'Города (ЗИ)', 'ЗИ ТАШКЕНТ НОВАЯ, SAMARKAND'),
+                      _groupRow(context, '5', 'SILK ROAD SAMARKAND', '-'),
                     ],
                   ),
                 ),
@@ -118,7 +119,7 @@ class GeozoneGroupsPage extends ConsumerWidget {
     );
   }
 
-  Widget _groupRow(String id, String desc, String finishGeo) {
+  Widget _groupRow(context, BuildContext context, String id, String desc, String finishGeo) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

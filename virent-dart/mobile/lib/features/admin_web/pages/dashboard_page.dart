@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import '../widgets/admin_dialogs.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
@@ -45,9 +46,9 @@ class DashboardPage extends ConsumerWidget {
                   flex: 2,
                   child: Column(
                     children: [
-                      _buildControlPanel(),
+                      _buildControlPanel(context, ),
                       const SizedBox(height: 20),
-                      _buildPushPanel(),
+                      _buildPushPanel(context, ),
                     ],
                   ),
                 ),
@@ -61,7 +62,7 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatsGrid(BuildContext context) {
+  Widget _buildStatsGrid(context, BuildContext context) {
     return Column(
       children: [
         // Row 1: Всего, На линии, Не на линии
@@ -200,7 +201,7 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildControlPanel() {
+  Widget _buildControlPanel(context, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -215,9 +216,9 @@ class DashboardPage extends ConsumerWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              _colorButton('Обновление', adminPrimary),
+              _colorButton(context, 'Обновление', adminPrimary),
               const SizedBox(width: 8),
-              _colorButton('Режим техника', adminWarning),
+              _colorButton(context, 'Режим техника', adminWarning),
             ],
           ),
           const SizedBox(height: 16),
@@ -237,10 +238,10 @@ class DashboardPage extends ConsumerWidget {
             spacing: 6,
             runSpacing: 6,
             children: [
-              _colorButton('опубликовать', adminSuccess),
-              _colorButton('снять с публикации', adminBorder, textColor: Colors.black54),
-              _colorButton('редактировать', adminInfo),
-              _colorButton('статус', adminWarning, textColor: Colors.black87),
+              _colorButton(context, 'опубликовать', adminSuccess),
+              _colorButton(context, 'снять с публикации', adminBorder, textColor: Colors.black54),
+              _colorButton(context, 'редактировать', adminInfo),
+              _colorButton(context, 'статус', adminWarning, textColor: Colors.black87),
             ],
           ),
           const SizedBox(height: 16),
@@ -288,7 +289,7 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildPushPanel() {
+  Widget _buildPushPanel(context, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -361,7 +362,7 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _colorButton(String label, Color color, {Color textColor = Colors.white}) {
+  Widget _colorButton(context, BuildContext context, String label, Color color, {Color textColor = Colors.white}) {
     return ElevatedButton(
       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       style: ElevatedButton.styleFrom(

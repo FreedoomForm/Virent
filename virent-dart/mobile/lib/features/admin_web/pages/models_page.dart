@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class ModelsPage extends ConsumerWidget {
   const ModelsPage({super.key});
@@ -90,10 +91,10 @@ class ModelsPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _modelRow('1', true, 'api/modelImage/', 'Ninebot', 'MAX', ''),
-                      _modelRow('3', true, 'api/modelImage/', 'Ninebot', 'MAX', ''),
-                      _modelRow('7', true, 'api/modelImage/', 'OKAI', 'ES400a', ''),
-                      _modelRow('10', true, 'api/modelImage/', 'OKAI', 'ES600', '2,156'),
+                      _modelRow(context, '1', true, 'api/modelImage/', 'Ninebot', 'MAX', ''),
+                      _modelRow(context, '3', true, 'api/modelImage/', 'Ninebot', 'MAX', ''),
+                      _modelRow(context, '7', true, 'api/modelImage/', 'OKAI', 'ES400a', ''),
+                      _modelRow(context, '10', true, 'api/modelImage/', 'OKAI', 'ES600', '2,156'),
                     ],
                   ),
                 ),
@@ -124,7 +125,7 @@ class ModelsPage extends ConsumerWidget {
     );
   }
 
-  Widget _modelRow(String id, bool isPublic, String image, String brand, String model, String deviceType) {
+  Widget _modelRow(context, BuildContext context, String id, bool isPublic, String image, String brand, String model, String deviceType) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

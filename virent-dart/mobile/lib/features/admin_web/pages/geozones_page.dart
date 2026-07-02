@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class GeozonesPage extends ConsumerWidget {
   const GeozonesPage({super.key});
@@ -47,21 +48,21 @@ class GeozonesPage extends ConsumerWidget {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        _labeledInput('ID', 80),
+                        _labeledInput(context, 'ID', 80),
                         const SizedBox(width: 8),
-                        _filterButton('Группы ▼', isPurple: true),
+                        _filterButton(context, 'Группы ▼', isPurple: true),
                         const SizedBox(width: 8),
-                        _filterButton('Разр.Использование', isPurple: false, isLightBg: true),
+                        _filterButton(context, 'Разр.Использование', isPurple: false, isLightBg: true),
                         const SizedBox(width: 8),
-                        _filterButton('Завершение аренды', isPurple: true),
+                        _filterButton(context, 'Завершение аренды', isPurple: true),
                         const SizedBox(width: 8),
-                        _filterButton('Запрет движения', isPurple: true),
+                        _filterButton(context, 'Запрет движения', isPurple: true),
                         const SizedBox(width: 8),
-                        _filterButton('Ограничение движения', isPurple: true),
+                        _filterButton(context, 'Ограничение движения', isPurple: true),
                         const SizedBox(width: 8),
-                        _filterButton('Зона запрета завершения', isPurple: true),
+                        _filterButton(context, 'Зона запрета завершения', isPurple: true),
                         const SizedBox(width: 8),
-                        _filterButton('⊘ Очистить фильтры', isPurple: true),
+                        _filterButton(context, '⊘ Очистить фильтры', isPurple: true),
                       ],
                     ),
                   ],
@@ -121,10 +122,10 @@ class GeozonesPage extends ConsumerWidget {
                     Expanded(
                       child: ListView(
                         children: [
-                          _geozoneRow('1', 'Main (0)', '#cc62dc', '#1bffca', '-', '30 %', '30 %', 'unlockWheel,switchDriveModeSport', '0', true, false, false),
-                          _geozoneRow('10', 'Donute test geozone (0)', '#e82f17', '#7a3a00', '-', '75 %', '90 %', 'switchDriveModeEco,switchDriveModeSport', '0', true, false, false),
-                          _geozoneRow('420', 'ЗИ ТАШКЕНТ НОВАЯ (1)', '#16FF17', '#ED0505', 'Города (ЗИ)', '50 %', '100 %', 'speedModeOn,switchDriveModeSport,setSpee[...]', '0', true, false, false),
-                          _geozoneRow('466', 'SAMARKAND (1)', '#00EB27', '#00EB27', 'Города (ЗИ)', '1 %', '100 %', 'speedModeOn,switchDriveModeSport,setSpee[...]', '0', true, false, false),
+                          _geozoneRow(context, '1', 'Main (0)', '#cc62dc', '#1bffca', '-', '30 %', '30 %', 'unlockWheel,switchDriveModeSport', '0', true, false, false),
+                          _geozoneRow(context, '10', 'Donute test geozone (0)', '#e82f17', '#7a3a00', '-', '75 %', '90 %', 'switchDriveModeEco,switchDriveModeSport', '0', true, false, false),
+                          _geozoneRow(context, '420', 'ЗИ ТАШКЕНТ НОВАЯ (1)', '#16FF17', '#ED0505', 'Города (ЗИ)', '50 %', '100 %', 'speedModeOn,switchDriveModeSport,setSpee[...]', '0', true, false, false),
+                          _geozoneRow(context, '466', 'SAMARKAND (1)', '#00EB27', '#00EB27', 'Города (ЗИ)', '1 %', '100 %', 'speedModeOn,switchDriveModeSport,setSpee[...]', '0', true, false, false),
                         ],
                       ),
                     ),
@@ -140,7 +141,7 @@ class GeozonesPage extends ConsumerWidget {
     );
   }
 
-  Widget _filterButton(String text, {bool isPurple = false, bool isLightBg = false}) {
+  Widget _filterButton(context, BuildContext context, String text, {bool isPurple = false, bool isLightBg = false}) {
     Color bg = isPurple ? adminPrimary : (isLightBg ? const Color(0xFFE8EAF6) : Colors.transparent);
     Color textColor = isPurple ? Colors.white : (isLightBg ? adminPrimary : Colors.black);
     return InkWell(
@@ -157,7 +158,7 @@ class GeozonesPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
@@ -181,7 +182,7 @@ class GeozonesPage extends ConsumerWidget {
     );
   }
 
-  Widget _geozoneRow(String id, String name, String fill, String stroke, String groups, String opFill, String opStroke, String cmds, String minScooters, bool rUsed, bool reqPark, bool disPark) {
+  Widget _geozoneRow(context, BuildContext context, String id, String name, String fill, String stroke, String groups, String opFill, String opStroke, String cmds, String minScooters, bool rUsed, bool reqPark, bool disPark) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

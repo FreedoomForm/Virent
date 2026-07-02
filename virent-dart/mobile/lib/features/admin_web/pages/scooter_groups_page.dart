@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class ScooterGroupsPage extends ConsumerWidget {
   const ScooterGroupsPage({super.key});
@@ -87,18 +88,18 @@ class ScooterGroupsPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _groupRow('0', 'на линии', ''),
-                      _groupRow('1', 'на складе', ''),
-                      _groupRow('7', 'в техничке', ''),
-                      _groupRow('13', 'в поломке', ''),
-                      _groupRow('14', 'Демо', ''),
-                      _groupRow('17', 'Самарканд', ''),
-                      _groupRow('18', 'Ташкент', ''),
-                      _groupRow('19', 'SILK ROAD SAMARQAND', ''),
-                      _groupRow('20', 'ИП Асилбеков', ''),
-                      _groupRow('22', 'Заряд > 50', 'fuel > 50'),
-                      _groupRow('23', 'Заряд > 65', 'fuel > 65'),
-                      _groupRow('24', '600', ''),
+                      _groupRow(context, '0', 'на линии', ''),
+                      _groupRow(context, '1', 'на складе', ''),
+                      _groupRow(context, '7', 'в техничке', ''),
+                      _groupRow(context, '13', 'в поломке', ''),
+                      _groupRow(context, '14', 'Демо', ''),
+                      _groupRow(context, '17', 'Самарканд', ''),
+                      _groupRow(context, '18', 'Ташкент', ''),
+                      _groupRow(context, '19', 'SILK ROAD SAMARQAND', ''),
+                      _groupRow(context, '20', 'ИП Асилбеков', ''),
+                      _groupRow(context, '22', 'Заряд > 50', 'fuel > 50'),
+                      _groupRow(context, '23', 'Заряд > 65', 'fuel > 65'),
+                      _groupRow(context, '24', '600', ''),
                     ],
                   ),
                 ),
@@ -126,7 +127,7 @@ class ScooterGroupsPage extends ConsumerWidget {
     );
   }
 
-  Widget _groupRow(String id, String desc, String trigger) {
+  Widget _groupRow(context, BuildContext context, String id, String desc, String trigger) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

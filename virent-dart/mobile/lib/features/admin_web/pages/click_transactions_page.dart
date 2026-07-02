@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class ClickTransactionsPage extends ConsumerWidget {
   const ClickTransactionsPage({super.key});
@@ -53,13 +54,13 @@ class ClickTransactionsPage extends ConsumerWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    _labeledInput('merchant_trans_id', 150),
+                    _labeledInput(context, 'merchant_trans_id', 150),
                     const SizedBox(width: 8),
-                    _labeledInput('click_trans_id', 150),
+                    _labeledInput(context, 'click_trans_id', 150),
                     const SizedBox(width: 8),
-                    _labeledInput('status', 100),
+                    _labeledInput(context, 'status', 100),
                     const SizedBox(width: 8),
-                    _labeledInput('error', 100),
+                    _labeledInput(context, 'error', 100),
                   ],
                 ),
               ],
@@ -100,11 +101,11 @@ class ClickTransactionsPage extends ConsumerWidget {
                     Expanded(
                       child: ListView(
                         children: [
-                          _clickRow('5', '1378842563', '', '65', '5', '5', '24,900', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-29 12:48:50', '29 мая 2026, 12:48', '29 мая 2026, 12:48'),
-                          _clickRow('4', '1921602807', '', '56', '4', '4', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:32:38', '25 мая 2026, 17:32', '25 мая 2026, 17:32'),
-                          _clickRow('3', '40366171', '', '55', '3', '3', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:30:20', '25 мая 2026, 17:30', '25 мая 2026, 17:30'),
-                          _clickRow('2', '663213541', '', '54', '2', '2', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:18:00', '25 мая 2026, 17:18', '25 мая 2026, 17:18'),
-                          _clickRow('1', '481383948', '', '53', '1', '1', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:17:12', '25 мая 2026, 17:17', '25 мая 2026, 17:17'),
+                          _clickRow(context, '5', '1378842563', '', '65', '5', '5', '24,900', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-29 12:48:50', '29 мая 2026, 12:48', '29 мая 2026, 12:48'),
+                          _clickRow(context, '4', '1921602807', '', '56', '4', '4', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:32:38', '25 мая 2026, 17:32', '25 мая 2026, 17:32'),
+                          _clickRow(context, '3', '40366171', '', '55', '3', '3', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:30:20', '25 мая 2026, 17:30', '25 мая 2026, 17:30'),
+                          _clickRow(context, '2', '663213541', '', '54', '2', '2', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:18:00', '25 мая 2026, 17:18', '25 мая 2026, 17:18'),
+                          _clickRow(context, '1', '481383948', '', '53', '1', '1', '24,990', 'Complete (1)', 'confirmed (2)', '0', 'Success', '2026-05-25 17:17:12', '25 мая 2026, 17:17', '25 мая 2026, 17:17'),
                         ],
                       ),
                     ),
@@ -120,7 +121,7 @@ class ClickTransactionsPage extends ConsumerWidget {
     );
   }
 
-  Widget _clickRow(String id, String trans, String paydoc, String merchTrans, String merchPrep, String merchConf, String amount, String action, String status, String error, String errorNote, String sign, String created, String updated) {
+  Widget _clickRow(context, BuildContext context, String id, String trans, String paydoc, String merchTrans, String merchPrep, String merchConf, String amount, String action, String status, String error, String errorNote, String sign, String created, String updated) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -157,7 +158,7 @@ class ClickTransactionsPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(

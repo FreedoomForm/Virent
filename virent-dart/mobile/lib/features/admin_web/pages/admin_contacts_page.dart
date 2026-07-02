@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class AdminContactsPage extends ConsumerWidget {
   const AdminContactsPage({super.key});
@@ -91,7 +92,7 @@ class AdminContactsPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _contactRow('Ташкент', '+998712000373', 'virent2022@gmail.com', '@ViRent2023', '', 'https://virent.uz', '12'),
+                      _contactRow(context, 'Ташкент', '+998712000373', 'virent2022@gmail.com', '@ViRent2023', '', 'https://virent.uz', '12'),
                     ],
                   ),
                 ),
@@ -123,7 +124,7 @@ class AdminContactsPage extends ConsumerWidget {
     );
   }
 
-  Widget _contactRow(String city, String phone, String email, String tg, String wp, String faq, String company) {
+  Widget _contactRow(context, BuildContext context, String city, String phone, String email, String tg, String wp, String faq, String company) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

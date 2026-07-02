@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class AdminPermissionsPage extends ConsumerWidget {
   const AdminPermissionsPage({super.key});
@@ -86,25 +87,25 @@ class AdminPermissionsPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _permRow('*', ''),
-                      _permRow('send command to device', 'управление самокатом'),
-                      _permRow('send push', 'отправка PUSH'),
-                      _permRow('admin/*', ''),
-                      _permRow('admin/dashboard*', 'Дашборд'),
-                      _permRow('admin/alert*', 'Тревоги'),
-                      _permRow('admin/map*', 'Карта'),
-                      _permRow('admin/car*', 'Самокаты ВСЕ'),
-                      _permRow('admin/bill*', 'Счета'),
-                      _permRow('admin/client*', 'Клиенты'),
-                      _permRow('admin/fine*', 'Штрафы'),
-                      _permRow('admin/order*', 'Заказы'),
-                      _permRow('admin/inspect*', ''),
-                      _permRow('admin/selfie*', 'Селфи'),
-                      _permRow('admin/damage*', 'Осмотр'),
-                      _permRow('admin/damagephoto*', ''),
-                      _permRow('admin/bonus*', 'Бонусы'),
-                      _permRow('admin/transaction*', 'Транзакции'),
-                      _permRow('admin/bankcard*', 'Банковские карты'),
+                      _permRow(context, '*', ''),
+                      _permRow(context, 'send command to device', 'управление самокатом'),
+                      _permRow(context, 'send push', 'отправка PUSH'),
+                      _permRow(context, 'admin/*', ''),
+                      _permRow(context, 'admin/dashboard*', 'Дашборд'),
+                      _permRow(context, 'admin/alert*', 'Тревоги'),
+                      _permRow(context, 'admin/map*', 'Карта'),
+                      _permRow(context, 'admin/car*', 'Самокаты ВСЕ'),
+                      _permRow(context, 'admin/bill*', 'Счета'),
+                      _permRow(context, 'admin/client*', 'Клиенты'),
+                      _permRow(context, 'admin/fine*', 'Штрафы'),
+                      _permRow(context, 'admin/order*', 'Заказы'),
+                      _permRow(context, 'admin/inspect*', ''),
+                      _permRow(context, 'admin/selfie*', 'Селфи'),
+                      _permRow(context, 'admin/damage*', 'Осмотр'),
+                      _permRow(context, 'admin/damagephoto*', ''),
+                      _permRow(context, 'admin/bonus*', 'Бонусы'),
+                      _permRow(context, 'admin/transaction*', 'Транзакции'),
+                      _permRow(context, 'admin/bankcard*', 'Банковские карты'),
                     ],
                   ),
                 ),
@@ -118,7 +119,7 @@ class AdminPermissionsPage extends ConsumerWidget {
     );
   }
 
-  Widget _permRow(String name, String title) {
+  Widget _permRow(context, BuildContext context, String name, String title) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

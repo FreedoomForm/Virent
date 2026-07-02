@@ -103,11 +103,11 @@ class ScooterDetailPage extends ConsumerWidget {
               const Text('Быстрые команды', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
               const SizedBox(height: 8),
               Wrap(spacing: 8, children: [
-                _cmdBtn('Lock', Icons.lock, const Color(0xFFEF4444)),
-                _cmdBtn('Unlock', Icons.lock_open, const Color(0xFF22C55E)),
-                _cmdBtn('Alarm', Icons.notifications_active, const Color(0xFFF59E0B)),
-                _cmdBtn('Reboot', Icons.restart_alt, const Color(0xFF6366F1)),
-                _cmdBtn('Locate', Icons.gps_fixed, const Color(0xFF8B5CF6)),
+                _cmdBtn(context, 'Lock', Icons.lock, const Color(0xFFEF4444)),
+                _cmdBtn(context, 'Unlock', Icons.lock_open, const Color(0xFF22C55E)),
+                _cmdBtn(context, 'Alarm', Icons.notifications_active, const Color(0xFFF59E0B)),
+                _cmdBtn(context, 'Reboot', Icons.restart_alt, const Color(0xFF6366F1)),
+                _cmdBtn(context, 'Locate', Icons.gps_fixed, const Color(0xFF8B5CF6)),
               ]),
               const SizedBox(height: 24),
 
@@ -182,7 +182,7 @@ class ScooterDetailPage extends ConsumerWidget {
     );
   }
 
-  Widget _cmdBtn(String label, IconData icon, Color color) {
+  Widget _cmdBtn(context, BuildContext context, String label, IconData icon, Color color) {
     return ElevatedButton.icon(
       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       icon: Icon(icon, size: 14),

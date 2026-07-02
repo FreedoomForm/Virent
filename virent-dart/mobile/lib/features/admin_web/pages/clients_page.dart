@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class ClientsPage extends ConsumerWidget {
   const ClientsPage({super.key});
@@ -52,13 +53,13 @@ class ClientsPage extends ConsumerWidget {
                     children: [
                       const Text('ID клиента', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
-                      _input(100),
+                      _input(context, 100),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
                       const Text('Телефон', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
-                      _input(120),
+                      _input(context, 120),
                       const SizedBox(width: 12),
                       _chip('Группы ▼', adminPrimary),
                       _chip('Компании ▼', adminPrimary),
@@ -71,7 +72,7 @@ class ClientsPage extends ConsumerWidget {
                       const SizedBox(width: 8),
                       const Text('Комментарий', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 4),
-                      _input(120),
+                      _input(context, 120),
                       const SizedBox(width: 4),
                       _closeIcon(),
                       const SizedBox(width: 8),
@@ -114,21 +115,21 @@ class ClientsPage extends ConsumerWidget {
                     Expanded(
                       child: ListView(
                         children: [
-                          _clientRow('152819', '998977033902', 'Full name', '0.00 С.', false, false, ''),
-                          _clientRow('153261', '998333808037', 'Full name', '0.00 С.', false, false, ''),
-                          _clientRow('153281', '998947993529', 'Full name', '0.00 С.', false, false, ''),
-                          _clientRow('153913', '998901057905', 'Full name', '0.00 С.', true, false, 'ошибка не бл...'),
-                          _clientRow('154103', '998991271343', 'Full name', '0.00 С.', false, false, ''),
-                          _clientRow('154237', '998907252522', 'Full name', '0.00 С.', false, false, ''),
-                          _clientRow('154464', '998997316906', 'Full name', '0.00 С.', false, false, ''),
-                          _clientRow('154495', '998900173291', 'Full name', '0.00 С.', false, false, ''),
-                          _clientRow('154545', '#998903566044', 'Full name', '0.00 С.', true, false, 'Клиент удалё...'),
-                          _clientRow('154571', '998949995888', 'Full name', '0.00 С.', false, false, ''),
-                          _clientRow('154590', '998933404509', 'Full name', '0.00 С.', false, false, ''),
-                          _clientRow('154595', '998900970013', 'Full name', '0.00 С.', true, false, ''),
-                          _clientRow('155097', '998979298338', 'Full name', '0.00 С.', true, false, 'не трогайте'),
-                          _clientRow('155191', '998942591700', 'Full name', '0.00 С.', false, false, ''),
-                          _clientRow('155218', '998904794872', 'Full name', '0.00 С.', true, false, 'ошибка когда'),
+                          _clientRow(context, '152819', '998977033902', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow(context, '153261', '998333808037', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow(context, '153281', '998947993529', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow(context, '153913', '998901057905', 'Full name', '0.00 С.', true, false, 'ошибка не бл...'),
+                          _clientRow(context, '154103', '998991271343', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow(context, '154237', '998907252522', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow(context, '154464', '998997316906', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow(context, '154495', '998900173291', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow(context, '154545', '#998903566044', 'Full name', '0.00 С.', true, false, 'Клиент удалё...'),
+                          _clientRow(context, '154571', '998949995888', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow(context, '154590', '998933404509', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow(context, '154595', '998900970013', 'Full name', '0.00 С.', true, false, ''),
+                          _clientRow(context, '155097', '998979298338', 'Full name', '0.00 С.', true, false, 'не трогайте'),
+                          _clientRow(context, '155191', '998942591700', 'Full name', '0.00 С.', false, false, ''),
+                          _clientRow(context, '155218', '998904794872', 'Full name', '0.00 С.', true, false, 'ошибка когда'),
                         ],
                       ),
                     ),
@@ -144,7 +145,7 @@ class ClientsPage extends ConsumerWidget {
     );
   }
 
-  static Widget _clientRow(String id, String phone, String data, String debt, bool active, bool blocked, String comment) {
+  static Widget _clientRow(context, BuildContext context, String id, String phone, String data, String debt, bool active, bool blocked, String comment) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
@@ -193,7 +194,7 @@ class ClientsPage extends ConsumerWidget {
     );
   }
 
-  static Widget _input(double w) {
+  static Widget _input(context, BuildContext context, double w) {
     return SizedBox(
       width: w,
       height: 28,

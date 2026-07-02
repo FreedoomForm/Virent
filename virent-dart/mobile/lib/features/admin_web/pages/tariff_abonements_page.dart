@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class TariffAbonementsPage extends ConsumerWidget {
   const TariffAbonementsPage({super.key});
@@ -85,23 +86,23 @@ class TariffAbonementsPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _abonementRow('для 30мин ViRent Ташкент', '20 Мин ViRent Ташкент', '0.00 С./км', '16 990.00 С.'),
-                      _abonementRow('для 30мин ViRent Ташкент', '30 мин ViRent Ташкент', '0.00 С./км', '24 990.00 С.'),
-                      _abonementRow('Для 30мин ИП Асилбеков', '30 Мин ИП Асилбеков', '0.00 С./км', '24 900.00 С.'),
-                      _abonementRow('Для 60мин ИП Асилбеков', 'Часовой ИП Асилбеков', '0.00 С./км', '34 900.00 С.'),
-                      _abonementRow('для 60мин ViRent Ташкент', 'Часовой ViRent Ташкент', '0.00 С./км', '49 900.00 С.'),
-                      _abonementRow('для 10 минут', '10 Минут Ташкент', '0.00 С./км', '7 000.00 С.'),
-                      _abonementRow('для абонементов 600', '30 мин 600', '0.00 С./км', '24 990.00 С.'),
-                      _abonementRow('Для 30мин ИП Асилбеков', '20 Мин Асилбеков', '0.00 С./км', '14 900.00 С.'),
-                      _abonementRow('Для 20мин ИП Асилбекова Н', '20 минутный ИП Асилбекова Н', '0.00 С./км', '14 900.00 С.'),
-                      _abonementRow('для 30мин ИП Асилбекова Н', '30 Мин ИП Асилбекова Н', '0.00 С./км', '24 900.00 С.'),
-                      _abonementRow('для 60мин ИП Асилбекова Н', 'Часовой ИП Асилбекова Н', '0.00 С./км', '34 900.00 С.'),
-                      _abonementRow('Для 20мин ИП Pахматбоев О', '20 Мин ИП Pахматбоев О', '0.00 С./км', '14 900.00 С.'),
-                      _abonementRow('для 30мин ИП Pахматбоев О', '30 Мин ИП Pахматбоев О', '0.00 С./км', '24 900.00 С.'),
-                      _abonementRow('для 60мин ИП Pахматбоев О', 'Часовой ИП Pахматбоев О', '0.00 С./км', '34 900.00 С.'),
-                      _abonementRow('Для 20мин ИП Руфатова З', '20 Мин ИП Руфатова', '0.00 С./км', '14 900.00 С.'),
-                      _abonementRow('для 30мин ИП Руфатова З', '30 Мин ИП Руфатова З', '0.00 С./км', '24 900.00 С.'),
-                      _abonementRow('для 60мин ИП Руфатова З', 'Часовой ИП Руфатова З', '0.00 С./км', '34 900.00 С.'),
+                      _abonementRow(context, 'для 30мин ViRent Ташкент', '20 Мин ViRent Ташкент', '0.00 С./км', '16 990.00 С.'),
+                      _abonementRow(context, 'для 30мин ViRent Ташкент', '30 мин ViRent Ташкент', '0.00 С./км', '24 990.00 С.'),
+                      _abonementRow(context, 'Для 30мин ИП Асилбеков', '30 Мин ИП Асилбеков', '0.00 С./км', '24 900.00 С.'),
+                      _abonementRow(context, 'Для 60мин ИП Асилбеков', 'Часовой ИП Асилбеков', '0.00 С./км', '34 900.00 С.'),
+                      _abonementRow(context, 'для 60мин ViRent Ташкент', 'Часовой ViRent Ташкент', '0.00 С./км', '49 900.00 С.'),
+                      _abonementRow(context, 'для 10 минут', '10 Минут Ташкент', '0.00 С./км', '7 000.00 С.'),
+                      _abonementRow(context, 'для абонементов 600', '30 мин 600', '0.00 С./км', '24 990.00 С.'),
+                      _abonementRow(context, 'Для 30мин ИП Асилбеков', '20 Мин Асилбеков', '0.00 С./км', '14 900.00 С.'),
+                      _abonementRow(context, 'Для 20мин ИП Асилбекова Н', '20 минутный ИП Асилбекова Н', '0.00 С./км', '14 900.00 С.'),
+                      _abonementRow(context, 'для 30мин ИП Асилбекова Н', '30 Мин ИП Асилбекова Н', '0.00 С./км', '24 900.00 С.'),
+                      _abonementRow(context, 'для 60мин ИП Асилбекова Н', 'Часовой ИП Асилбекова Н', '0.00 С./км', '34 900.00 С.'),
+                      _abonementRow(context, 'Для 20мин ИП Pахматбоев О', '20 Мин ИП Pахматбоев О', '0.00 С./км', '14 900.00 С.'),
+                      _abonementRow(context, 'для 30мин ИП Pахматбоев О', '30 Мин ИП Pахматбоев О', '0.00 С./км', '24 900.00 С.'),
+                      _abonementRow(context, 'для 60мин ИП Pахматбоев О', 'Часовой ИП Pахматбоев О', '0.00 С./км', '34 900.00 С.'),
+                      _abonementRow(context, 'Для 20мин ИП Руфатова З', '20 Мин ИП Руфатова', '0.00 С./км', '14 900.00 С.'),
+                      _abonementRow(context, 'для 30мин ИП Руфатова З', '30 Мин ИП Руфатова З', '0.00 С./км', '24 900.00 С.'),
+                      _abonementRow(context, 'для 60мин ИП Руфатова З', 'Часовой ИП Руфатова З', '0.00 С./км', '34 900.00 С.'),
                     ],
                   ),
                 ),
@@ -115,7 +116,7 @@ class TariffAbonementsPage extends ConsumerWidget {
     );
   }
 
-  Widget _abonementRow(String tariff, String desc, String overrun, String cost) {
+  Widget _abonementRow(context, BuildContext context, String tariff, String desc, String overrun, String cost) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

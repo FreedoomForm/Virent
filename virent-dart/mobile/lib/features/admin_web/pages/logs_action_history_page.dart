@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class LogsActionHistoryPage extends ConsumerWidget {
   const LogsActionHistoryPage({super.key});
@@ -52,7 +53,7 @@ class LogsActionHistoryPage extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _labeledInput('ID пользователя', 150),
+                    _labeledInput(context, 'ID пользователя', 150),
                   ],
                 ),
                 Align(
@@ -216,7 +217,7 @@ class LogsActionHistoryPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(

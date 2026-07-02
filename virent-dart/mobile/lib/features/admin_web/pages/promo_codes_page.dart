@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class PromoCodesPage extends ConsumerWidget {
   const PromoCodesPage({super.key});
@@ -88,10 +89,10 @@ class PromoCodesPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _promoRow('53', 'OCTOBER', '1000000', '7211/1', 'OCTOBER', true, '01 ноя 2024, 04:59'),
-                      _promoRow('51', '1сентября', '1000000', '9717/1', '1 сентября', true, '02 сен 2024, 04:59'),
-                      _promoRow('50', 'VIRENT2000', '200000', '9976/1', '1306', true, '15 июн 2024, 01:00'),
-                      _promoRow('49', 'test', '100000', '9/1', 'test', true, '01 июн 2024, 11:00'),
+                      _promoRow(context, '53', 'OCTOBER', '1000000', '7211/1', 'OCTOBER', true, '01 ноя 2024, 04:59'),
+                      _promoRow(context, '51', '1сентября', '1000000', '9717/1', '1 сентября', true, '02 сен 2024, 04:59'),
+                      _promoRow(context, '50', 'VIRENT2000', '200000', '9976/1', '1306', true, '15 июн 2024, 01:00'),
+                      _promoRow(context, '49', 'test', '100000', '9/1', 'test', true, '01 июн 2024, 11:00'),
                     ],
                   ),
                 ),
@@ -105,7 +106,7 @@ class PromoCodesPage extends ConsumerWidget {
     );
   }
 
-  Widget _promoRow(String id, String code, String bonus, String usage, String group, bool isActive, String expires) {
+  Widget _promoRow(context, BuildContext context, String id, String code, String bonus, String usage, String group, bool isActive, String expires) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

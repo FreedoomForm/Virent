@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import '../widgets/admin_dialogs.dart';
 
 class AlertsPage extends ConsumerWidget {
   const AlertsPage({super.key});
@@ -64,11 +65,11 @@ class AlertsPage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    _filterButton('Открыта', adminSuccess),
+                    _filterButton(context, 'Открыта', adminSuccess),
                     const SizedBox(width: 6),
-                    _filterButton('Закрыта', adminWarning),
+                    _filterButton(context, 'Закрыта', adminWarning),
                     const SizedBox(width: 6),
-                    _filterButton('Группировать', adminInfo),
+                    _filterButton(context, 'Группировать', adminInfo),
                     const SizedBox(width: 12),
                     InkWell(
                       onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -146,7 +147,7 @@ class AlertsPage extends ConsumerWidget {
     );
   }
 
-  Widget _filterButton(String label, Color color) {
+  Widget _filterButton(context, BuildContext context, String label, Color color) {
     return ElevatedButton(
       onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
       style: ElevatedButton.styleFrom(

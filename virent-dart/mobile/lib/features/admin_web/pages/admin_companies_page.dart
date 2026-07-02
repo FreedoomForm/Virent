@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class AdminCompaniesPage extends ConsumerWidget {
   const AdminCompaniesPage({super.key});
@@ -87,13 +88,13 @@ class AdminCompaniesPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _companyRow('12', 'ViRent', '1002'),
-                      _companyRow('16', 'ИП Асилбеков Шерзод', '1746'),
-                      _companyRow('18', 'Virent Motion Samarqand', '1295'),
-                      _companyRow('19', 'VV-LAND', '1409'),
-                      _companyRow('22', 'ИП Асилбекова Нигора', ''),
-                      _companyRow('23', 'ИП Раматбоев Озод', ''),
-                      _companyRow('24', 'ИП Руфатова Зухра', ''),
+                      _companyRow(context, '12', 'ViRent', '1002'),
+                      _companyRow(context, '16', 'ИП Асилбеков Шерзод', '1746'),
+                      _companyRow(context, '18', 'Virent Motion Samarqand', '1295'),
+                      _companyRow(context, '19', 'VV-LAND', '1409'),
+                      _companyRow(context, '22', 'ИП Асилбекова Нигора', ''),
+                      _companyRow(context, '23', 'ИП Раматбоев Озод', ''),
+                      _companyRow(context, '24', 'ИП Руфатова Зухра', ''),
                     ],
                   ),
                 ),
@@ -121,7 +122,7 @@ class AdminCompaniesPage extends ConsumerWidget {
     );
   }
 
-  Widget _companyRow(String id, String name, String cpPub) {
+  Widget _companyRow(context, BuildContext context, String id, String name, String cpPub) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

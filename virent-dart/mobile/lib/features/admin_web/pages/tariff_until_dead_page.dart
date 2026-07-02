@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class TariffUntilDeadPage extends ConsumerWidget {
   const TariffUntilDeadPage({super.key});
@@ -71,7 +72,7 @@ class TariffUntilDeadPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _tariffRow('test', 'test', '2', '10000', '10000', '[{"to": "100", "from": "1"}]'),
+                      _tariffRow(context, 'test', 'test', '2', '10000', '10000', '[{"to": "100", "from": "1"}]'),
                     ],
                   ),
                 ),
@@ -85,7 +86,7 @@ class TariffUntilDeadPage extends ConsumerWidget {
     );
   }
 
-  Widget _tariffRow(String appName, String adminName, String duration, String insurance, String cost, String batteryLevel) {
+  Widget _tariffRow(context, BuildContext context, String appName, String adminName, String duration, String insurance, String cost, String batteryLevel) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class TechnicianTasksPage extends ConsumerWidget {
   const TechnicianTasksPage({super.key});
@@ -45,7 +46,7 @@ class TechnicianTasksPage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    _labeledInput('columns.tasktechician.technician_id', 200),
+                    _labeledInput(context, 'columns.tasktechician.technician_id', 200),
                   ],
                 ),
                 Align(
@@ -128,7 +129,7 @@ class TechnicianTasksPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(

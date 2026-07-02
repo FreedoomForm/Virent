@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class AdminAgreementsPage extends ConsumerWidget {
   const AdminAgreementsPage({super.key});
@@ -87,9 +88,9 @@ class AdminAgreementsPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _agreementRow('agreement/VIRENT_public_offer_uz.docx', 'Договор аренды (in Uzbek)', ''),
-                      _agreementRow('agreement/Политика_обработки_персональных_данных_Uz.html', 'O\'zbekcha', ''),
-                      _agreementRow('agreement/Политика_обработки_персональных_данных_Py.html', 'Русский', ''),
+                      _agreementRow(context, 'agreement/VIRENT_public_offer_uz.docx', 'Договор аренды (in Uzbek)', ''),
+                      _agreementRow(context, 'agreement/Политика_обработки_персональных_данных_Uz.html', 'O\'zbekcha', ''),
+                      _agreementRow(context, 'agreement/Политика_обработки_персональных_данных_Py.html', 'Русский', ''),
                     ],
                   ),
                 ),
@@ -118,7 +119,7 @@ class AdminAgreementsPage extends ConsumerWidget {
     );
   }
 
-  Widget _agreementRow(String file, String urlLabel, String htmlFile) {
+  Widget _agreementRow(context, BuildContext context, String file, String urlLabel, String htmlFile) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

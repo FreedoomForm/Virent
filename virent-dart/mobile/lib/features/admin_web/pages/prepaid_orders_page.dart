@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class PrepaidOrdersPage extends ConsumerWidget {
   const PrepaidOrdersPage({super.key});
@@ -55,15 +56,15 @@ class PrepaidOrdersPage extends ConsumerWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _labeledInput('ID клиента', 100),
+                      _labeledInput(context, 'ID клиента', 100),
                       const SizedBox(width: 8),
-                      _labeledInput('car_id', 100),
+                      _labeledInput(context, 'car_id', 100),
                       const SizedBox(width: 8),
-                      _labeledInput('status', 80),
+                      _labeledInput(context, 'status', 80),
                       const SizedBox(width: 8),
-                      _labeledInput('transaction_id', 120),
+                      _labeledInput(context, 'transaction_id', 120),
                       const SizedBox(width: 8),
-                      _labeledInput('order_id', 100),
+                      _labeledInput(context, 'order_id', 100),
                     ],
                   ),
                 ),
@@ -103,14 +104,14 @@ class PrepaidOrdersPage extends ConsumerWidget {
                     Expanded(
                       child: ListView(
                         children: [
-                          _prepaidRow('91', '932282693681806...', '932', '269368', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '18 июн 2026, 13:54', 'PAYME'),
-                          _prepaidRow('90', 'redis-token-tes777...', '790', '22', '19', '36', '2,499,000', 'waiting_payment', '—', '—', '16 июн 2026, 13:07', 'PAYME'),
-                          _prepaidRow('89', '895282693701506...', '895', '269370', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'CLICK'),
-                          _prepaidRow('88', '895282693701506...', '895', '269370', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'PAYME'),
-                          _prepaidRow('87', '895392693701506...', '895', '269370', '16', '39', '1,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'CLICK'),
-                          _prepaidRow('86', '895392693701506...', '895', '269370', '16', '39', '1,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'PAYME'),
-                          _prepaidRow('85', '174428269368140...', '1,744', '269368', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '14 июн 2026, 18:49', 'PAYME'),
-                          _prepaidRow('84', '815282693681406...', '815', '269368', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '14 июн 2026, 08:09', 'PAYME'),
+                          _prepaidRow(context, '91', '932282693681806...', '932', '269368', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '18 июн 2026, 13:54', 'PAYME'),
+                          _prepaidRow(context, '90', 'redis-token-tes777...', '790', '22', '19', '36', '2,499,000', 'waiting_payment', '—', '—', '16 июн 2026, 13:07', 'PAYME'),
+                          _prepaidRow(context, '89', '895282693701506...', '895', '269370', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'CLICK'),
+                          _prepaidRow(context, '88', '895282693701506...', '895', '269370', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'PAYME'),
+                          _prepaidRow(context, '87', '895392693701506...', '895', '269370', '16', '39', '1,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'CLICK'),
+                          _prepaidRow(context, '86', '895392693701506...', '895', '269370', '16', '39', '1,490,000', 'waiting_payment', '—', '—', '15 июн 2026, 16:52', 'PAYME'),
+                          _prepaidRow(context, '85', '174428269368140...', '1,744', '269368', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '14 июн 2026, 18:49', 'PAYME'),
+                          _prepaidRow(context, '84', '815282693681406...', '815', '269368', '16', '28', '2,490,000', 'waiting_payment', '—', '—', '14 июн 2026, 08:09', 'PAYME'),
                         ],
                       ),
                     ),
@@ -126,7 +127,7 @@ class PrepaidOrdersPage extends ConsumerWidget {
     );
   }
 
-  Widget _prepaidRow(String id, String token, String car, String client, String company, String abon, String amount, String status, String trans, String order, String created, String type) {
+  Widget _prepaidRow(context, BuildContext context, String id, String token, String car, String client, String company, String abon, String amount, String status, String trans, String order, String created, String type) {
     final bool isClick = type == 'CLICK';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -173,7 +174,7 @@ class PrepaidOrdersPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),

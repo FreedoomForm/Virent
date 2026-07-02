@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class FinesPage extends ConsumerWidget {
   const FinesPage({super.key});
@@ -31,7 +32,7 @@ class FinesPage extends ConsumerWidget {
                     const SizedBox(width: 4),
                     _input(100),
                     const SizedBox(width: 4),
-                    _closeIcon(),
+                    _closeIcon(context, ),
                   ],
                 ),
               ],
@@ -151,7 +152,7 @@ class FinesPage extends ConsumerWidget {
     );
   }
 
-  static Widget _closeIcon() {
+  static Widget _closeIcon(context, BuildContext context) {
     return InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500]));
   }
 }

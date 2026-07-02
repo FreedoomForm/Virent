@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class InspectionDamagesPage extends ConsumerWidget {
   const InspectionDamagesPage({super.key});
@@ -56,9 +57,9 @@ class InspectionDamagesPage extends ConsumerWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _labeledInput('Самокат', 100),
+                      _labeledInput(context, 'Самокат', 100),
                       const SizedBox(width: 8),
-                      _labeledInput('Номер', 100),
+                      _labeledInput(context, 'Номер', 100),
                       const SizedBox(width: 8),
                       const Text('Конкретный день ▼', style: TextStyle(fontSize: 11, color: adminTextGray)),
                       const SizedBox(width: 8),
@@ -154,7 +155,7 @@ class InspectionDamagesPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),

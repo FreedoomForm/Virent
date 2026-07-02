@@ -58,9 +58,9 @@ class _IotPageState extends ConsumerState<IotPage> {
                       const SizedBox.shrink()
                     ]),
                     Row(children: [
-                      IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: [AdminField(key: 'mac', label: 'Mac'), AdminField(key: 'model', label: 'Model'), AdminField(key: 'status', label: 'Status')], onExport: (fmt, fields) async {})),
+                      IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['mac', 'model', 'status'], onExport: (fmt, fields) async {})),
                       IconButton(icon: const Icon(Icons.filter_list, size: 18, color: adminTextSecondary), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'mac', label: 'Mac'), AdminField(key: 'model', label: 'Model'), AdminField(key: 'status', label: 'Status')], onApply: (v) async {})),
-                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: const InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
                     ]),
                   ],
                 ),
@@ -68,7 +68,7 @@ class _IotPageState extends ConsumerState<IotPage> {
               const SizedBox(height: 8),
               AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: adminPrimary)]),
               const SizedBox(height: 8),
-              if (_selectedIds.isNotEmpty) _buildBulkActionBar(),
+              if (_selectedIds.isNotEmpty) _buildBulkActionBar(context, ),
               Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: adminBorder)), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
             dataRowColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.hovered)) return adminBgLight;
@@ -96,13 +96,13 @@ class _IotPageState extends ConsumerState<IotPage> {
       DataCell(Text('${item['status'] ?? ''}')),
       DataCell(Row(children: [
         TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: adminInfo), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))),
-        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'mac', label: 'Mac', initial: '${item[\'mac\'] ?? \'\'}'), AdminField(key: 'model', label: 'Model', initial: '${item[\'model\'] ?? \'\'}'), AdminField(key: 'status', label: 'Status', initial: '${item[\'status\'] ?? \'\'}')], onSubmit: (v) async { ref.invalidate(iotLogsProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: adminInfo), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'mac', label: 'Mac', initial: '${item['mac'] ?? ''}'), AdminField(key: 'model', label: 'Model', initial: '${item['model'] ?? ''}'), AdminField(key: 'status', label: 'Status', initial: '${item['status'] ?? ''}')], onSubmit: (v) async { ref.invalidate(iotLogsProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: adminInfo), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
         TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'IoT устройства', onDelete: () async { ref.invalidate(iotLogsProvider); }), icon: const Icon(Icons.delete, size: 12, color: adminDanger), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))),
       ])),
     ]);
   }
 
-  Widget _buildBulkActionBar() {
+  Widget _buildBulkActionBar(context, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: adminBgLight,

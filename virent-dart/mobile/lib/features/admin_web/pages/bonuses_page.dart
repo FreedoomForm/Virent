@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class BonusesPage extends ConsumerWidget {
   const BonusesPage({super.key});
@@ -47,7 +48,7 @@ class BonusesPage extends ConsumerWidget {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        _labeledInput('ID клиента', 150),
+                        _labeledInput(context, 'ID клиента', 150),
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -148,7 +149,7 @@ class BonusesPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(

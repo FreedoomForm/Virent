@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class BonusPackagesPage extends ConsumerWidget {
   const BonusPackagesPage({super.key});
@@ -84,9 +85,9 @@ class BonusPackagesPage extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                      _packageRow('11000 С.', '10000 С.', true),
-                      _packageRow('55000 С.', '50000 С.', true),
-                      _packageRow('110000 С.', '100000 С.', true),
+                      _packageRow(context, '11000 С.', '10000 С.', true),
+                      _packageRow(context, '55000 С.', '50000 С.', true),
+                      _packageRow(context, '110000 С.', '100000 С.', true),
                     ],
                   ),
                 ),
@@ -100,7 +101,7 @@ class BonusPackagesPage extends ConsumerWidget {
     );
   }
 
-  Widget _packageRow(String bonus, String cost, bool isActive) {
+  Widget _packageRow(context, BuildContext context, String bonus, String cost, bool isActive) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import '../widgets/admin_dialogs.dart';
 
 class ScootersPage extends ConsumerWidget {
   const ScootersPage({super.key});
@@ -173,11 +174,11 @@ class ScootersPage extends ConsumerWidget {
             width: 160,
             child: Row(
               children: [
-                _miniChip('на линии', Colors.green),
+                _miniChip(context, 'на линии', Colors.green),
                 const SizedBox(width: 2),
-                _miniChip('на линии', Colors.blue),
+                _miniChip(context, 'на линии', Colors.blue),
                 const SizedBox(width: 2),
-                _miniChip('Группы', Colors.grey),
+                _miniChip(context, 'Группы', Colors.grey),
               ],
             ),
           ),
@@ -218,9 +219,9 @@ class ScootersPage extends ConsumerWidget {
             width: 200,
             child: Row(
               children: [
-                _actionLink('Просмотр'),
-                _actionLink('Редактировать'),
-                _actionLink('Удалить'),
+                _actionLink(context, 'Просмотр'),
+                _actionLink(context, 'Редактировать'),
+                _actionLink(context, 'Удалить'),
               ],
             ),
           ),
@@ -229,7 +230,7 @@ class ScootersPage extends ConsumerWidget {
     );
   }
 
-  Widget _actionLink(String label) {
+  Widget _actionLink(context, BuildContext context, String label) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: InkWell(
@@ -239,7 +240,7 @@ class ScootersPage extends ConsumerWidget {
     );
   }
 
-  Widget _miniChip(String label, Color color) {
+  Widget _miniChip(context, BuildContext context, String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),

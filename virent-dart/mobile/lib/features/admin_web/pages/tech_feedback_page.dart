@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
 import '../widgets/admin_colors.dart';
+import './widgets/admin_dialogs.dart';
 
 class TechFeedbackPage extends ConsumerWidget {
   const TechFeedbackPage({super.key});
@@ -36,11 +37,11 @@ class TechFeedbackPage extends ConsumerWidget {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        _labeledInput('Самокат', 100),
+                        _labeledInput(context, 'Самокат', 100),
                         const SizedBox(width: 8),
-                        _labeledInput('Заказ', 100),
+                        _labeledInput(context, 'Заказ', 100),
                         const SizedBox(width: 8),
-                        _labeledInput('Клиент', 100),
+                        _labeledInput(context, 'Клиент', 100),
                         const SizedBox(width: 12),
                         ElevatedButton(
                           onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
@@ -174,7 +175,7 @@ class TechFeedbackPage extends ConsumerWidget {
     );
   }
 
-  Widget _labeledInput(String label, double width) {
+  Widget _labeledInput(context, BuildContext context, String label, double width) {
     return Row(
       children: [
         SizedBox(
