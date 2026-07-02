@@ -360,6 +360,21 @@ final billingReceiptsProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
         (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/receipts', 'receipts'));
 
+/// Bank cards (Банковские карты).
+final bankCardsProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/bank-cards', 'cards'));
+
+/// Billing debts (Долги).
+final billingDebtsProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/debts', 'debts'));
+
+/// Billing invoices (Счета).
+final billingInvoicesProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/invoices', 'invoices'));
+
 /// Fines (Штрафы).
 final finesListProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
@@ -394,6 +409,11 @@ final clientGroupsProvider =
 final bonusesListProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
         (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/bonuses', 'bonuses'));
+
+/// Bonus packages (Пакеты бонусов).
+final bonusPackagesProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/bonus-packages', 'packages'));
 
 /// Promo series (Серии промокодов).
 final promoSeriesProvider =
@@ -529,6 +549,11 @@ final adminContactsProvider =
 final adminPermissionsProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>(
         (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/permissions', 'permissions'));
+
+/// Admin roles (Роли).
+final adminRolesProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+        (ref) => _safeGetList(ref.read(apiClientProvider), '/admin/roles', 'roles'));
 
 // ============================================================================
 // EXTENDED ACTION PROVIDERS — for the remaining pages

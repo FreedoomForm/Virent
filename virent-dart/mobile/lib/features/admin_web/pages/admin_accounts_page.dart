@@ -1,158 +1,126 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
-import '../widgets/admin_colors.dart';
 import '../widgets/admin_dialogs.dart';
+import '../widgets/admin_export.dart';
+import '../widgets/admin_status_tabs.dart';
+import '../widgets/admin_colors.dart';
 
-class AdminAccountsPage extends ConsumerWidget {
+class AdminAccountsPage extends ConsumerStatefulWidget {
   const AdminAccountsPage({super.key});
+  @override
+  ConsumerState<AdminAccountsPage> createState() => _AdminAccountsPageState();
+}
+
+class _AdminAccountsPageState extends ConsumerState<AdminAccountsPage> {
+  final _searchController = TextEditingController();
+  final _selectedIds = <dynamic>{};
+  String _query = '';
+  int _currentPage = 1;
+  static const int _pageSize = 20;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final async = ref.watch(adminListProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text("Ошибка: $e")),
       data: (items) {
+        var filtered = items;
+        if (_query.isNotEmpty) {
+          filtered = filtered.where((i) => i.values.any((v) => v != null && v.toString().toLowerCase().contains(_query.toLowerCase()))).toList();
+        }
+        final totalPages = (filtered.length / _pageSize).ceil().clamp(1, 9999);
+        final pageItems = filtered.skip((_currentPage - 1) * _pageSize).take(_pageSize).toList();
         return Container(
-      color: const Color(0xFFFFFFFF),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
-                      children: [
-                        Text('Админы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
-                        SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 34 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        const Text('Админы', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
+                        const SizedBox(width: 12),
+                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                    const SizedBox(height: 12),
-                    ElevatedButton.icon(
-                      onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-                      icon: const Icon(Icons.add, size: 14, color: Colors.white),
-                      label: const Text('Добавить админа', style: TextStyle(fontSize: 11, color: Colors.white)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: adminPrimary,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)))),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        _roleFilter('Админ', true),
-                        const SizedBox(width: 8),
-                        _roleFilter('Техник', false, isYellow: true),
-                        const SizedBox(width: 8),
-                        _roleFilter('Партнер', false),
-                        const SizedBox(width: 8),
-                        _roleFilter('Оператор', false),
-                        const SizedBox(width: 8),
-                        _roleFilter('Helper', false),
-                        const SizedBox(width: 8),
-                        _roleFilter('Техник', false),
-                        const SizedBox(width: 8),
-                        _roleFilter('Оператор', false),
-                        const SizedBox(width: 8),
-                        _roleFilter('Бехзод', false),
-                        const SizedBox(width: 8),
-                        const Text('Дополнительные разрешения ▼', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                      ]),
-                  ]),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: SizedBox(
-                    width: 200,
-                    height: 32,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Поиск:',
-                        hintStyle: const TextStyle(fontSize: 11),
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-                      style: const TextStyle(fontSize: 11)))),
-              ])),
-          const SizedBox(height: 16),
-          Expanded(
-            child: Column(
-              children: [
-                Container(
-                  color: const Color(0xFFFAFAFA),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: const Row(
-                    children: [
-                      SizedBox(width: 60, child: Text('Id', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 250, child: Text('Имя', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 200, child: Text('Почта', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 80, child: Text('UTC', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      Expanded(child: Text('Роли', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                      SizedBox(width: 200, child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                    ])),
-                const Divider(height: 1),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      _adminRow(context, '27', 'toGo Viktor', '+Mag1c_MAn1pulAtOr@yandex.ru', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow(context, '99', 'toGO Наталья Борисенко', 'R3v3ngg_Mts3r@bk.ru', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор'),
-                      _adminRow(context, '278', 'toGO Nikita', 'C^yber\$PuIse@gmail.com', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow(context, '284', 'toGO Крушевский Егор', 'T3ch!Ninj@icloud.com', '5', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow(context, '285', 'toGO Дмитрий Харитонов', 'Qu&ntum#X@gmail.com', '5', 'Техник, Партнер, Оператор, Helper, Техник, Оператор'),
-                      _adminRow(context, '291', 'ViRent-Велесик Виктор', 'toostart2020@mail.ru', '5', '-'),
-                      _adminRow(context, '317', 'ViRent Шерзод Асилбеков', 'e-motion-uz@gmail.com', '5', '-'),
-                      _adminRow(context, '318', 'ViRent Наиль Хасибулов', 'nailamirkhanov192@gmail.com', '5', '-'),
-                      _adminRow(context, '443', 'Ali Dexqonov', 'whilescooter@gmail.com', '5', '-'),
-                      _adminRow(context, '474', 'ViRent-Дмитрий Велесик', 'velesikd@gmail.com', '', 'Техник, Техник, Оператор'),
-                      _adminRow(context, '476', 'toGO Алексей', '%Pr0ph3t_Of_D00m@gmail.com', '', 'Админ, Техник, Партнер, Оператор, Helper, Техник, Оператор, Бехзод'),
-                      _adminRow(context, '477', 'CALL Аброров Сардор Дониёр ўғли Г.О', 'abrotov57@gmail.com', '', '-'),
-                      _adminRow(context, '478', 'CALL Хамидуллаев Жавoҳир Акром ўғли О', 'javahirxamidullaev337@gmail.com', '', '-'),
-                      _adminRow(context, '479', 'Call Qudratilla', 'kudratbaniyazov@gmail.ru', '', '-'),
-                      _adminRow(context, '480', 'Call Azamat', 'azamat11mirhoshimov@gmail.com', '', '-'),
-                    ])),
-              ])),
-        ]));
+                      const SizedBox.shrink()
+                    ]),
+                    Row(children: [
+                      IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['name', 'email', 'utc', 'roles'], onExport: (fmt, fields) async {})),
+                      IconButton(icon: const Icon(Icons.filter_list, size: 18, color: adminTextSecondary), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'name', label: 'Имя'), AdminField(key: 'email', label: 'Почта'), AdminField(key: 'roles', label: 'Роли')], onApply: (v) async {})),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                    ]),
+                  ])),
+              const SizedBox(height: 8),
+              AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: adminPrimary)]),
+              const SizedBox(height: 8),
+              if (_selectedIds.isNotEmpty) _buildBulkActionBar(context),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: adminBorder)), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
+            dataRowColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return adminBgLight;
+              return Colors.white;
+            }),
+            dataRowMinHeight: 40,
+            dataRowMaxHeight: 40,
+            columnSpacing: 24,
+            horizontalMargin: 12,
+                    headingRowColor: WidgetStateProperty.all(adminBgLight), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('Id')), const DataColumn(label: Text('Имя')), const DataColumn(label: Text('Почта')), const DataColumn(label: Text('UTC')), const DataColumn(label: Text('Роли')), const DataColumn(label: Text('Действия'))], rows: pageItems.map<DataRow>((i) => _buildRow(context, ref, i)).toList())))),
+              _buildPaginationBar(filtered.length, totalPages),
+            ]));
       });
   }
 
-  Widget _adminRow(BuildContext context, String id, String name, String email, String utc, String roles) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(width: 60, child: Text(id, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 250, child: Text(name, style: const TextStyle(fontSize: 11))),
-          SizedBox(width: 200, child: Text(email, style: const TextStyle(fontSize: 11, color: adminPrimary))),
-          SizedBox(width: 80, child: Text(utc, style: const TextStyle(fontSize: 11))),
-          Expanded(child: Text(roles, style: const TextStyle(fontSize: 11))),
-          SizedBox(
-            width: 200,
-            child: Row(
-              children: [
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.edit, size: 12, color: adminInfo), SizedBox(width: 4), Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))])),
-                const SizedBox(width: 12),
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Row(children: [Icon(Icons.delete, size: 12, color: adminDanger), SizedBox(width: 4), Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))])),
-              ])),
-        ]));
+  DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
+    return DataRow(cells: [
+      DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
+      DataCell(Text("${item['id'] ?? ''}")),
+      DataCell(Text("${item['name'] ?? ''}")),
+      DataCell(Text("${item['email'] ?? ''}")),
+      DataCell(Text("${item['utc'] ?? ''}")),
+      DataCell(Text("${item['roles'] ?? ''}")),
+      DataCell(Row(children: [
+        TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: adminInfo), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'name', label: 'Имя', initial: "${item['name'] ?? ''}"), AdminField(key: 'email', label: 'Почта', initial: "${item['email'] ?? ''}"), AdminField(key: 'utc', label: 'UTC', initial: "${item['utc'] ?? ''}"), AdminField(key: 'roles', label: 'Роли', initial: "${item['roles'] ?? ''}")], onSubmit: (v) async { ref.invalidate(adminListProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: adminInfo), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'Админ', onDelete: () async { ref.invalidate(adminListProvider); }), icon: const Icon(Icons.delete, size: 12, color: adminDanger), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))),
+      ])),
+    ]);
   }
 
-  Widget _roleFilter(String text, bool isSelected, {bool isYellow = false}) {
-    final borderColor = isSelected ? adminSuccess : (isYellow ? adminWarning : Colors.transparent);
-    final textColor = isSelected ? adminSuccess : (isYellow ? adminWarning : adminTextGray);
-
+  Widget _buildBulkActionBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: borderColor, width: 1),
-        borderRadius: BorderRadius.circular(3)),
-      child: Text(text, style: TextStyle(fontSize: 11, color: textColor)));
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: adminBgLight,
+      child: Row(children: [
+        Text('Выбрано: ${_selectedIds.length}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+        const SizedBox(width: 16),
+        TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: adminDanger), label: const Text('Удалить', style: TextStyle(color: adminDanger, fontSize: 11))),
+        const Spacer(),
+        TextButton(onPressed: () => setState(() => _selectedIds.clear()), child: const Text('Отменить', style: TextStyle(fontSize: 11))),
+      ]));
+  }
+
+  Widget _buildPaginationBar(int total, int totalPages) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
+        Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: adminTextGray)),
+        Row(children: [
+          IconButton(tooltip: 'Предыдущая страница', icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
+          Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
+          IconButton(tooltip: 'Следующая страница', icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
+        ]),
+      ]));
   }
 }

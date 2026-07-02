@@ -1,175 +1,127 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
-import '../widgets/admin_colors.dart';
 import '../widgets/admin_dialogs.dart';
+import '../widgets/admin_export.dart';
+import '../widgets/admin_status_tabs.dart';
+import '../widgets/admin_colors.dart';
 
-class PaymeTransactionsPage extends ConsumerWidget {
+class PaymeTransactionsPage extends ConsumerStatefulWidget {
   const PaymeTransactionsPage({super.key});
+  @override
+  ConsumerState<PaymeTransactionsPage> createState() => _PaymeTransactionsPageState();
+}
+
+class _PaymeTransactionsPageState extends ConsumerState<PaymeTransactionsPage> {
+  final _searchController = TextEditingController();
+  final _selectedIds = <dynamic>{};
+  String _query = '';
+  int _currentPage = 1;
+  static const int _pageSize = 20;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final async = ref.watch(paymeTransactionsProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      error: (e, _) => Center(child: Text('Ошибка: $e')),
       data: (items) {
+        var filtered = items;
+        if (_query.isNotEmpty) {
+          filtered = filtered.where((i) => i.values.any((v) => v != null && v.toString().toLowerCase().contains(_query.toLowerCase()))).toList();
+        }
+        final totalPages = (filtered.length / _pageSize).ceil().clamp(1, 9999);
+        final pageItems = filtered.skip((_currentPage - 1) * _pageSize).take(_pageSize).toList();
         return Container(
-      color: const Color(0xFFFFFFFF),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
-                      children: [
-                        Text('Транзакции Payme', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
-                        SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 39 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        const Text('Транзакции Payme', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
+                        const SizedBox(width: 12),
+                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                    SizedBox(
-                      width: 200,
-                      height: 32,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Поиск:',
-                          hintStyle: const TextStyle(fontSize: 11),
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-                        style: const TextStyle(fontSize: 11))),
-                  ]),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    _labeledInput(context, 'ID клиента', 100),
-                    const SizedBox(width: 8),
-                    _labeledInput(context, 'payme_transaction_id', 150),
-                    const SizedBox(width: 8),
-                    _labeledInput(context, 'state', 100),
-                  ]),
-              ])),
-          const SizedBox(height: 8),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: 1700,
-                child: Column(
-                  children: [
-                    Container(
-                      color: const Color(0xFFFAFAFA),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      child: const Row(
-                        children: [
-                          SizedBox(width: 40, child: Text('Id', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 220, child: Text('Payme transaction', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 220, child: Text('Merchant transaction', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 140, child: Text('payme_time (UTC ms)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 140, child: Text('create_time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 140, child: Text('Perform time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 140, child: Text('Cancel time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 180, child: Text('state description', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('State', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 80, child: Text('Amount', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('Phone', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Client', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Reason', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                          Expanded(child: Text('Действия', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600))),
-                        ])),
-                    const Divider(height: 1),
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          _paymeRow(context, '39', '6a0c0144d3ee342047105841', '6a0c0144d3ee342047105841', '2026-05-19 11:20:52', '2026-05-19 11:20:53', '2026-05-19 11:21:01', '2026-05-19 11:21:08', 'Отменена после оплаты / возврат (-2)', true, '-2', '2,499,000', '79150213177', '22', '5'),
-                          _paymeRow(context, '38', '6a0c0132d3ee34204710583e', '6a0c0132d3ee34204710583e', '2026-05-19 11:20:34', '2026-05-19 11:20:35', '—', '2026-05-19 11:20:42', 'Отменена до подтверждения (-1)', false, '-1', '2,499,000', '79150213177', '22', '3'),
-                          _paymeRow(context, '37', '6a0b21dcd3ee3420471056fb', '6a0b21dcd3ee3420471056fb', '2026-05-18 19:27:40', '2026-05-18 19:27:40', '2026-05-18 19:28:28', '2026-05-18 19:29:16', 'Отменена после оплаты / возврат (-2)', true, '-2', '2,499,000', '79150213177', '22', '5'),
-                          _paymeRow(context, '36', '6a0b201fd3ee3420471056f4', '6a0b201fd3ee3420471056f4', '2026-05-18 19:20:15', '2026-05-18 19:20:16', '2026-05-18 19:22:29', '2026-05-18 19:23:17', 'Отменена после оплаты / возврат (-2)', true, '-2', '2,499,000', '79150213177', '22', '5'),
-                          _paymeRow(context, '35', '6a0b1cbbd3ee3420471056f1', '6a0b1cbbd3ee3420471056f1', '2026-05-18 19:05:47', '2026-05-18 19:05:47', '—', '—', 'Создана, ожидает оплату (1)', false, '1', '2,499,000', '79150213177', '22', '—', isWarning: true),
-                          _paymeRow(context, '34', '6a0b1cb9d3ee3420471056f0', '6a0b1cb9d3ee3420471056f0', '2026-05-18 19:05:45', '2026-05-18 19:05:46', '—', '—', 'Создана, ожидает оплату (1)', false, '1', '2,499,000', '79150213177', '22', '—', isWarning: true),
-                          _paymeRow(context, '33', 'test-flow-727e9071c8380ff...', 'test-flow-727e9071c8380ff...', '2026-05-15 20:24:00', '2026-05-15 20:24:00', '2026-05-15 20:24:00', '—', 'Успешно оплачена (2)', false, '2', '2,490,000', '998901361576', '269370', '—', isSuccess: true),
-                          _paymeRow(context, '32', 'test-flow-217b6d762990d7...', 'test-flow-217b6d762990d7...', '2026-05-15 19:53:34', '2026-05-15 19:53:42', '2026-05-15 19:53:42', '—', 'Успешно оплачена (2)', false, '2', '2,499,000', '79150213177', '22', '—', isSuccess: true),
-                          _paymeRow(context, '31', 'test-flow-ed21c19ee75e86...', 'test-flow-ed21c19ee75e86...', '2026-05-15 19:44:55', '2026-05-15 19:45:08', '—', '—', 'Создана, ожидает оплату (1)', false, '1', '2,499,000', '79150213177', '22', '—', isWarning: true),
-                        ])),
-                  ])))),
-        ]));
+                      const SizedBox.shrink()
+                    ]),
+                    Row(children: [
+                      IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['id', 'payme_transaction', 'merchant_transaction', 'amount', 'status', 'created'], onExport: (fmt, fields) async {})),
+                      IconButton(icon: const Icon(Icons.filter_list, size: 18, color: adminTextSecondary), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'payme_transaction', label: 'Payme transaction'), AdminField(key: 'merchant_transaction', label: 'Merchant transaction'), AdminField(key: 'status', label: 'Status')], onApply: (v) async {})),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                    ]),
+                  ])),
+              const SizedBox(height: 8),
+              AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: adminPrimary)]),
+              const SizedBox(height: 8),
+              if (_selectedIds.isNotEmpty) _buildBulkActionBar(context),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: adminBorder)), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
+            dataRowColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return adminBgLight;
+              return Colors.white;
+            }),
+            dataRowMinHeight: 40,
+            dataRowMaxHeight: 40,
+            columnSpacing: 24,
+            horizontalMargin: 12,
+                    headingRowColor: WidgetStateProperty.all(adminBgLight), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('Id')), const DataColumn(label: Text('Payme transaction')), const DataColumn(label: Text('Merchant transaction')), const DataColumn(label: Text('Amount')), const DataColumn(label: Text('Status')), const DataColumn(label: Text('Created')), const DataColumn(label: Text('Действия'))], rows: pageItems.map<DataRow>((i) => _buildRow(context, ref, i)).toList())))),
+              _buildPaginationBar(filtered.length, totalPages),
+            ]));
       });
   }
 
-  Widget _paymeRow(BuildContext context, String id, String payme, String merch, String paymeTime, String create, String perform, String cancel, String stateDesc, bool isError, String state, String amount, String phone, String client, String reason, {bool isWarning = false, bool isSuccess = false}) {
-    Color stateColor;
-    Color textColor = Colors.white;
-    if (isError) {
-      stateColor = adminDanger;
-    } else if (isWarning) {
-      stateColor = adminWarning;
-      textColor = Colors.black;
-    } else if (isSuccess) {
-      stateColor = adminSuccess;
-    } else {
-      stateColor = adminBorder;
-      textColor = Colors.black;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
-      child: Row(
-        children: [
-          SizedBox(width: 40, child: Text(id, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 220, child: Text(payme, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 220, child: Text(merch, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 140, child: Text(paymeTime, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 140, child: Text(create, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 140, child: Text(perform, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 140, child: Text(cancel, style: const TextStyle(fontSize: 10))),
-          SizedBox(
-            width: 180,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-              decoration: BoxDecoration(color: stateColor, borderRadius: BorderRadius.circular(2)),
-              child: Text(stateDesc, style: TextStyle(fontSize: 8, color: textColor, fontWeight: FontWeight.w600), textAlign: TextAlign.center))),
-          SizedBox(width: 60, child: Text(state, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 80, child: Text(amount, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 100, child: Text(phone, style: const TextStyle(fontSize: 10))),
-          SizedBox(width: 60, child: Text(client, style: const TextStyle(fontSize: 10, color: adminInfo))),
-          SizedBox(width: 60, child: Text(reason, style: const TextStyle(fontSize: 10))),
-          Expanded(
-            child: InkWell(
-              onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-              child: const Row(
-                children: [
-                  Icon(Icons.visibility, size: 12, color: adminInfo),
-                  SizedBox(width: 4),
-                  Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo)),
-                ]))),
-        ]));
+  DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
+    return DataRow(cells: [
+      DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
+      DataCell(Text("${item['id'] ?? ''}")),
+      DataCell(Text("${item['payme_transaction'] ?? ''}")),
+      DataCell(Text("${item['merchant_transaction'] ?? ''}")),
+      DataCell(Text("${item['amount'] ?? ''}")),
+      DataCell(Text("${item['status'] ?? ''}")),
+      DataCell(Text("${item['created'] ?? ''}")),
+      DataCell(Row(children: [
+        TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: adminInfo), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'payme_transaction', label: 'Payme transaction', initial: "${item['payme_transaction'] ?? ''}"), AdminField(key: 'merchant_transaction', label: 'Merchant transaction', initial: "${item['merchant_transaction'] ?? ''}"), AdminField(key: 'amount', label: 'Amount', initial: "${item['amount'] ?? ''}"), AdminField(key: 'status', label: 'Status', initial: "${item['status'] ?? ''}")], onSubmit: (v) async { ref.invalidate(paymeTransactionsProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: adminInfo), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'Транзакция Payme', onDelete: () async { ref.invalidate(paymeTransactionsProvider); }), icon: const Icon(Icons.delete, size: 12, color: adminDanger), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))),
+      ])),
+    ]);
   }
 
-  Widget _labeledInput(BuildContext context, String label, double width) {
-    return Row(
-      children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
-        const SizedBox(width: 4),
-        SizedBox(
-          width: width,
-          height: 28,
-          child: TextField(
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-            style: const TextStyle(fontSize: 11))),
-        const SizedBox(width: 4),
-        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ]);
+  Widget _buildBulkActionBar(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: adminBgLight,
+      child: Row(children: [
+        Text('Выбрано: ${_selectedIds.length}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+        const SizedBox(width: 16),
+        TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: adminDanger), label: const Text('Удалить', style: TextStyle(color: adminDanger, fontSize: 11))),
+        const Spacer(),
+        TextButton(onPressed: () => setState(() => _selectedIds.clear()), child: const Text('Отменить', style: TextStyle(fontSize: 11))),
+      ]));
+  }
+
+  Widget _buildPaginationBar(int total, int totalPages) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
+        Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: adminTextGray)),
+        Row(children: [
+          IconButton(tooltip: 'Предыдущая страница', icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
+          Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
+          IconButton(tooltip: 'Следующая страница', icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
+        ]),
+      ]));
   }
 }

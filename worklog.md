@@ -820,3 +820,66 @@ CI Results:
 - Windows build (VirentSetup.exe): ✅ SUCCESS
 - Android build (APK): ✅ SUCCESS
 - GitHub Release v1.0.1: Creating with artifacts
+
+---
+Task ID: FIX-DATATABLE-BATCH1
+Agent: sub-agent (DataTable batch 1)
+Task: Fix 8 admin pages with proper DataTable + provider data
+Work Log:
+- Read reference: sms_logs_page.dart (ConsumerStatefulWidget + DataTable + provider pattern)
+- Added adminRolesProvider to admin_web_providers.dart (was missing)
+- Rewrote alerts_page.dart (Тревоги, 7 cols, alertsListProvider)
+- Rewrote admin_accounts_page.dart (Админы, 7 cols, adminListProvider)
+- Rewrote admin_agreements_page.dart (Договора, 6 cols, adminAgreementsProvider)
+- Rewrote admin_companies_page.dart (Компании, 5 cols, adminCompaniesProvider)
+- Rewrote admin_contacts_page.dart (Контакты, 9 cols, adminContactsProvider)
+- Rewrote admin_faq_page.dart (FAQ, 5 cols, adminFaqProvider)
+- Rewrote admin_permissions_page.dart (Разрешения, 4 cols, adminPermissionsProvider)
+- Rewrote admin_roles_page.dart (Роли, 10 cols, adminRolesProvider)
+- Each file: ConsumerStatefulWidget, _searchController, _selectedIds, _currentPage, _pageSize=20
+- Each file: DataTable with Checkbox column + action buttons (view/edit/delete)
+- Each file: AdminStatusTabsRow, _buildBulkActionBar, export/filter IconButtons, _buildPaginationBar
+- Verified balanced braces/parens/brackets for all 8 files
+- Verified imports: dart:math, admin_web_providers, admin_dialogs, admin_export, admin_status_tabs, admin_colors
+- Verified .map<DataRow> used in all 8 files
+- Verified _buildRow signature (BuildContext context, WidgetRef ref, Map<String, dynamic> item)
+- Verified no const InputDecoration with Icon color (rule #9)
+- Verified double-quoted string interpolation for item['field'] lookups (rule #1)
+Stage Summary: 8 files fixed (alerts_page, admin_accounts_page, admin_agreements_page, admin_companies_page, admin_contacts_page, admin_faq_page, admin_permissions_page, admin_roles_page); plus 1 provider added (adminRolesProvider) to admin_web_providers.dart. NOTE: Flutter SDK not available in sandbox, so flutter analyze could not be run — verified syntax via brace balance + grep checks.
+
+---
+Task ID: FIX-DATATABLE-BATCH2
+Agent: sub-agent (DataTable batch 2)
+Task: Fix 10 billing/transaction pages with proper DataTable
+
+Work Log:
+- Read reference page: sms_logs_page.dart (ConsumerStatefulWidget + DataTable + provider + search/pagination/bulk/export/filter/status tabs/checkbox/action buttons)
+- Verified all 10 target provider names exist in admin_web_providers.dart; 4 missing providers added:
+  - bankCardsProvider       -> /admin/bank-cards (key: 'cards')
+  - billingDebtsProvider    -> /admin/debts (key: 'debts')
+  - billingInvoicesProvider -> /admin/invoices (key: 'invoices')
+  - bonusPackagesProvider   -> /admin/bonus-packages (key: 'packages')
+- Rewrote 10 pages (removed hardcoded sample data; converted from ConsumerWidget to ConsumerStatefulWidget with DataTable pattern):
+  - bank_cards_page.dart         (11 cols: Checkbox, Id, Client, Holder name, Bank name, Country, Card number, Token, Card type, Deleted, Действия)
+  - billing_debts_page.dart      (8 cols: Checkbox, ID, Client, Order, Amount, Status, Created, Действия)
+  - billing_invoices_page.dart   (9 cols: Checkbox, ID, Hold, Company, Operator, Order, Amount, Client, Действия)
+  - billing_receipts_page.dart   (9 cols: Checkbox, Id, Uuid, Provider uuid, Bill, Status, Client, Amount, Действия)
+  - click_transactions_page.dart (9 cols: Checkbox, Id, Click trans, Click paydoc, Merchant trans, Amount, Status, Created, Действия)
+  - payme_transactions_page.dart (8 cols: Checkbox, Id, Payme transaction, Merchant transaction, Amount, Status, Created, Действия)
+  - fines_page.dart              (10 cols: Checkbox, ID, client_id, amount, hold_id, order_id, bill_id, description, timestamp_response, Действия)
+  - bonuses_page.dart            (9 cols: Checkbox, Id, Client, Bonus sum, Who added, Create time, Comment, Company, Действия)
+  - bonus_packages_page.dart     (5 cols: Checkbox, Bonus, Cost, Active, Действия) + "Добавить пакет" button
+  - hold_logs_page.dart          (10 cols: Checkbox, transaction_id, client_id, type_request_1, timestamp_type_request_1, order_id, amount, request_source, status_response_1, Действия)
+- All pages follow the sms_logs_page.dart reference pattern: ConsumerStatefulWidget, ref.watch(provider).when(...), client-side search filter, pagination (page size 20), AdminStatusTabsRow with "Всего" badge, bulk-action bar with delete + cancel, DataTable with checkbox column + view/edit/delete action buttons, _buildPaginationBar with prev/next.
+- Used double quotes for all string interpolations of map fields ("${item['field'] ?? ''}") per critical rule #1.
+- All helper methods take (BuildContext context, WidgetRef ref, Map<String, dynamic> item) per critical rule #2.
+- Verified balanced braces, parens, and brackets in all 10 files (counts match open/close).
+- Verified imports (dart:math, flutter/material, flutter_riverpod, admin_web_providers, admin_dialogs, admin_export, admin_status_tabs, admin_colors) present in all 10 files.
+- Verified all 10 page class names preserved (BankCardsPage, BillingDebtsPage, BillingInvoicesPage, BillingReceiptsPage, ClickTransactionsPage, PaymeTransactionsPage, FinesPage, BonusesPage, BonusPackagesPage, HoldLogsPage) so existing router in app_layout.dart continues to work unchanged.
+- Note: Flutter/Dart SDK not installed in this sandbox so `flutter analyze` could not be executed; verified syntax manually via brace/paren/bracket balance counts and pattern matching against the sms_logs_page.dart reference.
+
+Stage Summary:
+- 10 pages converted from hardcoded-sample ConsumerWidget to ConsumerStatefulWidget + DataTable backed by Riverpod providers.
+- 4 new providers added to admin_web_providers.dart (bankCards, billingDebts, billingInvoices, bonusPackages).
+- All 10 files pass manual syntax verification (balanced delimiters, correct imports, correct provider wiring).
+- Next action: run `flutter analyze lib/features/admin_web` in a Flutter-equipped environment to confirm zero diagnostics, then exercise the 10 pages in the admin web app to verify live data renders.

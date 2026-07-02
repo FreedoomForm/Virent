@@ -1,180 +1,128 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../admin_web_providers.dart';
-import '../widgets/admin_colors.dart';
 import '../widgets/admin_dialogs.dart';
+import '../widgets/admin_export.dart';
+import '../widgets/admin_status_tabs.dart';
+import '../widgets/admin_colors.dart';
 
-class BillingInvoicesPage extends ConsumerWidget {
+class BillingInvoicesPage extends ConsumerStatefulWidget {
   const BillingInvoicesPage({super.key});
+  @override
+  ConsumerState<BillingInvoicesPage> createState() => _BillingInvoicesPageState();
+}
+
+class _BillingInvoicesPageState extends ConsumerState<BillingInvoicesPage> {
+  final _searchController = TextEditingController();
+  final _selectedIds = <dynamic>{};
+  String _query = '';
+  int _currentPage = 1;
+  static const int _pageSize = 20;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(billingReceiptsProvider);
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final async = ref.watch(billingInvoicesProvider);
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text("Ошибка: $e")),
+      error: (e, _) => Center(child: Text('Ошибка: $e')),
       data: (items) {
+        var filtered = items;
+        if (_query.isNotEmpty) {
+          filtered = filtered.where((i) => i.values.any((v) => v != null && v.toString().toLowerCase().contains(_query.toLowerCase()))).toList();
+        }
+        final totalPages = (filtered.length / _pageSize).ceil().clamp(1, 9999);
+        final pageItems = filtered.skip((_currentPage - 1) * _pageSize).take(_pageSize).toList();
         return Container(
-      color: const Color(0xFFFFFFFF),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
-                      children: [
-                        Text('Счета', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
-                        SizedBox(width: 12),
-                        Text('Показано 1 до 20 из 3,052,330 совпадений', style: TextStyle(fontSize: 11, color: adminTextGray)),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        const Text('Счета', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400, color: adminTextDark)),
+                        const SizedBox(width: 12),
+                        Text('Показано ${filtered.length} совпадений', style: const TextStyle(fontSize: 11, color: adminTextGray)),
                       ]),
-                    SizedBox(
-                      width: 200,
-                      height: 32,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Поиск:',
-                          hintStyle: const TextStyle(fontSize: 11),
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-                        style: const TextStyle(fontSize: 11))),
-                  ]),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    _labeledInput(context, 'ID клиента', 100),
-                    const SizedBox(width: 8),
-                    _labeledInput(context, 'Заказ', 100),
-                    const SizedBox(width: 8),
-                    _labeledInput(context, 'columns.redis_token', 140),
-                    const SizedBox(width: 8),
-                    OutlinedButton(
-                      onPressed: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        textStyle: const TextStyle(fontSize: 11)),
-                      child: const Text('Export')),
-                  ]),
-              ])),
-          const SizedBox(height: 8),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: 2000,
-                child: Column(
-                  children: [
-                    Container(
-                      color: const Color(0xFFFAFAFA),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      child: const Row(
-                        children: [
-                          SizedBox(width: 160, child: Text('ID', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Hold', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Company', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Operator', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Order', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Amount', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Client', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 160, child: Text('Redis token', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 70, child: Text('Status', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 130, child: Text('Created', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 80, child: Text('Result code', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 50, child: Text('Type', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 80, child: Text('Transaction', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 100, child: Text('Uzcard transaction', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 60, child: Text('Card pan', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          SizedBox(width: 130, child: Text('Code message confirm', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                          Expanded(child: Text('Действия', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600))),
-                        ])),
-                    const Divider(height: 1),
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          _invoiceRow(context, '6a3503bf7aa...', '2331349', '16', 'myuzcard', '769199', '117850', '234807', '17964243480...', 'confirmed', '19 июн, 13:55', '', 'money', '55916531', '', '', 'OK', true, true),
-                          _invoiceRow(context, '6a3503ef16f8...', '2331348', '16', 'myuzcard', '769202', '500000', '248798', '17202424879...', 'HOLD', '19 июн, 13:55', '', 'money', '55916523', '', '', '', false, false),
-                          _invoiceRow(context, '6a3503bd7aa...', '2331347', '16', 'myuzcard', '769199', '500000', '234807', '17964243480...', 'cancelled', '19 июн, 13:54', '', 'money', '55916504', '', '', '', false, false),
-                          _invoiceRow(context, '6a3503bd7aa...', '', '16', '', '769199', '500000', '234807', '17964243480...', 'not enough bonus', '19 июн, 13:54', '', 'bonus', '', '', '', '', false, false),
-                          _invoiceRow(context, '6a35037653b...', '2331346', '16', 'myuzcard', '769201', '500000', '224449', '17252424444...', 'HOLD', '19 июн, 13:53', '', 'money', '55916461', '', '', '', false, false),
-                        ])),
-                  ])))),
-        ]));
+                      const SizedBox.shrink()
+                    ]),
+                    Row(children: [
+                      IconButton(icon: const Icon(Icons.download, size: 18, color: adminTextSecondary), tooltip: 'Экспорт', onPressed: () => showAdminExportDialog(context, title: 'Экспорт', fields: ['id', 'hold', 'company', 'operator', 'order', 'amount', 'client'], onExport: (fmt, fields) async {})),
+                      IconButton(icon: const Icon(Icons.filter_list, size: 18, color: adminTextSecondary), tooltip: 'Фильтры', onPressed: () => showAdminFilterDialog(context, title: 'Фильтры', fields: const [AdminField(key: 'company', label: 'Company'), AdminField(key: 'operator', label: 'Operator'), AdminField(key: 'order', label: 'Order')], onApply: (v) async {})),
+                      SizedBox(width: 200, child: TextField(controller: _searchController, onChanged: (v) => setState(() { _query = v; _currentPage = 1; }), onSubmitted: (v) => setState(() { _query = v; _currentPage = 1; }), decoration: InputDecoration(hintText: 'Поиск...', prefixIcon: Icon(Icons.search, size: 18, color: adminTextGray), filled: true, fillColor: adminBgLight, border: OutlineInputBorder(borderRadius: BorderRadius.circular(6), borderSide: BorderSide(color: adminBorder)), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), isDense: true))),
+                    ]),
+                  ])),
+              const SizedBox(height: 8),
+              AdminStatusTabsRow(badges: [AdminStatusBadge(label: 'Всего', count: filtered.length, color: adminPrimary)]),
+              const SizedBox(height: 8),
+              if (_selectedIds.isNotEmpty) _buildBulkActionBar(context),
+              Expanded(child: Card(elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: adminBorder)), child: pageItems.isEmpty ? const Center(child: Padding(padding: EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.inbox, size: 40, color: adminBorder), SizedBox(height: 8), Text('Нет данных', style: TextStyle(color: adminTextGray, fontSize: 13))]))) : SingleChildScrollView(child: DataTable(headingTextStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: adminTextDark),
+            dataRowColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return adminBgLight;
+              return Colors.white;
+            }),
+            dataRowMinHeight: 40,
+            dataRowMaxHeight: 40,
+            columnSpacing: 24,
+            horizontalMargin: 12,
+                    headingRowColor: WidgetStateProperty.all(adminBgLight), columns: [const DataColumn(label: Text('')), const DataColumn(label: Text('ID')), const DataColumn(label: Text('Hold')), const DataColumn(label: Text('Company')), const DataColumn(label: Text('Operator')), const DataColumn(label: Text('Order')), const DataColumn(label: Text('Amount')), const DataColumn(label: Text('Client')), const DataColumn(label: Text('Действия'))], rows: pageItems.map<DataRow>((i) => _buildRow(context, ref, i)).toList())))),
+              _buildPaginationBar(filtered.length, totalPages),
+            ]));
       });
   }
 
-  Widget _invoiceRow(BuildContext context, String id, String hold, String company, String operator, String order, String amount, String client, String redis, String status, String created, String resultCode, String type, String trans, String uzcard, String cardPan, String codeMsg, bool showReturn, bool showCreate) {
-    Color? statusColor;
-    if (status == 'confirmed') statusColor = adminSuccess;
-    if (status == 'HOLD') statusColor = adminWarning;
-    if (status == 'cancelled') statusColor = Colors.grey;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: adminBorder))),
-      child: Row(
-        children: [
-          SizedBox(width: 160, child: Text(id, style: const TextStyle(fontSize: 9), overflow: TextOverflow.ellipsis)),
-          SizedBox(width: 60, child: Text(hold, style: const TextStyle(fontSize: 9))),
-          SizedBox(width: 60, child: Text(company, style: const TextStyle(fontSize: 9))),
-          SizedBox(width: 60, child: Text(operator, style: const TextStyle(fontSize: 9))),
-          SizedBox(width: 60, child: Text(order, style: const TextStyle(fontSize: 9, color: adminInfo))),
-          SizedBox(width: 60, child: Text(amount, style: const TextStyle(fontSize: 9))),
-          SizedBox(width: 60, child: Text(client, style: const TextStyle(fontSize: 9, color: adminInfo))),
-          SizedBox(width: 160, child: Text(redis, style: const TextStyle(fontSize: 9), overflow: TextOverflow.ellipsis)),
-          SizedBox(width: 70, child: Text(status, style: const TextStyle(fontSize: 9))),
-          SizedBox(width: 130, child: Text(created, style: const TextStyle(fontSize: 9))),
-          SizedBox(width: 80, child: Text(resultCode, style: const TextStyle(fontSize: 9))),
-          SizedBox(width: 50, child: Text(type, style: const TextStyle(fontSize: 9))),
-          SizedBox(width: 80, child: Text(trans, style: const TextStyle(fontSize: 9))),
-          const SizedBox(width: 100),
-          const SizedBox(width: 60),
-          SizedBox(width: 130, child: Text(codeMsg, style: const TextStyle(fontSize: 9))),
-          Expanded(
-            child: Row(
-              children: [
-                InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: const Text('Просмотр', style: TextStyle(fontSize: 9, color: adminInfo))),
-                if (showReturn) ...[
-                  const SizedBox(width: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                    decoration: BoxDecoration(color: adminWarning, borderRadius: BorderRadius.circular(2)),
-                    child: const Text('Вернуть платеж', style: TextStyle(fontSize: 8, color: Colors.white))),
-                ],
-                if (showCreate) ...[
-                  const SizedBox(width: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                    decoration: BoxDecoration(color: adminSuccess, borderRadius: BorderRadius.circular(2)),
-                    child: const Text('Создать чек', style: TextStyle(fontSize: 8, color: Colors.white))),
-                ],
-              ])),
-        ]));
+  DataRow _buildRow(BuildContext context, WidgetRef ref, Map<String, dynamic> item) {
+    return DataRow(cells: [
+      DataCell(Checkbox(value: _selectedIds.contains(item['id']), onChanged: (_) => setState(() { if (_selectedIds.contains(item['id'])) { _selectedIds.remove(item['id']); } else { _selectedIds.add(item['id']); } }))),
+      DataCell(Text("${item['id'] ?? ''}")),
+      DataCell(Text("${item['hold'] ?? ''}")),
+      DataCell(Text("${item['company'] ?? ''}")),
+      DataCell(Text("${item['operator'] ?? ''}")),
+      DataCell(Text("${item['order'] ?? ''}")),
+      DataCell(Text("${item['amount'] ?? ''}")),
+      DataCell(Text("${item['client'] ?? ''}")),
+      DataCell(Row(children: [
+        TextButton.icon(onPressed: () => showAdminViewDialog(context, title: 'Просмотр', item: item), icon: const Icon(Icons.visibility, size: 12, color: adminInfo), label: const Text('Просмотр', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminFormDialog(context, title: 'Редактировать', fields: [AdminField(key: 'hold', label: 'Hold', initial: "${item['hold'] ?? ''}"), AdminField(key: 'company', label: 'Company', initial: "${item['company'] ?? ''}"), AdminField(key: 'amount', label: 'Amount', initial: "${item['amount'] ?? ''}"), AdminField(key: 'client', label: 'Client', initial: "${item['client'] ?? ''}")], onSubmit: (v) async { ref.invalidate(billingInvoicesProvider); }, isEdit: true), icon: const Icon(Icons.edit, size: 12, color: adminInfo), label: const Text('Редактировать', style: TextStyle(fontSize: 10, color: adminInfo))),
+        TextButton.icon(onPressed: () => showAdminDeleteDialog(context, name: 'Счёт', onDelete: () async { ref.invalidate(billingInvoicesProvider); }), icon: const Icon(Icons.delete, size: 12, color: adminDanger), label: const Text('Удалить', style: TextStyle(fontSize: 10, color: adminDanger))),
+      ])),
+    ]);
   }
 
-  Widget _labeledInput(BuildContext context, String label, double width) {
-    return Row(
-      children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: adminTextGray)),
-        const SizedBox(width: 4),
-        SizedBox(
-          width: width,
-          height: 28,
-          child: TextField(
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: adminBorder))),
-            style: const TextStyle(fontSize: 11))),
-        const SizedBox(width: 4),
-        InkWell(onTap: () => showAdminInfoDialog(context, 'Информация', 'Действие в разработке'), child: Icon(Icons.close, size: 14, color: Colors.grey[500])),
-      ]);
+  Widget _buildBulkActionBar(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: adminBgLight,
+      child: Row(children: [
+        Text('Выбрано: ${_selectedIds.length}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+        const SizedBox(width: 16),
+        TextButton.icon(onPressed: () => showAdminBulkActionDialog(context, title: 'Удалить', message: 'Удалить выбранные?', selectedCount: _selectedIds.length, onConfirm: () async { _selectedIds.clear(); }), icon: const Icon(Icons.delete, size: 14, color: adminDanger), label: const Text('Удалить', style: TextStyle(color: adminDanger, fontSize: 11))),
+        const Spacer(),
+        TextButton(onPressed: () => setState(() => _selectedIds.clear()), child: const Text('Отменить', style: TextStyle(fontSize: 11))),
+      ]));
+  }
+
+  Widget _buildPaginationBar(int total, int totalPages) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Wrap(alignment: WrapAlignment.spaceBetween, children: [
+        Text('Показано ${min(_currentPage * _pageSize, total)} из $total', style: const TextStyle(fontSize: 11, color: adminTextGray)),
+        Row(children: [
+          IconButton(tooltip: 'Предыдущая страница', icon: const Icon(Icons.chevron_left, size: 16), onPressed: _currentPage > 1 ? () => setState(() => _currentPage--) : null),
+          Text('$_currentPage / $totalPages', style: const TextStyle(fontSize: 11)),
+          IconButton(tooltip: 'Следующая страница', icon: const Icon(Icons.chevron_right, size: 16), onPressed: _currentPage < totalPages ? () => setState(() => _currentPage++) : null),
+        ]),
+      ]));
   }
 }
