@@ -115,3 +115,75 @@ The following new providers were added (existing pages that still reference the 
 11. `mobile/lib/features/admin_web/pages/models_page.dart`
 12. `mobile/lib/features/admin_web/pages/scooter_groups_page.dart`
 13. `mobile/lib/features/admin_web/pages/drivers_page.dart`
+
+---
+
+## Task ID: PROFILE-DROPDOWN-2
+
+**Date:** Add user profile dropdown menu to admin panel header
+**Scope:** Make the user profile section in the header clickable with a 4-item dropdown menu that switches admin modes (normal / test / client / testClient) and shows a logout option; show an orange "ТЕСТОВЫЙ РЕЖИМ" banner when in test mode; overlay the mobile client UI (HomeScreen) when in client mode.
+
+### Files modified / verified (3 total)
+
+1. `mobile/lib/features/admin_web/admin_web_providers.dart` — `AdminMode` enum + `adminModeProvider` StateProvider (lines 682–702), plus two read-only convenience providers `isAdminTestModeProvider` and `isClientModeProvider` (lines 704–719).
+2. `mobile/lib/features/admin_web/layout/header.dart` — full profile dropdown implementation.
+3. `mobile/lib/features/admin_web/layout/app_layout.dart` — orange test banner + full-screen HomeScreen overlay for client modes.
+
+### What was added
+
+**Step 1 — Provider (`admin_web_providers.dart`):**
+
+```dart
+enum AdminMode { normal, test, client, testClient }
+final adminModeProvider = StateProvider<AdminMode>((ref) => AdminMode.normal);
+```
+
+Plus two derived providers:
+- `isAdminTestModeProvider` — `true` when mode is `test` or `testClient`.
+- `isClientModeProvider` — `true` when mode is `client` or `testClient`.
+
+**Step 2 — Profile dropdown (`header.dart`):**
+
+- Added private `_ProfileMenu` enum: `{ logout, testMode, clientMode, testClientMode }`.
+- `_buildProfileMenu()` wraps the avatar + name + caret in a `PopupMenuButton<_ProfileMenu>`.
+- Avatar colour and the subtitle text react to the current `AdminMode` (Асилбек / ТЕСТ / Клиент / ТЕСТ-Клиент).
+- Menu items (all in Russian, Material icons):
+  - "Перейти в тестовый режим"      → sets `adminModeProvider = AdminMode.test`
+  - "Перейти в режим клиента"       → sets `adminModeProvider = AdminMode.client`
+  - "Перейти в тестовый режим клиента" → sets `adminModeProvider = AdminMode.testClient`
+  - "Выйти"                          → resets mode to `normal`, then `context.go('/auth')` via `go_router`.
+- Selection handler shows a confirmation SnackBar via `showAdminSnack`.
+- `package:go_router/go_router.dart` is imported (line 17).
+
+**Step 3 — Test banner (`app_layout.dart`):**
+
+`_buildTestBanner(AdminMode mode)` renders a `Container` with `Colors.deepOrange` background, full-width, showing either "ТЕСТОВЫЙ РЕЖИМ — изменения не влияют на реальные данные" (for `test`) or "ТЕСТОВЫЙ РЕЖИМ КЛИЕНТА — изменения не влияют на реальные данные" (for `testClient`). The banner includes a warning icon and a "Выйти из тестового режима" close button that resets `adminModeProvider` to `normal`. Rendered above the `Expanded` content area whenever `isTest` is true.
+
+**Step 4 — Client overlay (`app_layout.dart`):**
+
+`_buildClientOverlay(AdminMode mode)` overlays `HomeScreen()` (mobile client UI) on top of the admin panel using `Positioned.fill` inside a `Stack` so the underlying admin panel state is preserved. The overlay includes:
+- A floating "Выйти из режима клиента" `FloatingActionButton.extended` (top-right) that resets the mode.
+- A "ТЕСТ-КЛИЕНТ" badge (top-left) shown only when `mode == AdminMode.testClient`.
+- The overlay is shown whenever `isClient` (i.e. `client` or `testClient`) is true.
+- `HomeScreen` is imported from `../../home/presentation/screens/home_screen.dart` (line 7).
+
+### Critical-rule compliance
+
+- [x] Read `header.dart` and `app_layout.dart` BEFORE editing.
+- [x] `go_router` imported in `header.dart` (line 17); `context.go('/auth')` used for logout.
+- [x] Existing header functionality preserved (brand text, hamburger menu, all five status tags, height 30, dark-blue background).
+- [x] Pure Dart; all UI labels in Russian.
+- [x] Braces balanced:
+  - `header.dart` — 9/9 `{` `}`, 92/92 `(` `)`.
+  - `app_layout.dart` — 11/11 `{` `}`, 157/157 `(` `)`.
+  - `admin_web_providers.dart` — 71/71 `{` `}`, 533/533 `(` `)`.
+
+### Verification
+
+`flutter analyze` could not be run (no Flutter SDK in sandbox). Verified manually:
+
+- `AdminMode` enum + `adminModeProvider` exist in `admin_web_providers.dart` (lines 683, 702).
+- `HomeScreen` class exists at `lib/features/home/presentation/screens/home_screen.dart` (line 34).
+- The dropdown has exactly 4 menu items + 1 `PopupMenuDivider`.
+- Logout uses `context.go('/auth')` (router's actual login route, used elsewhere in the codebase).
+- All three files have matching open/close braces and parens.
